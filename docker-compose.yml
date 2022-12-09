@@ -1,0 +1,60 @@
+version: '3.7'
+
+services:
+  api:
+    profiles: ['api', 'web']
+    container_name: slots-api
+    stdin_open: true
+    build:
+      context: ./
+      dockerfile: api/Dockerfile
+      target: dev
+    environment:
+      NODE_ENV: development
+    ports:
+      - 8000:8000
+      - 9229:9229 # for debugging
+    volumes:
+      - ./api:/app/api
+      - /app/node_modules/ # do not mount node_modules
+      - /app/api/node_modules/ # do not mount node_modules
+    depends_on:
+      - database
+    command: yarn dev
+
+  database:
+    container_name: slots-database
+    image: postgres:alpine
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    depends_on:
+      - adminer
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: dev
+
+  adminer:
+    image: adminer
+    container_name: slots-adminer
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+
+  web:
+    profiles: ['web']
+    container_name: slots-web
+    build:
+      context: ./
+      dockerfile: web/Dockerfile
+      target: dev
+    command: yarn dev
+    ports:
+      - 3000:3000
+    volumes:
+      - ./web:/app/web
+      - /app/node_modules/ # do not mount node_modules
+      - /app/web/node_modules/ # do not mount node_modules
+    environment:
+      API_BASE_URL: http://api:8000

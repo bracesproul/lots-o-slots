@@ -1,0 +1,1 @@
+export { PaymentResolver } from './PaymentResolver';
