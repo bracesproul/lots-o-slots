@@ -1,6 +1,7 @@
 import postgresConnection from '@/config/typeorm';
 import serverSetup from './server';
 import { Server } from 'http';
+import { authorize as authorizeGoogle } from '@/services/gmail';
 import { config as setupEnv } from 'dotenv-flow';
 setupEnv({ silent: true });
 
@@ -19,19 +20,12 @@ async function main() {
   await postgresConnection().then(async () => {
     console.info('🤠 Database connected!');
   });
+  await authorizeGoogle();
 
   const app = await serverSetup();
   app.listen(process.env.PORT, () => {
     console.info(`🎂 Server ready!`);
   });
-
-  // process.on('uncaughtException', process.exit(1));
-  // process.on(
-  //   'unhandledRejection',
-  //   handleServerClose(1, 'Unhandled Promise', server)
-  // );
-  // process.on('SIGTERM', handleServerClose(0, 'SIGTERM', server));
-  // process.on('SIGINT', handleServerClose(0, 'SIGINT', server));
 }
 
 main().catch((error) => {

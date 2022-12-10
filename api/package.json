@@ -10,10 +10,14 @@
     "tsc:watch:success": "tsc-alias -p tsconfig.json && NODE_ENV=development node --inspect=0.0.0.0:9229 ./dist/index.js",
     "typeorm": "npx typeorm",
     "seed": "npx ts-node ./src/seed",
-    "seed:reset": "yarn build && node ./dist/seed/resetSeed.js"
+    "seed:reset": "yarn build && node ./dist/seed/resetSeed.js",
+    "gmail:auth": "yarn build && node ./dist/services/gmail/auth/HandleAuthentication.js",
+    "gmail:pubsub": "yarn build && node ./dist/services/gmail/pub-sub/RunPubSub.js"
   },
   "dependencies": {
     "@apollo/server": "^4.2.2",
+    "@google-cloud/local-auth": "^2.1.1",
+    "@google-cloud/pubsub": "^3.2.1",
     "@lexical/clipboard": "^0.6.0",
     "@lexical/headless": "^0.6.0",
     "@lexical/list": "^0.6.0",
@@ -46,6 +50,7 @@
     "express-graphql": "^0.12.0",
     "express-rate-limit": "^6.6.0",
     "faker": "^5.5.3",
+    "googleapis": "^109.0.1",
     "graphql": "^15.5.0",
     "graphql-custom-types": "^1.6.0",
     "graphql-relay": "^0.10.0",

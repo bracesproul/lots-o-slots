@@ -20,7 +20,7 @@ services:
       - /app/api/node_modules/ # do not mount node_modules
     depends_on:
       - database
-    command: yarn dev
+    command: yarn dev:api
 
   database:
     container_name: slots-database
@@ -34,6 +34,7 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: dev
+      POSTGRES_HOST: 127.0.0.1
 
   adminer:
     image: adminer

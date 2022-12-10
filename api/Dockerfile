@@ -20,10 +20,11 @@
 FROM node:16-alpine AS dev
 
 WORKDIR /app
+COPY yarn.lock ./
+COPY package.json ./
 COPY . .
-WORKDIR /app/api
 RUN yarn install
-RUN yarn build
+RUN yarn build:api
 
 EXPOSE 8000
 

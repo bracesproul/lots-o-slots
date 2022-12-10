@@ -14,13 +14,16 @@
     "prettier": "^2.7.1"
   },
   "scripts": {
-    "dev": "cd ./api && yarn dev",
+    "dev:api": "cd ./api && yarn dev",
+    "build": "cd ./api && yarn build && cd ../web && yarn build",
+    "build:api": "cd ./api && yarn build",
+    "build:web": "cd ./web && yarn build",
     "docker:compose": "docker compose --profile web up --build",
     "docker:compose:api": "docker compose --profile api up --build",
     "docker:compose:db": "docker compose --profile database up --build",
     "docker:up": "docker compose --profile web up",
-    "docker:stop": "docker compose --profile web --profile storybook stop",
-    "docker:restart": "docker compose --profile web --profile storybook restart",
+    "docker:stop": "docker compose --profile web stop",
+    "docker:restart": "docker compose --profile web restart",
     "docker:restart:web": "docker container restart web",
     "docker:restart:api": "docker container restart api",
     "postinstall": "husky install || true"

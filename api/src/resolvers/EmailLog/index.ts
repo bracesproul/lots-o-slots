@@ -1,0 +1,1 @@
+export { EmailLogResolver } from './EmailLogResolver';
