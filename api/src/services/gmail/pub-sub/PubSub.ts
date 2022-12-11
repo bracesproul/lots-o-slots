@@ -5,6 +5,8 @@ import { google, gmail_v1 } from 'googleapis';
 import { authorize } from '../auth';
 import { getCustomRepository } from 'typeorm';
 import format from 'date-fns/format';
+import { parseEmailBody, parseEmailHeaders } from '@/utils';
+import { EmailObjectType } from '@/types';
 
 type PubSubDataResponse = {
   emailAddress: string;
@@ -24,44 +26,8 @@ type GetMessagesResponse = {
   // todo implement
 };
 
-type EmailObjectType = {
-  to: string;
-  from: string;
-  subject: string;
-  body: string;
-};
-
 export function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-export function parseEmailHeaders(
-  headers: gmail_v1.Schema$MessagePartHeader[]
-): Omit<EmailObjectType, 'body'> {
-  const schemaTo = headers?.find(
-    (header) => header.name === 'To' && header.value
-  );
-  const to = schemaTo?.value;
-  const schemaFrom = headers?.find(
-    (header) => header.name === 'From' && header.value
-  );
-  const from = schemaFrom?.value?.split('<')[1].split('>')[0];
-  const schemaSubject = headers?.find(
-    (header) => header.name === 'Subject' && header.value
-  );
-  const subject = schemaSubject?.value;
-  if (!to || !from || !subject) throw new Error('Missing email headers');
-  return { to, from, subject };
-}
-
-export function parseEmailBody(parts: gmail_v1.Schema$MessagePart[]): string {
-  let body = '';
-  parts?.forEach((part) => {
-    if (part.mimeType === 'text/html' && part?.body?.data) {
-      body = Buffer.from(part.body?.data, 'base64').toString('utf-8');
-    }
-  });
-  return body;
 }
 
 export default class MessageListener {

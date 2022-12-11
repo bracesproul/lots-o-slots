@@ -1,0 +1,21 @@
+import { gmail_v1 } from 'googleapis';
+import { EmailObjectType } from '@/types';
+
+export function parseEmailHeaders(
+  headers: gmail_v1.Schema$MessagePartHeader[]
+): Omit<EmailObjectType, 'body'> {
+  const schemaTo = headers?.find(
+    (header) => header.name === 'To' && header.value
+  );
+  const to = schemaTo?.value;
+  const schemaFrom = headers?.find(
+    (header) => header.name === 'From' && header.value
+  );
+  const from = schemaFrom?.value?.split('<')[1].split('>')[0];
+  const schemaSubject = headers?.find(
+    (header) => header.name === 'Subject' && header.value
+  );
+  const subject = schemaSubject?.value;
+  if (!to || !from || !subject) throw new Error('Missing email headers');
+  return { to, from, subject };
+}
