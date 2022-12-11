@@ -6,8 +6,7 @@ import { getManager } from 'typeorm';
 
 async function main() {
   const messageListener = new MessageListener();
-  // messageListener.listenForMessages();
-  messageListener.watch();
+  messageListener.listenForMessages();
 }
 
-// main();
+main();

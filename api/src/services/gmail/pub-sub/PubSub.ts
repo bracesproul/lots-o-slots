@@ -45,7 +45,7 @@ export default class MessageListener {
     const watcher = await google.gmail({ version: 'v1', auth }).users.watch({
       userId: 'me',
       requestBody: {
-        topicName: this.topicNameAndId,
+        topicName: 'projects/lots-o-slots/topics/cashapp-messages',
         labelIds: ['INBOX'],
       },
     });
@@ -53,24 +53,23 @@ export default class MessageListener {
   }
 
   async listenForMessages(): Promise<void> {
-    this.watch();
     const subscription = this.pubSubClient.subscription(
-      this.subscriptionNameOrId
+      'projects/lots-o-slots/subscriptions/cashapp-messages'
     );
 
-    console.log('📫 Started message listener!');
-    subscription.on('message', this.handleMessages);
-    console.log('😣 Ended message listener.');
-  }
+    const handleMessages = async (message: any) => {
+      console.log('✅ Received message');
+      message.ack();
+      const { messageIds } = await this.listMessages({
+        count: 1,
+      });
+      const decodedBodies = await this.getMessages({ messageIds });
+      console.log(decodedBodies);
+    };
 
-  async handleMessages(message: any) {
-    console.log('✅ Received message');
-    message.ack();
-    const { messageIds } = await this.listMessages({
-      count: 1,
-    });
-    const decodedBodies = await this.getMessages({ messageIds });
-    console.log(decodedBodies);
+    console.log('📫 Started message listener!');
+    subscription.on('message', handleMessages);
+    console.log('😣 Ended message listener.');
   }
 
   async listMessages({
@@ -90,9 +89,12 @@ export default class MessageListener {
 
     const messageIds: string[] = [];
     data.messages?.forEach(async (message: any) => {
-      if (message.id && !(await emailLogRepo.findOne(message.id))) {
+      // if (message.id && !(await emailLogRepo.findOne(message.id))) {
+      //   messageIds.push(message.id);
+      //   await emailLogRepo.create({ emailId: message.id });
+      // }
+      if (message.id) {
         messageIds.push(message.id);
-        await emailLogRepo.create({ emailId: message.id });
       }
     });
     return {
@@ -116,6 +118,7 @@ export default class MessageListener {
         data.payload?.headers ?? []
       );
       const body = parseEmailBody(data.payload?.parts ?? []);
+      console.log('all data', { to, from, subject, body, id });
       allData.push({ to, from, subject, body, id });
     });
 
