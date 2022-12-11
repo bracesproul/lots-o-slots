@@ -12,7 +12,8 @@
     "seed": "npx ts-node ./src/seed",
     "seed:reset": "yarn build && node ./dist/seed/resetSeed.js",
     "gmail:auth": "yarn build && node ./dist/services/gmail/auth/HandleAuthentication.js",
-    "gmail:pubsub": "yarn build && node ./dist/services/gmail/pub-sub/RunPubSub.js"
+    "gmail:pubsub": "yarn build && node ./dist/services/gmail/pub-sub/RunPubSub.js",
+    "gmail:watch": "yarn build && node ./dist/services/gmail/pub-sub/Watch.js"
   },
   "dependencies": {
     "@apollo/server": "^4.2.2",

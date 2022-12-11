@@ -24,6 +24,7 @@ coverage
 .env.local*
 credentials.json
 token.json
+service_account.json
 
 # Dependency directory
 node_modules

@@ -24,7 +24,7 @@ async function main() {
   });
   await authorizeGoogle();
   const messageListener = new MessageListener();
-  // messageListener.listenForMessages();
+  messageListener.listenForMessages();
 
   const app = await serverSetup();
   app.listen(process.env.PORT, () => {

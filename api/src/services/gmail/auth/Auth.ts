@@ -2,7 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import process from 'process';
 import { authenticate } from '@google-cloud/local-auth';
-import { google, gmail_v1 } from 'googleapis';
+import { google } from 'googleapis';
 
 const SCOPES = ['https://www.googleapis.com/auth/gmail.readonly'];
 const TOKEN_PATH = path.join(process.cwd(), 'token.json');
@@ -59,25 +59,4 @@ export default async function authorize() {
     await saveCredentials(authenticatedClient);
   }
   return authenticatedClient;
-}
-
-/**
- * Lists the labels in the user's account.
- *
- * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
- */
-async function listLabels(auth: any) {
-  const gmail = google.gmail({ version: 'v1', auth });
-  const res = await gmail.users.labels.list({
-    userId: 'me',
-  });
-  const labels = res.data.labels;
-  if (!labels || labels.length === 0) {
-    console.log('No labels found.');
-    return;
-  }
-  console.log('Labels:');
-  labels.forEach((label: gmail_v1.Schema$Label) => {
-    console.log(`- ${label.name}`);
-  });
 }

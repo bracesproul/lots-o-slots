@@ -25,7 +25,6 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
         processed: input.processed,
       });
     }
-    console.log('_SQL', query.getSql());
     return query.addOrderBy('"createdAt"', 'ASC').getMany();
   }
 

@@ -5,7 +5,7 @@ import { google, gmail_v1 } from 'googleapis';
 import { authorize } from '../auth';
 import { getCustomRepository } from 'typeorm';
 import format from 'date-fns/format';
-import { parseEmailBody, parseEmailHeaders } from '@/utils';
+import { parseEmailBody, parseEmailHeaders, findSender } from '@/utils';
 import { EmailObjectType } from '@/types';
 
 type PubSubDataResponse = {
@@ -69,7 +69,6 @@ export default class MessageListener {
 
     console.log('📫 Started message listener!');
     subscription.on('message', handleMessages);
-    console.log('😣 Ended message listener.');
   }
 
   async listMessages({
@@ -102,28 +101,25 @@ export default class MessageListener {
     };
   }
 
-  async getMessages({
-    messageIds,
-  }: {
-    messageIds: string[];
-  }): Promise<EmailObjectType[]> {
+  async getMessages({ messageIds }: { messageIds: string[] }): Promise<void> {
     const gmail = await this.authGmail();
-    const allData: EmailObjectType[] = [];
     messageIds.forEach(async (id) => {
       const { data } = await gmail.users.messages.get({
         userId: 'me',
         id,
       });
+
+      // Parses the headers of the email.
       const { to, from, subject } = parseEmailHeaders(
         data.payload?.headers ?? []
       );
-      const body = parseEmailBody(data.payload?.parts ?? []);
-      console.log('all data', { to, from, subject, body, id });
-      allData.push({ to, from, subject, body, id });
-    });
 
-    console.log('after promise', allData);
-    return allData;
+      // Parses the body of the email, returns a string containing the entire body.
+      const body = parseEmailBody(data.payload?.parts ?? []);
+
+      // Handles parsing and updating database and the corresponding accounts.
+      await findSender({ to, from, subject, body, id });
+    });
   }
 
   async getMissingMessages(): Promise<void> {
@@ -142,7 +138,6 @@ export default class MessageListener {
     if (messageIds.length === 0) {
       return;
     }
-    const messages = await this.getMessages({ messageIds });
-    // @TODO: pass parsing function to parse requested messages;
+    await this.getMessages({ messageIds });
   }
 }
