@@ -3,7 +3,7 @@ import { EmailObjectType } from '@/types';
 
 export function parseEmailHeaders(
   headers: gmail_v1.Schema$MessagePartHeader[]
-): Omit<EmailObjectType, 'body'> {
+): Omit<EmailObjectType, 'body' | 'id'> {
   const schemaTo = headers?.find(
     (header) => header.name === 'To' && header.value
   );

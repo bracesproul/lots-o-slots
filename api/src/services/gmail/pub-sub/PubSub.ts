@@ -116,7 +116,7 @@ export default class MessageListener {
         data.payload?.headers ?? []
       );
       const body = parseEmailBody(data.payload?.parts ?? []);
-      allData.push({ to, from, subject, body });
+      allData.push({ to, from, subject, body, id });
     });
 
     console.log('after promise', allData);
