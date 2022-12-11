@@ -3,6 +3,8 @@ import { PubSub } from '@google-cloud/pubsub';
 import { EmailLogRepository } from '@/repositories';
 import { google, gmail_v1 } from 'googleapis';
 import { authorize } from '../auth';
+import { getCustomRepository } from 'typeorm';
+import format from 'date-fns/format';
 
 type PubSubDataResponse = {
   emailAddress: string;
@@ -65,6 +67,7 @@ export function parseEmailBody(parts: gmail_v1.Schema$MessagePart[]): string {
 export default class MessageListener {
   // Creates a client; cache this for further use
   pubSubClient = new PubSub();
+  topicNameAndId = 'projects/lots-o-slots/topics/cashapp-messages';
   subscriptionNameOrId = 'projects/lots-o-slots/subscriptions/cashapp-messages';
   async authGmail(): Promise<gmail_v1.Gmail> {
     const auth = await authorize();
@@ -76,35 +79,27 @@ export default class MessageListener {
     const watcher = await google.gmail({ version: 'v1', auth }).users.watch({
       userId: 'me',
       requestBody: {
-        topicName: this.subscriptionNameOrId,
+        topicName: this.topicNameAndId,
         labelIds: ['INBOX'],
       },
     });
-    console.log(watcher);
+    console.log('__WATCH CONFIRMED__', watcher);
   }
 
   async listenForMessages(): Promise<void> {
+    this.watch();
     const subscription = this.pubSubClient.subscription(
       this.subscriptionNameOrId
     );
 
-    // const messageHandler = async (message: any) => {
-    //   message.ack();
-    //   console.log('✅ Received message');
-    //   const { messageIds } = await this.listMessages({
-    //     count: 1,
-    //   });
-    //   const decodedBodies = await this.getMessages({ messageIds });
-    //   console.log(decodedBodies);
-    // };
-
     console.log('📫 Started message listener!');
     subscription.on('message', this.handleMessages);
+    console.log('😣 Ended message listener.');
   }
 
   async handleMessages(message: any) {
-    message.ack();
     console.log('✅ Received message');
+    message.ack();
     const { messageIds } = await this.listMessages({
       count: 1,
     });
@@ -114,14 +109,17 @@ export default class MessageListener {
 
   async listMessages({
     count,
+    query,
   }: {
     count: number;
+    query?: string;
   }): Promise<ListMessagesResponse> {
     const emailLogRepo = new EmailLogRepository();
     const gmail = await this.authGmail();
     const { data } = await gmail.users.messages.list({
       userId: 'me',
       maxResults: count,
+      q: query,
     });
 
     const messageIds: string[] = [];
@@ -165,5 +163,17 @@ export default class MessageListener {
      * to request all emails received after that date.
      * Update DB with that. Only then start the rest of the app
      */
+    const emailRepo = getCustomRepository(EmailLogRepository);
+    const { createdAt } = await emailRepo.getRecentUpdate();
+    const prettyDate = format(createdAt, 'YYYY/MM/DD');
+    const { messageIds } = await this.listMessages({
+      count: 500,
+      query: `after:${prettyDate}`,
+    });
+    if (messageIds.length === 0) {
+      return;
+    }
+    const messages = await this.getMessages({ messageIds });
+    // @TODO: pass parsing function to parse requested messages;
   }
 }

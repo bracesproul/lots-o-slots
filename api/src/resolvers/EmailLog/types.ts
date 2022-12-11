@@ -10,3 +10,14 @@ export class CreateEmailLogInput {
   })
   emailId!: string;
 }
+
+@ObjectType({
+  description: 'The most recent update for the email log.',
+})
+export class GetRecentEmailLogUpdate {
+  @Field(() => Date, {
+    nullable: false,
+    description: 'The date of the most recent update.',
+  })
+  createdAt!: Date;
+}

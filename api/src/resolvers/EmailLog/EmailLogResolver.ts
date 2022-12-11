@@ -8,14 +8,14 @@ import {
   TransactionManager,
   SelectQueryBuilder,
 } from 'typeorm';
-import { CreateEmailLogInput } from './types';
+import { CreateEmailLogInput, GetRecentEmailLogUpdate } from './types';
 
 // @Resolver(Repo)
 @Resolver()
 export class EmailLogResolver {
   @Transaction()
   @Mutation(() => EmailLog, { nullable: false })
-  async createUser(
+  async createEmailLog(
     @Arg('input', { nullable: false }) input: CreateEmailLogInput,
     @TransactionManager() manager = getManager()
   ): Promise<EmailLog> {
@@ -25,5 +25,16 @@ export class EmailLogResolver {
       },
       manager
     );
+  }
+
+  @Transaction()
+  @Query(() => GetRecentEmailLogUpdate, { nullable: false })
+  async getRecentUpdate(): Promise<GetRecentEmailLogUpdate> {
+    const { createdAt } = await getCustomRepository(
+      EmailLogRepository
+    ).getRecentUpdate();
+    return {
+      createdAt,
+    };
   }
 }

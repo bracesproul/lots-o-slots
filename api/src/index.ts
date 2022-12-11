@@ -2,6 +2,8 @@ import postgresConnection from '@/config/typeorm';
 import serverSetup from './server';
 import { Server } from 'http';
 import { authorize as authorizeGoogle } from '@/services/gmail';
+import { MessageListener } from '@/services';
+
 import { config as setupEnv } from 'dotenv-flow';
 setupEnv({ silent: true });
 
@@ -21,6 +23,8 @@ async function main() {
     console.info('🤠 Database connected!');
   });
   await authorizeGoogle();
+  const messageListener = new MessageListener();
+  // messageListener.listenForMessages();
 
   const app = await serverSetup();
   app.listen(process.env.PORT, () => {
