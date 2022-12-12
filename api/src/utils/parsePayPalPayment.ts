@@ -3,13 +3,7 @@ import { Payment, User } from '@/entities';
 import { PaymentRepository } from '@/repositories';
 import { getCustomRepository } from 'typeorm';
 import { PaymentProvider } from '@/entities/Payment/Payment';
-
-type PaymentInfoType = {
-  amount: number;
-  name: string;
-  transactionId: string;
-  email: EmailObjectType;
-};
+import { PaymentInfoType } from '@/types/paymentInfo';
 
 export async function parsePayPalPayment(email: EmailObjectType) {
   let { body } = email;

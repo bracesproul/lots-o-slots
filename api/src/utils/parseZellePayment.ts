@@ -1,18 +1,55 @@
 import { EmailObjectType } from '@/types';
 import { Payment, User } from '@/entities';
 import { getCustomRepository } from 'typeorm';
+import { PaymentProvider } from '@/entities/Payment/Payment';
+import { PaymentRepository } from '@/repositories';
+import { PaymentInfoType } from '@/types/paymentInfo';
 
 export async function parseZellePayment(email: EmailObjectType) {
-  const { body } = email;
-  // we want to check it's not some random Zelle email.
-  if (body.includes(' sent you $') && body.includes(' with Zelle')) {
-    const amount = body
-      .split('SENT AMOUNT BEFORE KEYWORD')[1]
-      .split('SENT AFTER KEYWORD')[0];
-    const sender = body
-      .split('SENDER BEFORE KEYWORD')[0]
-      .split('SENDER AFTER KEYWORD')[0];
-    // await getCustomRepository(Payment).addNewPayment;
-    // await getCustomRepository(User).updateBalance
+  let { body } = email;
+  body = body.replace(/\r/g, '');
+
+  const senderNameRegex = /^(.*) sent you /m;
+  const senderNameMatch = body.match(senderNameRegex);
+
+  const amountRegex = new RegExp(/(?<=\$)\d+\.\d+/);
+  const amountMatch = body.match(amountRegex);
+
+  if (!amountMatch || !senderNameMatch) {
+    console.log('failed to parse zelle payment', {
+      amountMatch,
+      senderNameMatch,
+    });
+    return {
+      success: false,
+    };
   }
+
+  const name = senderNameMatch[1];
+  const amount = Number(amountMatch[0]);
+
+  const newPayment = await updateDatabase({
+    amount,
+    name,
+    email,
+  });
+
+  console.log('new payment created', newPayment);
+
+  return {
+    success: true,
+    name,
+    amount,
+  };
+}
+
+function updateDatabase(paymentInfo: PaymentInfoType) {
+  const paymentRepository = getCustomRepository(PaymentRepository);
+  return paymentRepository.createPayment({
+    userIdentifier: paymentInfo.name,
+    amount: paymentInfo.amount,
+    emailId: paymentInfo.email.id,
+    provider: PaymentProvider.ZELLE,
+    senderName: paymentInfo.name,
+  });
 }
