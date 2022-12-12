@@ -28,13 +28,11 @@ export async function parseZellePayment(email: EmailObjectType) {
   const name = senderNameMatch[1];
   const amount = Number(amountMatch[0]);
 
-  const newPayment = await updateDatabase({
+  await updateDatabase({
     amount,
     name,
     email,
   });
-
-  console.log('new payment created', newPayment);
 
   return {
     success: true,
