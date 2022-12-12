@@ -64,7 +64,6 @@ export default class MessageListener {
         count: 1,
       });
       const decodedBodies = await this.getMessages({ messageIds });
-      console.log(decodedBodies);
     };
 
     console.log('📫 Started message listener!');
@@ -130,7 +129,7 @@ export default class MessageListener {
      */
     const emailRepo = getCustomRepository(EmailLogRepository);
     const { createdAt } = await emailRepo.getRecentUpdate();
-    const prettyDate = format(createdAt, 'YYYY/MM/DD');
+    const prettyDate = format(createdAt, 'yyyy/mm/dd');
     const { messageIds } = await this.listMessages({
       count: 500,
       query: `after:${prettyDate}`,

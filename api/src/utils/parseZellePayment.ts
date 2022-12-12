@@ -3,6 +3,7 @@ import { Payment, User } from '@/entities';
 import { getCustomRepository } from 'typeorm';
 
 export async function parseZellePayment(email: EmailObjectType) {
+  console.log('parsing zelle payment!');
   const { body } = email;
   // we want to check it's not some random Zelle email.
   if (body.includes(' sent you $') && body.includes(' with Zelle')) {

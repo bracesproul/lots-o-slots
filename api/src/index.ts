@@ -1,22 +1,10 @@
 import postgresConnection from '@/config/typeorm';
 import serverSetup from './server';
-import { Server } from 'http';
 import { authorize as authorizeGoogle } from '@/services/gmail';
 import { MessageListener } from '@/services';
 
 import { config as setupEnv } from 'dotenv-flow';
 setupEnv({ silent: true });
-
-function handleServerClose(exitCode: number, reason: string, server: Server) {
-  const exit = (code: number) => () => {
-    process.exit(code);
-  };
-
-  return () => {
-    console.info(`😖 Server closing: ${reason}`);
-    server.close(exit(exitCode));
-  };
-}
 
 async function main() {
   await postgresConnection().then(async () => {
@@ -24,6 +12,10 @@ async function main() {
   });
   await authorizeGoogle();
   const messageListener = new MessageListener();
+  if (process.env.NODE_ENV === 'production') {
+    console.log('Getting message history...');
+    messageListener.getMissingMessages();
+  }
   messageListener.listenForMessages();
 
   const app = await serverSetup();

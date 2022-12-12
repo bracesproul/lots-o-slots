@@ -2,15 +2,13 @@ import { EmailObjectType } from '@/types';
 import { parseZellePayment, parsePayPalPayment } from '@/utils';
 
 export async function findSender(email: EmailObjectType): Promise<void> {
-  console.log('inside findSender!', email);
-  const { from } = email;
+  const { from, subject } = email;
   if (from.includes('zelle')) {
     return await parseZellePayment(email);
-  }
-  if (from.includes('paypal')) {
-    return await parsePayPalPayment(email);
-  }
-  if (from.includes('cashapp')) {
+  } else if (subject.includes(`You've got money`)) {
+    console.log('paypal payment!');
+    await parsePayPalPayment(email);
+  } else if (from.includes('cashapp')) {
     // parse cashapp payment.
   }
 }

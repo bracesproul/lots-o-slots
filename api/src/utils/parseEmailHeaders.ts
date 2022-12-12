@@ -5,7 +5,7 @@ export function parseEmailHeaders(
   headers: gmail_v1.Schema$MessagePartHeader[]
 ): Omit<EmailObjectType, 'body' | 'id'> {
   const schemaTo = headers?.find(
-    (header) => header.name === 'To' && header.value
+    (header) => header.name === 'Delivered-To' && header.value
   );
   const to = schemaTo?.value;
   const schemaFrom = headers?.find(

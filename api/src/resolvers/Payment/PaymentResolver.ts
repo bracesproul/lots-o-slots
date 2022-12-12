@@ -10,6 +10,7 @@ import {
   GetPaymentsInput,
 } from './types';
 import { ApolloError } from 'apollo-server-express';
+import { parsePayPalPayment } from '@/utils';
 
 // @Resolver(Repo)
 @Resolver()
