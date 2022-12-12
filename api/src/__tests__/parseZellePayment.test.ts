@@ -1,6 +1,6 @@
 import { parseZellePayment } from '@/utils';
 
-describe('Parse PayPal payment', () => {
+describe('Parse Zelle payment', () => {
   it('Should return the sender name and amount', async () => {
     const body = dummyEmail;
     const to = 'testTo@example.com';

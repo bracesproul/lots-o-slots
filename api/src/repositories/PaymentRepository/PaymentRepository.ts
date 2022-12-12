@@ -36,6 +36,7 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
     provider,
     senderName,
     transactionId,
+    cashTag,
   }: {
     userIdentifier: string;
     amount: number;
@@ -44,6 +45,7 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
     provider: PaymentProvider;
     senderName: string;
     transactionId?: string;
+    cashTag?: string;
   }): Promise<Payment> {
     const loggedPayment = await this.repository.findOne({
       where: { transactionId },
@@ -57,6 +59,7 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
         { userIdentifier_paypal: userIdentifier },
         { userIdentifier_zelle: userIdentifier },
         { userIdentifier_cashapp: userIdentifier },
+        { cashTag: cashTag },
       ],
     });
     if (!user) {
@@ -68,6 +71,7 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
               balance: amount,
             });
           }
+          await User.save(user);
           break;
         case PaymentProvider.ZELLE:
           {
@@ -76,17 +80,20 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
               balance: amount,
             });
           }
+          await User.save(user);
           break;
         case PaymentProvider.CASHAPP:
           {
+            console.log('CASHTAG TO BE ADDED', cashTag);
             user = User.create({
               userIdentifier_cashapp: userIdentifier,
+              cashTag: cashTag,
               balance: amount,
             });
           }
+          await User.save(user);
           break;
       }
-      await User.save(user);
     } else {
       user.balance = Number(user.balance) + Number(amount);
       await User.save(user);

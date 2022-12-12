@@ -25,6 +25,12 @@ export default class User extends MainEntity {
   @Column({ type: 'varchar', nullable: true })
   userIdentifier_cashapp?: string;
 
+  @Field(() => String, {
+    nullable: true,
+  })
+  @Column({ type: 'varchar', nullable: true })
+  cashTag?: string;
+
   @Field(() => Number, {
     nullable: false,
   })

@@ -13,6 +13,37 @@ export default class AccountRepository extends AbstractRepository<Account> {
       .getMany();
   }
 
+  async createAccount({
+    email,
+    balance,
+    canWithdrawal,
+    canAcceptDeposits,
+  }: {
+    email: string;
+    balance?: number;
+    canWithdrawal?: boolean;
+    canAcceptDeposits?: boolean;
+  }): Promise<Account> {
+    const prevAccount = await this.repository.findOne({ where: { email } });
+    if (prevAccount) {
+      throw new Error('Account already exists');
+    }
+    const account = this.repository.create({
+      email,
+      type: PaymentProvider.CASHAPP,
+      balance: balance ?? 0,
+      dailyWithdrawals: 0,
+      weeklyWithdrawals: 0,
+      canWithdrawal: canWithdrawal ?? false,
+      canAcceptDeposits: canAcceptDeposits ?? false,
+    });
+    return this.repository.save(account);
+  }
+
+  async findOne(email: string): Promise<Account | undefined> {
+    return this.repository.findOne({ where: { email } });
+  }
+
   async makeAccountActive({
     id,
     isCashapp,
@@ -45,7 +76,7 @@ export default class AccountRepository extends AbstractRepository<Account> {
     amount: number;
   }): Promise<Account> {
     const account = await this.repository.findOneOrFail(id);
-    account.balance = account.balance + amount;
+    account.balance = Number(account.balance) + Number(amount);
     return this.repository.save(account);
   }
 
