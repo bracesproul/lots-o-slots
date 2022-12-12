@@ -47,4 +47,16 @@ export default class Payment extends MainEntity {
   })
   @Column({ type: 'enum', enum: PaymentProvider, nullable: false })
   provider!: PaymentProvider;
+
+  @Field(() => String, {
+    nullable: false,
+  })
+  @Column({ type: 'varchar', nullable: false })
+  senderName!: string;
+
+  @Field(() => String, {
+    nullable: true,
+  })
+  @Column({ type: 'varchar', nullable: true })
+  transactionId?: string;
 }

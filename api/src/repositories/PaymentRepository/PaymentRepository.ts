@@ -34,19 +34,34 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
     processed,
     emailId,
     provider,
+    senderName,
+    transactionId,
   }: {
     userIdentifier: string;
     amount: number;
     processed?: boolean;
     emailId: string;
     provider: PaymentProvider;
+    senderName: string;
+    transactionId?: string;
   }): Promise<Payment> {
+    const loggedPayment = await this.repository.findOne({
+      where: { transactionId },
+    });
+    if (loggedPayment) {
+      console.log('PAYMENT ALREADY LOGGED');
+      return loggedPayment;
+    }
+
     let user = await User.findOne({ where: { userIdentifier } });
     if (!user) {
       user = User.create({
         userIdentifier,
         balance: amount,
       });
+      await User.save(user);
+    } else {
+      user.balance = Number(user.balance) + Number(amount);
       await User.save(user);
     }
     const payment = this.repository.create({
@@ -55,6 +70,8 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
       processed: processed || false,
       emailId,
       provider,
+      transactionId,
+      senderName,
     });
     return this.repository.save(payment);
   }

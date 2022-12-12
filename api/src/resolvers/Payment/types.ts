@@ -42,6 +42,18 @@ export class CreatePaymentInput {
     description: 'The payment provider.',
   })
   provider!: PaymentProvider;
+
+  @Field(() => String, {
+    nullable: false,
+    description: 'The unique transaction id from the payment email.',
+  })
+  transactionId?: string;
+
+  @Field(() => String, {
+    nullable: false,
+    description: 'The name of the user that sent the payment.',
+  })
+  senderName!: string;
 }
 
 @ObjectType({

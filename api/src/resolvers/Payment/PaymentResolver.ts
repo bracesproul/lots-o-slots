@@ -41,6 +41,8 @@ export class PaymentResolver {
       processed: input.processed,
       emailId: input.emailId,
       provider: input.provider,
+      senderName: input.senderName,
+      transactionId: input.transactionId,
     });
     return {
       success: true,

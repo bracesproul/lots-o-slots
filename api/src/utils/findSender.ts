@@ -7,7 +7,12 @@ export async function findSender(email: EmailObjectType): Promise<void> {
     return await parseZellePayment(email);
   } else if (subject.includes(`You've got money`)) {
     console.log('paypal payment!');
-    await parsePayPalPayment(email);
+    const createdResponse = await parsePayPalPayment(email);
+    if (createdResponse.success) {
+      console.log('paypal payment created!');
+    } else {
+      console.log('paypal payment failed to create!');
+    }
   } else if (from.includes('cashapp')) {
     // parse cashapp payment.
   }
