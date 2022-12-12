@@ -49,7 +49,7 @@ export default class MessageListener {
         labelIds: ['INBOX'],
       },
     });
-    console.log('__WATCH CONFIRMED__', watcher);
+    console.log('👀 Watch re-initialized!', watcher);
   }
 
   async listenForMessages(): Promise<void> {

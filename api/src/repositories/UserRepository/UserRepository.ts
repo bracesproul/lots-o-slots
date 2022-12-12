@@ -28,11 +28,20 @@ export default class UserRepository extends AbstractRepository<User> {
     @TransactionManager() manager = getManager()
   ): Promise<User> {
     if (
-      (await manager.count(User, { where: { userIdentifier }, take: 1 })) !== 0
+      await manager.findOne(User, {
+        where: [
+          { userIdentifier_paypal: userIdentifier },
+          { userIdentifier_zelle: userIdentifier },
+          { userIdentifier_cashapp: userIdentifier },
+        ],
+      })
     ) {
       throw new ApolloError('Username already exists');
     }
-    const user = manager.create(User, { userIdentifier, balance });
+    const user = manager.create(User, {
+      userIdentifier_zelle: userIdentifier,
+      balance,
+    });
     return manager.save(user);
   }
 

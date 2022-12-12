@@ -8,10 +8,22 @@ import { MainEntity } from '@/entities';
 })
 export default class User extends MainEntity {
   @Field(() => String, {
-    nullable: false,
+    nullable: true,
   })
-  @Column({ type: 'varchar', nullable: false })
-  userIdentifier!: string;
+  @Column({ type: 'varchar', nullable: true })
+  userIdentifier_zelle?: string;
+
+  @Field(() => String, {
+    nullable: true,
+  })
+  @Column({ type: 'varchar', nullable: true })
+  userIdentifier_paypal?: string;
+
+  @Field(() => String, {
+    nullable: true,
+  })
+  @Column({ type: 'varchar', nullable: true })
+  userIdentifier_cashapp?: string;
 
   @Field(() => Number, {
     nullable: false,

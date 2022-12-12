@@ -13,7 +13,6 @@ type PaymentInfoType = {
 
 export async function parsePayPalPayment(email: EmailObjectType) {
   let { body } = email;
-  console.log('body', body);
   body = body.replace(/\r/g, '');
   const senderNameRegex = /^(.*) sent you /m;
   const senderNameMatch = body.match(senderNameRegex);
@@ -25,11 +24,6 @@ export async function parsePayPalPayment(email: EmailObjectType) {
   const transactionMatch = body.match(transactionRegex);
 
   if (!amountMatch || !senderNameMatch || !transactionMatch) {
-    console.log('failed to parse paypal payment', {
-      amountMatch,
-      senderNameMatch,
-      transactionMatch,
-    });
     return {
       success: false,
     };
@@ -44,7 +38,6 @@ export async function parsePayPalPayment(email: EmailObjectType) {
     transactionId,
     email,
   });
-  console.log('new payment', newPayment);
   return {
     success: true,
     amount,

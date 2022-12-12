@@ -49,16 +49,43 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
       where: { transactionId },
     });
     if (loggedPayment) {
-      console.log('PAYMENT ALREADY LOGGED');
       return loggedPayment;
     }
 
-    let user = await User.findOne({ where: { userIdentifier } });
+    let user = await User.findOne({
+      where: [
+        { userIdentifier_paypal: userIdentifier },
+        { userIdentifier_zelle: userIdentifier },
+        { userIdentifier_cashapp: userIdentifier },
+      ],
+    });
     if (!user) {
-      user = User.create({
-        userIdentifier,
-        balance: amount,
-      });
+      switch (provider) {
+        case PaymentProvider.PAYPAL:
+          {
+            user = User.create({
+              userIdentifier_paypal: userIdentifier,
+              balance: amount,
+            });
+          }
+          break;
+        case PaymentProvider.ZELLE:
+          {
+            user = User.create({
+              userIdentifier_zelle: userIdentifier,
+              balance: amount,
+            });
+          }
+          break;
+        case PaymentProvider.CASHAPP:
+          {
+            user = User.create({
+              userIdentifier_cashapp: userIdentifier,
+              balance: amount,
+            });
+          }
+          break;
+      }
       await User.save(user);
     } else {
       user.balance = Number(user.balance) + Number(amount);

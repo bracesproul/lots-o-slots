@@ -7,7 +7,7 @@ export async function seedFakeUsers(): Promise<User[]> {
   for (let i = 0; i < 5; i++) {
     users.push(
       User.create({
-        userIdentifier: `${faker.name.firstName()}_${faker.name.lastName()}`,
+        userIdentifier_zelle: `${faker.name.firstName()}_${faker.name.lastName()}`,
         balance: faker.datatype.number(),
       })
     );
