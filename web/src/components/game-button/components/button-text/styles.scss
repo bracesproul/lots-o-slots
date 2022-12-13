@@ -1,0 +1,13 @@
+.button-text {
+  @apply flex flex-col w-full h-full;
+  @apply my-auto justify-center;
+  @apply border-y-[2.5px] border-x-[0px] border-gray-500;
+
+  &.none-right {
+    @apply border-r-[2.5px] border-gray-500;
+  }
+
+  &.none-left {
+    @apply border-l-[2.5px] border-gray-500;
+  }
+}

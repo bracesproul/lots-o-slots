@@ -1,4 +1,4 @@
-export default function Group() {
+export default function CashAppLogo() {
   return (
     <div className="absolute w-[27px] left-[28.11%] right-[27.3%] top-[19.05%] bottom-[16.54%]">
       <svg
