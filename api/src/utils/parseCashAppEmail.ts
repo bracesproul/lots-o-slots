@@ -20,15 +20,11 @@ type ParsedPaymentResponse = {
 export async function parseCashAppEmail(
   email: EmailObjectType
 ): Promise<ParsedPaymentResponse> {
-  const { subject } = email;
+  const { subject, body } = email;
   if (subject.includes('sent you $')) {
     return await parsePayment(email);
-  } else if (
-    subject.includes('You purchased bitcoin') ||
-    subject.includes('Your withdrawal of') ||
-    subject.includes('You paid')
-  ) {
-    return await parseWithdrawal(email);
+  } else if (subject.includes('You paid') && body.includes('Payment to $')) {
+    return await parsePayout(email);
   } else {
     return {
       success: false,
@@ -42,7 +38,6 @@ export async function parseCashAppEmail(
 
 async function parsePayment(email: EmailObjectType) {
   const body = email.body.replace(/\r/g, '');
-  console.log('body', body);
 
   const cashtagRegex = new RegExp(/^Payment from \$([^\s]+)/m);
   const cashtagMatch = body.match(cashtagRegex);
@@ -77,17 +72,13 @@ async function parsePayment(email: EmailObjectType) {
   const transactionId = transactionIdMatch[1];
   const cashTag = cashtagMatch[1];
 
-  const updatedPaymentAndAccount = await updateDatabasePayment({
+  await updateDatabasePayment({
     amount,
     name,
     transactionId,
     cashTag,
     email,
   });
-
-  console.log('cash tag', cashTag);
-
-  console.log('updated db', updatedPaymentAndAccount);
 
   return {
     success: true,
@@ -98,21 +89,48 @@ async function parsePayment(email: EmailObjectType) {
   };
 }
 
-async function parseWithdrawal(email: EmailObjectType) {
-  // parse withdrawal.
-  const accountRepository = getCustomRepository(AccountRepository);
-  /**
-   * Find account from sentTo email address.
-   * Update balance
-   */
-  const amount = Number('123.45');
-  const transactionId = '12345';
+async function parsePayout(email: EmailObjectType) {
+  const body = email.body.replace(/\r/g, '');
+
+  const cashtagRegex = new RegExp(/^Payment to \$([^\s]+)/m);
+  const cashtagMatch = body.match(cashtagRegex);
+
+  const amountRegex = new RegExp(/(?<=\$)\d+\.\d+/);
+  const amountMatch = body.match(amountRegex);
+
+  const nameRegex = new RegExp(/To\s(.+)/);
+  const nameMatch = body.match(nameRegex);
+
+  const transactionIdRegex = new RegExp(/#([^\s]+)\sTo/);
+  const transactionIdMatch = body.match(transactionIdRegex);
+
+  if (!cashtagMatch || !amountMatch || !nameMatch || !transactionIdMatch) {
+    console.log('failed to parse cashapp payout', {
+      cashtagMatch,
+      amountMatch,
+      nameMatch,
+      transactionIdMatch,
+    });
+    return {
+      success: false,
+      amount: 0,
+      name: null,
+      cashTag: null,
+      transactionId: '',
+    };
+  }
+
+  const amount = Number(amountMatch[0]);
+  const name = nameMatch[1];
+  const transactionId = transactionIdMatch[1];
+  const cashTag = cashtagMatch[1];
+
   return {
     success: true,
     amount,
+    name,
     transactionId,
-    name: null,
-    cashTag: null,
+    cashTag,
   };
 }
 
