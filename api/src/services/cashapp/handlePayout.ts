@@ -1,4 +1,6 @@
+import { PaymentRepository } from '@/repositories';
 import { EmailObjectType } from '@/types';
+import { getCustomRepository } from 'typeorm';
 
 export async function handlePayout(email: EmailObjectType) {
   const body = email.body.replace(/\r/g, '');
@@ -35,6 +37,14 @@ export async function handlePayout(email: EmailObjectType) {
   const name = nameMatch[1];
   const transactionId = transactionIdMatch[1];
   const cashTag = cashtagMatch[1];
+
+  const paymentRepository = getCustomRepository(PaymentRepository);
+  const payoutRes = await paymentRepository.payoutUser({
+    uniqueIdentifier: name,
+    cashTag,
+    amount,
+    email,
+  });
 
   return {
     success: true,
