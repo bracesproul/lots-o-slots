@@ -1,0 +1,6 @@
+@use './components/styles.scss' as componentStyles;
+
+.button-container {
+  @apply w-[180px] h-[35px] flex flex-row;
+}
+

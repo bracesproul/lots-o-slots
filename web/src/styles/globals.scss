@@ -1,0 +1,19 @@
+@use '../components/all.scss' as componentsAll;
+@use '../features/all.scss' as featuresAll;
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  @apply bg-black;
+}
+
+// @layer base {
+//   @font-face {
+//     font-family: Sequel;
+//     font-weight: 400;
+//     font-display: auto;
+//     src: url(../public/fonts/SEQUEL100BLACK-66.TTF) format("TTF");
+//   }
+// }

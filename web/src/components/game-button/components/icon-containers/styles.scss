@@ -1,0 +1,21 @@
+.icon-left {
+  @apply flex h-full mr-auto border-y-[2.5px] border-l-[2.5px] border-gray-500;
+
+  &.no-border {
+    @apply border-y-[2.5px] border-l-[2.5px] border-red-700;
+  }
+}
+
+.icon-right {
+  @apply flex h-full ml-auto border-y-[2.5px]  border-r-[2.5px] border-gray-500;
+
+  &.no-border {
+    @apply border-y-[2.5px] border-r-[2.5px] border-red-700;
+  }
+}
+
+.icon-wrapper {
+  &.is-not-link {
+    @apply h-[25px] w-[25px] my-auto;
+  }
+}

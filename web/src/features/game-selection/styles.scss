@@ -1,0 +1,9 @@
+@use './components/styles.scss' as componentsStyles;
+
+.bg {
+  @apply w-[500px];
+}
+
+.name {
+  @apply uppercase text-orange-500;
+}
