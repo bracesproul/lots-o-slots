@@ -3,6 +3,7 @@ import { Payment, User } from '@/entities';
 import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
 import { GetPaymentsInput } from '@/resolvers/Payment/types';
 import { PayoutUserReturnType } from './types';
+import { EmailObjectType } from '@/types';
 
 @EntityRepository(Payment)
 export default class PaymentRepository extends AbstractRepository<Payment> {
@@ -128,10 +129,12 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
     uniqueIdentifier,
     cashTag,
     amount,
+    email,
   }: {
     uniqueIdentifier: string;
     cashTag: string;
     amount: number;
+    email: EmailObjectType;
   }): Promise<PayoutUserReturnType> {
     /**
      * a. add new payment with type of PAYOUT
@@ -139,6 +142,16 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
      * 2. check if user has enough balance
      * 3. if yes, subtract amount from user balance
      */
+    const payment = await this.createPayment({
+      userIdentifier: uniqueIdentifier,
+      amount,
+      processed: true,
+      emailId: email.id,
+      provider: PaymentProvider.CASHAPP,
+      senderName: uniqueIdentifier,
+      cashTag,
+      paymentType: PaymentType.PAYOUT,
+    });
 
     const user = await User.findOne({
       where: [
@@ -149,18 +162,31 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
       ],
     });
     if (!user) {
+      // discord message.
       return {
         success: false,
         message: 'User not found',
         user: null,
-        payment: null,
+        payment: payment,
       };
     }
+    if (user.balance < amount) {
+      // discord message
+      return {
+        success: false,
+        message: 'User does not have enough balance',
+        user: user,
+        payment: payment,
+      };
+    }
+    user.balance = Number(user.balance) - Number(amount);
+    await User.save(user);
+
     return {
-      success: false,
-      message: 'User not found',
-      user: null,
-      payment: null,
+      success: true,
+      message: 'Successfully paid out user.',
+      user: user,
+      payment: payment,
     };
   }
 }
