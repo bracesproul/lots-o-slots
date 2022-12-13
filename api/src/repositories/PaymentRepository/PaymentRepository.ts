@@ -143,7 +143,6 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
      * 3. if yes, subtract amount from user balance
      */
 
-
     const user = await User.findOne({
       where: [
         { userIdentifier_paypal: uniqueIdentifier },
