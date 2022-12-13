@@ -1,7 +1,7 @@
 import { EmailObjectType } from '@/types';
 import { Payment, User } from '@/entities';
 import { getCustomRepository } from 'typeorm';
-import { PaymentProvider } from '@/entities/Payment/Payment';
+import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
 import { PaymentRepository } from '@/repositories';
 import { PaymentInfoType } from '@/types/paymentInfo';
 
@@ -49,5 +49,6 @@ function updateDatabase(paymentInfo: PaymentInfoType) {
     emailId: paymentInfo.email.id,
     provider: PaymentProvider.ZELLE,
     senderName: paymentInfo.name,
+    paymentType: PaymentType.DEPOSIT,
   });
 }

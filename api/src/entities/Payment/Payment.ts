@@ -8,7 +8,14 @@ export enum PaymentProvider {
   ZELLE = 'ZELLE',
 }
 
+export enum PaymentType {
+  DEPOSIT = 'DEPOSIT',
+  WITHDRAWAL = 'WITHDRAWAL',
+  PAYOUT = 'PAYOUT',
+}
+
 registerEnumType(PaymentProvider, { name: 'PaymentProvider' });
+registerEnumType(PaymentType, { name: 'PaymentType' });
 
 @Entity({ name: 'payment' })
 @ObjectType({
@@ -59,4 +66,10 @@ export default class Payment extends MainEntity {
   })
   @Column({ type: 'varchar', nullable: true })
   transactionId?: string;
+
+  @Field(() => PaymentType, {
+    nullable: false,
+  })
+  @Column({ type: 'enum', enum: PaymentType, nullable: false })
+  paymentType!: PaymentType;
 }

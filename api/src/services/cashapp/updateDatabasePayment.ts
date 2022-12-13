@@ -1,4 +1,4 @@
-import { PaymentProvider } from '@/entities/Payment/Payment';
+import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
 import { PaymentRepository, AccountRepository } from '@/repositories';
 import { PaymentInfoType } from '@/types/paymentInfo';
 import { getCustomRepository } from 'typeorm';
@@ -18,6 +18,7 @@ export async function updateDatabasePayment(
     senderName: paymentInfo.name,
     transactionId: paymentInfo.transactionId,
     cashTag: paymentInfo.cashTag,
+    paymentType: PaymentType.DEPOSIT,
   });
 
   let account = await accountRepository.findOne(paymentInfo.email.to);

@@ -10,7 +10,6 @@ import {
   GetPaymentsInput,
 } from './types';
 import { ApolloError } from 'apollo-server-express';
-import { parsePayPalPayment } from '@/utils';
 
 // @Resolver(Repo)
 @Resolver()
@@ -43,6 +42,7 @@ export class PaymentResolver {
       provider: input.provider,
       senderName: input.senderName,
       transactionId: input.transactionId,
+      paymentType: input.paymentType,
     });
     return {
       success: true,

@@ -1,11 +1,8 @@
-import {
-  AbstractRepository,
-  EntityRepository,
-  SelectQueryBuilder,
-} from 'typeorm';
+import { AbstractRepository, EntityRepository } from 'typeorm';
 import { Payment, User } from '@/entities';
-import { PaymentProvider } from '@/entities/Payment/Payment';
+import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
 import { GetPaymentsInput } from '@/resolvers/Payment/types';
+import { PayoutUserReturnType } from './types';
 
 @EntityRepository(Payment)
 export default class PaymentRepository extends AbstractRepository<Payment> {
@@ -37,6 +34,7 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
     senderName,
     transactionId,
     cashTag,
+    paymentType,
   }: {
     userIdentifier: string;
     amount: number;
@@ -46,6 +44,7 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
     senderName: string;
     transactionId?: string;
     cashTag?: string;
+    paymentType: PaymentType;
   }): Promise<Payment> {
     const loggedPayment = await this.repository.findOne({
       where: { transactionId },
@@ -106,6 +105,7 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
       provider,
       transactionId,
       senderName,
+      paymentType,
     });
     return this.repository.save(payment);
   }
@@ -122,5 +122,45 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
 
   async getUnprocessedPayments(): Promise<Payment[]> {
     return this.repository.find({ where: { processed: false } });
+  }
+
+  async payoutUser({
+    uniqueIdentifier,
+    cashTag,
+    amount,
+  }: {
+    uniqueIdentifier: string;
+    cashTag: string;
+    amount: number;
+  }): Promise<PayoutUserReturnType> {
+    /**
+     * a. add new payment with type of PAYOUT
+     * 1. find user
+     * 2. check if user has enough balance
+     * 3. if yes, subtract amount from user balance
+     */
+
+    const user = await User.findOne({
+      where: [
+        { userIdentifier_paypal: uniqueIdentifier },
+        { userIdentifier_zelle: uniqueIdentifier },
+        { userIdentifier_cashapp: uniqueIdentifier },
+        { cashTag: cashTag },
+      ],
+    });
+    if (!user) {
+      return {
+        success: false,
+        message: 'User not found',
+        user: null,
+        payment: null,
+      };
+    }
+    return {
+      success: false,
+      message: 'User not found',
+      user: null,
+      payment: null,
+    };
   }
 }

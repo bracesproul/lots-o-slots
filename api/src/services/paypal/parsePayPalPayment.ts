@@ -1,7 +1,7 @@
 import { EmailObjectType } from '@/types';
 import { PaymentRepository } from '@/repositories';
 import { getCustomRepository } from 'typeorm';
-import { PaymentProvider } from '@/entities/Payment/Payment';
+import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
 import { PaymentInfoType } from '@/types/paymentInfo';
 
 export async function parsePayPalPayment(email: EmailObjectType) {
@@ -49,5 +49,6 @@ async function updateDatabase(paymentInfo: PaymentInfoType) {
     provider: PaymentProvider.PAYPAL,
     transactionId: paymentInfo.transactionId,
     senderName: paymentInfo.name,
+    paymentType: PaymentType.DEPOSIT,
   });
 }

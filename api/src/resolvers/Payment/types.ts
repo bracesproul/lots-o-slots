@@ -1,7 +1,7 @@
 import { Field, InputType, ObjectType } from 'type-graphql';
 import createConnectionType from '../shared/createConnectionType';
 import { Payment } from '@/entities';
-import { PaymentProvider } from '@/entities/Payment/Payment';
+import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
 
 @ObjectType()
 export class PaymentConnection extends createConnectionType(
@@ -54,6 +54,12 @@ export class CreatePaymentInput {
     description: 'The name of the user that sent the payment.',
   })
   senderName!: string;
+
+  @Field(() => PaymentType, {
+    nullable: false,
+    description: 'The type of payment.',
+  })
+  paymentType!: PaymentType;
 }
 
 @ObjectType({
