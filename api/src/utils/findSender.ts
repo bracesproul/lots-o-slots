@@ -1,9 +1,9 @@
 import { EmailObjectType } from '@/types';
 import {
-  parseZellePayment,
-  parsePayPalPayment,
   parseCashAppEmail,
-} from '@/utils';
+  parsePayPalPayment,
+  parseZellePayment,
+} from '@/services';
 
 export async function findSender(email: EmailObjectType): Promise<void> {
   const { from, subject, body, to } = email;

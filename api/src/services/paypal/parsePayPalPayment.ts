@@ -1,5 +1,4 @@
 import { EmailObjectType } from '@/types';
-import { Payment, User } from '@/entities';
 import { PaymentRepository } from '@/repositories';
 import { getCustomRepository } from 'typeorm';
 import { PaymentProvider } from '@/entities/Payment/Payment';
@@ -26,12 +25,13 @@ export async function parsePayPalPayment(email: EmailObjectType) {
   const name = senderNameMatch[1];
   const transactionId = transactionMatch[1];
 
-  const newPayment = await updateDatabase({
+  await updateDatabase({
     amount,
     name,
     transactionId,
     email,
   });
+
   return {
     success: true,
     amount,
