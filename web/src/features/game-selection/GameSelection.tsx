@@ -19,7 +19,7 @@ import {
   Group427321523,
 } from '@/assets/svgs';
 import clsx from 'clsx';
-import { Button } from '@/components';
+import { Accordion } from '@/components';
 
 export type GameSelectionProps = {
   // todo: add props
@@ -27,9 +27,25 @@ export type GameSelectionProps = {
 
 function GameSelection(props: GameSelectionProps): ReactElement {
   return (
-    <div className={'m-[25px]'}>
-      <Button variant="secondary">Generate Account</Button>
-      <Button>Play Now</Button>
+    <div className={'m-[25px] flex flex-col gap-[30px]'}>
+      <Accordion
+        title={'How do I play poker?'}
+        body={
+          'Poker is a game of chance, made up by some random guy in his moms basement.'
+        }
+      />
+      <Accordion
+        title={'How do I play poker?'}
+        body={
+          'Poker is a game of chance, made up by some random guy in his moms basement.Poker is a game of chance, made up by some random guy in his moms basement.Poker is a game of chance, made up by some random guy in his moms basement.Poker is a game of chance, made up by some random guy in his moms basement.Poker is a game of chance, made up by some random guy in his moms basement.'
+        }
+      />
+      <Accordion
+        title={'How do I play poker?'}
+        body={
+          'Poker is a game of chance, made up by some random guy in his moms basement.'
+        }
+      />
     </div>
   );
 }
