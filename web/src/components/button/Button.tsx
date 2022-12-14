@@ -14,6 +14,8 @@ export type ButtonProps = AriaButtonProps & {
   variant?: 'primary' | 'secondary';
 
   children: string;
+
+  type: 'button' | 'submit' | 'reset';
 };
 
 const DEFAULT_PROPS = {
@@ -39,6 +41,7 @@ export default function Button(props: ButtonProps): ReactElement {
         },
       ])}
       {...behaviorProps}
+      type={p.type}
     >
       {p.children}
     </button>

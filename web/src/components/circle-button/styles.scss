@@ -10,6 +10,10 @@
   &.is-selected {
     @apply border-[12px];
   }
+}
+
+.circle-icon {
+  @apply w-[68px] h-[68px] absolute bg-white rounded-full items-center justify-center flex z-50;
 
   &.bg-purple {
     @apply bg-purple-700;
@@ -30,8 +34,4 @@
   &.bg-gradient {
     @apply bg-gradient-to-r from-[rgba(135,33,102,1)] to-[rgba(79,36,85,1)];
   }
-}
-
-.circle-icon {
-  @apply w-[68px] h-[68px] absolute bg-white rounded-full items-center justify-center flex z-50;
 }

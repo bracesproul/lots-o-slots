@@ -1,9 +1,26 @@
-@use './components/styles.scss' as componentsStyles;
+@use './components/styles.scss' as componentStyles;
 
-.bg {
-  @apply w-[500px];
+.game-selection-container {
+  @apply mx-[40px] my-[40px] px-[30px] py-[30px] h-[450px] w-fit;
+  @apply border-[2px] border-red-700 flex flex-row;
 }
 
-.name {
-  @apply uppercase text-orange-500;
+.input-button-container {
+  @apply flex flex-col gap-[15px];
+}
+
+.bottom-input-container {
+  @apply flex flex-row;
+}
+
+.game-selection-left {
+  @apply flex flex-col gap-[15px];
+}
+
+.game-selection-right {
+  @apply flex flex-col grid place-content-center ml-[50px];
+}
+
+.right-button {
+  @apply mb-[25px]
 }

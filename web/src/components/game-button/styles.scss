@@ -6,5 +6,6 @@
 
 .input {
   @apply px-[10px] w-full h-full bg-neutral-900 align-middle text-white caret-white;
+  @apply border-y-[2px] border-r-[2px] border-gray-500;
 }
 

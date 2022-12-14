@@ -18,3 +18,4 @@ export { default as RedPokerChip } from './RedPokerChip';
 export { default as BlackPokerChip } from './BlackPokerChip';
 export { default as PlayingCards } from './PlayingCards';
 export { default as SlotsSvg } from './SlotsSvg';
+export { default as EthLogo } from './EthLogo';

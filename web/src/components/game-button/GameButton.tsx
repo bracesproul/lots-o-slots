@@ -5,6 +5,7 @@ import { useHover } from '@react-aria/interactions';
 import { mergeProps } from '@react-aria/utils';
 import type { AriaButtonProps } from '@react-types/button';
 import React from 'react';
+import { AriaTextFieldProps } from '@react-types/textfield';
 
 import {
   ButtonText,
@@ -14,43 +15,44 @@ import {
   IconLeft,
 } from './components';
 
-export type GameButtonProps = AriaButtonProps & {
-  className?: string;
+export type GameButtonProps = AriaButtonProps &
+  AriaTextFieldProps & {
+    className?: string;
 
-  /**
-   * Adds a red background around the left icon.
-   * @default false
-   */
-  leftIconRedBackground?: boolean;
+    /**
+     * Adds a red background around the left icon.
+     * @default false
+     */
+    leftIconRedBackground?: boolean;
 
-  /**
-   * Adds a red background around the right icon.
-   * @default false
-   */
-  rightIconRedBackground?: boolean;
+    /**
+     * Adds a red background around the right icon.
+     * @default false
+     */
+    rightIconRedBackground?: boolean;
 
-  title?: string;
+    title?: string;
 
-  leftIconType?: 'redChip' | 'blackChip' | 'link' | 'custom' | 'none';
-  rightIconType?: 'redChip' | 'blackChip' | 'link' | 'custom' | 'none';
+    leftIconType?: 'redChip' | 'blackChip' | 'link' | 'custom' | 'none';
+    rightIconType?: 'redChip' | 'blackChip' | 'link' | 'custom' | 'none';
 
-  /**
-   * Must set `iconType` to 'custom' to use this prop.
-   */
-  icon?: ReactElement;
+    /**
+     * Must set `iconType` to 'custom' to use this prop.
+     */
+    icon?: ReactElement;
 
-  isDisabled?: boolean;
+    isDisabled?: boolean;
 
-  /**
-   * Whether or not the button is an input.
-   */
-  isInput?: boolean;
+    /**
+     * Whether or not the button is an input.
+     */
+    isInput?: boolean;
 
-  /**
-   * Input box placeholder text.
-   */
-  placeholder?: string;
-};
+    /**
+     * Input box placeholder text.
+     */
+    placeholder?: string;
+  };
 
 const DEFAULT_PROPS = {
   leftIconRedBackground: false,
@@ -86,6 +88,7 @@ function AsButton(props: GameButtonProps): ReactElement {
           'is-pressed': isPressed,
           'is-hovered': isHovered,
         },
+        p.className,
       ])}
     >
       {leftIconRedBackground && (
@@ -132,7 +135,7 @@ function AsInput(props: GameButtonProps): ReactElement {
   const behaviorProps = mergeProps(buttonProps, hoverProps);
 
   return (
-    <div className={clsx([`button-container`])}>
+    <div className={clsx([`button-container`, p.className])}>
       {leftIconRedBackground && (
         <RedBackgroundLeftContainer
           icon={<IconLeft icon={leftIconType} usingBackground />}

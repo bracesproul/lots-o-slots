@@ -51,15 +51,23 @@ export default function CircleButton(props: CircleButtonProps): ReactElement {
         {
           'is-selected': p.isSelected,
           'is-hovered': isHovered,
-          'bg-purple': isPurpleBg,
-          'bg-green': isGreenBg,
-          'bg-gradient': isGradientBg,
-          'bg-yellow': isYellowBg,
-          'bg-blue': isBlueBg,
         },
       ])}
     >
-      <div className={'circle-icon'}>{p.icon}</div>
+      <div
+        className={clsx([
+          'circle-icon',
+          {
+            'bg-purple': isPurpleBg,
+            'bg-green': isGreenBg,
+            'bg-gradient': isGradientBg,
+            'bg-yellow': isYellowBg,
+            'bg-blue': isBlueBg,
+          },
+        ])}
+      >
+        {p.icon}
+      </div>
     </div>
   );
 }
