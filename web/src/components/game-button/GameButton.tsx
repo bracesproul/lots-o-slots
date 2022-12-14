@@ -29,7 +29,7 @@ export type GameButtonProps = AriaButtonProps & {
    */
   rightIconRedBackground?: boolean;
 
-  title: string;
+  title?: string;
 
   leftIconType?: 'redChip' | 'blackChip' | 'link' | 'custom' | 'none';
   rightIconType?: 'redChip' | 'blackChip' | 'link' | 'custom' | 'none';
@@ -40,6 +40,16 @@ export type GameButtonProps = AriaButtonProps & {
   icon?: ReactElement;
 
   isDisabled?: boolean;
+
+  /**
+   * Whether or not the button is an input.
+   */
+  isInput?: boolean;
+
+  /**
+   * Input box placeholder text.
+   */
+  placeholder?: string;
 };
 
 const DEFAULT_PROPS = {
@@ -47,9 +57,10 @@ const DEFAULT_PROPS = {
   rightIconRedBackground: false,
   leftIconType: 'none',
   rightIconType: 'none',
+  isInput: false,
 };
 
-export default function GameButton(props: GameButtonProps): ReactElement {
+function AsButton(props: GameButtonProps): ReactElement {
   const p = { ...DEFAULT_PROPS, ...props };
   const {
     icon,
@@ -58,6 +69,7 @@ export default function GameButton(props: GameButtonProps): ReactElement {
     rightIconType,
     leftIconRedBackground,
     rightIconRedBackground,
+    isInput,
   } = p;
   const ref = React.useRef<HTMLButtonElement>(null);
 
@@ -85,7 +97,7 @@ export default function GameButton(props: GameButtonProps): ReactElement {
         <IconLeft icon={leftIconType} none={leftIconType === 'none'} />
       )}
       <ButtonText
-        title={title}
+        title={title ?? ''}
         noneLeft={leftIconType === 'none'}
         noneRight={rightIconType === 'none'}
       />
@@ -100,4 +112,69 @@ export default function GameButton(props: GameButtonProps): ReactElement {
       )}
     </button>
   );
+}
+
+function AsInput(props: GameButtonProps): ReactElement {
+  const p = { ...DEFAULT_PROPS, ...props };
+  const {
+    icon,
+    title,
+    leftIconType,
+    rightIconType,
+    leftIconRedBackground,
+    rightIconRedBackground,
+    placeholder,
+  } = p;
+  const ref = React.useRef<HTMLButtonElement>(null);
+
+  const { buttonProps, isPressed } = useButton(p, ref);
+  const { hoverProps, isHovered } = useHover({ isDisabled: p.isDisabled });
+  const behaviorProps = mergeProps(buttonProps, hoverProps);
+
+  return (
+    <div className={clsx([`button-container`])}>
+      {leftIconRedBackground && (
+        <RedBackgroundLeftContainer
+          icon={<IconLeft icon={leftIconType} usingBackground />}
+        />
+      )}
+      {leftIconRedBackground === false && (
+        <IconLeft icon={leftIconType} none={leftIconType === 'none'} />
+      )}
+      <input
+        className={clsx(['input'])}
+        type="text"
+        placeholder={placeholder}
+      />
+
+      {rightIconRedBackground && (
+        <RedBackgroundRightContainer
+          icon={<IconRight icon={rightIconType} usingBackground />}
+        />
+      )}
+      {rightIconRedBackground === false && (
+        <IconRight icon={rightIconType} none={rightIconType === 'none'} />
+      )}
+    </div>
+  );
+}
+
+export default function GameButton(props: GameButtonProps): ReactElement {
+  const p = { ...DEFAULT_PROPS, ...props };
+  const {
+    icon,
+    title,
+    leftIconType,
+    rightIconType,
+    leftIconRedBackground,
+    rightIconRedBackground,
+    isInput,
+  } = p;
+  const ref = React.useRef<HTMLButtonElement>(null);
+
+  const { buttonProps, isPressed } = useButton(p, ref);
+  const { hoverProps, isHovered } = useHover({ isDisabled: p.isDisabled });
+  const behaviorProps = mergeProps(buttonProps, hoverProps);
+
+  return <>{isInput ? <AsInput {...props} /> : <AsButton {...props} />}</>;
 }

@@ -1,6 +1,10 @@
 @use './components/styles.scss' as componentStyles;
 
 .button-container {
-  @apply w-[180px] h-[35px] flex flex-row;
+  @apply w-[220px] h-[35px] flex flex-row;
+}
+
+.input {
+  @apply px-[10px] w-full h-full bg-neutral-900 align-middle text-white caret-white;
 }
 
