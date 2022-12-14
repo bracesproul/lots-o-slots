@@ -1,0 +1,37 @@
+.circle-button {
+  @apply grid place-items-center rounded-full w-[85px] h-[85px] border-[1px] border-red-500;
+  @apply transition-all;
+  @apply cursor-pointer;
+
+  &.is-hovered {
+    @apply border-[2px];
+  }
+
+  &.is-selected {
+    @apply border-[12px];
+  }
+
+  &.bg-purple {
+    @apply bg-purple-700;
+  }
+
+  &.bg-green {
+    @apply bg-green-400;
+  }
+
+  &.bg-yellow {
+    @apply bg-yellow-600;
+  }
+
+  &.bg-blue {
+    @apply bg-blue-400;
+  }
+
+  &.bg-gradient {
+    @apply bg-gradient-to-r from-[rgba(135,33,102,1)] to-[rgba(79,36,85,1)];
+  }
+}
+
+.circle-icon {
+  @apply w-[68px] h-[68px] absolute bg-white rounded-full items-center justify-center flex z-50;
+}

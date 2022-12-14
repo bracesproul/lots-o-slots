@@ -1,32 +1,27 @@
-import { ReactElement } from 'react';
+import React, { ReactElement } from 'react';
 import clsx from 'clsx';
-import { Accordion, GameButton, ButtonCard } from '@/components';
+import {
+  Accordion,
+  GameButton,
+  ButtonCard,
+  CircleButton,
+  Icon,
+} from '@/components';
+import { PayPalLogo } from '@/assets';
 
 export type GameSelectionProps = {
   // todo: add props
 };
 
 function GameSelection(props: GameSelectionProps): ReactElement {
+  const [selected, setSelected] = React.useState(false);
+
+  React.useEffect(() => {
+    console.log('selected', selected);
+  }, [selected]);
+
   return (
     <div className={'m-[25px] flex flex-col gap-[30px]'}>
-      <Accordion
-        title={'How do I play poker?'}
-        body={
-          'Poker is a game of chance, made up by some random guy in his moms basement.'
-        }
-      />
-      <Accordion
-        title={'How do I play poker?'}
-        body={
-          'Poker is a game of chance, made up by some random guy in his moms basement.Poker is a game of chance, made up by some random guy in his moms basement.Poker is a game of chance, made up by some random guy in his moms basement.Poker is a game of chance, made up by some random guy in his moms basement.Poker is a game of chance, made up by some random guy in his moms basement.'
-        }
-      />
-      <Accordion
-        title={'How do I play poker?'}
-        body={
-          'Poker is a game of chance, made up by some random guy in his moms basement.'
-        }
-      />
       <GameButton
         title="Play Now!"
         isInput={false}
@@ -34,6 +29,19 @@ function GameSelection(props: GameSelectionProps): ReactElement {
         leftIconRedBackground
       />
       <ButtonCard title="Poker" image="cards" />
+      <CircleButton
+        onPress={() => setSelected(!selected)}
+        isSelected={selected}
+        icon={
+          <Icon size="xlarge" content={<PayPalLogo />} height={40} width={30} />
+        }
+      />
+      <Accordion
+        title={'How do I play poker?'}
+        body={
+          'Poker is a game of chance, made up by some random guy in his moms basement.'
+        }
+      />
     </div>
   );
 }
