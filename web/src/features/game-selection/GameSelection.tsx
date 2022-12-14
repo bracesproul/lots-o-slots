@@ -29,6 +29,7 @@ function GameSelection(props: GameSelectionProps): ReactElement {
         leftIconRedBackground
       />
       <ButtonCard title="Poker" image="cards" />
+      <ButtonCard title="Slots" image="slots" />
       <CircleButton
         onPress={() => setSelected(!selected)}
         isSelected={selected}

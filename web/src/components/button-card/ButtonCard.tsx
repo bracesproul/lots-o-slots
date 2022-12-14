@@ -15,17 +15,13 @@ export type ButtonCardProps = AriaButtonProps & {
    */
   title: string;
 
-  /**
-   * Only use if using in a 'radio button' format.
-   */
-  isSelected?: boolean;
+  isSelected: boolean;
 
   image: 'cards' | 'slots';
 };
 
 export default function ButtonCard(props: ButtonCardProps): ReactElement {
   const p = { ...props };
-  const [selected, setSelected] = useState(p.isSelected ?? false);
   const ref = useRef<HTMLButtonElement>(null);
   const { buttonProps, isPressed } = useButton(p, ref);
   const { hoverProps, isHovered } = useHover({ isDisabled: p.isDisabled });
@@ -37,29 +33,28 @@ export default function ButtonCard(props: ButtonCardProps): ReactElement {
       className={clsx([
         'button-card-main',
         {
-          'is-selected': p.isSelected || selected,
+          'is-selected': p.isSelected,
           'is-hovered': isHovered,
-          'is-pressed': isPressed,
         },
         p.className,
       ])}
-      onClick={() => setSelected(!selected)}
     >
       <div className={'playing-cards-container'}>
         {p.image === 'cards' ? <PlayingCards /> : <SlotsSvg />}
       </div>
-      <h3
-        className={clsx([
-          'title',
-          {
-            'is-selected': p.isSelected || selected,
-            'is-hovered': isHovered,
-            'is-pressed': isPressed,
-          },
-        ])}
-      >
-        {p.title}
-      </h3>
+      <div className={'button-card-title-container'}>
+        <h3
+          className={clsx([
+            'button-card-title',
+            {
+              'is-selected': p.isSelected,
+              'is-hovered': isHovered,
+            },
+          ])}
+        >
+          {p.title}
+        </h3>
+      </div>
     </div>
   );
 }

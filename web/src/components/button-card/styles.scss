@@ -3,8 +3,10 @@
   @apply flex flex-row;
   @apply bg-transparent;
   @apply cursor-pointer;
+  @apply overflow-hidden;
 
-  &.is-pressed {
+  &.is-hovered {
+    @apply transition duration-200;
     background-image: linear-gradient(to bottom, rgba(185, 28, 28, 0.2), rgba(85, 28, 28, 0.1));
   }
 
@@ -14,11 +16,16 @@
 }
 
 .playing-cards-container {
-  @apply w-[100%] h-full;
+  @apply w-[50%] h-full;
+}
+
+.button-card-title-container {
+  @apply w-[50%] h-full;
+  @apply flex flex-col justify-end align-middle my-auto;
 }
 
 .button-card-title {
-  @apply text-red-500 text-[30px] ml-[50px] mt-[30px];
+  @apply text-red-500 text-[30px] text-center items-end;
 
   &.is-selected {
     @apply text-white;
