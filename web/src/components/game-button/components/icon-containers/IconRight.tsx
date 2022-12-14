@@ -28,7 +28,12 @@ export default function IconRight(props: GetIconProps): ReactElement {
       break;
   }
   return (
-    <div className={clsx([`icon-right`, { 'no-border': usingBackground }])}>
+    <div
+      className={clsx([
+        `icon-right`,
+        { 'no-border': usingBackground, 'has-border': !usingBackground },
+      ])}
+    >
       <div
         className={clsx([`icon-wrapper`, { 'is-not-link': icon !== 'link' }])}
       >
