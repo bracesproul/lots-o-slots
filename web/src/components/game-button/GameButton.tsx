@@ -1,9 +1,6 @@
-import { ReactElement, useEffect } from 'react';
-import { RedPokerChip, BlackPokerChip } from '@/assets/svgs';
-import { AiOutlineLink } from 'react-icons/ai';
+import { ReactElement } from 'react';
 import clsx from 'clsx';
 import { useButton } from '@react-aria/button';
-import { useFocusRing } from '@react-aria/focus';
 import { useHover } from '@react-aria/interactions';
 import { mergeProps } from '@react-aria/utils';
 import type { AriaButtonProps } from '@react-types/button';

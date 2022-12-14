@@ -1,0 +1,30 @@
+.button-main {
+  @apply bg-red-700;
+  @apply w-[180px] h-[35px] mx-[45px];
+  @apply border-[1px] border-red-700;
+  @apply text-white italic font-semibold;
+
+  &.is-hovered {
+    @apply bg-red-700/90;
+  }
+
+  &.is-pressed {
+    @apply bg-red-700/80;
+  }
+
+  &.is-secondary {
+    @apply bg-red-700/30 transition;
+
+    &.is-hovered {
+      @apply bg-red-700/25;
+    }
+
+    &.is-pressed {
+      @apply bg-red-700/20;
+    }
+  }
+
+  &.is-disabled {
+    @apply bg-gray-300;
+  }
+}

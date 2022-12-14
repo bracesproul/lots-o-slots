@@ -19,7 +19,7 @@ import {
   Group427321523,
 } from '@/assets/svgs';
 import clsx from 'clsx';
-import { GameButton } from '@/components';
+import { Button } from '@/components';
 
 export type GameSelectionProps = {
   // todo: add props
@@ -28,13 +28,8 @@ export type GameSelectionProps = {
 function GameSelection(props: GameSelectionProps): ReactElement {
   return (
     <div className={'m-[25px]'}>
-      <GameButton
-        title="Game 3"
-        leftIconType="blackChip"
-        rightIconType="redChip"
-        leftIconRedBackground
-        rightIconRedBackground
-      />
+      <Button variant="secondary">Generate Account</Button>
+      <Button>Play Now</Button>
     </div>
   );
 }
