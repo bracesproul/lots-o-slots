@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import clsx from 'clsx';
-import { Accordion, GameButton } from '@/components';
+import { Accordion, GameButton, ButtonCard } from '@/components';
 
 export type GameSelectionProps = {
   // todo: add props
@@ -33,6 +33,7 @@ function GameSelection(props: GameSelectionProps): ReactElement {
         leftIconType="link"
         leftIconRedBackground
       />
+      <ButtonCard title="Poker" image="cards" />
     </div>
   );
 }

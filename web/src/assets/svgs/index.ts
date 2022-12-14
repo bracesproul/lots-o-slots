@@ -16,3 +16,5 @@ export { default as Group427321520 } from './Group427321520';
 export { default as MemberPortal } from './MemberPortal';
 export { default as RedPokerChip } from './RedPokerChip';
 export { default as BlackPokerChip } from './BlackPokerChip';
+export { default as PlayingCards } from './PlayingCards';
+export { default as SlotsSvg } from './SlotsSvg';
