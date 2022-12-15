@@ -8,12 +8,12 @@
   }
 
   &.is-selected {
-    @apply border-[12px];
+    @apply border-[13px];
   }
 }
 
 .circle-icon {
-  @apply w-[68px] h-[68px] absolute bg-white rounded-full items-center justify-center flex z-50;
+  @apply w-[60px] h-[60px] absolute bg-white rounded-full items-center justify-center flex z-50;
 
   &.bg-purple {
     @apply bg-purple-700;
