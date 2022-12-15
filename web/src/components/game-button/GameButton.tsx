@@ -140,6 +140,8 @@ function AsInput(props: GameButtonProps): ReactElement {
     <div className={clsx([`button-container`, p.className])}>
       {leftIconRedBackground && (
         <RedBackgroundLeftContainer
+          isPressed={false}
+          isHovered={false}
           icon={<IconLeft icon={leftIconType} usingBackground />}
         />
       )}
@@ -154,6 +156,8 @@ function AsInput(props: GameButtonProps): ReactElement {
 
       {rightIconRedBackground && (
         <RedBackgroundRightContainer
+          isPressed={false}
+          isHovered={false}
           icon={<IconRight icon={rightIconType} usingBackground />}
         />
       )}
