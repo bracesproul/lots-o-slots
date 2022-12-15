@@ -2,7 +2,7 @@ import React, { ReactElement, useState } from 'react';
 import { GameButton, Button } from '@/components';
 import { GameSelectionCards, RadioButtons } from './components';
 
-type PaymentMethodSelectedType = {
+export type PaymentMethodSelectedType = {
   paypalSelected: boolean;
   zelleSelected: boolean;
   cashAppSelected: boolean;
@@ -13,18 +13,34 @@ type PaymentMethodSelectedType = {
 
 export type GameSelectionProps = {
   isCardGameSelected: boolean;
+  setIsCardGameSelected: (isPokerSelected: boolean) => void;
+
   paymentMethodSelected: PaymentMethodSelectedType;
+  setPaymentSelected: (
+    paymentMethodSelected: PaymentMethodSelectedType
+  ) => void;
 };
 
 function GameSelection(props: GameSelectionProps): ReactElement {
   const p = { ...props };
-  const { isCardGameSelected, paymentMethodSelected } = p;
+  const {
+    isCardGameSelected,
+    paymentMethodSelected,
+    setIsCardGameSelected,
+    setPaymentSelected,
+  } = p;
 
   return (
     <div className={'game-selection-container'}>
       <div className="game-selection-left">
-        <GameSelectionCards isCardGameSelected={isCardGameSelected} />
-        <RadioButtons paymentMethodSelected={paymentMethodSelected} />
+        <GameSelectionCards
+          setIsCardGameSelected={setIsCardGameSelected}
+          isCardGameSelected={isCardGameSelected}
+        />
+        <RadioButtons
+          setPaymentSelected={setPaymentSelected}
+          paymentMethodSelected={paymentMethodSelected}
+        />
         <div className="input-button-container">
           <GameButton
             isInput
@@ -97,7 +113,9 @@ export default function GameSelectionContainer(): ReactElement {
   return (
     <GameSelection
       isCardGameSelected={isPokerSelected}
+      setIsCardGameSelected={setIsPokerSelected}
       paymentMethodSelected={paymentSelected}
+      setPaymentSelected={setPaymentSelected}
     />
   );
 }
