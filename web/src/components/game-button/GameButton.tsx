@@ -79,7 +79,6 @@ function AsButton(props: GameButtonProps): ReactElement {
 
   return (
     <button
-      {...behaviorProps}
       className={clsx([
         `button-container`,
         {
@@ -88,9 +87,12 @@ function AsButton(props: GameButtonProps): ReactElement {
         },
         p.className,
       ])}
+      {...behaviorProps}
     >
       {leftIconRedBackground && (
         <RedBackgroundLeftContainer
+          isPressed={isPressed}
+          isHovered={isHovered}
           icon={<IconLeft icon={leftIconType} usingBackground />}
         />
       )}
@@ -98,6 +100,13 @@ function AsButton(props: GameButtonProps): ReactElement {
         <IconLeft icon={leftIconType} none={leftIconType === 'none'} />
       )}
       <ButtonText
+        className={clsx([
+          `button-text`,
+          {
+            'is-pressed': isPressed,
+            'is-hovered': isHovered,
+          },
+        ])}
         title={title ?? ''}
         noneLeft={leftIconType === 'none'}
         noneRight={rightIconType === 'none'}
@@ -105,6 +114,8 @@ function AsButton(props: GameButtonProps): ReactElement {
 
       {rightIconRedBackground && (
         <RedBackgroundRightContainer
+          isPressed={isPressed}
+          isHovered={isHovered}
           icon={<IconRight icon={rightIconType} usingBackground />}
         />
       )}

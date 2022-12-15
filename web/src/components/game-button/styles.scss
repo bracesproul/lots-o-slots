@@ -4,6 +4,16 @@
   @apply min-w-[220px] max-w-fit h-[45px] flex flex-row;
 }
 
+.button-text {
+  &.is-hovered {
+    @apply bg-neutral-900/90;
+  }
+
+  &.is-pressed {
+    @apply bg-neutral-900/80;
+  }
+}
+
 .input {
   @apply px-[10px] w-full h-full bg-neutral-900 align-middle text-white caret-white text-[12px];
   @apply border-y-[2px] border-r-[2px] border-gray-500;

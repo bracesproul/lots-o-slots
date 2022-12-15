@@ -5,4 +5,6 @@ export type GetIconProps = {
   customIcon?: ReactElement;
   usingBackground?: boolean;
   none?: boolean;
+  isPressed: boolean;
+  isHovered: boolean;
 };

@@ -1,5 +1,13 @@
 .bg-container {
   @apply h-full w-[40px] bg-[#C5002C];
+
+  &.is-hovered {
+    @apply bg-[#C5002C]/90;
+  }
+
+  &.is-pressed {
+    @apply bg-[#C5002C]/80;
+  }
 }
 
 .icon-container {

@@ -1,11 +1,12 @@
 import { BlackPokerChip, RedPokerChip } from '@/assets';
 import clsx from 'clsx';
-import { ReactElement } from 'react';
 import { LinkIcon } from '../link-icon';
 import { GetIconProps } from './types';
+import { ReactElement } from 'react';
 
 export default function IconLeft(props: GetIconProps): ReactElement {
   const { icon, customIcon, usingBackground, none } = props;
+
   if (none) {
     return <></>;
   }
@@ -35,7 +36,12 @@ export default function IconLeft(props: GetIconProps): ReactElement {
       ])}
     >
       <div
-        className={clsx([`icon-wrapper`, { 'is-not-link': icon !== 'link' }])}
+        className={clsx([
+          `icon-wrapper`,
+          {
+            'is-not-link': icon !== 'link',
+          },
+        ])}
       >
         {iconToUse}
       </div>
