@@ -1,0 +1,26 @@
+.action-container {
+  @apply w-fit h-fit mx-[40px] my-[40px] px-[30px] py-[30px];
+  @apply flex flex-col gap-[15px];
+  @apply border-[2px] border-red-700;
+  background-image: linear-gradient(to bottom, rgba(185, 28, 28, 0.15), rgba(85, 28, 28, 0.1));
+}
+
+.action-card-header {
+  @apply text-white text-[24px] text-center font-semibold italic;
+}
+
+.play-create-box-container {
+  @apply flex flex-row gap-[15px];
+}
+
+.game-selection-left-container {
+  @apply flex flex-col gap-[20px] mr-[15px];
+}
+
+.action-buttons-middle-container {
+  @apply flex flex-col gap-[20px];
+}
+
+.action-buttons-right-container {
+  @apply flex flex-col gap-[20px];
+}

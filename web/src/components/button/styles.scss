@@ -1,6 +1,6 @@
 .button-main {
   @apply bg-red-700;
-  @apply w-[180px] h-[35px] mx-[45px];
+  @apply min-w-[180px] h-[35px] px-[45px];
   @apply border-[1px] border-red-700;
   @apply text-white italic font-semibold;
 
