@@ -3,5 +3,5 @@
 }
 
 .icon-container {
-  @apply flex w-[35px] h-[35px];
+  @apply w-[35px] h-[45px] grid place-content-center mx-[4px];
 }

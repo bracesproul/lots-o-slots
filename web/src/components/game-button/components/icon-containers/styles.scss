@@ -1,5 +1,5 @@
 .icon-left {
-  @apply flex h-full mr-auto border-y-[1.75px] border-l-[1.75px] border-gray-500;
+  @apply flex h-full mr-auto px-[5px] border-y-[1.75px] border-l-[1.75px] border-gray-500;
   
   &.has-border {
     @apply bg-neutral-900;
@@ -11,7 +11,7 @@
 }
 
 .icon-right {
-  @apply flex h-full ml-auto border-y-[1.75px]  border-r-[1.75px] border-gray-500;
+  @apply h-full border-y-[1.75px] border-r-[1.75px] border-gray-500 mx-auto;
 
   &.has-border {
     @apply bg-neutral-900;

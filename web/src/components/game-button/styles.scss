@@ -1,7 +1,7 @@
 @use './components/styles.scss' as componentStyles;
 
 .button-container {
-  @apply w-[220px] h-[35px] flex flex-row;
+  @apply w-[220px] h-[45px] flex flex-row;
 }
 
 .input {
