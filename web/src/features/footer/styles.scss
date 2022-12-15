@@ -1,0 +1,13 @@
+.footer {
+  @apply flex flex-row justify-between text-center;
+  @apply fixed bottom-0;
+  @apply w-full h-[60px] bg-red-500;
+}
+
+.footer-text {
+  @apply text-white font-semibold text-[18px] my-auto;
+}
+
+.footer-icons {
+  @apply ml-[25px] mr-[35px] my-auto;
+}

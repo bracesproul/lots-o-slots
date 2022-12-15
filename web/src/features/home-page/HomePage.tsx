@@ -1,6 +1,10 @@
-import { GameSelectionContainer } from '@/features';
+import { GameSelectionContainer, PageLayout } from '@/features';
 import { ReactElement } from 'react';
 
 export default function HomePage(): ReactElement {
-  return <GameSelectionContainer />;
+  return (
+    <PageLayout>
+      <GameSelectionContainer />;
+    </PageLayout>
+  );
 }
