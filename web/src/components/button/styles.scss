@@ -1,26 +1,26 @@
 .button-main {
-  @apply bg-red-700;
+  @apply bg-[#C5002C];
   @apply min-w-[180px] h-[35px] px-[45px];
-  @apply border-[1px] border-red-700;
+  @apply border-[1px] border-[#C5002C];
   @apply text-white italic font-semibold;
 
   &.is-hovered {
-    @apply bg-red-700/90;
+    @apply bg-[#C5002C]/90;
   }
 
   &.is-pressed {
-    @apply bg-red-700/80;
+    @apply bg-[#C5002C]/80;
   }
 
   &.is-secondary {
-    @apply bg-red-700/30 transition;
+    @apply bg-[#C5002C]/30 transition;
 
     &.is-hovered {
-      @apply bg-red-700/25;
+      @apply bg-[#C5002C]/25;
     }
 
     &.is-pressed {
-      @apply bg-red-700/20;
+      @apply bg-[#C5002C]/20;
     }
   }
 

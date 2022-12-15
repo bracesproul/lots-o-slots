@@ -3,9 +3,5 @@ import { HomePage } from '@/features';
 import { PageLayout } from '@/features/page-layout';
 
 export default function Home(): React.ReactNode {
-  return (
-    <PageLayout>
-      <HomePage />
-    </PageLayout>
-  );
+  return <HomePage />;
 }

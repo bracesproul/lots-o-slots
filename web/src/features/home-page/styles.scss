@@ -1,0 +1,20 @@
+.section-one {
+  @apply h-[90vh] w-full grid place-content-evenly border-b-[2px] border-[#C5002C];
+}
+
+.section-two {
+  @apply h-[90vh] w-full border-b-[2px] border-[#C5002C];
+}
+
+.section-three {
+  @apply h-[90vh] w-full border-b-[2px] border-[#C5002C];
+}
+
+.section-four {
+  @apply h-[90vh] w-full grid place-content-center border-b-[2px] border-[#C5002C];
+  @apply transition duration-200 ease-in-out;
+}
+
+.section-five-footer {
+  @apply absolute bottom-0;
+}

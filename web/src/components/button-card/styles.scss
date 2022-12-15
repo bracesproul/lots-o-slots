@@ -1,5 +1,5 @@
 .button-card-main {
-  @apply w-[400px] h-[135px] border-[1.5px] border-red-500;
+  @apply w-[400px] h-[135px] border-[1.5px] border-[#C5002C];
   @apply flex flex-row;
   @apply bg-transparent;
   @apply cursor-pointer;
@@ -11,7 +11,7 @@
   }
 
   &.is-selected {
-    background-image: linear-gradient(to bottom, rgb(185, 28, 28), rgba(85, 28, 28, 0.15));
+    background-image: linear-gradient(to bottom, #C5002C, rgba(85, 28, 28, 0.15));
   }
 }
 
@@ -25,7 +25,7 @@
 }
 
 .button-card-title {
-  @apply text-red-500 text-[30px] text-center items-end;
+  @apply text-[#C5002C] text-[30px] text-center items-end;
 
   &.is-selected {
     @apply text-white;

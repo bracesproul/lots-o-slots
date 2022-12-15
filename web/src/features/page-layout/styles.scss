@@ -1,4 +1,5 @@
 .page-layout {
-  @apply mx-[33px] my-[33px];
-  @apply grid place-items-center;
+  @apply px-[33px] py-[33px];
+  // @apply grid place-items-center;
+  @apply border-x-[2px] border-[#C5002C];
 }

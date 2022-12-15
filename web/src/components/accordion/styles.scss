@@ -1,5 +1,5 @@
 .accordion-main {
-  @apply w-[825px] min-h-[90px] rounded-lg border-[1.5px] border-red-700;
+  @apply w-[825px] min-h-[90px] rounded-lg border-[1.5px] border-[#C5002C];
   @apply flex flex-row;
   @apply transition-all duration-300;
   background-image: linear-gradient(to bottom, rgba(185, 28, 28, 0.2), rgba(85, 28, 28, 0.15));

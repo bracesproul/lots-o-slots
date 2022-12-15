@@ -1,0 +1,13 @@
+.how-to-join-top-container {
+  @apply flex flex-col gap-[15px];
+  @apply w-full h-fit;
+  @apply text-white;
+}
+
+.how-to-join-lower-action-container {
+  @apply flex flex-row float-right mr-[100px];
+}
+
+.big-cards-right-container {
+  @apply w-[530px] h-[570px] float-left align-middle;
+}

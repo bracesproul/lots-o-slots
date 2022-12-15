@@ -1,0 +1,15 @@
+.faq-section-container {
+  @apply flex flex-col gap-[15px];
+  @apply w-full h-fit;
+  @apply text-white;
+}
+
+.faq-header {
+  @apply text-4xl font-bold;
+  @apply text-center;
+}
+
+.faq-subheader {
+  @apply text-2xl font-bold;
+  @apply text-center;
+}

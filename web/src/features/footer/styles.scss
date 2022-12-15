@@ -1,7 +1,6 @@
 .footer {
   @apply flex flex-row justify-between text-center;
-  @apply fixed bottom-0;
-  @apply w-full h-[60px] bg-red-500;
+  @apply w-full h-[60px] bg-[#C5002C];
 }
 
 .footer-text {

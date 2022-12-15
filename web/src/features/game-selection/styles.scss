@@ -1,8 +1,8 @@
 @use './components/styles.scss' as componentStyles;
 
 .game-selection-container {
-  @apply mx-[40px] my-[40px] px-[30px] py-[30px] h-[450px] w-fit;
-  @apply border-[2px] border-red-700 flex flex-row;
+  @apply px-[30px] py-[30px] h-[450px] w-full;
+  @apply border-[2px] border-[#C5002C] flex flex-row;
 }
 
 .input-button-container {

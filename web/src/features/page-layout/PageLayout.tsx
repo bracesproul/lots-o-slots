@@ -6,10 +6,5 @@ export type PageLayoutProps = {
 
 export default function PageLayout(props: PageLayoutProps): React.ReactElement {
   const { children } = props;
-  return (
-    <div className="page-layout">
-      {children}
-      <Footer />
-    </div>
-  );
+  return <div className="page-layout">{children}</div>;
 }

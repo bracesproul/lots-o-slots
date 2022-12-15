@@ -6,7 +6,7 @@
   }
 
   &.no-border {
-    @apply border-y-[1.75px] border-l-[1.75px] border-red-700;
+    @apply border-y-[1.75px] border-l-[1.75px] border-[#C5002C];
   }
 }
 
@@ -18,7 +18,7 @@
   }
 
   &.no-border {
-    @apply border-y-[1.75px] border-r-[1.75px] border-red-700;
+    @apply border-y-[1.75px] border-r-[1.75px] border-[#C5002C];
   }
 }
 
