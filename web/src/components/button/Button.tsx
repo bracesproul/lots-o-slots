@@ -39,6 +39,7 @@ export default function Button(props: ButtonProps): ReactElement {
           'is-pressed': isPressed,
           'is-secondary': p.variant === 'secondary',
         },
+        p.className,
       ])}
       {...behaviorProps}
       type={p.type}
