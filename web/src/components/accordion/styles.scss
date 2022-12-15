@@ -20,17 +20,19 @@
 }
 
 .body {
-  @apply mx-[30px] overflow-auto ;
+  @apply mx-[30px] overflow-auto;
   @apply transition-all duration-300 text-transparent text-[0px];
 
   &.is-open {
-    @apply text-white text-[16px] mb-[20px];
+    font-family: 'Inter', sans-serif;
+    @apply text-gray-200 text-[16px] mb-[20px];
   }
 }
 
 .icon {
   @apply w-[30px] h-[30px] text-white ml-auto mt-[25px] mr-[30px];
   @apply transition-all duration-300;
+  @apply cursor-pointer;
 
   &.is-hovered {
     @apply transform rotate-180;

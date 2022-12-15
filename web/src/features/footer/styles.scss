@@ -4,7 +4,8 @@
 }
 
 .footer-text {
-  @apply text-white font-semibold text-[18px] my-auto;
+  font-family: 'Inter', sans-serif;
+  @apply text-gray-200 text-[18px] my-auto;
 }
 
 .footer-icons {

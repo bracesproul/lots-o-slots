@@ -10,7 +10,7 @@ html {
 }
 
 body {
-  font-family: 'SEQUEL100-66', 'SEQUEL100-96', sans-serif;
+  font-family: 'SEQUEL100-66', 'SEQUEL100-96', 'SEQUEL100-66-light', sans-serif;
 }
 
 .red-span-text {
@@ -29,4 +29,11 @@ body {
   src: url('../public/fonts/SEQUEL100BLACK-66.TTF') format('truetype');
   font-weight: normal;
   font-style: normal;
+}
+
+@font-face {
+  font-family: 'SEQUEL100-66-light';
+  src: url('../public/fonts/SEQUEL100BLACK-66.TTF') format('truetype');
+  font-weight: light;
+  font-style: light;
 }
