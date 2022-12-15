@@ -18,13 +18,9 @@
 }
 
 .game-selection-right {
-  @apply flex flex-col grid place-content-center ml-[50px];
+  @apply flex flex-col place-content-center ml-[50px];
 }
 
 .right-button {
   @apply mb-[25px];
-}
-
-.deposit-button {
-
 }

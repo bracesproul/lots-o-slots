@@ -6,5 +6,6 @@
     "typeorm",
     "xlarge",
     "Zelle"
-  ]
+  ],
+  "scss.lint.unknownAtRules": "ignore"
 }
