@@ -52,6 +52,8 @@ export type GameButtonProps = AriaButtonProps &
      * Input box placeholder text.
      */
     placeholder?: string;
+
+    selected?: boolean;
   };
 
 const DEFAULT_PROPS = {
@@ -70,6 +72,7 @@ function AsButton(props: GameButtonProps): ReactElement {
     rightIconType,
     leftIconRedBackground,
     rightIconRedBackground,
+    selected,
   } = p;
   const ref = React.useRef<HTMLButtonElement>(null);
 
@@ -84,6 +87,7 @@ function AsButton(props: GameButtonProps): ReactElement {
         {
           'is-pressed': isPressed,
           'is-hovered': isHovered,
+          'is-selected': selected,
         },
         p.className,
       ])}

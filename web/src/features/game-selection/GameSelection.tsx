@@ -11,23 +11,46 @@ export type PaymentMethodSelectedType = {
   ethereumSelected: boolean;
 };
 
+export type SiteSelectionOptions = {
+  site1: boolean;
+  site2: boolean;
+  site3: boolean;
+  site4: boolean;
+};
+
 export type GameSelectionProps = {
   isCardGameSelected: boolean;
   setIsCardGameSelected: (isPokerSelected: boolean) => void;
 
   paymentMethodSelected: PaymentMethodSelectedType;
-  setPaymentSelected: (
-    paymentMethodSelected: PaymentMethodSelectedType
-  ) => void;
+  handleRadioButtonSelection: (option: RadioButtonOptions) => void;
+
+  slotsUsername: string;
+  setSlotsUsername: (slotsUsername: string) => void;
+
+  emailOrUsername: string;
+  setEmailOrUsername: (emailOrUsername: string) => void;
+
+  handleSubmit: () => void;
+
+  siteButtonOptions: SiteSelectionOptions;
+  handleSiteSelection: (siteButtonOptions: SiteSelectionOptionType) => void;
 };
 
 function GameSelection(props: GameSelectionProps): ReactElement {
   const p = { ...props };
   const {
     isCardGameSelected,
-    paymentMethodSelected,
     setIsCardGameSelected,
-    setPaymentSelected,
+    slotsUsername,
+    setSlotsUsername,
+    emailOrUsername,
+    setEmailOrUsername,
+    handleSubmit,
+    siteButtonOptions,
+    handleSiteSelection,
+    paymentMethodSelected,
+    handleRadioButtonSelection,
   } = p;
 
   return (
@@ -38,8 +61,8 @@ function GameSelection(props: GameSelectionProps): ReactElement {
           isCardGameSelected={isCardGameSelected}
         />
         <RadioButtons
-          setPaymentSelected={setPaymentSelected}
           paymentMethodSelected={paymentMethodSelected}
+          handleRadioButtonSelection={handleRadioButtonSelection}
         />
         <div className="input-button-container">
           <GameButton
@@ -47,6 +70,8 @@ function GameSelection(props: GameSelectionProps): ReactElement {
             leftIconType="link"
             leftIconRedBackground
             placeholder="Input Slots Username"
+            value={slotsUsername}
+            onChange={(value) => setSlotsUsername(value)}
           />
           <div className="bottom-input-container">
             <GameButton
@@ -54,8 +79,10 @@ function GameSelection(props: GameSelectionProps): ReactElement {
               leftIconType="link"
               leftIconRedBackground
               placeholder="Email or Username"
+              value={emailOrUsername}
+              onChange={(value) => setEmailOrUsername(value)}
             />
-            <Button className="ml-[15px]" type="submit">
+            <Button onPress={handleSubmit} className="ml-[15px]" type="submit">
               Deposit
             </Button>
           </div>
@@ -68,28 +95,32 @@ function GameSelection(props: GameSelectionProps): ReactElement {
             rightIconType="link"
             rightIconRedBackground
             leftIconType="blackChip"
-            className="right-button"
+            onPress={() => handleSiteSelection('site1')}
+            selected={siteButtonOptions.site1}
           />
           <GameButton
             title="Site 1"
             rightIconType="link"
             rightIconRedBackground
             leftIconType="redChip"
-            className="right-button"
+            onPress={() => handleSiteSelection('site2')}
+            selected={siteButtonOptions.site2}
           />
           <GameButton
             title="Site 1"
             rightIconType="link"
             rightIconRedBackground
             leftIconType="blackChip"
-            className="right-button"
+            onPress={() => handleSiteSelection('site3')}
+            selected={siteButtonOptions.site3}
           />
           <GameButton
             title="Site 1"
             rightIconType="link"
             rightIconRedBackground
             leftIconType="redChip"
-            className="right-button"
+            onPress={() => handleSiteSelection('site4')}
+            selected={siteButtonOptions.site4}
           />
         </div>
       </div>
@@ -97,8 +128,17 @@ function GameSelection(props: GameSelectionProps): ReactElement {
   );
 }
 
+type RadioButtonOptions =
+  | 'paypalSelected'
+  | 'zelleSelected'
+  | 'cashAppSelected'
+  | 'skrillSelected'
+  | 'bitcoinSelected'
+  | 'ethereumSelected';
+
+type SiteSelectionOptionType = 'site1' | 'site2' | 'site3' | 'site4';
+
 export default function GameSelectionContainer(): ReactElement {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [paymentSelected, setPaymentSelected] = useState({
     paypalSelected: true,
     zelleSelected: false,
@@ -107,15 +147,57 @@ export default function GameSelectionContainer(): ReactElement {
     bitcoinSelected: false,
     ethereumSelected: false,
   });
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [siteButtonOptions, setSiteButtonOptions] = useState({
+    site1: false,
+    site2: false,
+    site3: false,
+    site4: false,
+  });
   const [isPokerSelected, setIsPokerSelected] = useState(true);
+  const [slotsUsername, setSlotsUsername] = useState('');
+  const [emailOrUsername, setEmailOrUsername] = useState('');
+
+  const handleSubmit = () => {
+    // TODO: Add logic to handle form submission
+  };
+
+  const handleRadioButtonSelection = (option: RadioButtonOptions) => {
+    setPaymentSelected({
+      paypalSelected: false,
+      zelleSelected: false,
+      cashAppSelected: false,
+      skrillSelected: false,
+      bitcoinSelected: false,
+      ethereumSelected: false,
+      [option]: true,
+    });
+  };
+
+  const handleSiteSelection = (option: SiteSelectionOptionType) => {
+    setSiteButtonOptions({
+      site1: false,
+      site2: false,
+      site3: false,
+      site4: false,
+      [option]: true,
+    });
+  };
+
+  console.log('siteButtonOptions', siteButtonOptions);
 
   return (
     <GameSelection
       isCardGameSelected={isPokerSelected}
       setIsCardGameSelected={setIsPokerSelected}
       paymentMethodSelected={paymentSelected}
-      setPaymentSelected={setPaymentSelected}
+      handleRadioButtonSelection={handleRadioButtonSelection}
+      slotsUsername={slotsUsername}
+      setSlotsUsername={setSlotsUsername}
+      emailOrUsername={emailOrUsername}
+      setEmailOrUsername={setEmailOrUsername}
+      handleSubmit={handleSubmit}
+      siteButtonOptions={siteButtonOptions}
+      handleSiteSelection={handleSiteSelection}
     />
   );
 }

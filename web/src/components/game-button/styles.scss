@@ -2,6 +2,10 @@
 
 .button-container {
   @apply min-w-[220px] max-w-fit h-[45px] flex flex-row;
+
+  &.is-selected {
+    @apply bg-red-900;
+  }
 }
 
 .button-text {
