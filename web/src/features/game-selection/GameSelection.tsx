@@ -183,8 +183,6 @@ export default function GameSelectionContainer(): ReactElement {
     });
   };
 
-  console.log('siteButtonOptions', siteButtonOptions);
-
   return (
     <GameSelection
       isCardGameSelected={isPokerSelected}

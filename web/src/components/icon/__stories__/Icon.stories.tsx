@@ -2,16 +2,12 @@ import { Story } from '@storybook/react';
 import Icon from '../Icon';
 import type { IconProps } from '../Icon';
 import {
-  MaskGroup,
   PayPalLogo,
-  MaskGroup1,
   ZelleLogo,
   BitcoinLogo,
   CashAppLogo,
   SkrillLogo,
   LinkIcon,
-  Group427321517,
-  Group427321520,
   LinkIconDark,
 } from '@/assets/svgs';
 
@@ -21,17 +17,6 @@ export default {
 };
 
 // playground
-
-const NonSvgTemplate: Story<IconProps> = () => {
-  return (
-    <div className="flex min-h-[700px] min-w-[700px] justify-center gap-[25px]">
-      <MaskGroup />
-      <Group427321517 />
-      <MaskGroup1 />
-      <Group427321520 />
-    </div>
-  );
-};
 
 const PayPal: Story<IconProps> = () => {
   return (
@@ -119,7 +104,6 @@ const LinkIconDarkPlayground: Story<IconProps> = () => {
   );
 };
 
-export const PlaygroundNonSvg = NonSvgTemplate.bind({});
 export const PlaygroundPayPal = PayPal.bind({});
 export const PlaygroundZelleIcon = ZelleIcon.bind({});
 export const PlaygroundBitcoinIcon = BitcoinIcon.bind({});
