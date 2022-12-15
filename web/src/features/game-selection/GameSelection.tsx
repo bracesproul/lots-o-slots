@@ -121,9 +121,7 @@ function GameSelection(props: GameSelectionProps): ReactElement {
 
 type GameSelectionContainerProps = GameSelectionProps;
 
-export default function GameSelectionContainer(
-  props: GameSelectionContainerProps
-): ReactElement {
+export default function GameSelectionContainer(): ReactElement {
   const [paymentSelected, setPaymentSelected] = useState({
     paypalSelected: true,
     zelleSelected: false,
