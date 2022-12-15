@@ -5,8 +5,7 @@ import { LinkIcon } from '../link-icon';
 import { GetIconProps } from './types';
 
 export default function IconRight(props: GetIconProps): ReactElement {
-  const { icon, customIcon, usingBackground, none, isPressed, isHovered } =
-    props;
+  const { icon, customIcon, usingBackground, none } = props;
   if (none) {
     return <></>;
   }
@@ -35,8 +34,6 @@ export default function IconRight(props: GetIconProps): ReactElement {
         {
           'no-border': usingBackground,
           'has-border': !usingBackground,
-          'is-hovered': isHovered,
-          'is-pressed': isPressed,
         },
       ])}
     >
