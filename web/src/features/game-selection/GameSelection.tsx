@@ -39,11 +39,7 @@ function GameSelection(props: GameSelectionProps): ReactElement {
               leftIconRedBackground
               placeholder="Email or Username"
             />
-            <Button
-              onPress={() => console.log('deposit pressed')}
-              className="ml-[15px]"
-              type="submit"
-            >
+            <Button className="ml-[15px]" type="submit">
               Deposit
             </Button>
           </div>
