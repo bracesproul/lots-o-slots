@@ -1,7 +1,6 @@
 import React, { ReactElement } from 'react';
 import { PlayCreateBox } from '@/features';
-import { SlotsSvg, BigSlotsSvg } from '@/assets';
-import { Icon } from '@/components';
+import { BigSlotsSvg } from '@/assets';
 
 export default function HowToJoinTop(): ReactElement {
   return (

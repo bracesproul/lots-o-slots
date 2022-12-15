@@ -1,4 +1,3 @@
-import { action } from '@storybook/addon-actions';
 import { Story } from '@storybook/react';
 import Accordion from '../Accordion';
 import type { AccordionProps } from '../Accordion';

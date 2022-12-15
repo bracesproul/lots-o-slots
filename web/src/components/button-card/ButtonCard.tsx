@@ -1,6 +1,5 @@
 import clsx from 'clsx';
-import { ReactElement, useState, useRef } from 'react';
-import { AiOutlinePlus, AiOutlineMinus } from 'react-icons/ai';
+import { ReactElement, useRef } from 'react';
 import type { AriaButtonProps } from '@react-types/button';
 import { PlayingCards, SlotsSvg } from '@/assets/svgs';
 import { useButton } from '@react-aria/button';
@@ -23,7 +22,7 @@ export type ButtonCardProps = AriaButtonProps & {
 export default function ButtonCard(props: ButtonCardProps): ReactElement {
   const p = { ...props };
   const ref = useRef<HTMLButtonElement>(null);
-  const { buttonProps, isPressed } = useButton(p, ref);
+  const { buttonProps } = useButton(p, ref);
   const { hoverProps, isHovered } = useHover({ isDisabled: p.isDisabled });
   const behaviorProps = mergeProps(buttonProps, hoverProps);
 

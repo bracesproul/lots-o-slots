@@ -2,20 +2,16 @@ import { Story } from '@storybook/react';
 import Icon from '../Icon';
 import type { IconProps } from '../Icon';
 import {
-  Poker,
   MaskGroup,
   PayPalLogo,
-  Slots,
   MaskGroup1,
   ZelleLogo,
   BitcoinLogo,
   CashAppLogo,
-  Group427321515,
   SkrillLogo,
   LinkIcon,
   Group427321517,
   Group427321520,
-  Group427321522,
   LinkIconDark,
 } from '@/assets/svgs';
 
@@ -26,7 +22,7 @@ export default {
 
 // playground
 
-const NonSvgTemplate: Story<IconProps> = (props) => {
+const NonSvgTemplate: Story<IconProps> = () => {
   return (
     <div className="flex min-h-[700px] min-w-[700px] justify-center gap-[25px]">
       <MaskGroup />
@@ -37,7 +33,7 @@ const NonSvgTemplate: Story<IconProps> = (props) => {
   );
 };
 
-const PayPal: Story<IconProps> = (props) => {
+const PayPal: Story<IconProps> = () => {
   return (
     <div className="flex min-h-[700px] min-w-[700px] justify-center gap-[25px]">
       <Icon size="xlarge" content={<PayPalLogo />} height={40} width={30} />
@@ -45,7 +41,7 @@ const PayPal: Story<IconProps> = (props) => {
   );
 };
 
-const ZelleIcon: Story<IconProps> = (props) => {
+const ZelleIcon: Story<IconProps> = () => {
   return (
     <div className="flex min-h-[700px] min-w-[700px] justify-center gap-[25px]">
       <Icon
@@ -59,7 +55,7 @@ const ZelleIcon: Story<IconProps> = (props) => {
   );
 };
 
-const BitcoinIcon: Story<IconProps> = (props) => {
+const BitcoinIcon: Story<IconProps> = () => {
   return (
     <div className="flex min-h-[700px] min-w-[700px] justify-center gap-[25px]">
       <Icon
@@ -73,7 +69,7 @@ const BitcoinIcon: Story<IconProps> = (props) => {
   );
 };
 
-const CashApp: Story<IconProps> = (props) => {
+const CashApp: Story<IconProps> = () => {
   return (
     <div className="flex min-h-[700px] min-w-[700px] justify-center gap-[25px]">
       <Icon
@@ -87,7 +83,7 @@ const CashApp: Story<IconProps> = (props) => {
   );
 };
 
-const SkrillIcon: Story<IconProps> = (props) => {
+const SkrillIcon: Story<IconProps> = () => {
   return (
     <div className="flex min-h-[700px] min-w-[700px] justify-center gap-[25px]">
       <Icon
@@ -101,7 +97,7 @@ const SkrillIcon: Story<IconProps> = (props) => {
   );
 };
 
-const LinkIconPlayground: Story<IconProps> = (props) => {
+const LinkIconPlayground: Story<IconProps> = () => {
   return (
     <div className="flex min-h-[700px] min-w-[700px] justify-center gap-[25px]">
       <Icon
@@ -115,7 +111,7 @@ const LinkIconPlayground: Story<IconProps> = (props) => {
   );
 };
 
-const LinkIconDarkPlayground: Story<IconProps> = (props) => {
+const LinkIconDarkPlayground: Story<IconProps> = () => {
   return (
     <div className="flex min-h-[700px] min-w-[700px] justify-center gap-[25px]">
       <Icon size="xlarge" content={<LinkIconDark />} height={25} width={25} />

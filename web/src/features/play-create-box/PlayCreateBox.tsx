@@ -6,9 +6,12 @@ export type PlayCreateBoxProps = {
   className?: string;
 };
 
-export default function PlayCreateBox(props: PlayCreateBoxProps): ReactElement {
+export default function PlayCreateBox(
+  props?: PlayCreateBoxProps
+): ReactElement {
+  const p = { ...props };
   return (
-    <div className="action-container">
+    <div className={clsx(['action-container', p.className])}>
       <h3 className="action-card-header">
         Action button card container blank title one
       </h3>

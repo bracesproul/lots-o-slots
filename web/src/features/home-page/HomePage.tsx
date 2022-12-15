@@ -1,6 +1,5 @@
 import {
   GameSelectionContainer,
-  PageLayout,
   Footer,
   FaqSection,
   HowToJoinTop,

@@ -18,5 +18,4 @@ const Playground: Story<PlayCreateBoxProps> = (props) => {
 };
 
 export const PlaygroundGameInputBox = Playground.bind({});
-Playground.args = {
-};
+Playground.args = {};

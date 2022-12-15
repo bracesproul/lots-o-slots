@@ -1,5 +1,3 @@
-import { Footer } from '@/features';
-
 export type PageLayoutProps = {
   children: React.ReactNode;
 };

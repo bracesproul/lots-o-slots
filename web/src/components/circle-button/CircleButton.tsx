@@ -39,7 +39,7 @@ export default function CircleButton(props: CircleButtonProps): ReactElement {
   const isBlueBg = props.iconBackground === 'blue';
 
   const ref = useRef<HTMLButtonElement>(null);
-  const { buttonProps, isPressed } = useButton(p, ref);
+  const { buttonProps } = useButton(p, ref);
   const { hoverProps, isHovered } = useHover({ isDisabled: p.isDisabled });
   const behaviorProps = mergeProps(buttonProps, hoverProps);
 

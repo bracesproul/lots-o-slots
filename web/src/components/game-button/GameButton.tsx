@@ -65,13 +65,11 @@ const DEFAULT_PROPS = {
 function AsButton(props: GameButtonProps): ReactElement {
   const p = { ...DEFAULT_PROPS, ...props };
   const {
-    icon,
     title,
     leftIconType,
     rightIconType,
     leftIconRedBackground,
     rightIconRedBackground,
-    isInput,
   } = p;
   const ref = React.useRef<HTMLButtonElement>(null);
 
@@ -120,19 +118,12 @@ function AsButton(props: GameButtonProps): ReactElement {
 function AsInput(props: GameButtonProps): ReactElement {
   const p = { ...DEFAULT_PROPS, ...props };
   const {
-    icon,
-    title,
     leftIconType,
     rightIconType,
     leftIconRedBackground,
     rightIconRedBackground,
     placeholder,
   } = p;
-  const ref = React.useRef<HTMLButtonElement>(null);
-
-  const { buttonProps, isPressed } = useButton(p, ref);
-  const { hoverProps, isHovered } = useHover({ isDisabled: p.isDisabled });
-  const behaviorProps = mergeProps(buttonProps, hoverProps);
 
   return (
     <div className={clsx([`button-container`, p.className])}>
@@ -164,20 +155,7 @@ function AsInput(props: GameButtonProps): ReactElement {
 
 export default function GameButton(props: GameButtonProps): ReactElement {
   const p = { ...DEFAULT_PROPS, ...props };
-  const {
-    icon,
-    title,
-    leftIconType,
-    rightIconType,
-    leftIconRedBackground,
-    rightIconRedBackground,
-    isInput,
-  } = p;
-  const ref = React.useRef<HTMLButtonElement>(null);
-
-  const { buttonProps, isPressed } = useButton(p, ref);
-  const { hoverProps, isHovered } = useHover({ isDisabled: p.isDisabled });
-  const behaviorProps = mergeProps(buttonProps, hoverProps);
+  const { isInput } = p;
 
   return <>{isInput ? <AsInput {...props} /> : <AsButton {...props} />}</>;
 }

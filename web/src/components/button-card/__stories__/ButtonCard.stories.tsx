@@ -1,4 +1,3 @@
-import { action } from '@storybook/addon-actions';
 import { Story } from '@storybook/react';
 import ButtonCard from '../ButtonCard';
 import type { ButtonCardProps } from '../ButtonCard';
@@ -14,7 +13,7 @@ const PlaygroundTemplate: Story<ButtonCardProps> = (props) => {
   return (
     <div className="flex min-h-[700px] min-w-[700px] justify-center gap-[30px]">
       <ButtonCard {...props} />
-      <ButtonCard title="Slots" image="slots" />
+      <ButtonCard isSelected title="Slots" image="slots" />
     </div>
   );
 };

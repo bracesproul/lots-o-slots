@@ -82,6 +82,7 @@ function GameSelection(props: GameSelectionProps): ReactElement {
 }
 
 export default function GameSelectionContainer(): ReactElement {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [paymentSelected, setPaymentSelected] = useState({
     paypalSelected: true,
     zelleSelected: false,
@@ -90,6 +91,7 @@ export default function GameSelectionContainer(): ReactElement {
     bitcoinSelected: false,
     ethereumSelected: false,
   });
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isPokerSelected, setIsPokerSelected] = useState(true);
 
   return (

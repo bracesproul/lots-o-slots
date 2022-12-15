@@ -5,7 +5,7 @@ export type FaqSectionProps = {
   className?: string;
 };
 
-export default function FaqSection(props: FaqSectionProps): ReactElement {
+export default function FaqSection(): ReactElement {
   return (
     <div className="faq-section-container">
       <h1 className="faq-header">FAQ</h1>

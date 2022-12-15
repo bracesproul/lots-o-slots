@@ -17,14 +17,6 @@ const PlaygroundInputBox: Story<GameButtonProps> = (props) => {
   );
 };
 
-const PlaygroundGameButton: Story<GameButtonProps> = (props) => {
-  return (
-    <div className="flex min-h-[700px] min-w-[700px] justify-center gap-[25px]">
-      <GameButton {...props} />
-    </div>
-  );
-};
-
 export const PlaygroundGameInputBox = PlaygroundInputBox.bind({});
 PlaygroundInputBox.args = {
   title: 'Play Now!',
