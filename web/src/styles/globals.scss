@@ -13,6 +13,10 @@ body {
   font-family: 'SEQUEL100-66', 'SEQUEL100-96', sans-serif;
 }
 
+.red-span-text {
+  @apply text-[#C5002C];
+}
+
 @font-face {
   font-family: 'SEQUEL100-96';
   src: url('../public/fonts/SEQUEL100BLACK-96.TTF') format('truetype');
