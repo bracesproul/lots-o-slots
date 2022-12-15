@@ -1,9 +1,11 @@
 .button-main {
-  @apply bg-[#C5002C];
   @apply min-w-[180px] h-[45px] px-[45px];
   @apply border-[1px] border-[#C5002C];
   @apply text-white italic font-semibold;
 
+  &.is-primary {
+    @apply bg-[#C5002C];
+  }
   &.is-hovered {
     @apply bg-[#C5002C]/90;
   }

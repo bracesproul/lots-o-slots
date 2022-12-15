@@ -16,6 +16,11 @@ export type ButtonProps = AriaButtonProps & {
   children: string;
 
   type: 'button' | 'submit' | 'reset';
+
+  /**
+   * Whether or not the button is disabled.
+   */
+  isDisabled?: boolean;
 };
 
 const DEFAULT_PROPS = {
@@ -38,6 +43,7 @@ export default function Button(props: ButtonProps): ReactElement {
           'is-hovered': isHovered,
           'is-pressed': isPressed,
           'is-secondary': p.variant === 'secondary',
+          'is-primary': p.variant === 'primary',
         },
         p.className,
       ])}
