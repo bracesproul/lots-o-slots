@@ -5,12 +5,16 @@ import {
   FaqSection,
   HowToJoinTop,
   HowToJoinLower,
+  Header,
 } from '@/features';
 import { ReactElement } from 'react';
 
 export default function HomePage(): ReactElement {
   return (
     <div>
+      <div className="home-header">
+        <Header />
+      </div>
       <div className="section-one">
         <GameSelectionContainer />;
       </div>

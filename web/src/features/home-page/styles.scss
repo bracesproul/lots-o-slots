@@ -1,3 +1,7 @@
+.home-header {
+  @apply w-full;
+}
+
 .section-one {
   @apply h-[90vh] w-full grid place-content-evenly border-b-[2px] border-[#C5002C];
 }
