@@ -1,5 +1,6 @@
 .header {
   @apply mt-[33px] mx-[75px] flex flex-col mb-[-50px];
+  font-family: 'SEQUEL100-96', sans-serif;
 }
 
 .nav-container {
@@ -8,6 +9,7 @@
 
 .nav-button-group {
   @apply flex flex-row gap-[15px] ml-auto;
+  font-family: 'SEQUEL100-66', sans-serif;
 }
 
 .header-text-top {

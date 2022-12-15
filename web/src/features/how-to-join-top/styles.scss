@@ -2,12 +2,13 @@
   @apply flex flex-col gap-[15px];
   @apply w-full h-fit;
   @apply text-white;
+  @apply pt-[20vh] pb-[20vh];
 }
 
 .how-to-join-top-action-container {
-  @apply flex flex-row ml-[300px];
+  @apply flex flex-row ml-[200px];
 }
 
 .big-slot-svg-container {
-  @apply w-[650px] h-[415px] float-right align-middle my-auto;
+  @apply w-[650px] h-[415px] float-right align-middle;
 }

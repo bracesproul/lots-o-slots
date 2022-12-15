@@ -1,13 +1,14 @@
-.how-to-join-top-container {
+.how-to-join-lower-container {
   @apply flex flex-col gap-[15px];
   @apply w-full h-fit;
   @apply text-white;
+  @apply pt-[10vh];
 }
 
 .how-to-join-lower-action-container {
-  @apply flex flex-row float-right mr-[100px];
+  @apply flex flex-row mr-[200px];
 }
 
 .big-cards-right-container {
-  @apply w-[530px] h-[570px] float-left align-middle;
+  @apply w-[430px] h-[470px] float-left align-middle mr-[200px];
 }

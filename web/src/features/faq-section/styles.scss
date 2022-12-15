@@ -5,11 +5,13 @@
 }
 
 .faq-header {
-  @apply text-4xl font-bold;
-  @apply text-center;
+  @apply text-[60px] font-bold text-[#C5002C];
+  @apply text-center leading-[60px];
+  font-family: 'SEQUEL100-96', sans-serif;
 }
 
 .faq-subheader {
   @apply text-2xl font-bold;
-  @apply text-center;
+  @apply text-center leading-8;
+  @apply mb-[10px];
 }

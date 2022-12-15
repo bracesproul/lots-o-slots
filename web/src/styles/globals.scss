@@ -9,11 +9,20 @@ html {
   @apply bg-black;
 }
 
-// @layer base {
-//   @font-face {
-//     font-family: Sequel;
-//     font-weight: 400;
-//     font-display: auto;
-//     src: url(../public/fonts/SEQUEL100BLACK-66.TTF) format("TTF");
-//   }
-// }
+body {
+  font-family: 'SEQUEL100-66', 'SEQUEL100-96', sans-serif;
+}
+
+@font-face {
+  font-family: 'SEQUEL100-96';
+  src: url('../public/fonts/SEQUEL100BLACK-96.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SEQUEL100-66';
+  src: url('../public/fonts/SEQUEL100BLACK-66.TTF') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
