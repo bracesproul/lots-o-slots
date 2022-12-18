@@ -1,0 +1,5 @@
+@use './components/styles.scss' as componentStyles;
+
+.admin-page {
+  @apply m-[100px]
+}

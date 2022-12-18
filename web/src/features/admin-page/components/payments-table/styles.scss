@@ -1,0 +1,39 @@
+.payments-table-container {
+  @apply bg-[#0E0F19] border-[2px] border-gray-500 p-[12px];
+  @apply w-fit;
+}
+
+.payments-table-title {
+  @apply text-center text-white text-[30px] leading-[35px];
+  @apply my-[24px];
+}
+
+.payments-table {
+  @apply table-fixed border-separate border-spacing-y-[5px] text-white;
+}
+
+.payments-table-row {
+  @apply bg-[#383B50] h-[50px];
+  @apply rounded-sm;
+
+  &.is-even {
+    @apply bg-[#414147];
+  }
+}
+
+.payments-table-th {
+  @apply text-white px-8 py-4;
+}
+
+.payments-table-header {
+  @apply bg-[#C5002C] h-[50px];
+}
+
+.payments-table-header-row {
+  @apply px-8 py-4;
+}
+
+.payments-table-action-cell-container {
+  @apply bg-neutral-800 p-[3.5px] border border-gray-500;
+  @apply cursor-pointer;
+}
