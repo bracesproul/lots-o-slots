@@ -2,6 +2,7 @@ import { ReactElement } from 'react';
 import clsx from 'clsx';
 import { Icon, InteractableComponent } from '@/components';
 import { ArrowRight, RightArrowButton } from '@/assets';
+import { PageChangeType, TableType } from '@/types/page-change';
 
 // @TODO Replace with import from graphql once codegen init.
 export enum PaymentProvider {
@@ -26,17 +27,17 @@ export type PaymentTableData = {
 export type PaymentsTableProps = {
   className?: string;
 
-  /**
-   * The title to display at the top of the table.
-   */
-  title: string;
-
   data: PaymentTableData[];
 
   /**
    * Whether or not to show the action column.
    */
   includeActionColumn?: boolean;
+
+  /**
+   * The type of the table.
+   */
+  tableType: TableType;
 
   /**
    * Function to handle marking the payment as processed.
@@ -46,7 +47,7 @@ export type PaymentsTableProps = {
   /**
    * Handle pagination.
    */
-  handlePageChange: (direction: PageChangeType) => void;
+  handlePageChange: (direction: PageChangeType, table: TableType) => void;
 };
 
 type ActionCellProps = Pick<PaymentsTableProps, 'handleMarkProcessed'> & {
@@ -75,9 +76,15 @@ function ActionCell(props: ActionCellProps): ReactElement {
 
 export default function PaymentsTable(props: PaymentsTableProps): ReactElement {
   const p = { ...props };
+
+  const title =
+    p.tableType === TableType.PENDING
+      ? 'Pending Payments'
+      : 'Processed Payments';
+
   return (
     <div className={clsx(`${PREFIX}-container`)}>
-      <h1 className={`${PREFIX}-title`}>{p.title}</h1>
+      <h1 className={`${PREFIX}-title`}>{title}</h1>
       <table className={'payments-table'}>
         <thead className={`${PREFIX}-header`}>
           <tr className={`${PREFIX}-header-row`}>
@@ -116,14 +123,18 @@ export default function PaymentsTable(props: PaymentsTableProps): ReactElement {
         </tbody>
       </table>
       <div className={`${PREFIX}-pagination-container`}>
-        <InteractableComponent onPress={() => console.log('left pressed')}>
+        <InteractableComponent
+          onPress={() => p.handlePageChange(PageChangeType.LEFT, p.tableType)}
+        >
           <Icon
             size="xlarge"
             className="text-white rotate-180"
             content={<RightArrowButton />}
           />
         </InteractableComponent>
-        <InteractableComponent onPress={() => console.log('right pressed')}>
+        <InteractableComponent
+          onPress={() => p.handlePageChange(PageChangeType.RIGHT, p.tableType)}
+        >
           <Icon
             size="xlarge"
             className="text-white"

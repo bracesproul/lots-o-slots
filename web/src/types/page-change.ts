@@ -4,3 +4,8 @@ export enum PageChangeType {
   FIRST = 'FIRST',
   LAST = 'LAST',
 }
+
+export enum TableType {
+  PENDING = 'PENDING',
+  PROCESSED = 'PROCESSED',
+}

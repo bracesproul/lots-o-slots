@@ -1,5 +1,5 @@
 @use './components/styles.scss' as componentStyles;
 
 .admin-page {
-  @apply m-[100px]
+  @apply m-[100px] flex flex-row gap-[24px] items-center justify-center;
 }
