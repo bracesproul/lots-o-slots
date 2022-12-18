@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import clsx from 'clsx';
-import { Icon } from '@/components';
+import { Icon, InteractableComponent } from '@/components';
 import { ArrowRight, RightArrowButton } from '@/assets';
 
 // @TODO Replace with import from graphql once codegen init.
@@ -111,16 +111,20 @@ export default function PaymentsTable(props: PaymentsTableProps): ReactElement {
         </tbody>
       </table>
       <div className={`${PREFIX}-pagination-container`}>
-        <Icon
-          size="xlarge"
-          className="text-white rotate-180"
-          content={<RightArrowButton />}
-        />
-        <Icon
-          size="xlarge"
-          className="text-white"
-          content={<RightArrowButton />}
-        />
+        <InteractableComponent onPress={() => console.log('left pressed')}>
+          <Icon
+            size="xlarge"
+            className="text-white rotate-180"
+            content={<RightArrowButton />}
+          />
+        </InteractableComponent>
+        <InteractableComponent onPress={() => console.log('right pressed')}>
+          <Icon
+            size="xlarge"
+            className="text-white"
+            content={<RightArrowButton />}
+          />
+        </InteractableComponent>
       </div>
     </div>
   );
