@@ -1,7 +1,7 @@
 import { ReactElement } from 'react';
 import clsx from 'clsx';
 import { Icon } from '@/components';
-import { ArrowRight } from '@/assets';
+import { ArrowRight, RightArrowButton } from '@/assets';
 
 // @TODO Replace with import from graphql once codegen init.
 export enum PaymentProvider {
@@ -110,6 +110,18 @@ export default function PaymentsTable(props: PaymentsTableProps): ReactElement {
           ))}
         </tbody>
       </table>
+      <div className={`${PREFIX}-pagination-container`}>
+        <Icon
+          size="xlarge"
+          className="text-white rotate-180"
+          content={<RightArrowButton />}
+        />
+        <Icon
+          size="xlarge"
+          className="text-white"
+          content={<RightArrowButton />}
+        />
+      </div>
     </div>
   );
 }

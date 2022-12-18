@@ -18,3 +18,4 @@ export { default as DiscordLogo } from './DiscordLogo';
 export { default as BigSlotsSvg } from './BigSlotsSvg';
 export { default as BigCardsSvg } from './BigCardsSvg';
 export { default as ArrowRight } from './ArrowRight';
+export { default as RightArrowButton } from './RightArrowButton';

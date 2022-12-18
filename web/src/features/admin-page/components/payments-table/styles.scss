@@ -1,6 +1,6 @@
 .payments-table-container {
   @apply bg-[#0E0F19] border-[2px] border-gray-500 p-[12px];
-  @apply w-fit;
+  @apply w-fit h-fit;
 }
 
 .payments-table-title {
@@ -36,4 +36,8 @@
 .payments-table-action-cell-container {
   @apply bg-neutral-800 p-[3.5px] border border-gray-500;
   @apply cursor-pointer;
+}
+
+.payments-table-pagination-container {
+  @apply flex flex-row mt-[12px] mb-[5px] justify-end;
 }
