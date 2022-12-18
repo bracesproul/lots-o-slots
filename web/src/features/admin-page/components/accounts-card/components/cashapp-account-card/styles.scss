@@ -1,0 +1,33 @@
+.cashapp-account-card {
+  @apply w-[350px] h-[110px] bg-[#161826] border-[2px] border-gray-500;
+  @apply flex flex-row place-content-center items-center;
+  @apply mb-[18px]
+}
+
+.cashapp-account-card-info-container {
+  @apply flex flex-col;
+}
+
+.cashapp-account-card-info-cashtag {
+  @apply flex flex-row;
+}
+
+.cashapp-account-card-cashtag {
+  @apply text-white text-[15px] leading-[17px];
+}
+
+.cashapp-account-card-info-stats {
+  @apply flex flex-row text-center mt-[8px];
+}
+
+.cashapp-account-card-stats-text {
+  @apply text-[12px] leading-[17px] text-gray-500; 
+}
+
+.cashapp-account-card-line-span {
+  @apply text-gray-500 mx-[12px];
+}
+
+.cashapp-account-card-cashapp-logo-container {
+  @apply bg-green-400 rounded-md m-[18px] py-[12px] px-[8px];
+}

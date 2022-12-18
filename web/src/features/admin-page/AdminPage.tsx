@@ -1,7 +1,9 @@
 import { ReactElement } from 'react';
-import { PaymentsTable } from './components';
-import { dummyPaymentInfo } from '@/dummy/payments-table';
+import { PaymentsTable, AccountsCard } from './components';
+import { dummyPaymentInfo, dummyCashappAccounts } from '@/dummy';
 import { PageChangeType, TableType } from '@/types/page-change';
+import { Button } from '@/components';
+import { useRouter } from 'next/router';
 
 export type AdminPageProps = {
   /**
@@ -18,20 +20,41 @@ export type AdminPageProps = {
 const PREFIX = 'admin-page';
 
 function AdminPage(props: AdminPageProps): ReactElement {
+  const router = useRouter();
   return (
     <div className={`${PREFIX}`}>
-      <PaymentsTable
-        handlePageChange={props.handlePageChange}
-        handleMarkProcessed={props.handleMarkProcessed}
-        includeActionColumn
-        data={dummyPaymentInfo}
-        tableType={TableType.PENDING}
-      />
-      <PaymentsTable
-        handlePageChange={props.handlePageChange}
-        tableType={TableType.PROCESSED}
-        data={dummyPaymentInfo}
-      />
+      <div className={`${PREFIX}-header-container`}>
+        <h1 className={`${PREFIX}-header`}>
+          <span className={'red-span-text'}>Admin</span>
+          <span className={'ml-[16px]'}>Page</span>
+        </h1>
+        <Button
+          onPress={() => router.push('/')}
+          className={`${PREFIX}-button`}
+          type="button"
+        >
+          Home
+        </Button>
+      </div>
+      <div className={`${PREFIX}-table-container`}>
+        <PaymentsTable
+          handlePageChange={props.handlePageChange}
+          handleMarkProcessed={props.handleMarkProcessed}
+          includeActionColumn
+          data={dummyPaymentInfo}
+          tableType={TableType.PENDING}
+        />
+        <PaymentsTable
+          handlePageChange={props.handlePageChange}
+          tableType={TableType.PROCESSED}
+          data={dummyPaymentInfo}
+        />
+      </div>
+      <div className={`${PREFIX}-second-level`}>
+        <div className={`${PREFIX}-accounts-container`}>
+          <AccountsCard cashappAccount={dummyCashappAccounts} />
+        </div>
+      </div>
     </div>
   );
 }
