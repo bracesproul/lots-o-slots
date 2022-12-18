@@ -42,6 +42,11 @@ export type PaymentsTableProps = {
    * Function to handle marking the payment as processed.
    */
   handleMarkProcessed?: (id: string) => void;
+
+  /**
+   * Handle pagination.
+   */
+  handlePageChange: (direction: PageChangeType) => void;
 };
 
 type ActionCellProps = Pick<PaymentsTableProps, 'handleMarkProcessed'> & {
