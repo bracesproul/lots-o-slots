@@ -6,3 +6,4 @@ export { ButtonCard } from './button-card';
 export { CircleButton } from './circle-button';
 export { InteractableComponent } from './interactable-component';
 export { Dialog } from './modal';
+export { Provider } from './provider';
