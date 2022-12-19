@@ -23,6 +23,13 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
         processed: input.processed,
       });
     }
+
+    if (input.paymentType) {
+      query = query.andWhere('payment.paymentType = :paymentType', {
+        paymentType: input.paymentType,
+      });
+    }
+
     return query.addOrderBy('"createdAt"', 'ASC').getMany();
   }
 

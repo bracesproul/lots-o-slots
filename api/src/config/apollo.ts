@@ -1,6 +1,12 @@
 import { ApolloError, ApolloServer } from 'apollo-server-express';
 import { buildSchema } from './';
 import { QueryFailedError } from 'typeorm';
+import { Request, Response } from 'express';
+
+type ContextType = {
+  req: Request;
+  res: Response;
+};
 
 export async function startApolloServer(): Promise<ApolloServer> {
   const schema = await buildSchema();
@@ -32,6 +38,12 @@ export async function startApolloServer(): Promise<ApolloServer> {
         },
       },
     ],
+    async context({ req, res }): Promise<ContextType> {
+      return {
+        req,
+        res,
+      };
+    },
     formatError: (error) => {
       if (process.env.NODE_ENV !== 'test') {
         console.error(error);

@@ -1,5 +1,5 @@
-query GetProcessedPayments {
-  getAllPayments(input: { processed: true }) {
+query GetPendingPayments {
+  getAllPayments(input: { processed: false }) {
     id
     userId
     senderName

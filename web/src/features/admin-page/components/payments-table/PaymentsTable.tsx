@@ -3,24 +3,16 @@ import clsx from 'clsx';
 import { Icon } from '@/components';
 import { ArrowRight } from '@/assets';
 import { PageChangeType, TableType } from '@/types/page-change';
-
-// @TODO Replace with import from graphql once codegen init.
-export enum PaymentProvider {
-  PAYPAL = 'PAYPAL',
-  CASHAPP = 'CASHAPP',
-  ZELLE = 'ZELLE',
-}
-
-export enum Platform {
-  SLOTS = 'SLOTS',
-  POKER = 'POKER',
-}
+import {
+  useGetProcessedPaymentsQuery,
+  useGetPendingPaymentsQuery,
+  PaymentProvider,
+} from '@/generated/graphql';
 
 export type PaymentTableData = {
   paymentProvider: PaymentProvider;
   username: string;
   amount: number;
-  platform: Platform;
   id: string;
 };
 
@@ -28,6 +20,7 @@ export type PaymentsTableProps = {
   className?: string;
 
   data: PaymentTableData[];
+  loading: boolean;
 
   /**
    * Whether or not to show the action column.
@@ -74,7 +67,7 @@ function ActionCell(props: ActionCellProps): ReactElement {
   );
 }
 
-export default function PaymentsTable(props: PaymentsTableProps): ReactElement {
+export function PaymentsTable(props: PaymentsTableProps): ReactElement {
   const p = { ...props };
 
   const title =
@@ -89,7 +82,6 @@ export default function PaymentsTable(props: PaymentsTableProps): ReactElement {
         <table className={'payments-table'}>
           <thead className={`${PREFIX}-header`}>
             <tr className={`${PREFIX}-header-row`}>
-              <th>Platform</th>
               <th>Username</th>
               <th>Amount</th>
               <th>Payment</th>
@@ -107,9 +99,10 @@ export default function PaymentsTable(props: PaymentsTableProps): ReactElement {
                   },
                 ])}
               >
-                <th className={`${PREFIX}-th`}>{row.platform}</th>
                 <th className={`${PREFIX}-th`}>{row.username}</th>
-                <th className={`${PREFIX}-th`}>{row.amount}</th>
+                <th className={`${PREFIX}-th`}>
+                  ${row.amount.toLocaleString()}
+                </th>
                 <th className={`${PREFIX}-th`}>{row.paymentProvider}</th>
                 {p.includeActionColumn && (
                   <th className={`${PREFIX}-th`}>
@@ -125,5 +118,58 @@ export default function PaymentsTable(props: PaymentsTableProps): ReactElement {
         </table>
       </div>
     </div>
+  );
+}
+
+export default function PaymentsTableContainer(): ReactElement {
+  const { data: processedData, loading: processedLoading } =
+    useGetProcessedPaymentsQuery();
+  const { data: pendingData, loading: pendingLoading } =
+    useGetPendingPaymentsQuery();
+
+  const handlePageChange = (direction: PageChangeType, table: TableType) => {
+    console.log('page change:', direction, table);
+  };
+  const handleMarkProcessed = (id: string) => {
+    console.log('marking as processed:', id);
+  };
+
+  const processedPayments: PaymentTableData[] =
+    processedData?.getAllPayments.map((data) => {
+      return {
+        id: data.id,
+        paymentProvider: data.provider,
+        username: data.senderName,
+        amount: data.amount,
+      };
+    }) ?? [];
+
+  const pendingPayments: PaymentTableData[] =
+    pendingData?.getAllPayments.map((data) => {
+      return {
+        id: data.id,
+        paymentProvider: data.provider,
+        username: data.senderName,
+        amount: data.amount,
+      };
+    }) ?? [];
+
+  return (
+    <>
+      <PaymentsTable
+        loading={pendingLoading}
+        handlePageChange={handlePageChange}
+        handleMarkProcessed={handleMarkProcessed}
+        includeActionColumn
+        data={pendingPayments}
+        tableType={TableType.PENDING}
+      />
+      <PaymentsTable
+        loading={processedLoading}
+        handlePageChange={handlePageChange}
+        tableType={TableType.PROCESSED}
+        data={processedPayments}
+      />
+    </>
   );
 }

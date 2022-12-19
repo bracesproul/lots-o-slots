@@ -122,4 +122,10 @@ export class GetPaymentsInput {
     description: 'The provider of the payment.',
   })
   paymentProvider?: PaymentProvider;
+
+  @Field(() => PaymentType, {
+    nullable: true,
+    description: 'The type of the payment.',
+  })
+  paymentType?: PaymentType;
 }

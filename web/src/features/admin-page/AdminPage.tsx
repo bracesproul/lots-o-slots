@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import { PaymentsTable, AccountsCard } from './components';
-import { dummyPaymentInfo, dummyCashappAccounts } from '@/dummy';
+import { dummyCashappAccounts } from '@/dummy';
 import { PageChangeType, TableType } from '@/types/page-change';
 import { Button } from '@/components';
 import { useRouter } from 'next/router';
@@ -19,7 +19,7 @@ export type AdminPageProps = {
 
 const PREFIX = 'admin-page';
 
-function AdminPage(props: AdminPageProps): ReactElement {
+export default function AdminPage(): ReactElement {
   const router = useRouter();
   return (
     <div className={`${PREFIX}`}>
@@ -37,38 +37,12 @@ function AdminPage(props: AdminPageProps): ReactElement {
         </Button>
       </div>
       <div className={`${PREFIX}-table-container`}>
-        <PaymentsTable
-          handlePageChange={props.handlePageChange}
-          handleMarkProcessed={props.handleMarkProcessed}
-          includeActionColumn
-          data={dummyPaymentInfo}
-          tableType={TableType.PENDING}
-        />
-        <PaymentsTable
-          handlePageChange={props.handlePageChange}
-          tableType={TableType.PROCESSED}
-          data={dummyPaymentInfo}
-        />
+        <PaymentsTable />
         <AccountsCard cashappAccount={dummyCashappAccounts} />
       </div>
       <div className={`${PREFIX}-second-level`}>
         <div className={`${PREFIX}-accounts-container`}></div>
       </div>
     </div>
-  );
-}
-
-export default function AdminPageContainer(): ReactElement {
-  const handlePageChange = (direction: PageChangeType, table: TableType) => {
-    console.log('page change:', direction, table);
-  };
-  const handleMarkProcessed = (id: string) => {
-    console.log('marking as processed:', id);
-  };
-  return (
-    <AdminPage
-      handlePageChange={handlePageChange}
-      handleMarkProcessed={handleMarkProcessed}
-    />
   );
 }

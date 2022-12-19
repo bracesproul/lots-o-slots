@@ -72,6 +72,8 @@ export type EmailLog = MainEntity & Node & {
 export type GetPaymentsInput = {
   /** The provider of the payment. */
   paymentProvider?: InputMaybe<PaymentProvider>;
+  /** The type of the payment. */
+  paymentType?: InputMaybe<PaymentType>;
   /** Whether or not the payment is processed. */
   processed?: InputMaybe<Scalars['Boolean']>;
 };
@@ -192,17 +194,63 @@ export type User = MainEntity & Node & {
   userIdentifier_zelle?: Maybe<Scalars['String']>;
 };
 
+export type GetPendingPaymentsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetPendingPaymentsQuery = { __typename?: 'Query', getAllPayments: Array<{ __typename?: 'Payment', id: string, userId: string, senderName: string, amount: number, processed: boolean, provider: PaymentProvider, paymentType: PaymentType }> };
+
 export type GetProcessedPaymentsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetProcessedPaymentsQuery = { __typename?: 'Query', getAllPayments: Array<{ __typename?: 'Payment', id: string, userId: string, amount: number, processed: boolean, provider: PaymentProvider, paymentType: PaymentType }> };
+export type GetProcessedPaymentsQuery = { __typename?: 'Query', getAllPayments: Array<{ __typename?: 'Payment', id: string, userId: string, senderName: string, amount: number, processed: boolean, provider: PaymentProvider, paymentType: PaymentType }> };
 
 
+export const GetPendingPaymentsDocument = gql`
+    query GetPendingPayments {
+  getAllPayments(input: {processed: false}) {
+    id
+    userId
+    senderName
+    amount
+    processed
+    provider
+    paymentType
+  }
+}
+    `;
+
+/**
+ * __useGetPendingPaymentsQuery__
+ *
+ * To run a query within a React component, call `useGetPendingPaymentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPendingPaymentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPendingPaymentsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetPendingPaymentsQuery(baseOptions?: Apollo.QueryHookOptions<GetPendingPaymentsQuery, GetPendingPaymentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPendingPaymentsQuery, GetPendingPaymentsQueryVariables>(GetPendingPaymentsDocument, options);
+      }
+export function useGetPendingPaymentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPendingPaymentsQuery, GetPendingPaymentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPendingPaymentsQuery, GetPendingPaymentsQueryVariables>(GetPendingPaymentsDocument, options);
+        }
+export type GetPendingPaymentsQueryHookResult = ReturnType<typeof useGetPendingPaymentsQuery>;
+export type GetPendingPaymentsLazyQueryHookResult = ReturnType<typeof useGetPendingPaymentsLazyQuery>;
+export type GetPendingPaymentsQueryResult = Apollo.QueryResult<GetPendingPaymentsQuery, GetPendingPaymentsQueryVariables>;
 export const GetProcessedPaymentsDocument = gql`
     query GetProcessedPayments {
   getAllPayments(input: {processed: true}) {
     id
     userId
+    senderName
     amount
     processed
     provider

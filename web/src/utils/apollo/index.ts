@@ -9,12 +9,14 @@ import { API_URL, isServer } from '../';
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 function createApolloClient() {
-  return new ApolloClient({
-    uri: API_URL,
+  console.log('API_URL', API_URL, isServer(), process.env.APOLLO_SERVER_URI);
+  const client = new ApolloClient({
+    uri: 'http://localhost:8000/graphql',
     cache: new InMemoryCache(),
     ssrMode: isServer(),
     connectToDevTools: !isServer(),
   });
+  return client;
 }
 
 export function initializeApollo(

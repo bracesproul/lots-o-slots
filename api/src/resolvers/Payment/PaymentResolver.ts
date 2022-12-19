@@ -19,13 +19,14 @@ export class PaymentResolver {
   async getAllPayments(
     @Arg('input', { nullable: true }) input?: GetPaymentsInput
   ): Promise<Payment[]> {
-    if (!input?.processed) {
-      throw new ApolloError('no input passed');
-    }
+    // if (!input?.processed) {
+    //   throw new ApolloError('no input passed');
+    // }
 
     return getCustomRepository(PaymentRepository).getAll({
       processed: input?.processed,
       paymentProvider: input?.paymentProvider,
+      paymentType: input?.paymentType,
     });
   }
 
