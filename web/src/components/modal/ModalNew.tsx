@@ -147,7 +147,7 @@ function Dialog(props: DialogRootProps): ReactElement {
                 <DialogPrimitive.Close
                   className={cx(
                     'inline-flex select-none justify-center rounded-md px-4 py-2 text-sm font-medium',
-                    'bg-purple-600 text-white hover:bg-purple-700 dark:bg-purple-700 dark:text-gray-100 dark:hover:bg-purple-600',
+                    'border-purple-600 text-white',
                     'border border-transparent',
                     'focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75'
                   )}
