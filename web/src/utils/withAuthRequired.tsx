@@ -1,7 +1,7 @@
 import * as cookie from 'cookie';
 import { GetServerSideProps, GetServerSidePropsContext } from 'next';
 
-const STORAGE_KEY = 'lots_o_slots_auth';
+export const STORAGE_KEY = 'lS_lots_o_slots_auth';
 
 type WithAuthRequiredValue = {
   authed: boolean;
@@ -20,6 +20,7 @@ const withAuthRequired: GetServerSideProps<WithAuthRequiredValue> = async (
       },
     };
   } else {
+    console.log('failed');
     return {
       redirect: {
         destination: '/admin/authorize',

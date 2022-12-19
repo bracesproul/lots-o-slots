@@ -8,3 +8,4 @@ export { HowToJoinLower } from './how-to-join-lower';
 export { FaqSection } from './faq-section';
 export { Header } from './header';
 export { AdminPage } from './admin-page';
+export { AdminAuthorizePage } from './admin-authorize-page';
