@@ -55,20 +55,15 @@ export function AccountsCard(props: AccountsCardProps): ReactElement {
           Add CashApp Account
         </Button>
       </div>
-      <Dialog
+      <AddCashappAccountForm
         open={changeCashtagModalOpen}
-        onOpenChange={setChangeCashtagModalOpen}
-        title="Add New CashApp Account"
-        buttonTitle="Close"
-      >
-        <AddCashappAccountForm
-          onSubmit={p.submitNewCashappAccount}
-          cashtag={p.newCashtag}
-          setCashtag={p.setNewCashtag}
-          email={p.newCashappEmail}
-          setEmail={p.setNewCashappEmail}
-        />
-      </Dialog>
+        setOpen={setChangeCashtagModalOpen}
+        onSubmit={p.submitNewCashappAccount}
+        cashtag={p.newCashtag}
+        setCashtag={p.setNewCashtag}
+        email={p.newCashappEmail}
+        setEmail={p.setNewCashappEmail}
+      />
     </div>
   );
 }
