@@ -1,7 +1,7 @@
 import faker from 'faker';
 import { Payment, User } from '@/entities';
 import { getRepository } from 'typeorm';
-import { PaymentProvider } from '@/entities/Payment/Payment';
+import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
 
 export async function seedFakePayments(users: User[]): Promise<Payment[]> {
   const payments: Payment[] = [];
@@ -13,6 +13,8 @@ export async function seedFakePayments(users: User[]): Promise<Payment[]> {
         processed: faker.datatype.boolean(),
         emailId: faker.datatype.uuid(),
         provider: faker.random.arrayElement(Object.values(PaymentProvider)),
+        senderName: faker.name.firstName(),
+        paymentType: faker.random.arrayElement(Object.values(PaymentType)),
       })
     );
   }

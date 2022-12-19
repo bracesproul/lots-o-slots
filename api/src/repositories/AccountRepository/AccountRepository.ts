@@ -5,12 +5,17 @@ import { PaymentProvider } from '@/entities/Payment/Payment';
 
 @EntityRepository(Account)
 export default class AccountRepository extends AbstractRepository<Account> {
-  async getAll(): Promise<Account[]> {
-    return this.repository
-      .createQueryBuilder('aayment')
-      .addSelect('"aayment"."createdAt"', 'createdAt')
-      .addOrderBy('"createdAt"', 'ASC')
-      .getMany();
+  async getAll({ type }: { type?: PaymentProvider }): Promise<Account[]> {
+    let query = this.repository
+      .createQueryBuilder('account')
+      .addSelect('"account"."createdAt"', 'createdAt');
+
+    if (type) {
+      query = query.andWhere('"type" = :type', {
+        type: type,
+      });
+    }
+    return query.getMany();
   }
 
   async createAccount({
