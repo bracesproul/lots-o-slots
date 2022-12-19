@@ -2,7 +2,6 @@ import { ReactElement, useState } from 'react';
 import clsx from 'clsx';
 import { Button } from '@/components';
 import { CookieStorage } from 'local-storage-fallback';
-import { STORAGE_KEY } from '@/utils/withAuthRequired';
 import { useRouter } from 'next/router';
 
 export type AdminAuthorizePageProps = {
