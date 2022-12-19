@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 export type CashappAccountCardProps = {
   cashtag: string;
   balance: number;
-  lastUpdate: Date;
+  lastUpdate?: Date;
 };
 
 const PREFIX = 'cashapp-account-card';
@@ -15,8 +15,10 @@ export default function CashappAccountCard(
   props: CashappAccountCardProps
 ): ReactElement {
   const p = { ...props };
-  const dateTime = format(p.lastUpdate, "hh:mmaaaaa'm'");
-  const dateDays = format(p.lastUpdate, 'mm/dd');
+  const dateTime = p.lastUpdate
+    ? format(p.lastUpdate, "hh:mmaaaaa'm'")
+    : undefined;
+  const dateDays = p.lastUpdate ? format(p.lastUpdate, 'mm/dd') : undefined;
   return (
     <div className={`${PREFIX}`}>
       <div className={`${PREFIX}-cashapp-logo-container`}>
@@ -27,11 +29,17 @@ export default function CashappAccountCard(
           <h1 className={`${PREFIX}-cashtag`}>${props.cashtag}</h1>
         </div>
         <div className={`${PREFIX}-info-stats`}>
-          <p className={`${PREFIX}-stats-text`}>${p.balance}</p>
-          <span className={`${PREFIX}-line-span`}>|</span>
-          <p className={`${PREFIX}-stats-text`}>{dateDays}</p>
-          <span className={`${PREFIX}-line-span`}>|</span>
-          <p className={`${PREFIX}-stats-text`}>{dateTime}</p>
+          <p className={`${PREFIX}-stats-text`}>
+            ${p.balance.toLocaleString()}
+          </p>
+          {p.lastUpdate ? (
+            <>
+              <span className={`${PREFIX}-line-span`}>|</span>
+              <p className={`${PREFIX}-stats-text`}>{dateDays}</p>
+              <span className={`${PREFIX}-line-span`}>|</span>
+              <p className={`${PREFIX}-stats-text`}>{dateTime}</p>
+            </>
+          ) : null}
         </div>
       </div>
     </div>

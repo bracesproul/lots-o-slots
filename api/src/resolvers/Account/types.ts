@@ -1,6 +1,6 @@
 import { Field, ID, InputType, ObjectType } from 'type-graphql';
 import { Account } from '@/entities';
-import { PaymentProvider } from '@/entities/Payment/Payment';
+import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
 
 @InputType({
   description: 'Input type for creating an account.',
@@ -47,8 +47,8 @@ export class GetAllAccountsQuery {
 })
 export class GetAllAccountsInput {
   @Field(() => PaymentProvider, {
-    nullable: false,
+    nullable: true,
     description: 'The payment provider type.',
   })
-  type?: PaymentProvider;
+  provider?: PaymentProvider;
 }

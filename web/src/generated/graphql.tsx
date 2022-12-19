@@ -16,6 +16,33 @@ export type Scalars = {
   DateTime: string;
 };
 
+export type Account = MainEntity & Node & {
+  __typename?: 'Account';
+  balance: Scalars['Float'];
+  canAcceptDeposits: Scalars['Boolean'];
+  canWithdrawal: Scalars['Boolean'];
+  createdAt: Scalars['DateTime'];
+  dailyWithdrawals: Scalars['Float'];
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  email: Scalars['String'];
+  id: Scalars['ID'];
+  type: PaymentProvider;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  weeklyWithdrawals: Scalars['Float'];
+};
+
+/** Input type for creating an account. */
+export type AddAccountInput = {
+  /** The starting balance of the account. */
+  balance?: InputMaybe<Scalars['Float']>;
+  /** Whether an account can accept funds. */
+  canAcceptDeposits?: InputMaybe<Scalars['Boolean']>;
+  /** Whether an account can withdrawal funds. */
+  canWithdrawal?: InputMaybe<Scalars['Boolean']>;
+  /** The email address of the account. */
+  email: Scalars['String'];
+};
+
 /** Input type for creating an email log. */
 export type CreateEmailLogInput = {
   /** The email ID provided by gmail. */
@@ -68,6 +95,12 @@ export type EmailLog = MainEntity & Node & {
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
 
+/** Input type for getting accounts. */
+export type GetAllAccountsInput = {
+  /** The payment provider type. */
+  provider?: InputMaybe<PaymentProvider>;
+};
+
 /** Input type for getting payments. */
 export type GetPaymentsInput = {
   /** The provider of the payment. */
@@ -110,9 +143,15 @@ export type MarkPaymentAsProcessedResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addAccount: Account;
   createEmailLog: EmailLog;
   createPayment: CreatedPaymentResponse;
   markPaymentAsProcessed: MarkPaymentAsProcessedResponse;
+};
+
+
+export type MutationAddAccountArgs = {
+  input: AddAccountInput;
 };
 
 
@@ -166,14 +205,21 @@ export enum PaymentType {
 export type Query = {
   __typename?: 'Query';
   createUser: User;
+  getAllAccounts: Array<Account>;
   getAllPayments: Array<Payment>;
   getAllUsers: Array<User>;
   getRecentUpdate: GetRecentEmailLogUpdate;
+  seedData: Scalars['Boolean'];
 };
 
 
 export type QueryCreateUserArgs = {
   input: CreateUserInput;
+};
+
+
+export type QueryGetAllAccountsArgs = {
+  input?: InputMaybe<GetAllAccountsInput>;
 };
 
 
@@ -194,6 +240,11 @@ export type User = MainEntity & Node & {
   userIdentifier_zelle?: Maybe<Scalars['String']>;
 };
 
+export type GetAllAccountsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllAccountsQuery = { __typename?: 'Query', getAllAccounts: Array<{ __typename?: 'Account', id: string, updatedAt?: string | null, email: string, balance: number, canWithdrawal: boolean, canAcceptDeposits: boolean, dailyWithdrawals: number, weeklyWithdrawals: number }> };
+
 export type GetPendingPaymentsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -205,6 +256,47 @@ export type GetProcessedPaymentsQueryVariables = Exact<{ [key: string]: never; }
 export type GetProcessedPaymentsQuery = { __typename?: 'Query', getAllPayments: Array<{ __typename?: 'Payment', id: string, userId: string, senderName: string, amount: number, processed: boolean, provider: PaymentProvider, paymentType: PaymentType }> };
 
 
+export const GetAllAccountsDocument = gql`
+    query GetAllAccounts {
+  getAllAccounts(input: {provider: CASHAPP}) {
+    id
+    updatedAt
+    email
+    balance
+    canWithdrawal
+    canAcceptDeposits
+    dailyWithdrawals
+    weeklyWithdrawals
+  }
+}
+    `;
+
+/**
+ * __useGetAllAccountsQuery__
+ *
+ * To run a query within a React component, call `useGetAllAccountsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllAccountsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllAccountsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllAccountsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllAccountsQuery, GetAllAccountsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllAccountsQuery, GetAllAccountsQueryVariables>(GetAllAccountsDocument, options);
+      }
+export function useGetAllAccountsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllAccountsQuery, GetAllAccountsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllAccountsQuery, GetAllAccountsQueryVariables>(GetAllAccountsDocument, options);
+        }
+export type GetAllAccountsQueryHookResult = ReturnType<typeof useGetAllAccountsQuery>;
+export type GetAllAccountsLazyQueryHookResult = ReturnType<typeof useGetAllAccountsLazyQuery>;
+export type GetAllAccountsQueryResult = Apollo.QueryResult<GetAllAccountsQuery, GetAllAccountsQueryVariables>;
 export const GetPendingPaymentsDocument = gql`
     query GetPendingPayments {
   getAllPayments(input: {processed: false}) {

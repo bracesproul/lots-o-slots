@@ -25,15 +25,12 @@ export class AccountResolver {
   }
 
   @Transaction()
-  @Query(() => GetAllAccountsQuery, { nullable: false })
+  @Query(() => [Account], { nullable: false })
   async getAllAccounts(
     @Arg('input', { nullable: true }) input?: GetAllAccountsInput
-  ): Promise<GetAllAccountsQuery> {
-    const accounts = await getCustomRepository(AccountRepository).getAll({
-      type: input?.type,
+  ): Promise<Account[]> {
+    return getCustomRepository(AccountRepository).getAll({
+      provider: input?.provider,
     });
-    return {
-      accounts,
-    };
   }
 }

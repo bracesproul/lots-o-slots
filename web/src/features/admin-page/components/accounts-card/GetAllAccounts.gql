@@ -1,0 +1,12 @@
+query GetAllAccounts {
+  getAllAccounts(input: { provider: CASHAPP }) {
+    id
+    updatedAt
+    email
+    balance
+    canWithdrawal
+    canAcceptDeposits
+    dailyWithdrawals
+    weeklyWithdrawals
+  }
+}

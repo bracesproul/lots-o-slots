@@ -1,18 +1,23 @@
 import { AbstractRepository, EntityRepository } from 'typeorm';
 import { Account } from '@/entities';
 import { ApolloError } from 'apollo-server-express';
-import { PaymentProvider } from '@/entities/Payment/Payment';
+import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
 
 @EntityRepository(Account)
 export default class AccountRepository extends AbstractRepository<Account> {
-  async getAll({ type }: { type?: PaymentProvider }): Promise<Account[]> {
+  async getAll({
+    provider,
+  }: {
+    type?: PaymentType;
+    provider?: PaymentProvider;
+  }): Promise<Account[]> {
     let query = this.repository
       .createQueryBuilder('account')
       .addSelect('"account"."createdAt"', 'createdAt');
 
-    if (type) {
-      query = query.andWhere('"type" = :type', {
-        type: type,
+    if (provider) {
+      query = query.andWhere('"provider" = :provider', {
+        provider: provider,
       });
     }
     return query.getMany();

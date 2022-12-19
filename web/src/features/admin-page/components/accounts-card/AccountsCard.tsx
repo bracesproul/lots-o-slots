@@ -1,13 +1,14 @@
 import { ReactElement, useState } from 'react';
 import { CashappAccountCard } from './components';
 import { Button } from '@/components';
+import { useGetAllAccountsQuery } from '@/generated/graphql';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import Dialog from '@/components/modal/ModalNew';
 
 type CashAppAccountType = {
   cashtag: string;
   balance: number;
-  lastUpdate: Date;
+  lastUpdate?: Date;
 };
 
 export type AccountsCardProps = {
@@ -16,7 +17,7 @@ export type AccountsCardProps = {
 
 const PREFIX = 'accounts-card';
 
-export default function AccountsCard(props: AccountsCardProps): ReactElement {
+export function AccountsCard(props: AccountsCardProps): ReactElement {
   const p = { ...props };
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [changeCashtagModalOpen, setChangeCashtagModalOpen] = useState(false);
@@ -60,4 +61,20 @@ export default function AccountsCard(props: AccountsCardProps): ReactElement {
       </Dialog> */}
     </div>
   );
+}
+
+export default function AccountsCardContainer(): ReactElement {
+  const { data } = useGetAllAccountsQuery();
+
+  const cashappAccounts: CashAppAccountType[] =
+    data?.getAllAccounts.map((account) => {
+      const cashappAccount: CashAppAccountType = {
+        cashtag: account.email,
+        balance: account.balance,
+        lastUpdate: account.updatedAt ? new Date(account.updatedAt) : undefined,
+      };
+      return cashappAccount;
+    }) ?? [];
+
+  return <AccountsCard cashappAccount={cashappAccounts} />;
 }
