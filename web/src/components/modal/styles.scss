@@ -1,0 +1,36 @@
+.dialog-overlay {
+  @apply fixed inset-0 z-20 bg-black/50;
+}
+
+.dialog-content {
+  @apply fixed z-50;
+  @apply w-[95vw] max-w-md rounded-lg p-4 md:w-full;
+  @apply top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%];
+  @apply dark:bg-gray-800;
+  @apply focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75;
+}
+
+.dialog-title {
+  @apply text-sm font-medium text-gray-900 dark:text-gray-100;
+}
+
+.dialog-description {
+  @apply mt-2 text-sm font-normal text-gray-700 dark:text-gray-400;
+}
+
+.dialog-close-x {
+  @apply absolute top-3.5 right-3.5 inline-flex items-center justify-center rounded-full p-1;
+  @apply focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75;
+}
+
+.dialog-description {
+  @apply mt-2 text-sm font-normal text-gray-700 dark:text-gray-400;
+}
+
+.dialog-cross-icon {
+  @apply h-4 w-4 text-gray-500 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-400;
+}
+
+.dialog-footer {
+  @apply mt-4 flex justify-end;
+}

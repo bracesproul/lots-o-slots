@@ -49,11 +49,10 @@ function AdminPage(props: AdminPageProps): ReactElement {
           tableType={TableType.PROCESSED}
           data={dummyPaymentInfo}
         />
+        <AccountsCard cashappAccount={dummyCashappAccounts} />
       </div>
       <div className={`${PREFIX}-second-level`}>
-        <div className={`${PREFIX}-accounts-container`}>
-          <AccountsCard cashappAccount={dummyCashappAccounts} />
-        </div>
+        <div className={`${PREFIX}-accounts-container`}></div>
       </div>
     </div>
   );

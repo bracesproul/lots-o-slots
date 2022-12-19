@@ -1,7 +1,7 @@
 @use './components/styles.scss' as componentStyles;
 
 .accounts-card {
-  @apply flex flex-col min-w-[450px] h-fit;
+  @apply flex flex-col min-w-[350px] h-[700px];
   @apply bg-[#0E0F19] border-[2px] border-gray-500 p-[12px];
 }
 
@@ -11,7 +11,7 @@
 }
 
 .accounts-card-cards-container {
-  @apply m-auto max-h-[512px] overflow-scroll overflow-x-hidden overflow-y-auto;
+  @apply m-auto h-[425px] overflow-scroll overflow-x-hidden overflow-y-auto;
 }
 
 .accounts-card-button-container {

@@ -54,4 +54,11 @@ export const dummyPaymentInfo: PaymentTableData[] = [
     platform: Platform.SLOTS,
     id: '7',
   },
+  {
+    paymentProvider: PaymentProvider.CASHAPP,
+    username: 'test_user_7',
+    amount: 107,
+    platform: Platform.SLOTS,
+    id: '8',
+  },
 ];

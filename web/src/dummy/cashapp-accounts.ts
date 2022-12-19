@@ -20,23 +20,23 @@ export const dummyCashappAccounts = [
     lastUpdate: new Date(),
   },
   {
-    cashtag: 'cashapp1',
-    balance: 1000,
+    cashtag: 'cashapp5',
+    balance: 1005,
     lastUpdate: new Date(),
   },
   {
-    cashtag: 'cashapp2',
-    balance: 1002,
+    cashtag: 'cashapp6',
+    balance: 1006,
     lastUpdate: new Date(),
   },
   {
-    cashtag: 'cashapp3',
-    balance: 1003,
+    cashtag: 'cashapp7',
+    balance: 1007,
     lastUpdate: new Date(),
   },
   {
-    cashtag: 'cashapp4',
-    balance: 1004,
+    cashtag: 'cashapp8',
+    balance: 1008,
     lastUpdate: new Date(),
   },
 ];

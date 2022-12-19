@@ -1,6 +1,6 @@
 .payments-table-container {
   @apply bg-[#0E0F19] border-[2px] border-gray-500 p-[12px];
-  @apply w-fit h-fit;
+  @apply w-fit h-[700px];
 }
 
 .payments-table-title {
@@ -10,11 +10,16 @@
 
 .payments-table {
   @apply table-fixed border-separate border-spacing-y-[5px] text-white;
+  @apply overflow-y-scroll w-full block max-h-[500px];
+}
+
+.payments-table-div-container {
+  @apply m-auto;
 }
 
 .payments-table-row {
   @apply bg-[#383B50] h-[50px];
-  @apply rounded-sm;
+  @apply rounded-md;
 
   &.is-even {
     @apply bg-[#414147];
@@ -22,11 +27,12 @@
 }
 
 .payments-table-th {
-  @apply text-white px-8 py-4;
+  @apply text-white px-8 py-4 font-normal;
 }
 
 .payments-table-header {
   @apply bg-[#C5002C] h-[50px];
+  @apply sticky top-0;
 }
 
 .payments-table-header-row {

@@ -19,3 +19,4 @@ export { default as BigSlotsSvg } from './BigSlotsSvg';
 export { default as BigCardsSvg } from './BigCardsSvg';
 export { default as ArrowRight } from './ArrowRight';
 export { default as RightArrowButton } from './RightArrowButton';
+export { default as CloseIcon } from './CloseIcon';
