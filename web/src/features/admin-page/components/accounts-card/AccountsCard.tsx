@@ -1,6 +1,7 @@
 import { ReactElement, useState } from 'react';
 import { CashappAccountCard } from './components';
-import { Button, Modal } from '@/components';
+import { Button } from '@/components';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import Dialog from '@/components/modal/ModalNew';
 
 type CashAppAccountType = {
