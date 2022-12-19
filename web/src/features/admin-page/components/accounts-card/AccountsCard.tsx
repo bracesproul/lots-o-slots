@@ -47,18 +47,15 @@ export function AccountsCard(props: AccountsCardProps): ReactElement {
           Add CashApp Account
         </Button>
       </div>
-      {/* <Dialog
+      <Dialog
         open={changeCashtagModalOpen}
         onOpenChange={setChangeCashtagModalOpen}
+        title="Test title"
+        description="Test desc"
+        buttonTitle="Save"
       >
-        <Dialog.Content>
-          <Dialog.Title title="Add CashApp Account" />
-          <Dialog.Description description="Please enter the details of the account you would like to add" />
-          <Dialog.Footer>
-            <Button type="submit">Save</Button>
-          </Dialog.Footer>
-        </Dialog.Content>
-      </Dialog> */}
+        <h1>hey</h1>
+      </Dialog>
     </div>
   );
 }
