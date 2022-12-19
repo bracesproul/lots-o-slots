@@ -98,7 +98,6 @@ function Footer(props: DialogFooterButtonsProps): ReactElement {
 
 function Dialog(props: DialogRootProps): ReactElement {
   const p = { ...props };
-  console.log('p.open', p.open);
   return (
     <DialogPrimitive.Root open={p.open} onOpenChange={p.onOpenChange}>
       <Transition.Root show={p.open}>

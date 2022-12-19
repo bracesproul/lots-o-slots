@@ -85,15 +85,12 @@ export default function AdminAuthorizePageContainer(): ReactElement {
       setPassword={setPassword}
       wrongPassword={wrongPassword}
       handleSubmit={() => {
-        console.log('submitted!');
         // TODO: Hit backend to check if key is valid, for now just do if.
         if (password === 'pizza') {
           const cookieStorage = new CookieStorage();
           cookieStorage.setItem('lots_o_slots_auth', password);
-          console.log('after cookie update');
           router.push('/admin');
         } else {
-          console.log('wrong pw');
           setWrongPassword(true);
           setTimeout(() => {
             router.reload();

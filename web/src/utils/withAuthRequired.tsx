@@ -11,16 +11,13 @@ const withAuthRequired: GetServerSideProps<WithAuthRequiredValue> = async (
   context: GetServerSidePropsContext
 ) => {
   const parsedCookies = cookie.parse(context.req.headers.cookie ?? '');
-  console.log('parsedCookies', parsedCookies);
   if (parsedCookies[STORAGE_KEY] === 'pizza') {
-    console.log('authed!');
     return {
       props: {
         authed: true,
       },
     };
   } else {
-    console.log('failed');
     return {
       redirect: {
         destination: '/admin/authorize',
