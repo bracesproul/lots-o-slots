@@ -3,18 +3,14 @@ import {
   InMemoryCache,
   NormalizedCacheObject,
 } from '@apollo/client';
-import isServer from '../isServer';
 import { merge } from 'lodash';
 import { useMemo } from 'react';
+import { API_URL, isServer } from '../';
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 function createApolloClient() {
-  const API_URL = process.env.APOLLO_SERVER_URI;
-  if (!API_URL) {
-    throw new Error('SERVER URI NOT FOUND.');
-  }
   return new ApolloClient({
-    uri: `${API_URL}/graphql`,
+    uri: API_URL,
     cache: new InMemoryCache(),
     ssrMode: isServer(),
     connectToDevTools: !isServer(),

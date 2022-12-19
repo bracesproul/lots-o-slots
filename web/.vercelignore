@@ -1,0 +1,5 @@
+**/__stories__/
+*.stories.*
+public/**/README.md
+public/**/readme.md
+src/dummy
