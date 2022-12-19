@@ -1,0 +1,10 @@
+query GetProcessedPayments {
+  getAllPayments(input: { processed: true }) {
+    id
+    userId
+    amount
+    processed
+    provider
+    paymentType
+  }
+}

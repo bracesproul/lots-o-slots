@@ -14,7 +14,7 @@ function createApolloClient() {
     throw new Error('SERVER URI NOT FOUND.');
   }
   return new ApolloClient({
-    uri: `${API_URL}/api`,
+    uri: `${API_URL}/graphql`,
     cache: new InMemoryCache(),
     ssrMode: isServer(),
     connectToDevTools: !isServer(),

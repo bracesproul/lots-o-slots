@@ -6,7 +6,6 @@ import { authorize } from '../auth';
 import { getCustomRepository } from 'typeorm';
 import format from 'date-fns/format';
 import { parseEmailBody, parseEmailHeaders, findSender } from '@/utils';
-import { EmailObjectType } from '@/types';
 
 type PubSubDataResponse = {
   emailAddress: string;

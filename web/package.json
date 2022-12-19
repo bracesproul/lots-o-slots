@@ -8,13 +8,15 @@
     "start": "next start",
     "lint": "next lint",
     "storybook": "start-storybook public -p 6006",
-    "build:storybook": "build-storybook public"
+    "build:storybook": "build-storybook public",
+    "gen": "graphql-codegen --config codegen.yml"
   },
   "resolutions": {
     "webpack": "^5"
   },
   "dependencies": {
     "@apollo/client": "^3.7.2",
+    "@graphql-codegen/add": "^3.2.3",
     "@headlessui/react": "^1.7.7",
     "@radix-ui/react-dialog": "^1.0.2",
     "@radix-ui/react-icons": "^1.1.1",
@@ -40,6 +42,11 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.2",
+    "@graphql-codegen/cli": "^2.16.1",
+    "@graphql-codegen/introspection": "^2.2.3",
+    "@graphql-codegen/typescript": "^2.8.5",
+    "@graphql-codegen/typescript-operations": "^2.5.10",
+    "@graphql-codegen/typescript-react-apollo": "^3.3.7",
     "@storybook/addon-actions": "^6.5.13",
     "@storybook/addon-essentials": "^6.5.13",
     "@storybook/addon-interactions": "^6.5.13",
