@@ -41,22 +41,24 @@ function AdminAuthorizePage(props: AdminAuthorizePageProps): ReactElement {
         <>
           {!submitted ? (
             <div className={clsx([`${PREFIX}`, props.className])}>
-              <h1 className={`${PREFIX}-title`}>Enter Password</h1>
-              <input
-                className={`${PREFIX}-input`}
-                placeholder="password"
-                type="text"
-                value={p.password}
-                onChange={(e) => p.setPassword(e.target.value)}
-              />
-              <Button
-                isDisabled={!p.password || submitted}
-                onPress={handleSubmit}
-                className={'rounded-full'}
-                type="submit"
-              >
-                Submit
-              </Button>
+              <form onSubmit={handleSubmit} className={'flex flex-col'}>
+                <h1 className={`${PREFIX}-title`}>Enter Password</h1>
+                <input
+                  className={`${PREFIX}-input`}
+                  placeholder="password"
+                  type="text"
+                  value={p.password}
+                  onChange={(e) => p.setPassword(e.target.value)}
+                />
+                <Button
+                  isDisabled={!p.password || submitted}
+                  onPress={handleSubmit}
+                  className={'rounded-full'}
+                  type="submit"
+                >
+                  Submit
+                </Button>
+              </form>
             </div>
           ) : (
             <div className={clsx([`${PREFIX}`, props.className])}>
