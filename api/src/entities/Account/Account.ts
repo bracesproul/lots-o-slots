@@ -49,4 +49,10 @@ export default class Account extends MainEntity {
   })
   @Column({ type: 'boolean', nullable: false })
   canAcceptDeposits!: boolean;
+
+  @Field(() => Boolean, {
+    nullable: true,
+  })
+  @Column({ type: 'boolean', nullable: true })
+  defaultAccount?: boolean;
 }
