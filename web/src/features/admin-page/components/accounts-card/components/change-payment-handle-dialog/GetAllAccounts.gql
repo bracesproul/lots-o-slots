@@ -1,0 +1,6 @@
+query GetAllAccounts {
+  getAllAccounts {
+    id
+    email
+  }
+}

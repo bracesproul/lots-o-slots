@@ -4,7 +4,7 @@ import clsx from 'clsx';
 
 const PREFIX = 'select-component';
 
-type SelectOptionType = {
+export type SelectOptionType = {
   value: string;
   name: string;
 };

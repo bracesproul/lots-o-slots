@@ -1,5 +1,7 @@
 import { Button, Dialog, Select } from '@/components';
 import React, { ReactElement, useState } from 'react';
+import { useGetAllAccountsQuery } from '@/generated/graphql';
+import { SelectOptionType } from '@/components/select/Select';
 
 export type ChangePaymentHandleDialogProps = {
   onSubmit: () => void;
@@ -7,16 +9,10 @@ export type ChangePaymentHandleDialogProps = {
   setOpen: (open: boolean) => void;
   selectedAccount: string;
   setSelectedAccount: (selectedAccount: string) => void;
+  options: SelectOptionType[];
 };
 
 const PREFIX = 'change-handle-form';
-
-const dummyAccountOptions = [
-  { name: 'acc1', value: '1' },
-  { name: 'acc2', value: '2' },
-  { name: 'acc3', value: '3' },
-  { name: 'acc4', value: '4' },
-];
 
 function ChangePaymentHandleDialog(
   props: ChangePaymentHandleDialogProps
@@ -38,7 +34,7 @@ function ChangePaymentHandleDialog(
           value={p.selectedAccount}
           onValueChange={p.setSelectedAccount}
           open={true}
-          options={dummyAccountOptions}
+          options={p.options}
           label="select account"
         />
         <Button className={`${PREFIX}-form-submit`} type="submit">
@@ -54,12 +50,22 @@ export default function ChangePaymentHandleDialogContainer(
 ): ReactElement {
   const [selectedAccount, setSelectedAccount] = useState('');
 
+  const { data } = useGetAllAccountsQuery();
+
   React.useEffect(() => {
     console.log('selectedAccount', selectedAccount);
   }, [selectedAccount]);
   return (
     <ChangePaymentHandleDialog
       {...props}
+      options={
+        data?.getAllAccounts.map((account) => {
+          return {
+            name: account.email,
+            value: account.id,
+          };
+        }) ?? []
+      }
       selectedAccount={selectedAccount}
       setSelectedAccount={setSelectedAccount}
       onSubmit={() => {

@@ -1,4 +1,4 @@
-query GetAllAccounts {
+query GetAllCashappAccounts {
   getAllAccounts(input: { provider: CASHAPP }) {
     id
     updatedAt
