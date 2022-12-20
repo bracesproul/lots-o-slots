@@ -5,11 +5,10 @@ import {
 } from '@apollo/client';
 import { merge } from 'lodash';
 import { useMemo } from 'react';
-import { API_URL, isServer } from '../';
+import { isServer } from '../';
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 function createApolloClient() {
-  console.log('API_URL', API_URL, isServer(), process.env.APOLLO_SERVER_URI);
   const client = new ApolloClient({
     uri: 'http://localhost:8000/graphql',
     cache: new InMemoryCache(),

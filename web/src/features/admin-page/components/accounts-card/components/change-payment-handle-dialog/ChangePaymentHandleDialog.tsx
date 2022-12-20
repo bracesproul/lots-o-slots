@@ -52,9 +52,6 @@ export default function ChangePaymentHandleDialogContainer(
 
   const { data } = useGetAllAccountsQuery();
 
-  React.useEffect(() => {
-    console.log('selectedAccount', selectedAccount);
-  }, [selectedAccount]);
   return (
     <ChangePaymentHandleDialog
       {...props}

@@ -240,10 +240,12 @@ export type User = MainEntity & Node & {
   userIdentifier_zelle?: Maybe<Scalars['String']>;
 };
 
-export type GetAllCashappAccountsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetAccountsQueryVariables = Exact<{
+  input?: InputMaybe<GetAllAccountsInput>;
+}>;
 
 
-export type GetAllCashappAccountsQuery = { __typename?: 'Query', getAllAccounts: Array<{ __typename?: 'Account', id: string, updatedAt?: string | null, email: string, balance: number, canWithdrawal: boolean, canAcceptDeposits: boolean, dailyWithdrawals: number, weeklyWithdrawals: number }> };
+export type GetAccountsQuery = { __typename?: 'Query', getAllAccounts: Array<{ __typename?: 'Account', id: string, updatedAt?: string | null, email: string, balance: number, canWithdrawal: boolean, canAcceptDeposits: boolean, dailyWithdrawals: number, weeklyWithdrawals: number }> };
 
 export type GetAllAccountsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -258,9 +260,9 @@ export type GetAllPaymentsQueryVariables = Exact<{
 export type GetAllPaymentsQuery = { __typename?: 'Query', getAllPayments: Array<{ __typename?: 'Payment', id: string, userId: string, senderName: string, amount: number, processed: boolean, provider: PaymentProvider, paymentType: PaymentType }> };
 
 
-export const GetAllCashappAccountsDocument = gql`
-    query GetAllCashappAccounts {
-  getAllAccounts(input: {provider: CASHAPP}) {
+export const GetAccountsDocument = gql`
+    query GetAccounts($input: GetAllAccountsInput) {
+  getAllAccounts(input: $input) {
     id
     updatedAt
     email
@@ -274,31 +276,32 @@ export const GetAllCashappAccountsDocument = gql`
     `;
 
 /**
- * __useGetAllCashappAccountsQuery__
+ * __useGetAccountsQuery__
  *
- * To run a query within a React component, call `useGetAllCashappAccountsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllCashappAccountsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetAccountsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAccountsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetAllCashappAccountsQuery({
+ * const { data, loading, error } = useGetAccountsQuery({
  *   variables: {
+ *      input: // value for 'input'
  *   },
  * });
  */
-export function useGetAllCashappAccountsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllCashappAccountsQuery, GetAllCashappAccountsQueryVariables>) {
+export function useGetAccountsQuery(baseOptions?: Apollo.QueryHookOptions<GetAccountsQuery, GetAccountsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAllCashappAccountsQuery, GetAllCashappAccountsQueryVariables>(GetAllCashappAccountsDocument, options);
+        return Apollo.useQuery<GetAccountsQuery, GetAccountsQueryVariables>(GetAccountsDocument, options);
       }
-export function useGetAllCashappAccountsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllCashappAccountsQuery, GetAllCashappAccountsQueryVariables>) {
+export function useGetAccountsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAccountsQuery, GetAccountsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAllCashappAccountsQuery, GetAllCashappAccountsQueryVariables>(GetAllCashappAccountsDocument, options);
+          return Apollo.useLazyQuery<GetAccountsQuery, GetAccountsQueryVariables>(GetAccountsDocument, options);
         }
-export type GetAllCashappAccountsQueryHookResult = ReturnType<typeof useGetAllCashappAccountsQuery>;
-export type GetAllCashappAccountsLazyQueryHookResult = ReturnType<typeof useGetAllCashappAccountsLazyQuery>;
-export type GetAllCashappAccountsQueryResult = Apollo.QueryResult<GetAllCashappAccountsQuery, GetAllCashappAccountsQueryVariables>;
+export type GetAccountsQueryHookResult = ReturnType<typeof useGetAccountsQuery>;
+export type GetAccountsLazyQueryHookResult = ReturnType<typeof useGetAccountsLazyQuery>;
+export type GetAccountsQueryResult = Apollo.QueryResult<GetAccountsQuery, GetAccountsQueryVariables>;
 export const GetAllAccountsDocument = gql`
     query GetAllAccounts {
   getAllAccounts {

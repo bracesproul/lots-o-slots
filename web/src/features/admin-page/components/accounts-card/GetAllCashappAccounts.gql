@@ -1,5 +1,5 @@
-query GetAllCashappAccounts {
-  getAllAccounts(input: { provider: CASHAPP }) {
+query GetAccounts($input: GetAllAccountsInput) {
+  getAllAccounts(input: $input) {
     id
     updatedAt
     email

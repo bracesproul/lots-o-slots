@@ -163,9 +163,6 @@ export default function PaymentsTableContainer(): ReactElement {
       };
     }) ?? [];
 
-  console.log('pendingData', pendingData);
-  console.log('processedData', processedData);
-
   return (
     <>
       <PaymentsTable

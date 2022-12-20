@@ -5,7 +5,7 @@ import {
   ChangePaymentHandleDialog,
 } from './components';
 import { Button } from '@/components';
-import { useGetAllCashappAccountsQuery } from '@/generated/graphql';
+import { PaymentProvider, useGetAccountsQuery } from '@/generated/graphql';
 
 type CashAppAccountType = {
   cashtag: string;
@@ -79,7 +79,13 @@ export function AccountsCard(props: AccountsCardProps): ReactElement {
 }
 
 export default function AccountsCardContainer(): ReactElement {
-  const { data } = useGetAllCashappAccountsQuery();
+  const { data } = useGetAccountsQuery({
+    variables: {
+      input: {
+        provider: PaymentProvider.CASHAPP,
+      },
+    },
+  });
   const [newCashtag, setNewCashtag] = useState('');
   const [newCashappEmail, setNewCashappEmail] = useState('');
 
@@ -92,6 +98,8 @@ export default function AccountsCardContainer(): ReactElement {
       };
       return cashappAccount;
     }) ?? [];
+
+  console.log('cashappAccounts', cashappAccounts);
 
   return (
     <AccountsCard

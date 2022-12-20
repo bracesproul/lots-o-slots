@@ -16,7 +16,6 @@ import {
 
 @Resolver()
 export class AccountResolver {
-  
   @Mutation(() => Account, { nullable: false })
   async addAccount(
     @Arg('input', { nullable: false }) input: AddAccountInput
@@ -24,7 +23,6 @@ export class AccountResolver {
     return getCustomRepository(AccountRepository).createAccount(input);
   }
 
-  
   @Query(() => [Account], { nullable: false })
   async getAllAccounts(
     @Arg('input', { nullable: true }) input?: GetAllAccountsInput

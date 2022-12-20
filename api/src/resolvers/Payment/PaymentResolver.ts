@@ -18,7 +18,6 @@ export class PaymentResolver {
   async getAllPayments(
     @Arg('input', { nullable: true }) input?: GetPaymentsInput
   ): Promise<Payment[]> {
-    console.log(input);
     return getCustomRepository(PaymentRepository).getAll({
       processed: input?.processed,
       paymentProvider: input?.paymentProvider,

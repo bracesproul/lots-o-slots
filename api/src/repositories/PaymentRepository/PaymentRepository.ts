@@ -91,7 +91,6 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
           break;
         case PaymentProvider.CASHAPP:
           {
-            console.log('CASHTAG TO BE ADDED', cashTag);
             user = User.create({
               userIdentifier_cashapp: userIdentifier,
               cashTag: cashTag,

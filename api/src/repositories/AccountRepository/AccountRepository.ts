@@ -16,8 +16,8 @@ export default class AccountRepository extends AbstractRepository<Account> {
       .addSelect('"account"."createdAt"', 'createdAt');
 
     if (provider) {
-      query = query.andWhere('"provider" = :provider', {
-        provider: provider,
+      query = query.andWhere('"type" = :type', {
+        type: provider,
       });
     }
     return query.getMany();
