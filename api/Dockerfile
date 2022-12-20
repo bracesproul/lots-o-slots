@@ -1,10 +1,10 @@
-# FROM node:16-alpine AS build
+FROM node:16-alpine AS builder
 
-# WORKDIR /app
-# RUN yarn global add turbo
-# COPY package*.json ./
-# COPY . .
-# RUN turbo prune --docker
+WORKDIR /app
+COPY package*.json ./
+COPY yarn.lock ./
+COPY . .
+RUN yarn install
 
 # FROM node:16-alpine AS installer
 
@@ -20,10 +20,8 @@
 FROM node:16-alpine AS dev
 
 WORKDIR /app
-COPY yarn.lock ./
-COPY package.json ./
+COPY --from=builder /app/ /app/
 COPY . .
-RUN yarn install
 RUN yarn build:api
 
 EXPOSE 8000
