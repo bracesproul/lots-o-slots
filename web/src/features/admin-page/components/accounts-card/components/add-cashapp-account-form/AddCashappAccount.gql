@@ -1,0 +1,7 @@
+mutation AddCashappAccount($input: AddAccountInput!) {
+  addAccount(input: $input) {
+    id
+    cashtag
+    email
+  }
+}

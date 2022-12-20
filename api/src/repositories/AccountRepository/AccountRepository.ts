@@ -31,11 +31,13 @@ export default class AccountRepository extends AbstractRepository<Account> {
     balance,
     canWithdrawal,
     canAcceptDeposits,
+    cashtag,
   }: {
     email: string;
     balance?: number;
     canWithdrawal?: boolean;
     canAcceptDeposits?: boolean;
+    cashtag?: string;
   }): Promise<Account> {
     const prevAccount = await this.repository.findOne({ where: { email } });
     if (prevAccount) {
@@ -49,6 +51,7 @@ export default class AccountRepository extends AbstractRepository<Account> {
       weeklyWithdrawals: 0,
       canWithdrawal: canWithdrawal ?? false,
       canAcceptDeposits: canAcceptDeposits ?? false,
+      cashtag,
     });
     return this.repository.save(account);
   }

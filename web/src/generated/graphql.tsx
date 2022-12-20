@@ -21,6 +21,7 @@ export type Account = MainEntity & Node & {
   balance: Scalars['Float'];
   canAcceptDeposits: Scalars['Boolean'];
   canWithdrawal: Scalars['Boolean'];
+  cashtag?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
   dailyWithdrawals: Scalars['Float'];
   defaultAccount?: Maybe<Scalars['Boolean']>;
@@ -40,6 +41,8 @@ export type AddAccountInput = {
   canAcceptDeposits?: InputMaybe<Scalars['Boolean']>;
   /** Whether an account can withdrawal funds. */
   canWithdrawal?: InputMaybe<Scalars['Boolean']>;
+  /** The cashtag of the account. */
+  cashtag?: InputMaybe<Scalars['String']>;
   /** The email address of the account. */
   email: Scalars['String'];
 };
@@ -262,6 +265,13 @@ export type GetAccountsQueryVariables = Exact<{
 
 export type GetAccountsQuery = { __typename?: 'Query', getAllAccounts: Array<{ __typename?: 'Account', id: string, updatedAt?: string | null, email: string, balance: number, canWithdrawal: boolean, canAcceptDeposits: boolean, dailyWithdrawals: number, weeklyWithdrawals: number }> };
 
+export type AddCashappAccountMutationVariables = Exact<{
+  input: AddAccountInput;
+}>;
+
+
+export type AddCashappAccountMutation = { __typename?: 'Mutation', addAccount: { __typename?: 'Account', id: string, cashtag?: string | null, email: string } };
+
 export type GetAllAccountsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -324,6 +334,41 @@ export function useGetAccountsLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetAccountsQueryHookResult = ReturnType<typeof useGetAccountsQuery>;
 export type GetAccountsLazyQueryHookResult = ReturnType<typeof useGetAccountsLazyQuery>;
 export type GetAccountsQueryResult = Apollo.QueryResult<GetAccountsQuery, GetAccountsQueryVariables>;
+export const AddCashappAccountDocument = gql`
+    mutation AddCashappAccount($input: AddAccountInput!) {
+  addAccount(input: $input) {
+    id
+    cashtag
+    email
+  }
+}
+    `;
+export type AddCashappAccountMutationFn = Apollo.MutationFunction<AddCashappAccountMutation, AddCashappAccountMutationVariables>;
+
+/**
+ * __useAddCashappAccountMutation__
+ *
+ * To run a mutation, you first call `useAddCashappAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddCashappAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addCashappAccountMutation, { data, loading, error }] = useAddCashappAccountMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddCashappAccountMutation(baseOptions?: Apollo.MutationHookOptions<AddCashappAccountMutation, AddCashappAccountMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AddCashappAccountMutation, AddCashappAccountMutationVariables>(AddCashappAccountDocument, options);
+      }
+export type AddCashappAccountMutationHookResult = ReturnType<typeof useAddCashappAccountMutation>;
+export type AddCashappAccountMutationResult = Apollo.MutationResult<AddCashappAccountMutation>;
+export type AddCashappAccountMutationOptions = Apollo.BaseMutationOptions<AddCashappAccountMutation, AddCashappAccountMutationVariables>;
 export const GetAllAccountsDocument = gql`
     query GetAllAccounts {
   getAllAccounts {

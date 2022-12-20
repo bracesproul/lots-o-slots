@@ -55,4 +55,10 @@ export default class Account extends MainEntity {
   })
   @Column({ type: 'boolean', nullable: true })
   defaultAccount?: boolean;
+
+  @Field(() => String, {
+    nullable: true,
+  })
+  @Column({ type: 'varchar', nullable: true })
+  cashtag?: string;
 }

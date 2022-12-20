@@ -1,8 +1,9 @@
 import { Button, Dialog } from '@/components';
-import { ReactElement } from 'react';
+import { FormEvent, ReactElement, useState } from 'react';
+import { useAddCashappAccountMutation } from '@/generated/graphql';
 
-export type AddAashappAccountFormProps = {
-  onSubmit: () => void;
+export type AddCashappAccountFormProps = {
+  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
   cashtag: string;
   setCashtag: (cashtag: string) => void;
 
@@ -15,8 +16,8 @@ export type AddAashappAccountFormProps = {
 
 const PREFIX = 'cashapp-form';
 
-export default function AddCashappAccountForm(
-  props: AddAashappAccountFormProps
+function AddCashappAccountForm(
+  props: AddCashappAccountFormProps
 ): ReactElement {
   const p = { ...props };
   return (
@@ -54,5 +55,38 @@ export default function AddCashappAccountForm(
         </Button>
       </form>
     </Dialog>
+  );
+}
+
+export default function AddCashappAccountFormContainer(
+  props: Pick<AddCashappAccountFormProps, 'open' | 'setOpen'>
+): ReactElement {
+  const [addCashappAccount] = useAddCashappAccountMutation();
+  const [newCashtag, setNewCashtag] = useState('');
+  const [newCashappEmail, setNewCashappEmail] = useState('');
+
+  return (
+    <AddCashappAccountForm
+      {...props}
+      cashtag={newCashtag}
+      setCashtag={setNewCashtag}
+      email={newCashappEmail}
+      setEmail={setNewCashappEmail}
+      onSubmit={async (e) => {
+        e.preventDefault();
+        await addCashappAccount({
+          variables: {
+            input: {
+              email: newCashappEmail,
+              cashtag: newCashtag,
+            },
+          },
+          refetchQueries: ['GetAllAccounts'],
+        });
+        props.setOpen(false);
+        setNewCashtag('');
+        setNewCashappEmail('');
+      }}
+    />
   );
 }

@@ -12,6 +12,12 @@ export class AddAccountInput {
   })
   email!: string;
 
+  @Field(() => String, {
+    nullable: true,
+    description: 'The cashtag of the account.',
+  })
+  cashtag?: string;
+
   @Field(() => Number, {
     nullable: true,
     description: 'The starting balance of the account.',

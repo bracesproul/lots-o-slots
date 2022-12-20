@@ -15,14 +15,6 @@ type CashAppAccountType = {
 
 export type AccountsCardProps = {
   cashappAccount: CashAppAccountType[];
-
-  submitNewCashappAccount: () => void;
-
-  newCashtag: string;
-  setNewCashtag: (newCashtag: string) => void;
-
-  newCashappEmail: string;
-  setNewCashappEmail: (newCashappEmail: string) => void;
 };
 
 const PREFIX = 'accounts-card';
@@ -64,11 +56,6 @@ export function AccountsCard(props: AccountsCardProps): ReactElement {
       <AddCashappAccountForm
         open={addCashappAccountOpen}
         setOpen={setAddCashappAccountOpen}
-        onSubmit={p.submitNewCashappAccount}
-        cashtag={p.newCashtag}
-        setCashtag={p.setNewCashtag}
-        email={p.newCashappEmail}
-        setEmail={p.setNewCashappEmail}
       />
       <ChangePaymentHandleDialog
         open={changeCashtagModalOpen}
@@ -86,8 +73,6 @@ export default function AccountsCardContainer(): ReactElement {
       },
     },
   });
-  const [newCashtag, setNewCashtag] = useState('');
-  const [newCashappEmail, setNewCashappEmail] = useState('');
 
   const cashappAccounts: CashAppAccountType[] =
     data?.getAllAccounts.map((account) => {
@@ -99,18 +84,5 @@ export default function AccountsCardContainer(): ReactElement {
       return cashappAccount;
     }) ?? [];
 
-  console.log('cashappAccounts', cashappAccounts);
-
-  return (
-    <AccountsCard
-      cashappAccount={cashappAccounts}
-      newCashtag={newCashtag}
-      setNewCashtag={setNewCashtag}
-      newCashappEmail={newCashappEmail}
-      setNewCashappEmail={setNewCashappEmail}
-      submitNewCashappAccount={() => {
-        // TODO: Hookup
-      }}
-    />
-  );
+  return <AccountsCard cashappAccount={cashappAccounts} />;
 }
