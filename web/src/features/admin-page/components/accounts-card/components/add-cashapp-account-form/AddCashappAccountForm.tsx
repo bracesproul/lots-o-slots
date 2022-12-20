@@ -28,7 +28,12 @@ function AddCashappAccountForm(
       buttonTitle="Close"
     >
       <form className={`${PREFIX}-dialog-form`} onSubmit={p.onSubmit}>
-        <label className={`${PREFIX}-form-label`}>Cashtag</label>
+        <label className={`${PREFIX}-form-label`}>
+          Cashtag{' '}
+          <span className={`${PREFIX}-subtext-label`}>
+            * Do not include {`'$'`} *
+          </span>
+        </label>
         <input
           value={p.cashtag}
           onChange={(e) => p.setCashtag(e.target.value)}

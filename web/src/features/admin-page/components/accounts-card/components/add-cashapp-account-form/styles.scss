@@ -7,6 +7,10 @@
   @apply text-white mb-[5px]
 }
 
+.cashapp-form-subtext-label {
+  @apply text-gray-400 text-[12px];
+}
+
 .cashapp-form-form-input {
   @apply rounded-lg p-[5px] mb-[5px] bg-neutral-700;
   @apply text-white;
