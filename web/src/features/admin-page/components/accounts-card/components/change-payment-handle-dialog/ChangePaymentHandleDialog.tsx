@@ -11,7 +11,12 @@ export type ChangePaymentHandleDialogProps = {
 
 const PREFIX = 'change-handle-form';
 
-const dummyAccountOptions = ['acc1', 'acc2', 'acc3', 'acc4'];
+const dummyAccountOptions = [
+  { name: 'acc1', value: '1' },
+  { name: 'acc2', value: '2' },
+  { name: 'acc3', value: '3' },
+  { name: 'acc4', value: '4' },
+];
 
 function ChangePaymentHandleDialog(
   props: ChangePaymentHandleDialogProps

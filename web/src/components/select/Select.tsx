@@ -4,9 +4,14 @@ import clsx from 'clsx';
 
 const PREFIX = 'select-component';
 
+type SelectOptionType = {
+  value: string;
+  name: string;
+};
+
 export type SelectComponentProps = SelectProps & {
   className?: string;
-  options: string[];
+  options: SelectOptionType[];
   isDisabled?: boolean;
   label: string;
 };
@@ -23,8 +28,12 @@ export default function Select(props: SelectComponentProps): ReactElement {
       }
     >
       {p.options.map((option) => (
-        <option selected={option === p.value} key={option} value={option}>
-          {option}
+        <option
+          selected={option.value === p.value}
+          key={option.value}
+          value={option.value}
+        >
+          {option.name}
         </option>
       ))}
     </select>
