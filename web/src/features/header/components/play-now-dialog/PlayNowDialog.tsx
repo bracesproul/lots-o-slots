@@ -38,6 +38,7 @@ function PlayNowDialog(props: PlayNowDialogProps): ReactElement {
       <form className={`${PREFIX}-dialog-form`} onSubmit={(e) => p.onSubmit(e)}>
         <label className={`${PREFIX}-form-label`}>Please Select a Game</label>
         <Select
+          placeholder="Please select one"
           options={GAME_OPTIONS}
           required
           value={p.selectedGame}
@@ -47,6 +48,7 @@ function PlayNowDialog(props: PlayNowDialogProps): ReactElement {
           Please Select a Payment Type
         </label>
         <Select
+          placeholder="Please select one"
           options={PAYMENT_OPTIONS}
           required
           value={p.paymentProvider ?? undefined}

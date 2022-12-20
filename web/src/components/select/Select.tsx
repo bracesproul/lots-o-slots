@@ -14,6 +14,7 @@ export type SelectComponentProps = SelectProps & {
   options: SelectOptionType[];
   isDisabled?: boolean;
   label?: string;
+  placeholder: string;
 };
 
 export default function Select(props: SelectComponentProps): ReactElement {
@@ -27,6 +28,9 @@ export default function Select(props: SelectComponentProps): ReactElement {
         p.onValueChange ? p.onValueChange(e.target.value) : undefined
       }
     >
+      <option value="" disabled selected>
+        {p.placeholder}
+      </option>
       {p.options.map((option) => (
         <option
           selected={option.value === p.value}

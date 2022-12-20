@@ -34,6 +34,7 @@ function ChangePaymentHandleDialog(
           Select account to make default
         </label>
         <Select
+          placeholder={'Please select an account'}
           value={p.selectedAccount}
           onValueChange={p.setSelectedAccount}
           open={true}
@@ -71,7 +72,6 @@ export default function ChangePaymentHandleDialogContainer(
       selectedAccount={selectedAccount}
       setSelectedAccount={setSelectedAccount}
       onSubmit={(e) => {
-        console.log('selected account', selectedAccount);
         e.preventDefault();
         const accountToChange = data?.getAllAccounts.find(
           (account) => selectedAccount === account.id
@@ -87,6 +87,7 @@ export default function ChangePaymentHandleDialogContainer(
             },
           },
         });
+        props.setOpen(false);
       }}
     />
   );
