@@ -1,10 +1,13 @@
 import { Button, Dialog, Select } from '@/components';
-import React, { ReactElement, useState } from 'react';
-import { useGetAllAccountsQuery } from '@/generated/graphql';
+import React, { ReactElement, useState, FormEvent } from 'react';
+import {
+  useGetAllAccountsQuery,
+  useSwitchDefaultAccountMutation,
+} from '@/generated/graphql';
 import { SelectOptionType } from '@/components/select/Select';
 
 export type ChangePaymentHandleDialogProps = {
-  onSubmit: () => void;
+  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
   open: boolean;
   setOpen: (open: boolean) => void;
   selectedAccount: string;
@@ -26,7 +29,7 @@ function ChangePaymentHandleDialog(
       title="Add New CashApp Account"
       buttonTitle="Close"
     >
-      <form className={`${PREFIX}-dialog-form`} onSubmit={p.onSubmit}>
+      <form className={`${PREFIX}-dialog-form`} onSubmit={(e) => p.onSubmit(e)}>
         <label className={`${PREFIX}-form-label`}>
           Select account to make default
         </label>
@@ -52,6 +55,8 @@ export default function ChangePaymentHandleDialogContainer(
 
   const { data } = useGetAllAccountsQuery();
 
+  const [switchDefaultAccount] = useSwitchDefaultAccountMutation();
+
   return (
     <ChangePaymentHandleDialog
       {...props}
@@ -65,8 +70,23 @@ export default function ChangePaymentHandleDialogContainer(
       }
       selectedAccount={selectedAccount}
       setSelectedAccount={setSelectedAccount}
-      onSubmit={() => {
-        // @TODO: Handle hookup
+      onSubmit={(e) => {
+        console.log('selected account', selectedAccount);
+        e.preventDefault();
+        const accountToChange = data?.getAllAccounts.find(
+          (account) => selectedAccount === account.id
+        );
+        if (!accountToChange) {
+          throw new Error('No account found.');
+        }
+        switchDefaultAccount({
+          variables: {
+            input: {
+              id: accountToChange.id,
+              type: accountToChange.type,
+            },
+          },
+        });
       }}
     />
   );

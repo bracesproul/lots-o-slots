@@ -23,6 +23,7 @@ export type Account = MainEntity & Node & {
   canWithdrawal: Scalars['Boolean'];
   createdAt: Scalars['DateTime'];
   dailyWithdrawals: Scalars['Float'];
+  defaultAccount?: Maybe<Scalars['Boolean']>;
   deletedAt?: Maybe<Scalars['DateTime']>;
   email: Scalars['String'];
   id: Scalars['ID'];
@@ -147,6 +148,7 @@ export type Mutation = {
   createEmailLog: EmailLog;
   createPayment: CreatedPaymentResponse;
   markPaymentAsProcessed: MarkPaymentAsProcessedResponse;
+  switchDefaultAccount: Account;
 };
 
 
@@ -167,6 +169,11 @@ export type MutationCreatePaymentArgs = {
 
 export type MutationMarkPaymentAsProcessedArgs = {
   input: MarkPaymentAsProcessedInput;
+};
+
+
+export type MutationSwitchDefaultAccountArgs = {
+  input: SwitchDefaultAccountInput;
 };
 
 /** ID */
@@ -227,6 +234,14 @@ export type QueryGetAllPaymentsArgs = {
   input?: InputMaybe<GetPaymentsInput>;
 };
 
+/** Input type for switching the default type account. */
+export type SwitchDefaultAccountInput = {
+  /** The ID of the account. */
+  id: Scalars['ID'];
+  /** The payment provider of the account. */
+  type: PaymentProvider;
+};
+
 export type User = MainEntity & Node & {
   __typename?: 'User';
   balance: Scalars['Float'];
@@ -250,7 +265,14 @@ export type GetAccountsQuery = { __typename?: 'Query', getAllAccounts: Array<{ _
 export type GetAllAccountsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAllAccountsQuery = { __typename?: 'Query', getAllAccounts: Array<{ __typename?: 'Account', id: string, email: string }> };
+export type GetAllAccountsQuery = { __typename?: 'Query', getAllAccounts: Array<{ __typename?: 'Account', id: string, email: string, type: PaymentProvider }> };
+
+export type SwitchDefaultAccountMutationVariables = Exact<{
+  input: SwitchDefaultAccountInput;
+}>;
+
+
+export type SwitchDefaultAccountMutation = { __typename?: 'Mutation', switchDefaultAccount: { __typename?: 'Account', id: string, type: PaymentProvider, email: string } };
 
 export type GetAllPaymentsQueryVariables = Exact<{
   input?: InputMaybe<GetPaymentsInput>;
@@ -307,6 +329,7 @@ export const GetAllAccountsDocument = gql`
   getAllAccounts {
     id
     email
+    type
   }
 }
     `;
@@ -337,6 +360,41 @@ export function useGetAllAccountsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetAllAccountsQueryHookResult = ReturnType<typeof useGetAllAccountsQuery>;
 export type GetAllAccountsLazyQueryHookResult = ReturnType<typeof useGetAllAccountsLazyQuery>;
 export type GetAllAccountsQueryResult = Apollo.QueryResult<GetAllAccountsQuery, GetAllAccountsQueryVariables>;
+export const SwitchDefaultAccountDocument = gql`
+    mutation SwitchDefaultAccount($input: SwitchDefaultAccountInput!) {
+  switchDefaultAccount(input: $input) {
+    id
+    type
+    email
+  }
+}
+    `;
+export type SwitchDefaultAccountMutationFn = Apollo.MutationFunction<SwitchDefaultAccountMutation, SwitchDefaultAccountMutationVariables>;
+
+/**
+ * __useSwitchDefaultAccountMutation__
+ *
+ * To run a mutation, you first call `useSwitchDefaultAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSwitchDefaultAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [switchDefaultAccountMutation, { data, loading, error }] = useSwitchDefaultAccountMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSwitchDefaultAccountMutation(baseOptions?: Apollo.MutationHookOptions<SwitchDefaultAccountMutation, SwitchDefaultAccountMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SwitchDefaultAccountMutation, SwitchDefaultAccountMutationVariables>(SwitchDefaultAccountDocument, options);
+      }
+export type SwitchDefaultAccountMutationHookResult = ReturnType<typeof useSwitchDefaultAccountMutation>;
+export type SwitchDefaultAccountMutationResult = Apollo.MutationResult<SwitchDefaultAccountMutation>;
+export type SwitchDefaultAccountMutationOptions = Apollo.BaseMutationOptions<SwitchDefaultAccountMutation, SwitchDefaultAccountMutationVariables>;
 export const GetAllPaymentsDocument = gql`
     query GetAllPayments($input: GetPaymentsInput) {
   getAllPayments(input: $input) {

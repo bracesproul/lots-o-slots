@@ -52,3 +52,20 @@ export class GetAllAccountsInput {
   })
   provider?: PaymentProvider;
 }
+
+@InputType({
+  description: 'Input type for switching the default type account.',
+})
+export class SwitchDefaultAccountInput {
+  @Field(() => ID, {
+    nullable: false,
+    description: 'The ID of the account.',
+  })
+  id!: string;
+
+  @Field(() => PaymentProvider, {
+    nullable: false,
+    description: 'The payment provider of the account.',
+  })
+  type!: PaymentProvider;
+}

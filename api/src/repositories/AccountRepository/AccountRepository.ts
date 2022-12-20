@@ -1,7 +1,10 @@
 import { AbstractRepository, EntityRepository } from 'typeorm';
 import { Account } from '@/entities';
 import { ApolloError } from 'apollo-server-express';
-import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
+import Payment, {
+  PaymentProvider,
+  PaymentType,
+} from '@/entities/Payment/Payment';
 
 @EntityRepository(Account)
 export default class AccountRepository extends AbstractRepository<Account> {
@@ -108,5 +111,23 @@ export default class AccountRepository extends AbstractRepository<Account> {
       return false;
     }
     return true;
+  }
+
+  async switchDefaultAccount({
+    id,
+    type,
+  }: {
+    id: string;
+    type: PaymentProvider;
+  }): Promise<Account> {
+    const newDefaultAccount = await this.repository.findOneOrFail(id);
+    newDefaultAccount.defaultAccount = true;
+    this.repository.save(newDefaultAccount);
+    const otherAccounts = await this.repository.find({ where: { type } });
+    otherAccounts.forEach((a) => {
+      a.defaultAccount = false;
+    });
+    await this.repository.save(otherAccounts);
+    return newDefaultAccount;
   }
 }

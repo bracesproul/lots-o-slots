@@ -1,0 +1,7 @@
+mutation SwitchDefaultAccount($input: SwitchDefaultAccountInput!) {
+  switchDefaultAccount(input: $input) {
+    id
+    type
+    email
+  }
+}
