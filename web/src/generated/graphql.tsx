@@ -250,15 +250,12 @@ export type GetAllAccountsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetAllAccountsQuery = { __typename?: 'Query', getAllAccounts: Array<{ __typename?: 'Account', id: string, email: string }> };
 
-export type GetPendingPaymentsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetAllPaymentsQueryVariables = Exact<{
+  input?: InputMaybe<GetPaymentsInput>;
+}>;
 
 
-export type GetPendingPaymentsQuery = { __typename?: 'Query', getAllPayments: Array<{ __typename?: 'Payment', id: string, userId: string, senderName: string, amount: number, processed: boolean, provider: PaymentProvider, paymentType: PaymentType }> };
-
-export type GetProcessedPaymentsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetProcessedPaymentsQuery = { __typename?: 'Query', getAllPayments: Array<{ __typename?: 'Payment', id: string, userId: string, senderName: string, amount: number, processed: boolean, provider: PaymentProvider, paymentType: PaymentType }> };
+export type GetAllPaymentsQuery = { __typename?: 'Query', getAllPayments: Array<{ __typename?: 'Payment', id: string, userId: string, senderName: string, amount: number, processed: boolean, provider: PaymentProvider, paymentType: PaymentType }> };
 
 
 export const GetAllCashappAccountsDocument = gql`
@@ -337,9 +334,9 @@ export function useGetAllAccountsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetAllAccountsQueryHookResult = ReturnType<typeof useGetAllAccountsQuery>;
 export type GetAllAccountsLazyQueryHookResult = ReturnType<typeof useGetAllAccountsLazyQuery>;
 export type GetAllAccountsQueryResult = Apollo.QueryResult<GetAllAccountsQuery, GetAllAccountsQueryVariables>;
-export const GetPendingPaymentsDocument = gql`
-    query GetPendingPayments {
-  getAllPayments(input: {processed: false}) {
+export const GetAllPaymentsDocument = gql`
+    query GetAllPayments($input: GetPaymentsInput) {
+  getAllPayments(input: $input) {
     id
     userId
     senderName
@@ -352,68 +349,29 @@ export const GetPendingPaymentsDocument = gql`
     `;
 
 /**
- * __useGetPendingPaymentsQuery__
+ * __useGetAllPaymentsQuery__
  *
- * To run a query within a React component, call `useGetPendingPaymentsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPendingPaymentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetAllPaymentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllPaymentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetPendingPaymentsQuery({
+ * const { data, loading, error } = useGetAllPaymentsQuery({
  *   variables: {
+ *      input: // value for 'input'
  *   },
  * });
  */
-export function useGetPendingPaymentsQuery(baseOptions?: Apollo.QueryHookOptions<GetPendingPaymentsQuery, GetPendingPaymentsQueryVariables>) {
+export function useGetAllPaymentsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllPaymentsQuery, GetAllPaymentsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetPendingPaymentsQuery, GetPendingPaymentsQueryVariables>(GetPendingPaymentsDocument, options);
+        return Apollo.useQuery<GetAllPaymentsQuery, GetAllPaymentsQueryVariables>(GetAllPaymentsDocument, options);
       }
-export function useGetPendingPaymentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPendingPaymentsQuery, GetPendingPaymentsQueryVariables>) {
+export function useGetAllPaymentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllPaymentsQuery, GetAllPaymentsQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetPendingPaymentsQuery, GetPendingPaymentsQueryVariables>(GetPendingPaymentsDocument, options);
+          return Apollo.useLazyQuery<GetAllPaymentsQuery, GetAllPaymentsQueryVariables>(GetAllPaymentsDocument, options);
         }
-export type GetPendingPaymentsQueryHookResult = ReturnType<typeof useGetPendingPaymentsQuery>;
-export type GetPendingPaymentsLazyQueryHookResult = ReturnType<typeof useGetPendingPaymentsLazyQuery>;
-export type GetPendingPaymentsQueryResult = Apollo.QueryResult<GetPendingPaymentsQuery, GetPendingPaymentsQueryVariables>;
-export const GetProcessedPaymentsDocument = gql`
-    query GetProcessedPayments {
-  getAllPayments(input: {processed: true}) {
-    id
-    userId
-    senderName
-    amount
-    processed
-    provider
-    paymentType
-  }
-}
-    `;
-
-/**
- * __useGetProcessedPaymentsQuery__
- *
- * To run a query within a React component, call `useGetProcessedPaymentsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetProcessedPaymentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetProcessedPaymentsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetProcessedPaymentsQuery(baseOptions?: Apollo.QueryHookOptions<GetProcessedPaymentsQuery, GetProcessedPaymentsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetProcessedPaymentsQuery, GetProcessedPaymentsQueryVariables>(GetProcessedPaymentsDocument, options);
-      }
-export function useGetProcessedPaymentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProcessedPaymentsQuery, GetProcessedPaymentsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetProcessedPaymentsQuery, GetProcessedPaymentsQueryVariables>(GetProcessedPaymentsDocument, options);
-        }
-export type GetProcessedPaymentsQueryHookResult = ReturnType<typeof useGetProcessedPaymentsQuery>;
-export type GetProcessedPaymentsLazyQueryHookResult = ReturnType<typeof useGetProcessedPaymentsLazyQuery>;
-export type GetProcessedPaymentsQueryResult = Apollo.QueryResult<GetProcessedPaymentsQuery, GetProcessedPaymentsQueryVariables>;
+export type GetAllPaymentsQueryHookResult = ReturnType<typeof useGetAllPaymentsQuery>;
+export type GetAllPaymentsLazyQueryHookResult = ReturnType<typeof useGetAllPaymentsLazyQuery>;
+export type GetAllPaymentsQueryResult = Apollo.QueryResult<GetAllPaymentsQuery, GetAllPaymentsQueryVariables>;

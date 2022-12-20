@@ -3,11 +3,7 @@ import clsx from 'clsx';
 import { Icon } from '@/components';
 import { ArrowRight } from '@/assets';
 import { PageChangeType, TableType } from '@/types/page-change';
-import {
-  useGetProcessedPaymentsQuery,
-  useGetPendingPaymentsQuery,
-  PaymentProvider,
-} from '@/generated/graphql';
+import { useGetAllPaymentsQuery, PaymentProvider } from '@/generated/graphql';
 
 export type PaymentTableData = {
   paymentProvider: PaymentProvider;
@@ -123,9 +119,22 @@ export function PaymentsTable(props: PaymentsTableProps): ReactElement {
 
 export default function PaymentsTableContainer(): ReactElement {
   const { data: processedData, loading: processedLoading } =
-    useGetProcessedPaymentsQuery();
-  const { data: pendingData, loading: pendingLoading } =
-    useGetPendingPaymentsQuery();
+    useGetAllPaymentsQuery({
+      variables: {
+        input: {
+          processed: true,
+        },
+      },
+    });
+  const { data: pendingData, loading: pendingLoading } = useGetAllPaymentsQuery(
+    {
+      variables: {
+        input: {
+          processed: false,
+        },
+      },
+    }
+  );
 
   const handlePageChange = (direction: PageChangeType, table: TableType) => {
     console.log('page change:', direction, table);
@@ -153,6 +162,9 @@ export default function PaymentsTableContainer(): ReactElement {
         amount: data.amount,
       };
     }) ?? [];
+
+  console.log('pendingData', pendingData);
+  console.log('processedData', processedData);
 
   return (
     <>

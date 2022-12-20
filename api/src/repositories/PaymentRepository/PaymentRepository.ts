@@ -18,7 +18,7 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
       });
     }
 
-    if (input.processed === true) {
+    if (input.processed !== undefined) {
       query = query.andWhere('payment.processed = :processed', {
         processed: input.processed,
       });
