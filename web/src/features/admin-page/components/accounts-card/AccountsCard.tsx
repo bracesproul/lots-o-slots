@@ -1,9 +1,11 @@
 import { ReactElement, useState } from 'react';
-import { AddCashappAccountForm, CashappAccountCard } from './components';
+import {
+  AddCashappAccountForm,
+  CashappAccountCard,
+  ChangePaymentHandleDialog,
+} from './components';
 import { Button } from '@/components';
 import { useGetAllAccountsQuery } from '@/generated/graphql';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import Dialog from '@/components/modal/ModalNew';
 
 type CashAppAccountType = {
   cashtag: string;
@@ -27,8 +29,8 @@ const PREFIX = 'accounts-card';
 
 export function AccountsCard(props: AccountsCardProps): ReactElement {
   const p = { ...props };
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [changeCashtagModalOpen, setChangeCashtagModalOpen] = useState(false);
+  const [addCashappAccountOpen, setAddCashappAccountOpen] = useState(false);
   return (
     <div className={`${PREFIX}`}>
       <h1 className={`${PREFIX}-header`}>Accounts & Balances</h1>
@@ -43,11 +45,15 @@ export function AccountsCard(props: AccountsCardProps): ReactElement {
         ))}
       </div>
       <div className={`${PREFIX}-button-container`}>
-        <Button className={`${PREFIX}-action-button`} type="button">
+        <Button
+          className={`${PREFIX}-action-button`}
+          type="button"
+          onPress={() => setChangeCashtagModalOpen(true)}
+        >
           Change Default CashTag
         </Button>
         <Button
-          onPress={() => setChangeCashtagModalOpen(true)}
+          onPress={() => setAddCashappAccountOpen(true)}
           className={`${PREFIX}-action-button`}
           variant="secondary"
           type="button"
@@ -56,13 +62,17 @@ export function AccountsCard(props: AccountsCardProps): ReactElement {
         </Button>
       </div>
       <AddCashappAccountForm
-        open={changeCashtagModalOpen}
-        setOpen={setChangeCashtagModalOpen}
+        open={addCashappAccountOpen}
+        setOpen={setAddCashappAccountOpen}
         onSubmit={p.submitNewCashappAccount}
         cashtag={p.newCashtag}
         setCashtag={p.setNewCashtag}
         email={p.newCashappEmail}
         setEmail={p.setNewCashappEmail}
+      />
+      <ChangePaymentHandleDialog
+        open={changeCashtagModalOpen}
+        setOpen={setChangeCashtagModalOpen}
       />
     </div>
   );

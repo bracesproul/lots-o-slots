@@ -7,3 +7,5 @@ export { CircleButton } from './circle-button';
 export { InteractableComponent } from './interactable-component';
 export { Dialog } from './modal';
 export { Provider } from './provider';
+export { RadixButton } from './radix-button';
+export { Select } from './select';
