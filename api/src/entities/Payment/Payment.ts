@@ -14,8 +14,14 @@ export enum PaymentType {
   PAYOUT = 'PAYOUT',
 }
 
+export enum GameType {
+  SLOTS = 'SLOTS',
+  POKER = 'POKER',
+}
+
 registerEnumType(PaymentProvider, { name: 'PaymentProvider' });
 registerEnumType(PaymentType, { name: 'PaymentType' });
+registerEnumType(GameType, { name: 'GameType' });
 
 @Entity({ name: 'payment' })
 @ObjectType({

@@ -1,0 +1,42 @@
+.deposit-dialog {
+  @apply text-center flex flex-col;
+  font-family: 'Inter', sans-serif;
+}
+
+.deposit-dialog-dialog-form {
+  font-family: 'Inter', sans-serif;
+  @apply flex flex-col m-[22px];
+}
+
+.deposit-dialog-form-label {
+  @apply text-white mb-[5px] text-center;
+}
+
+.deposit-dialog-form-input {
+  @apply rounded-lg p-[5px] mb-[5px] bg-neutral-700;
+  @apply text-white;
+}
+
+.deposit-dialog-form-submit {
+  @apply rounded-full mt-[10px] items-center justify-center;
+}
+
+.deposit-dialog-send-title {
+  @apply text-center text-white mt-2
+}
+
+.deposit-dialog-sub-text {
+  @apply text-sm text-gray-400 mt-2 mb-2 text-center;
+}
+
+.deposit-dialog-payment-type {
+  @apply text-[#C5002C] text-lg text-center font-bold;
+}
+
+.deposit-dialog-payment-handle {
+  @apply text-white text-center underline;
+}
+
+.deposit-dialog-special-text {
+  @apply text-[#C5002C] font-semibold;
+}

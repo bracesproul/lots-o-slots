@@ -11,18 +11,14 @@ import {
 } from './types';
 import { ApolloError } from 'apollo-server-express';
 
-// @Resolver(Repo)
+@Resolver(Payment)
 @Resolver()
 export class PaymentResolver {
-  @Transaction()
   @Query(() => [Payment], { nullable: false })
   async getAllPayments(
     @Arg('input', { nullable: true }) input?: GetPaymentsInput
   ): Promise<Payment[]> {
-    // if (!input?.processed) {
-    //   throw new ApolloError('no input passed');
-    // }
-
+    console.log(input);
     return getCustomRepository(PaymentRepository).getAll({
       processed: input?.processed,
       paymentProvider: input?.paymentProvider,
@@ -30,7 +26,6 @@ export class PaymentResolver {
     });
   }
 
-  @Transaction()
   @Mutation(() => CreatedPaymentResponse, { nullable: false })
   async createPayment(
     @Arg('input', { nullable: false }) input: CreatePaymentInput
@@ -51,7 +46,6 @@ export class PaymentResolver {
     };
   }
 
-  @Transaction()
   @Mutation(() => MarkPaymentAsProcessedResponse, { nullable: false })
   async markPaymentAsProcessed(
     @Arg('input', { nullable: false }) input: MarkPaymentAsProcessedInput

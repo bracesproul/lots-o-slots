@@ -139,7 +139,7 @@ function Dialog(props: DialogRootProps): ReactElement {
               <DialogPrimitive.Title className="text-sm font-medium text-gray-900 dark:text-gray-100">
                 {p.title}
               </DialogPrimitive.Title>
-              <DialogPrimitive.Description className="mt-2 text-sm font-normal text-gray-700 dark:text-gray-400">
+              <DialogPrimitive.Description className="mt-2 text-sm font-normal text-gray-700 dark:text-gray-400 mb-2">
                 {p.description}
               </DialogPrimitive.Description>
               {p.children}

@@ -9,3 +9,4 @@ export { Dialog } from './modal';
 export { Provider } from './provider';
 export { RadixButton } from './radix-button';
 export { Select } from './select';
+export { Input } from './input';

@@ -1,0 +1,8 @@
+1. refactor home UI for new changes
+2. add modals for create account and play now (play now will be select for which game, payment type and then same fields for deposit)
+3. Add deposit modal
+4. Hookup homepage with mutations
+5. add game type, will be undefined, only defined if can find payment in relation to user
+6. Hookup moving payments as processed (UI ONLY via splice and push)
+7. Hookup processing payments mutation, optimistic response, refetch queries
+8. Add email and cashtags via migration to DBx

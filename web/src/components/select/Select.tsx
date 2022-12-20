@@ -13,12 +13,12 @@ export type SelectComponentProps = SelectProps & {
   className?: string;
   options: SelectOptionType[];
   isDisabled?: boolean;
-  label: string;
+  label?: string;
 };
 
 export default function Select(props: SelectComponentProps): ReactElement {
   const p = { ...props };
-  console.log('value', p.value);
+
   return (
     <select
       className={clsx([`${PREFIX}`, p.className])}

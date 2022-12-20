@@ -13,13 +13,13 @@ import { CreateUserInput } from './types';
 // @Resolver(Repo)
 @Resolver()
 export class UserResolver {
-  @Transaction()
+  
   @Query(() => [User], { nullable: false })
   async getAllUsers(): Promise<User[]> {
     return getCustomRepository(UserRepository).getAll();
   }
 
-  @Transaction()
+  
   @Query(() => User, { nullable: false })
   async createUser(
     @Arg('input', { nullable: false }) input: CreateUserInput,
