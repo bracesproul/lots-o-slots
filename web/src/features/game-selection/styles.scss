@@ -2,25 +2,13 @@
 
 .game-selection-container {
   @apply px-[30px] py-[30px] h-[450px] w-full;
-  @apply border-[2px] border-[#C5002C] flex flex-row;
+  @apply border-[2px] border-[#C5002C] flex flex-col;
 }
 
 .input-button-container {
-  @apply flex flex-col gap-[15px];
-}
-
-.bottom-input-container {
-  @apply flex flex-row;
+  @apply flex ml-auto mt-[12px];
 }
 
 .game-selection-left {
-  @apply flex flex-col gap-[15px];
-}
-
-.game-selection-right {
-  @apply flex flex-col place-content-center ml-[50px];
-}
-
-.right-buttons-container {
-  @apply flex flex-col gap-[25px];
+  @apply flex flex-col gap-[15px] items-center justify-center;
 }

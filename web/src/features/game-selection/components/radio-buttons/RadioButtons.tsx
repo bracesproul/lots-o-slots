@@ -37,7 +37,7 @@ const EthereumRadioIcon = (
 export default function RadioButtons(
   props: Pick<
     GameSelectionProps,
-    'paymentMethodSelected' | 'handleRadioButtonSelection'
+    'paymentMethodSelected' | 'handleRadioButtonSelection' | 'showSkrill'
   >
 ): ReactElement {
   const { paymentMethodSelected, handleRadioButtonSelection } = props;
@@ -62,12 +62,14 @@ export default function RadioButtons(
         iconBackground="green"
         icon={CashAppRadioIcon}
       />
-      <CircleButton
-        isSelected={paymentMethodSelected.skrillSelected}
-        onPress={() => handleRadioButtonSelection('skrillSelected')}
-        iconBackground="gradient"
-        icon={SkrillRadioIcon}
-      />
+      {props.showSkrill && (
+        <CircleButton
+          isSelected={paymentMethodSelected.skrillSelected}
+          onPress={() => handleRadioButtonSelection('skrillSelected')}
+          iconBackground="gradient"
+          icon={SkrillRadioIcon}
+        />
+      )}
       <CircleButton
         isSelected={paymentMethodSelected.bitcoinSelected}
         onPress={() => handleRadioButtonSelection('bitcoinSelected')}
