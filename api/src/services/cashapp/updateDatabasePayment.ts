@@ -1,5 +1,9 @@
 import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
-import { PaymentRepository, AccountRepository } from '@/repositories';
+import {
+  PaymentRepository,
+  AccountRepository,
+  EmailLogRepository,
+} from '@/repositories';
 import { PaymentInfoType } from '@/types/paymentInfo';
 import { getCustomRepository } from 'typeorm';
 import { UpdatePaymentAndAccountResponse } from './types';
@@ -9,6 +13,8 @@ export async function updateDatabasePayment(
 ): Promise<UpdatePaymentAndAccountResponse> {
   const paymentRepository = getCustomRepository(PaymentRepository);
   const accountRepository = getCustomRepository(AccountRepository);
+  const emailLogRepository = getCustomRepository(EmailLogRepository);
+  await emailLogRepository.create(paymentInfo.email.id);
 
   const payment = await paymentRepository.createPayment({
     userIdentifier: paymentInfo.name,

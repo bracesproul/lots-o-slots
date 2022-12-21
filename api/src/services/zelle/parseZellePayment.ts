@@ -1,8 +1,7 @@
 import { EmailObjectType } from '@/types';
-import { Payment, User } from '@/entities';
 import { getCustomRepository } from 'typeorm';
 import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
-import { PaymentRepository } from '@/repositories';
+import { PaymentRepository, EmailLogRepository } from '@/repositories';
 import { PaymentInfoType } from '@/types/paymentInfo';
 
 export async function parseZellePayment(email: EmailObjectType) {
@@ -41,8 +40,11 @@ export async function parseZellePayment(email: EmailObjectType) {
   };
 }
 
-function updateDatabase(paymentInfo: PaymentInfoType) {
+async function updateDatabase(paymentInfo: PaymentInfoType) {
   const paymentRepository = getCustomRepository(PaymentRepository);
+  const emailLogRepository = getCustomRepository(EmailLogRepository);
+  await emailLogRepository.create(paymentInfo.email.id);
+
   return paymentRepository.createPayment({
     userIdentifier: paymentInfo.name,
     amount: paymentInfo.amount,

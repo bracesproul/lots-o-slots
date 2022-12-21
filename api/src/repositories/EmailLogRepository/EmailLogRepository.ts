@@ -11,13 +11,9 @@ import { RecentUpdateReturnType } from './types';
 
 @EntityRepository(EmailLog)
 export default class EmailLogRepository extends AbstractRepository<EmailLog> {
-  async create(
-    input: CreateEmailLogInput,
-    @TransactionManager() manager = getManager()
-  ): Promise<EmailLog> {
-    const { emailId } = input;
-    const newEmailLog = manager.create(EmailLog, { emailId });
-    return manager.save(newEmailLog);
+  async create(emailId: string): Promise<EmailLog> {
+    const newEmailLog = this.repository.create({ emailId });
+    return this.repository.save(newEmailLog);
   }
 
   async findOne(

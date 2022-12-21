@@ -1,5 +1,5 @@
 import { EmailObjectType } from '@/types';
-import { PaymentRepository } from '@/repositories';
+import { PaymentRepository, EmailLogRepository } from '@/repositories';
 import { getCustomRepository } from 'typeorm';
 import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
 import { PaymentInfoType } from '@/types/paymentInfo';
@@ -42,6 +42,9 @@ export async function parsePayPalPayment(email: EmailObjectType) {
 
 async function updateDatabase(paymentInfo: PaymentInfoType) {
   const paymentRepository = getCustomRepository(PaymentRepository);
+  const emailLogRepository = getCustomRepository(EmailLogRepository);
+  await emailLogRepository.create(paymentInfo.email.id);
+
   return paymentRepository.createPayment({
     userIdentifier: paymentInfo.name,
     amount: paymentInfo.amount,
