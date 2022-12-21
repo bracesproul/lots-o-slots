@@ -99,7 +99,7 @@ export default function AccountsCardContainer(): ReactElement {
   const cashappAccounts: CashAppAccountType[] =
     data?.getAllAccounts.map((account) => {
       const cashappAccount: CashAppAccountType = {
-        cashtag: account.email,
+        cashtag: account.cashtag ?? '',
         balance: account.balance,
         lastUpdate: account.updatedAt ? new Date(account.updatedAt) : undefined,
       };

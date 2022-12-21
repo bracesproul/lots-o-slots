@@ -8,5 +8,6 @@ query GetAccounts($input: GetAllAccountsInput) {
     canAcceptDeposits
     dailyWithdrawals
     weeklyWithdrawals
+    cashtag
   }
 }

@@ -10,7 +10,7 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
   async getAll(input: GetPaymentsInput): Promise<Payment[]> {
     let query = this.repository
       .createQueryBuilder('payment')
-      .addSelect('"payment"."createdAt"', 'createdAt');
+      .addSelect('"payment"."updatedAt"', 'updatedAt');
 
     if (input.paymentProvider) {
       query = query.andWhere('"provider" = :provider', {
@@ -30,7 +30,7 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
       });
     }
 
-    return query.addOrderBy('"createdAt"', 'ASC').getMany();
+    return query.addOrderBy('"updatedAt"', 'DESC').getMany();
   }
 
   async createPayment({

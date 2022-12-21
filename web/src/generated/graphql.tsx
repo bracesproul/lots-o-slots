@@ -265,7 +265,7 @@ export type GetAccountsQueryVariables = Exact<{
 }>;
 
 
-export type GetAccountsQuery = { __typename?: 'Query', getAllAccounts: Array<{ __typename?: 'Account', id: string, updatedAt?: string | null, email: string, balance: number, canWithdrawal: boolean, canAcceptDeposits: boolean, dailyWithdrawals: number, weeklyWithdrawals: number }> };
+export type GetAccountsQuery = { __typename?: 'Query', getAllAccounts: Array<{ __typename?: 'Account', id: string, updatedAt?: string | null, email: string, balance: number, canWithdrawal: boolean, canAcceptDeposits: boolean, dailyWithdrawals: number, weeklyWithdrawals: number, cashtag?: string | null }> };
 
 export type AddCashappAccountMutationVariables = Exact<{
   input: AddAccountInput;
@@ -326,6 +326,7 @@ export const GetAccountsDocument = gql`
     canAcceptDeposits
     dailyWithdrawals
     weeklyWithdrawals
+    cashtag
   }
 }
     `;
