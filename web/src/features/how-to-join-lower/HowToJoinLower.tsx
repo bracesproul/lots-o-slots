@@ -22,7 +22,7 @@ export default function HowToJoinLower(): ReactElement {
         <div className="big-cards-right-container">
           <BigCardsSvg />
         </div>
-        <PlayCreateBox />
+        <PlayCreateBox showAll={false} />
       </div>
       <p className="htjb-text-bottom">
         <span className="red-span-text">Lorem Ipsum</span> is simply dummy text
