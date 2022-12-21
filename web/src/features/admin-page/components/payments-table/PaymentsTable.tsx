@@ -2,8 +2,12 @@ import { ReactElement } from 'react';
 import clsx from 'clsx';
 import { Icon } from '@/components';
 import { ArrowRight } from '@/assets';
-import { PageChangeType, TableType } from '@/types/page-change';
-import { useGetAllPaymentsQuery, PaymentProvider } from '@/generated/graphql';
+import { TableType } from '@/types/page-change';
+import {
+  useGetAllPaymentsQuery,
+  PaymentProvider,
+  useMarkPaymentAsProcessedMutation,
+} from '@/generated/graphql';
 
 export type PaymentTableData = {
   paymentProvider: PaymentProvider;
@@ -32,11 +36,6 @@ export type PaymentsTableProps = {
    * Function to handle marking the payment as processed.
    */
   handleMarkProcessed?: (id: string) => void;
-
-  /**
-   * Handle pagination.
-   */
-  handlePageChange: (direction: PageChangeType, table: TableType) => void;
 };
 
 type ActionCellProps = Pick<PaymentsTableProps, 'handleMarkProcessed'> & {
@@ -118,30 +117,32 @@ export function PaymentsTable(props: PaymentsTableProps): ReactElement {
 }
 
 export default function PaymentsTableContainer(): ReactElement {
-  const { data: processedData, loading: processedLoading } =
-    useGetAllPaymentsQuery({
-      variables: {
-        input: {
-          processed: true,
-        },
-      },
-    });
-  const { data: pendingData, loading: pendingLoading } = useGetAllPaymentsQuery(
-    {
-      variables: {
-        input: {
-          processed: false,
-        },
-      },
-    }
-  );
+  const [markPaymentAsProcessed] = useMarkPaymentAsProcessedMutation();
 
-  const handlePageChange = (direction: PageChangeType, table: TableType) => {
-    console.log('page change:', direction, table);
-  };
-  const handleMarkProcessed = (id: string) => {
-    console.log('marking as processed:', id);
-  };
+  const {
+    data: pendingData,
+    loading: pendingLoading,
+    refetch: refetchPending,
+  } = useGetAllPaymentsQuery({
+    variables: {
+      input: {
+        processed: false,
+      },
+    },
+    pollInterval: 15000, // 15 sec
+  });
+
+  const {
+    data: processedData,
+    loading: processedLoading,
+    refetch: refetchProcessed,
+  } = useGetAllPaymentsQuery({
+    variables: {
+      input: {
+        processed: true,
+      },
+    },
+  });
 
   const processedPayments: PaymentTableData[] =
     processedData?.getAllPayments.map((data) => {
@@ -163,11 +164,39 @@ export default function PaymentsTableContainer(): ReactElement {
       };
     }) ?? [];
 
+  const handleMarkProcessed = async (id: string) => {
+    const index = pendingPayments.findIndex((item) => item.id === id);
+
+    if (index !== -1) {
+      const foundItem = pendingPayments.splice(index, 1)[0];
+      processedPayments.unshift(foundItem);
+    }
+
+    await markPaymentAsProcessed({
+      variables: {
+        input: {
+          id,
+        },
+      },
+    });
+
+    // refetching the prev queries.
+    refetchPending({
+      input: {
+        processed: false,
+      },
+    });
+    refetchProcessed({
+      input: {
+        processed: true,
+      },
+    });
+  };
+
   return (
     <>
       <PaymentsTable
         loading={pendingLoading}
-        handlePageChange={handlePageChange}
         handleMarkProcessed={handleMarkProcessed}
         includeActionColumn
         data={pendingPayments}
@@ -175,7 +204,6 @@ export default function PaymentsTableContainer(): ReactElement {
       />
       <PaymentsTable
         loading={processedLoading}
-        handlePageChange={handlePageChange}
         tableType={TableType.PROCESSED}
         data={processedPayments}
       />

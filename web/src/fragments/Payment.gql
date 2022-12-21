@@ -1,0 +1,11 @@
+fragment PaymentFragment on Payment {
+  id
+  userId
+  amount
+  processed
+  emailId
+  provider
+  senderName
+  transactionId
+  paymentType
+}

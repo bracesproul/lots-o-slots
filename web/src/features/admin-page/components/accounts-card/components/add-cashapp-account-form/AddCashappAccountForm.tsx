@@ -1,9 +1,17 @@
 import { Button, Dialog } from '@/components';
 import { FormEvent, ReactElement, useState } from 'react';
-import { useAddCashappAccountMutation } from '@/generated/graphql';
+import {
+  PaymentProvider,
+  useAddCashappAccountMutation,
+} from '@/generated/graphql';
+import {
+  RefetchAccountInputType,
+  RefetchAccountReturnType,
+} from '../../AccountsCard';
 
 export type AddCashappAccountFormProps = {
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  refetch: (variables: RefetchAccountInputType) => RefetchAccountReturnType;
   cashtag: string;
   setCashtag: (cashtag: string) => void;
 
@@ -64,7 +72,7 @@ function AddCashappAccountForm(
 }
 
 export default function AddCashappAccountFormContainer(
-  props: Pick<AddCashappAccountFormProps, 'open' | 'setOpen'>
+  props: Pick<AddCashappAccountFormProps, 'open' | 'setOpen' | 'refetch'>
 ): ReactElement {
   const [addCashappAccount] = useAddCashappAccountMutation();
   const [newCashtag, setNewCashtag] = useState('');
@@ -86,7 +94,11 @@ export default function AddCashappAccountFormContainer(
               cashtag: newCashtag,
             },
           },
-          refetchQueries: ['GetAllAccounts'],
+        });
+        props.refetch({
+          input: {
+            provider: PaymentProvider.CASHAPP,
+          },
         });
         props.setOpen(false);
         setNewCashtag('');

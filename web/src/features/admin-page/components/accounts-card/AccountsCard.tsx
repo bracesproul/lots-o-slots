@@ -5,7 +5,15 @@ import {
   ChangePaymentHandleDialog,
 } from './components';
 import { Button } from '@/components';
-import { PaymentProvider, useGetAccountsQuery } from '@/generated/graphql';
+import {
+  Exact,
+  GetAccountsQuery,
+  GetAllAccountsInput,
+  InputMaybe,
+  PaymentProvider,
+  useGetAccountsQuery,
+} from '@/generated/graphql';
+import { ApolloQueryResult } from '@apollo/client';
 
 type CashAppAccountType = {
   cashtag: string;
@@ -13,8 +21,21 @@ type CashAppAccountType = {
   lastUpdate?: Date;
 };
 
+export type RefetchAccountInputType =
+  | Partial<
+      Exact<{
+        input?: InputMaybe<GetAllAccountsInput> | undefined;
+      }>
+    >
+  | undefined;
+
+export type RefetchAccountReturnType = Promise<
+  ApolloQueryResult<GetAccountsQuery>
+>;
+
 export type AccountsCardProps = {
   cashappAccount: CashAppAccountType[];
+  refetch: (variables: RefetchAccountInputType) => RefetchAccountReturnType;
 };
 
 const PREFIX = 'accounts-card';
@@ -56,6 +77,7 @@ export function AccountsCard(props: AccountsCardProps): ReactElement {
       <AddCashappAccountForm
         open={addCashappAccountOpen}
         setOpen={setAddCashappAccountOpen}
+        refetch={p.refetch}
       />
       <ChangePaymentHandleDialog
         open={changeCashtagModalOpen}
@@ -66,7 +88,7 @@ export function AccountsCard(props: AccountsCardProps): ReactElement {
 }
 
 export default function AccountsCardContainer(): ReactElement {
-  const { data } = useGetAccountsQuery({
+  const { data, refetch } = useGetAccountsQuery({
     variables: {
       input: {
         provider: PaymentProvider.CASHAPP,
@@ -84,5 +106,5 @@ export default function AccountsCardContainer(): ReactElement {
       return cashappAccount;
     }) ?? [];
 
-  return <AccountsCard cashappAccount={cashappAccounts} />;
+  return <AccountsCard refetch={refetch} cashappAccount={cashappAccounts} />;
 }

@@ -16,6 +16,13 @@ export function parseEmailHeaders(
     (header) => header.name === 'Subject' && header.value
   );
   const subject = schemaSubject?.value;
-  if (!to || !from || !subject) throw new Error('Missing email headers');
+  if (!to || !from || !subject) {
+    console.error('NO EMAIL HEADERS');
+    return {
+      to: '',
+      from: '',
+      subject: '',
+    };
+  }
   return { to, from, subject };
 }
