@@ -1,4 +1,4 @@
-import { Button, Dialog } from '@/components';
+import { Button, Dialog, Input } from '@/components';
 import { FormEvent, ReactElement, useState } from 'react';
 import {
   PaymentProvider,
@@ -20,6 +20,12 @@ export type AddCashappAccountFormProps = {
 
   open: boolean;
   setOpen: (open: boolean) => void;
+
+  balance: number;
+  setBalance: (balance: number) => void;
+
+  sent: number;
+  setSent: (sent: number) => void;
 };
 
 const PREFIX = 'cashapp-form';
@@ -63,6 +69,24 @@ function AddCashappAccountForm(
           type="email"
           className={`${PREFIX}-form-input`}
         />
+        <label className={`${PREFIX}-form-label`}>Starting Balance</label>
+        <input
+          className={`${PREFIX}-form-input`}
+          type="number"
+          placeholder="Starting balance"
+          id="balance"
+          value={p.balance.toString()}
+          onChange={(e) => p.setBalance(Number(e))}
+        />
+        <label className={`${PREFIX}-form-label`}>Amount Sent</label>
+        <input
+          className={`${PREFIX}-form-input`}
+          type="number"
+          placeholder="Amount Sent"
+          id="amount-sent"
+          value={p.sent.toString()}
+          onChange={(e) => p.setSent(Number(e))}
+        />
         <Button className={`${PREFIX}-form-submit`} type="submit">
           Submit
         </Button>
@@ -77,10 +101,16 @@ export default function AddCashappAccountFormContainer(
   const [addCashappAccount] = useAddCashappAccountMutation();
   const [newCashtag, setNewCashtag] = useState('');
   const [newCashappEmail, setNewCashappEmail] = useState('');
+  const [balance, setBalance] = useState(0);
+  const [sent, setSent] = useState(0);
 
   return (
     <AddCashappAccountForm
       {...props}
+      balance={balance}
+      setBalance={setBalance}
+      sent={sent}
+      setSent={setSent}
       cashtag={newCashtag}
       setCashtag={setNewCashtag}
       email={newCashappEmail}
@@ -92,6 +122,8 @@ export default function AddCashappAccountFormContainer(
             input: {
               email: newCashappEmail,
               cashtag: newCashtag,
+              balance: balance,
+              weeklyWithdrawals: sent,
             },
           },
         });

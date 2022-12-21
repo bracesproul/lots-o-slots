@@ -45,6 +45,8 @@ export type AddAccountInput = {
   cashtag?: InputMaybe<Scalars['String']>;
   /** The email address of the account. */
   email: Scalars['String'];
+  /** The amount sent from this account this week */
+  weeklyWithdrawals?: InputMaybe<Scalars['Float']>;
 };
 
 /** Input type for creating an email log. */

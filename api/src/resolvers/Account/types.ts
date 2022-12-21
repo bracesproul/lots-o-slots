@@ -35,6 +35,12 @@ export class AddAccountInput {
     description: 'Whether an account can accept funds.',
   })
   canAcceptDeposits?: boolean;
+
+  @Field(() => Number, {
+    nullable: true,
+    description: 'The amount sent from this account this week',
+  })
+  weeklyWithdrawals?: number;
 }
 
 @ObjectType({
