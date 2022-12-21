@@ -1,0 +1,43 @@
+version: '3.7'
+
+services:
+  api:
+    profiles: ['api', 'web']
+    container_name: slots-api
+    stdin_open: true
+    build:
+      context: ./
+      dockerfile: api/Dockerfile.prod
+      target: prod
+    environment:
+      NODE_ENV: production
+    ports:
+      - 8000:8000
+    volumes:
+      - ./api:/app/api
+      - /app/node_modules/ # do not mount node_modules
+      - /app/api/node_modules/ # do not mount node_modules
+    depends_on:
+      - database
+    command: yarn start:api
+
+  database:
+    container_name: slots-database
+    image: postgres:alpine
+    restart: unless-stopped
+    ports:
+      - 5432:5432
+    depends_on:
+      - adminer
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: dev
+      POSTGRES_HOST: 127.0.0.1
+
+  adminer:
+    image: adminer
+    container_name: slots-adminer
+    restart: unless-stopped
+    ports:
+      - 8080:8080

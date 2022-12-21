@@ -15,6 +15,7 @@
   },
   "scripts": {
     "dev:api": "cd ./api && yarn dev",
+    "start:api": "cd ./api && yarn start",
     "build": "cd ./api && yarn build && cd ../web && yarn build",
     "build:api": "cd ./api && yarn build",
     "build:web": "cd ./web && yarn build",
@@ -26,6 +27,7 @@
     "docker:restart": "docker compose --profile web restart",
     "docker:restart:web": "docker container restart web",
     "docker:restart:api": "docker container restart api",
-    "postinstall": "husky install || true"
+    "postinstall": "husky install || true",
+    "docker:compose:prod:api": "docker compose -f docker-compose.prod.yml up --build"
   }
 }

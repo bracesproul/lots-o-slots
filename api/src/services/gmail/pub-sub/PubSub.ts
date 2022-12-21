@@ -128,6 +128,10 @@ export default class MessageListener {
      */
     const emailRepo = getCustomRepository(EmailLogRepository);
     const { createdAt } = await emailRepo.getRecentUpdate();
+    if (!createdAt) {
+      console.info('No logs in email.');
+      return;
+    }
     const prettyDate = format(createdAt, 'yyyy/mm/dd');
     const { messageIds } = await this.listMessages({
       count: 500,
