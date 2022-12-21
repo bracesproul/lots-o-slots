@@ -27,17 +27,8 @@ services:
     restart: unless-stopped
     ports:
       - 5432:5432
-    depends_on:
-      - adminer
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: dev
       POSTGRES_HOST: 127.0.0.1
-
-  adminer:
-    image: adminer
-    container_name: slots-adminer
-    restart: unless-stopped
-    ports:
-      - 8080:8080
