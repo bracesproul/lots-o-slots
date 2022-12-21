@@ -2,7 +2,6 @@ version: '3.7'
 
 services:
   api:
-    profiles: ['api', 'web']
     container_name: slots-api
     stdin_open: true
     build:
