@@ -28,6 +28,6 @@
     "docker:restart:web": "docker container restart web",
     "docker:restart:api": "docker container restart api",
     "postinstall": "husky install || true",
-    "docker:compose:prod:api": "docker compose -f docker-compose.prod.yml up --build"
+    "docker:compose:prod:api": "sudo docker-compose -f docker-compose.prod.yml up"
   }
 }
