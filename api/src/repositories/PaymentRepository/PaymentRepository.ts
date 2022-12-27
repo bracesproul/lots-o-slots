@@ -118,7 +118,7 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
   }
 
   async markPaymentAsProcessed({ id }: { id: string }): Promise<Payment> {
-    const payment = await this.repository.findOneOrFail(id);
+    const payment = await this.repository.findOneOrFail({ where: { id } });
     payment.processed = true;
     return this.repository.save(payment);
   }

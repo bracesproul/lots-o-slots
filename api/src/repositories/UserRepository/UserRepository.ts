@@ -2,13 +2,15 @@ import {
   AbstractRepository,
   EntityRepository,
   getManager,
-  TransactionManager,
+  getRepository,
 } from 'typeorm';
 import { User } from '@/entities';
 import { ApolloError } from 'apollo-server-express';
 
 @EntityRepository(User)
 export default class UserRepository extends AbstractRepository<User> {
+  userRepo = getRepository(User);
+
   async getAll(): Promise<User[]> {
     return this.repository
       .createQueryBuilder('user')
@@ -17,18 +19,15 @@ export default class UserRepository extends AbstractRepository<User> {
       .getMany();
   }
 
-  async createUser(
-    {
-      userIdentifier,
-      balance,
-    }: {
-      userIdentifier: string;
-      balance: number;
-    },
-    @TransactionManager() manager = getManager()
-  ): Promise<User> {
+  async createUser({
+    userIdentifier,
+    balance,
+  }: {
+    userIdentifier: string;
+    balance: number;
+  }): Promise<User> {
     if (
-      await manager.findOne(User, {
+      await this.userRepo.findOne({
         where: [
           { userIdentifier_paypal: userIdentifier },
           { userIdentifier_zelle: userIdentifier },
@@ -38,11 +37,11 @@ export default class UserRepository extends AbstractRepository<User> {
     ) {
       throw new ApolloError('Username already exists');
     }
-    const user = manager.create(User, {
+    const user = this.userRepo.create({
       userIdentifier_zelle: userIdentifier,
       balance,
     });
-    return manager.save(user);
+    return this.userRepo.save(user);
   }
 
   async updateUserBalance({
@@ -52,7 +51,7 @@ export default class UserRepository extends AbstractRepository<User> {
     id: string;
     balance: number;
   }): Promise<User> {
-    const user = await this.repository.findOneOrFail(id);
+    const user = await this.repository.findOneOrFail({ where: { id } });
     user.balance = user.balance + balance;
     return this.repository.save(user);
   }

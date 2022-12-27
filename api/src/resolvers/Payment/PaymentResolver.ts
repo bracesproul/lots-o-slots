@@ -1,7 +1,7 @@
 import { PaymentRepository } from '@/repositories';
 import { Payment } from '@/entities';
 import { Arg, Query, Resolver, Mutation } from 'type-graphql';
-import { getCustomRepository, Transaction } from 'typeorm';
+import { getCustomRepository } from 'typeorm';
 import {
   CreatePaymentInput,
   CreatedPaymentResponse,

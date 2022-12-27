@@ -59,7 +59,7 @@ export default class AccountRepository extends AbstractRepository<Account> {
   }
 
   async findOne(email: string): Promise<Account | undefined> {
-    return this.repository.findOne({ where: { email } });
+    return this.repository.findOneOrFail({ where: { email } });
   }
 
   async makeAccountActive({
@@ -69,7 +69,7 @@ export default class AccountRepository extends AbstractRepository<Account> {
     id: string;
     isCashapp?: boolean;
   }): Promise<Account> {
-    const account = await this.repository.findOneOrFail(id);
+    const account = await this.repository.findOneOrFail({ where: { id } });
 
     if (isCashapp) {
       const previousAccount = await this.repository.findOneOrFail({
@@ -93,7 +93,7 @@ export default class AccountRepository extends AbstractRepository<Account> {
     id: string;
     amount: number;
   }): Promise<Account> {
-    const account = await this.repository.findOneOrFail(id);
+    const account = await this.repository.findOneOrFail({ where: { id } });
     account.balance = Number(account.balance) + Number(amount);
     return this.repository.save(account);
   }
@@ -105,13 +105,13 @@ export default class AccountRepository extends AbstractRepository<Account> {
     id: string;
     amount: number;
   }): Promise<Account> {
-    const account = await this.repository.findOneOrFail(id);
+    const account = await this.repository.findOneOrFail({ where: { id } });
     account.balance = account.balance - amount;
     return this.repository.save(account);
   }
 
   async checkIfAccountCanWithdraw({ id }: { id: string }): Promise<boolean> {
-    const account = await this.repository.findOneOrFail(id);
+    const account = await this.repository.findOneOrFail({ where: { id } });
     if (!account.canWithdrawal) {
       return false;
     }
@@ -125,7 +125,9 @@ export default class AccountRepository extends AbstractRepository<Account> {
     id: string;
     type: PaymentProvider;
   }): Promise<Account> {
-    const newDefaultAccount = await this.repository.findOneOrFail(id);
+    const newDefaultAccount = await this.repository.findOneOrFail({
+      where: { id },
+    });
     newDefaultAccount.defaultAccount = true;
     this.repository.save(newDefaultAccount);
     const otherAccounts = await this.repository.find({ where: { type } });
