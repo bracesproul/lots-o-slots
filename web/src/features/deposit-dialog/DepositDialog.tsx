@@ -63,7 +63,6 @@ export default function DepositDialogContainer(
   props: Pick<DepositDialogProps, 'open' | 'setOpen' | 'paymentType'>
 ): ReactElement {
   const [depositAmount, setDepositAmount] = useState<number>(0);
-  const TEMP_PAYMENT_TYPE = PaymentProvider.ZELLE;
   const TEMP_PAYMENT_HANDLE = 'zelle@example.com';
 
   return (
@@ -71,7 +70,7 @@ export default function DepositDialogContainer(
       {...props}
       depositAmount={depositAmount}
       setDepositAmount={setDepositAmount}
-      paymentType={TEMP_PAYMENT_TYPE}
+      paymentType={props.paymentType}
       paymentHandle={TEMP_PAYMENT_HANDLE}
       onSubmit={() => {
         // TODO: hookup

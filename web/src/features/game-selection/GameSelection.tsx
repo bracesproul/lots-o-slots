@@ -1,6 +1,8 @@
 import React, { ReactElement, useState } from 'react';
 import { Button } from '@/components';
 import { GameSelectionCards, RadioButtons } from './components';
+import { DepositDialog } from '../deposit-dialog';
+import { PaymentProvider } from '@/generated/graphql';
 
 export type PaymentMethodSelectedType = {
   paypalSelected: boolean;
@@ -25,6 +27,9 @@ export type GameSelectionProps = {
   handleRadioButtonSelection: (option: RadioButtonOptions) => void;
   handleSubmit: () => void;
   showSkrill?: boolean;
+  depositDialogOpen: boolean;
+  setDepositDialogOpen: (depositDialogOpen: boolean) => void;
+  paymentProvider: PaymentProvider;
 };
 
 function GameSelection(props: GameSelectionProps): ReactElement {
@@ -59,6 +64,11 @@ function GameSelection(props: GameSelectionProps): ReactElement {
           Deposit
         </Button>
       </div>
+      <DepositDialog
+        open={p.depositDialogOpen}
+        setOpen={p.setDepositDialogOpen}
+        paymentType={p.paymentProvider}
+      />
     </div>
   );
 }
@@ -81,9 +91,14 @@ export default function GameSelectionContainer(): ReactElement {
     ethereumSelected: false,
   });
   const [isPokerSelected, setIsPokerSelected] = useState(true);
+  const [depositDialogOpen, setDepositDialogOpen] = useState(false);
+  const [paymentProvider, setPaymentProvider] = useState(
+    PaymentProvider.PAYPAL
+  );
 
   const handleSubmit = () => {
-    // TODO: Add logic to handle form submission
+    setDepositDialogOpen(true);
+    console.log(paymentProvider);
   };
 
   const handleRadioButtonSelection = (option: RadioButtonOptions) => {
@@ -96,6 +111,23 @@ export default function GameSelectionContainer(): ReactElement {
       ethereumSelected: false,
       [option]: true,
     });
+    switch (option) {
+      case 'bitcoinSelected':
+        setPaymentProvider(PaymentProvider.BITCOIN);
+        break;
+      case 'cashAppSelected':
+        setPaymentProvider(PaymentProvider.CASHAPP);
+        break;
+      case 'ethereumSelected':
+        setPaymentProvider(PaymentProvider.ETHEREUM);
+        break;
+      case 'zelleSelected':
+        setPaymentProvider(PaymentProvider.ZELLE);
+        break;
+      case 'paypalSelected':
+        setPaymentProvider(PaymentProvider.PAYPAL);
+        break;
+    }
   };
 
   return (
@@ -105,6 +137,9 @@ export default function GameSelectionContainer(): ReactElement {
       paymentMethodSelected={paymentSelected}
       handleRadioButtonSelection={handleRadioButtonSelection}
       handleSubmit={handleSubmit}
+      depositDialogOpen={depositDialogOpen}
+      setDepositDialogOpen={setDepositDialogOpen}
+      paymentProvider={paymentProvider}
     />
   );
 }

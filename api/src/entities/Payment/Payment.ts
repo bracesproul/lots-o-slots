@@ -6,6 +6,8 @@ export enum PaymentProvider {
   PAYPAL = 'PAYPAL',
   CASHAPP = 'CASHAPP',
   ZELLE = 'ZELLE',
+  BITCOIN = 'BITCOIN',
+  ETHEREUM = 'ETHEREUM',
 }
 
 export enum PaymentType {

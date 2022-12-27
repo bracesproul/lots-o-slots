@@ -105,7 +105,7 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
       await User.save(user);
     }
     const payment = this.repository.create({
-      userId: user.id,
+      userId: user?.id,
       amount,
       processed: processed || false,
       emailId,
