@@ -3,7 +3,6 @@ FROM node:16-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 COPY yarn.lock ./
-COPY . .
 RUN yarn install
 
 # FROM node:16-alpine AS installer
