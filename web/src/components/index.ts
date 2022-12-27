@@ -10,3 +10,5 @@ export { Provider } from './provider';
 export { RadixButton } from './radix-button';
 export { Select } from './select';
 export { Input } from './input';
+export { GenerateAccountDialog } from './generate-account-dialog';
+export { PlayNowDialog } from './play-now-dialog';

@@ -38,7 +38,7 @@ function DepositDialog(props: DepositDialogProps): ReactElement {
               Please send{' '}
               <span className={`${PREFIX}-special-text`}>
                 ${p.depositAmount}
-              </span>
+              </span>{' '}
               to the below address.
             </h1>
             <p className={`${PREFIX}-sub-text`}>

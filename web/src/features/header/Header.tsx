@@ -1,6 +1,5 @@
 import { ReactElement, useState } from 'react';
-import { Button } from '@/components';
-import { GenerateAccountDialog, PlayNowDialog } from './components';
+import { Button, GenerateAccountDialog, PlayNowDialog } from '@/components';
 import { PaymentProvider } from '@/generated/graphql';
 import { DepositDialog } from '@/features';
 export type HeaderProps = {
@@ -13,8 +12,8 @@ function Header(): ReactElement {
   const [playNowDialogOpen, setPlayNowDialogOpen] = useState(false);
   const [paymentProvider, setPaymentProvider] =
     useState<PaymentProvider | null>(null);
-
   const [depositDialogOpen, setDepositDialogOpen] = useState(false);
+
   return (
     <div className="header">
       <div className="nav-container">
