@@ -40,3 +40,11 @@
 .deposit-dialog-special-text {
   @apply text-[#C5002C] font-semibold;
 }
+
+.deposit-dialog-expired {
+  @apply text-white font-semibold text-[28px];
+}
+
+.deposit-dialog-expired-body {
+  @apply text-gray-400 text-[18px];
+}
