@@ -1,10 +1,9 @@
 import { UserRepository } from '@/repositories';
 import { User } from '@/entities';
-import { Arg, Query, Resolver } from 'type-graphql';
+import { Arg, Query, Mutation, Resolver } from 'type-graphql';
 import { getManager, getCustomRepository } from 'typeorm';
 import { CreateUserInput } from './types';
 
-// @Resolver(Repo)
 @Resolver()
 export class UserResolver {
   @Query(() => [User], { nullable: false })
@@ -12,13 +11,15 @@ export class UserResolver {
     return getCustomRepository(UserRepository).getAll();
   }
 
-  @Query(() => User, { nullable: false })
+  @Mutation(() => User, { nullable: false })
   async createUser(
     @Arg('input', { nullable: false }) input: CreateUserInput
   ): Promise<User> {
     return getCustomRepository(UserRepository).createUser({
       userIdentifier: input.userIdentifier,
       balance: input.balance,
+      email: input.email,
+      password: input.password,
     });
   }
 }

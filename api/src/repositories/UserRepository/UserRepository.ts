@@ -1,9 +1,4 @@
-import {
-  AbstractRepository,
-  EntityRepository,
-  getManager,
-  getRepository,
-} from 'typeorm';
+import { AbstractRepository, EntityRepository, getRepository } from 'typeorm';
 import { User } from '@/entities';
 import { ApolloError } from 'apollo-server-express';
 
@@ -22,9 +17,13 @@ export default class UserRepository extends AbstractRepository<User> {
   async createUser({
     userIdentifier,
     balance,
+    email,
+    password,
   }: {
-    userIdentifier: string;
+    userIdentifier?: string;
     balance: number;
+    email?: string;
+    password?: string;
   }): Promise<User> {
     if (
       await this.userRepo.findOne({
@@ -32,16 +31,19 @@ export default class UserRepository extends AbstractRepository<User> {
           { userIdentifier_paypal: userIdentifier },
           { userIdentifier_zelle: userIdentifier },
           { userIdentifier_cashapp: userIdentifier },
+          { email: email },
         ],
       })
     ) {
-      throw new ApolloError('Username already exists');
+      throw new ApolloError('User already exists');
     }
-    const user = this.userRepo.create({
+    const user = this.repository.create({
       userIdentifier_zelle: userIdentifier,
       balance,
+      email,
+      password,
     });
-    return this.userRepo.save(user);
+    return this.repository.save(user);
   }
 
   async updateUserBalance({

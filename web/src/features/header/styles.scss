@@ -1,5 +1,3 @@
-@use './components/styles.scss' as componentStyles;
-
 .header {
   @apply mt-[33px] mx-[75px] flex flex-col mb-[-50px];
   font-family: 'SEQUEL100-96', sans-serif;

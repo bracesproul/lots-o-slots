@@ -36,4 +36,16 @@ export default class User extends MainEntity {
   })
   @Column({ type: 'numeric', nullable: false })
   balance!: number;
+
+  @Field(() => String, {
+    nullable: true,
+  })
+  @Column({ type: 'varchar', nullable: true })
+  email?: string;
+
+  @Field(() => String, {
+    nullable: true,
+  })
+  @Column({ type: 'varchar', nullable: true })
+  password?: string;
 }

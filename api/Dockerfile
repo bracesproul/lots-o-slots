@@ -21,6 +21,7 @@ FROM node:16-alpine AS dev
 WORKDIR /app
 COPY --from=builder /app/ /app/
 COPY . .
+RUN yarn install
 RUN yarn build:api
 
 EXPOSE 8000

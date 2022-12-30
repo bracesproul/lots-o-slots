@@ -10,11 +10,23 @@ export class CreateUserInput {
     nullable: false,
     description: 'The unique identifier for the user.',
   })
-  userIdentifier!: string;
+  userIdentifier?: string;
 
   @Field(() => Number, {
     nullable: false,
     description: 'The current users ballance.',
   })
   balance!: number;
+
+  @Field(() => String, {
+    nullable: false,
+    description: 'The users email.',
+  })
+  email?: string;
+
+  @Field(() => String, {
+    nullable: false,
+    description: 'The users password.',
+  })
+  password?: string;
 }
