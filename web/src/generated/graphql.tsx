@@ -79,8 +79,18 @@ export type CreatePaymentInput = {
 export type CreateUserInput = {
   /** The current users ballance. */
   balance: Scalars['Float'];
+  /** The users cashtag. */
+  cashtag: Scalars['String'];
+  /** The users email. */
+  email: Scalars['String'];
+  /** The users password. */
+  password: Scalars['String'];
+  /** The users paypal email. */
+  payPalEmail: Scalars['String'];
   /** The unique identifier for the user. */
   userIdentifier: Scalars['String'];
+  /** The users zelle email. */
+  zelleEmail: Scalars['String'];
 };
 
 /** The created payment object. */
@@ -152,6 +162,7 @@ export type Mutation = {
   addAccount: Account;
   createEmailLog: EmailLog;
   createPayment: CreatedPaymentResponse;
+  createUser: User;
   markPaymentAsProcessed: MarkPaymentAsProcessedResponse;
   switchDefaultAccount: Account;
 };
@@ -169,6 +180,11 @@ export type MutationCreateEmailLogArgs = {
 
 export type MutationCreatePaymentArgs = {
   input: CreatePaymentInput;
+};
+
+
+export type MutationCreateUserArgs = {
+  input: CreateUserInput;
 };
 
 
@@ -218,17 +234,11 @@ export enum PaymentType {
 
 export type Query = {
   __typename?: 'Query';
-  createUser: User;
   getAllAccounts: Array<Account>;
   getAllPayments: Array<Payment>;
   getAllUsers: Array<User>;
   getRecentUpdate: GetRecentEmailLogUpdate;
   seedData: Scalars['Boolean'];
-};
-
-
-export type QueryCreateUserArgs = {
-  input: CreateUserInput;
 };
 
 
@@ -255,12 +265,21 @@ export type User = MainEntity & Node & {
   cashTag?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
   deletedAt?: Maybe<Scalars['DateTime']>;
+  email?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
+  password?: Maybe<Scalars['String']>;
   updatedAt?: Maybe<Scalars['DateTime']>;
   userIdentifier_cashapp?: Maybe<Scalars['String']>;
   userIdentifier_paypal?: Maybe<Scalars['String']>;
   userIdentifier_zelle?: Maybe<Scalars['String']>;
 };
+
+export type CreateUserMutationVariables = Exact<{
+  input: CreateUserInput;
+}>;
+
+
+export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', email?: string | null, password?: string | null } };
 
 export type GetAccountsQueryVariables = Exact<{
   input?: InputMaybe<GetAllAccountsInput>;
@@ -317,6 +336,40 @@ export const PaymentFragmentFragmentDoc = gql`
   paymentType
 }
     `;
+export const CreateUserDocument = gql`
+    mutation CreateUser($input: CreateUserInput!) {
+  createUser(input: $input) {
+    email
+    password
+  }
+}
+    `;
+export type CreateUserMutationFn = Apollo.MutationFunction<CreateUserMutation, CreateUserMutationVariables>;
+
+/**
+ * __useCreateUserMutation__
+ *
+ * To run a mutation, you first call `useCreateUserMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateUserMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createUserMutation, { data, loading, error }] = useCreateUserMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<CreateUserMutation, CreateUserMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument, options);
+      }
+export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
+export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
+export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
 export const GetAccountsDocument = gql`
     query GetAccounts($input: GetAllAccountsInput) {
   getAllAccounts(input: $input) {

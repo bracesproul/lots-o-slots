@@ -29,4 +29,22 @@ export class CreateUserInput {
     description: 'The users password.',
   })
   password?: string;
+
+  @Field(() => String, {
+    nullable: false,
+    description: 'The users cashtag.',
+  })
+  cashtag?: string;
+
+  @Field(() => String, {
+    nullable: false,
+    description: 'The users zelle email.',
+  })
+  zelleEmail?: string;
+
+  @Field(() => String, {
+    nullable: false,
+    description: 'The users paypal email.',
+  })
+  payPalEmail?: string;
 }

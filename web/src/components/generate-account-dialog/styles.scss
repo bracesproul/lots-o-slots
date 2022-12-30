@@ -15,3 +15,11 @@
 .generate-account-dialog-form-submit {
   @apply rounded-full mt-[10px]
 }
+
+.generate-account-dialog-error {
+  @apply text-center text-[18px] font-semibold text-red-700;
+}
+
+.generate-account-dialog-text {
+  @apply text-center text-[18px] text-white pt-[8px] mb-[-10px];
+}

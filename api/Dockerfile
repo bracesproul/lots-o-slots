@@ -5,23 +5,11 @@ COPY package*.json ./
 COPY yarn.lock ./
 RUN yarn install
 
-# FROM node:16-alpine AS installer
-
-# WORKDIR /app
-# COPY .gitignore .gitignore
-# COPY --from=build /app/out/json/ .
-# COPY --from=build /app/out/yarn.lock ./yarn.lock
-# COPY .yarn/ .yarn
-# COPY .yarnrc.yml .
-# RUN yarn install
-
-
 FROM node:16-alpine AS dev
 
 WORKDIR /app
 COPY --from=builder /app/ /app/
 COPY . .
-RUN yarn install
 RUN yarn build:api
 
 EXPOSE 8000

@@ -20,6 +20,9 @@ export class UserResolver {
       balance: input.balance,
       email: input.email,
       password: input.password,
+      cashtag: input.cashtag,
+      zelleEmail: input.zelleEmail,
+      payPalEmail: input.payPalEmail,
     });
   }
 }

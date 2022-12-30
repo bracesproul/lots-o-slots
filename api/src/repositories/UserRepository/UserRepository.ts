@@ -19,11 +19,17 @@ export default class UserRepository extends AbstractRepository<User> {
     balance,
     email,
     password,
+    cashtag,
+    zelleEmail,
+    payPalEmail,
   }: {
     userIdentifier?: string;
     balance: number;
     email?: string;
     password?: string;
+    cashtag?: string;
+    zelleEmail?: string;
+    payPalEmail?: string;
   }): Promise<User> {
     if (
       await this.userRepo.findOne({
@@ -32,13 +38,17 @@ export default class UserRepository extends AbstractRepository<User> {
           { userIdentifier_zelle: userIdentifier },
           { userIdentifier_cashapp: userIdentifier },
           { email: email },
+          { cashTag: cashtag },
         ],
       })
     ) {
       throw new ApolloError('User already exists');
     }
     const user = this.repository.create({
-      userIdentifier_zelle: userIdentifier,
+      userIdentifier_zelle: zelleEmail,
+      userIdentifier_paypal: payPalEmail,
+      userIdentifier_cashapp: cashtag,
+      cashTag: cashtag,
       balance,
       email,
       password,
