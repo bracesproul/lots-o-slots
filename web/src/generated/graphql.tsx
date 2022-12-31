@@ -279,7 +279,7 @@ export type CreateUserMutationVariables = Exact<{
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', email?: string | null, password?: string | null } };
+export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', id: string, email?: string | null, password?: string | null } };
 
 export type GetAccountsQueryVariables = Exact<{
   input?: InputMaybe<GetAllAccountsInput>;
@@ -339,6 +339,7 @@ export const PaymentFragmentFragmentDoc = gql`
 export const CreateUserDocument = gql`
     mutation CreateUser($input: CreateUserInput!) {
   createUser(input: $input) {
+    id
     email
     password
   }

@@ -1,6 +1,7 @@
 import { Button, Dialog, Input } from '@/components';
 import { ReactElement, useState } from 'react';
 import { useCreateUserMutation } from '@/generated/graphql';
+import { handleSetUserCookie } from '@/utils';
 
 type OptionalFieldsType = {
   cashtag: string;
@@ -132,7 +133,7 @@ export default function GenerateAccountDialogContainer(
       optionalFields={optionalFields}
       onSubmit={async () => {
         setLoading(true);
-        const { errors } = await createUser({
+        const { errors, data } = await createUser({
           variables: {
             input: {
               email: username,
@@ -149,6 +150,7 @@ export default function GenerateAccountDialogContainer(
           setError(true);
         } else {
           props.setOpen(false);
+          handleSetUserCookie(data?.createUser.id);
         }
         setLoading(false);
       }}
