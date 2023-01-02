@@ -21,5 +21,9 @@
 }
 
 .generate-account-dialog-text {
-  @apply text-center text-[18px] text-white pt-[8px] mb-[-10px];
+  @apply text-center text-[18px] text-white pt-[8px] mb-[10px];
+}
+
+.generate-account-dialog-label-sub-text {
+  @apply text-gray-300 text-[14px];
 }

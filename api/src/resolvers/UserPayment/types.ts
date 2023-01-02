@@ -1,5 +1,5 @@
 import { Field, InputType } from 'type-graphql';
-import { PaymentProvider } from '@/entities/Payment/Payment';
+import { GameType, PaymentProvider } from '@/entities/Payment/Payment';
 
 @InputType({
   description: 'Input type for creating a user payment.',
@@ -9,7 +9,7 @@ export class CreateUserPaymentInput {
     nullable: false,
     description: 'The unique payment identifier.',
   })
-  userIdentifier!: string;
+  paymentIdentifier!: string;
 
   @Field(() => PaymentProvider, {
     nullable: false,
@@ -28,6 +28,12 @@ export class CreateUserPaymentInput {
     description: 'The ID of a relating user account.',
   })
   userId?: string;
+
+  @Field(() => GameType, {
+    nullable: false,
+    description: 'The game type.',
+  })
+  gameType!: GameType;
 }
 
 @InputType({

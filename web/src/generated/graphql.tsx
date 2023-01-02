@@ -93,6 +93,20 @@ export type CreateUserInput = {
   zelleEmail: Scalars['String'];
 };
 
+/** Input type for creating a user payment. */
+export type CreateUserPaymentInput = {
+  /** The amount the user sent. */
+  amount: Scalars['Float'];
+  /** The game type. */
+  gameType: GameType;
+  /** The unique payment identifier. */
+  paymentIdentifier: Scalars['String'];
+  /** The payment provider. */
+  paymentProvider: PaymentProvider;
+  /** The ID of a relating user account. */
+  userId?: InputMaybe<Scalars['String']>;
+};
+
 /** The created payment object. */
 export type CreatedPaymentResponse = {
   __typename?: 'CreatedPaymentResponse';
@@ -110,6 +124,11 @@ export type EmailLog = MainEntity & Node & {
   id: Scalars['ID'];
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
+
+export enum GameType {
+  POKER = 'POKER',
+  SLOTS = 'SLOTS'
+}
 
 /** Input type for getting accounts. */
 export type GetAllAccountsInput = {
@@ -157,13 +176,21 @@ export type MarkPaymentAsProcessedResponse = {
   success: Scalars['Boolean'];
 };
 
+/** Input type for a user payment as processed. */
+export type MarkUserPaymentAsProcessedInput = {
+  /** The ID of the user payment. */
+  userPaymentId: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addAccount: Account;
   createEmailLog: EmailLog;
   createPayment: CreatedPaymentResponse;
   createUser: User;
+  createUserPayment: UserPayment;
   markPaymentAsProcessed: MarkPaymentAsProcessedResponse;
+  markUserPaymentAsProcessed: UserPayment;
   switchDefaultAccount: Account;
 };
 
@@ -188,8 +215,18 @@ export type MutationCreateUserArgs = {
 };
 
 
+export type MutationCreateUserPaymentArgs = {
+  input: CreateUserPaymentInput;
+};
+
+
 export type MutationMarkPaymentAsProcessedArgs = {
   input: MarkPaymentAsProcessedInput;
+};
+
+
+export type MutationMarkUserPaymentAsProcessedArgs = {
+  input: MarkUserPaymentAsProcessedInput;
 };
 
 
@@ -234,6 +271,7 @@ export enum PaymentType {
 
 export type Query = {
   __typename?: 'Query';
+  getAll: Array<UserPayment>;
   getAllAccounts: Array<Account>;
   getAllPayments: Array<Payment>;
   getAllUsers: Array<User>;
@@ -272,6 +310,20 @@ export type User = MainEntity & Node & {
   userIdentifier_cashapp?: Maybe<Scalars['String']>;
   userIdentifier_paypal?: Maybe<Scalars['String']>;
   userIdentifier_zelle?: Maybe<Scalars['String']>;
+};
+
+export type UserPayment = MainEntity & Node & {
+  __typename?: 'UserPayment';
+  amount: Scalars['Float'];
+  createdAt: Scalars['DateTime'];
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  gameType: GameType;
+  id: Scalars['ID'];
+  paymentIdentifier: Scalars['String'];
+  paymentProvider: PaymentProvider;
+  processed: Scalars['Boolean'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  userId?: Maybe<Scalars['String']>;
 };
 
 export type CreateUserMutationVariables = Exact<{
@@ -320,6 +372,13 @@ export type MarkPaymentAsProcessedMutationVariables = Exact<{
 
 
 export type MarkPaymentAsProcessedMutation = { __typename?: 'Mutation', markPaymentAsProcessed: { __typename?: 'MarkPaymentAsProcessedResponse', success: boolean, payment: { __typename?: 'Payment', id: string, userId: string, amount: number, processed: boolean, emailId: string, provider: PaymentProvider, senderName: string, transactionId?: string | null, paymentType: PaymentType } } };
+
+export type CreateUserPaymentMutationVariables = Exact<{
+  input: CreateUserPaymentInput;
+}>;
+
+
+export type CreateUserPaymentMutation = { __typename?: 'Mutation', createUserPayment: { __typename?: 'UserPayment', id: string } };
 
 export type PaymentFragmentFragment = { __typename?: 'Payment', id: string, userId: string, amount: number, processed: boolean, emailId: string, provider: PaymentProvider, senderName: string, transactionId?: string | null, paymentType: PaymentType };
 
@@ -597,3 +656,36 @@ export function useMarkPaymentAsProcessedMutation(baseOptions?: Apollo.MutationH
 export type MarkPaymentAsProcessedMutationHookResult = ReturnType<typeof useMarkPaymentAsProcessedMutation>;
 export type MarkPaymentAsProcessedMutationResult = Apollo.MutationResult<MarkPaymentAsProcessedMutation>;
 export type MarkPaymentAsProcessedMutationOptions = Apollo.BaseMutationOptions<MarkPaymentAsProcessedMutation, MarkPaymentAsProcessedMutationVariables>;
+export const CreateUserPaymentDocument = gql`
+    mutation CreateUserPayment($input: CreateUserPaymentInput!) {
+  createUserPayment(input: $input) {
+    id
+  }
+}
+    `;
+export type CreateUserPaymentMutationFn = Apollo.MutationFunction<CreateUserPaymentMutation, CreateUserPaymentMutationVariables>;
+
+/**
+ * __useCreateUserPaymentMutation__
+ *
+ * To run a mutation, you first call `useCreateUserPaymentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateUserPaymentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createUserPaymentMutation, { data, loading, error }] = useCreateUserPaymentMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateUserPaymentMutation(baseOptions?: Apollo.MutationHookOptions<CreateUserPaymentMutation, CreateUserPaymentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateUserPaymentMutation, CreateUserPaymentMutationVariables>(CreateUserPaymentDocument, options);
+      }
+export type CreateUserPaymentMutationHookResult = ReturnType<typeof useCreateUserPaymentMutation>;
+export type CreateUserPaymentMutationResult = Apollo.MutationResult<CreateUserPaymentMutation>;
+export type CreateUserPaymentMutationOptions = Apollo.BaseMutationOptions<CreateUserPaymentMutation, CreateUserPaymentMutationVariables>;

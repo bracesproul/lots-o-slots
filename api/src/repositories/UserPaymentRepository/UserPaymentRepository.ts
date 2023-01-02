@@ -1,8 +1,6 @@
 import { AbstractRepository, EntityRepository } from 'typeorm';
-import { Payment, User, UserPayment } from '@/entities';
-import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
-import { GetPaymentsInput } from '@/resolvers/Payment/types';
-import { EmailObjectType } from '@/types';
+import { UserPayment } from '@/entities';
+import { GameType, PaymentProvider } from '@/entities/Payment/Payment';
 
 @EntityRepository(UserPayment)
 /* eslint-disable-next-line max-len */
@@ -20,17 +18,20 @@ export default class UserPaymentRepository extends AbstractRepository<UserPaymen
     paymentProvider,
     amount,
     userId,
+    gameType,
   }: {
     paymentIdentifier: string;
     paymentProvider: PaymentProvider;
     amount: number;
     userId?: string;
+    gameType: GameType;
   }): Promise<UserPayment> {
     const userPayment = this.repository.create({
       paymentIdentifier,
       paymentProvider,
       amount,
       userId,
+      gameType,
     });
 
     return this.repository.save(userPayment);

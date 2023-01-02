@@ -17,14 +17,17 @@ export type PlayGameDialogProps = {
   stage: DialogStage;
   setStage: (stage: DialogStage) => void;
 
-  gameType?: GameType;
+  gameType: GameType | null;
+  setGameType: (gameType: GameType | null) => void;
 
   paymentProvider: PaymentProvider | null;
   setPaymentProvider: (paymentProvider: PaymentProvider | null) => void;
+
+  includePaymentIdentifier?: boolean;
 };
 
 export type PlayDialogProps = {
-  gameType: GameType | null;
+  gameType?: GameType | null;
   setGameType: (gameType: GameType) => void;
   paymentProvider: PaymentProvider | null;
   setPaymentProvider: (paymentProvider: PaymentProvider | null) => void;
@@ -43,4 +46,10 @@ export type DepositDialogProps = {
   setDepositAmount: (depositAmount: number) => void;
   open: boolean;
   setOpen: (open: boolean) => void;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  isConfirmPaidDisabled: boolean;
+  error: boolean;
+  paymentIdentifier: string;
+  setPaymentIdentifier: (paymentIdentifier: string) => void;
+  includePaymentIdentifier: boolean;
 };

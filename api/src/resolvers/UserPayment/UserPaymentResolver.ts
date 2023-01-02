@@ -20,15 +20,16 @@ export class UserPaymentResolver {
     @Arg('input', { nullable: false }) input: CreateUserPaymentInput
   ): Promise<UserPayment> {
     return getCustomRepository(UserPaymentRepository).create({
-      paymentIdentifier: input.userIdentifier,
+      paymentIdentifier: input.paymentIdentifier,
       paymentProvider: input.paymentProvider,
       amount: input.amount,
       userId: input.userId,
+      gameType: input.gameType,
     });
   }
 
   @Mutation(() => UserPayment, { nullable: false })
-  async markAsProcessed(
+  async markUserPaymentAsProcessed(
     @Arg('input', { nullable: false }) input: MarkUserPaymentAsProcessedInput
   ): Promise<UserPayment> {
     const userPayment = await getCustomRepository(

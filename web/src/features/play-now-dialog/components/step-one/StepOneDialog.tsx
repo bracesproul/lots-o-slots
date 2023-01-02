@@ -1,8 +1,9 @@
-import { Button, Dialog, Select, Input } from '@/components';
+import { Button, Dialog, Select } from '@/components';
 import { PaymentProvider } from '@/generated/graphql';
 import { ReactElement } from 'react';
 import { PlayDialogProps } from '../../types';
 import { findStringFromGameType, findGameTypeFromString } from '../../utils';
+import { PaymentIdentifierInput } from '../';
 
 const PREFIX = 'play-now-dialog';
 
@@ -18,21 +19,6 @@ const PAYMENT_OPTIONS = [
   { name: 'Bitcoin', value: PaymentProvider.BITCOIN },
   { name: 'Ethereum', value: PaymentProvider.ETHEREUM },
 ];
-
-const getPaymentIdentifier = (paymentProvider: PaymentProvider): string => {
-  switch (paymentProvider) {
-    case PaymentProvider.ZELLE:
-      return 'Zelle Email/Phone Number';
-    case PaymentProvider.PAYPAL:
-      return 'PayPal Email';
-    case PaymentProvider.CASHAPP:
-      return 'CashTag';
-    case PaymentProvider.BITCOIN:
-      return 'Bitcoin Address';
-    case PaymentProvider.ETHEREUM:
-      return 'Ethereum Address';
-  }
-};
 
 export default function StepOneDialog(props: PlayDialogProps): ReactElement {
   const p = { ...props };
@@ -50,7 +36,7 @@ export default function StepOneDialog(props: PlayDialogProps): ReactElement {
           placeholder="Please select one"
           options={GAME_OPTIONS}
           required
-          value={findStringFromGameType(p.gameType)}
+          value={findStringFromGameType(p.gameType ?? null)}
           onValueChange={(e) => p.setGameType(findGameTypeFromString(e))}
         />
         <label className={`${PREFIX}-form-label`}>
@@ -65,28 +51,33 @@ export default function StepOneDialog(props: PlayDialogProps): ReactElement {
             switch (e) {
               case 'ZELLE':
                 p.setPaymentProvider(PaymentProvider.ZELLE);
+                p.setPaymentIdentifier('');
                 break;
               case 'PAYPAL':
                 p.setPaymentProvider(PaymentProvider.PAYPAL);
+                p.setPaymentIdentifier('');
                 break;
               case 'CASHAPP':
                 p.setPaymentProvider(PaymentProvider.CASHAPP);
+                p.setPaymentIdentifier('');
+                break;
+              case 'BITCOIN':
+                p.setPaymentProvider(PaymentProvider.BITCOIN);
+                p.setPaymentIdentifier('');
+                break;
+              case 'ETHEREUM':
+                p.setPaymentProvider(PaymentProvider.ETHEREUM);
+                p.setPaymentIdentifier('');
                 break;
             }
           }}
         />
         {p.paymentProvider && (
-          <>
-            <label className={`${PREFIX}-form-label`}>
-              Enter Your {getPaymentIdentifier(p.paymentProvider)}
-            </label>
-            <Input
-              type="string"
-              value={p.paymentIdentifier}
-              onChange={(e) => p.setPaymentIdentifier(e)}
-              required
-            />
-          </>
+          <PaymentIdentifierInput
+            paymentProvider={p.paymentProvider}
+            paymentIdentifier={p.paymentIdentifier}
+            setPaymentIdentifier={p.setPaymentIdentifier}
+          />
         )}
         <Button
           className={`${PREFIX}-form-submit`}

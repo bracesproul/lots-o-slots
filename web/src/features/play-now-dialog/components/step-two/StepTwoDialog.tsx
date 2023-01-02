@@ -6,6 +6,7 @@ import {
   findBadgeVariantFromPaymentType,
   findStringFromPaymentType,
 } from '../../utils';
+import { PaymentIdentifierInput } from '../';
 
 const DEPOSIT_PREFIX = 'deposit-dialog';
 
@@ -33,7 +34,7 @@ export default function StepTwoDialog(props: DepositDialogProps): ReactElement {
       }
       buttonTitle="Close"
     >
-      <div className={`${DEPOSIT_PREFIX}`}>
+      <form className={`${DEPOSIT_PREFIX}`} onSubmit={p.onSubmit}>
         {!isCountdownOver ? (
           <>
             <label className={`${DEPOSIT_PREFIX}-form-label`}>
@@ -44,7 +45,15 @@ export default function StepTwoDialog(props: DepositDialogProps): ReactElement {
               value={p.depositAmount.toString()}
               onChange={(e) => p.setDepositAmount(Number(e))}
             />
-            {p.depositAmount > 0 ? (
+            {p.includePaymentIdentifier && (
+              <PaymentIdentifierInput
+                className={'mt-[10px] flex flex-col'}
+                paymentProvider={p.paymentProvider}
+                paymentIdentifier={p.paymentIdentifier}
+                setPaymentIdentifier={p.setPaymentIdentifier}
+              />
+            )}
+            {p.depositAmount > 0 && p.paymentIdentifier ? (
               <>
                 <h1 className={`${DEPOSIT_PREFIX}-send-title`}>
                   Please send{' '}
@@ -78,7 +87,11 @@ export default function StepTwoDialog(props: DepositDialogProps): ReactElement {
             ) : (
               <></>
             )}
-            <Button className={`${DEPOSIT_PREFIX}-form-submit`} type="button">
+            <Button
+              isDisabled={p.isConfirmPaidDisabled}
+              className={`${DEPOSIT_PREFIX}-form-submit`}
+              type="submit"
+            >
               Confirm Paid
             </Button>
           </>
@@ -90,7 +103,7 @@ export default function StepTwoDialog(props: DepositDialogProps): ReactElement {
             </p>
           </>
         )}
-      </div>
+      </form>
     </Dialog>
   );
 }

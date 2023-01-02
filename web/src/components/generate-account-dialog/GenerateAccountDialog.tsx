@@ -67,7 +67,12 @@ function GenerateAccountDialog(
           required
         />
         <p className={`${PREFIX}-text`}>Optional fields:</p>
-        <label className={`${PREFIX}-form-label`}>Cashtag</label>
+        <label className={`${PREFIX}-form-label`}>
+          Cashtag{' '}
+          <span className={`${PREFIX}-label-sub-text`}>
+            * Do NOT Include &quot;$&quot; *
+          </span>
+        </label>
         <Input
           placeholder="$Cashtag"
           type="text"

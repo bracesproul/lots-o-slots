@@ -7,6 +7,10 @@ export default function GameSelectionCards(
 ) {
   const { selectedGame, setSelectedGame } = props;
 
+  if (!selectedGame) {
+    setSelectedGame(GameType.POKER);
+  }
+
   return (
     <div className="card-selection-container">
       <ButtonCard

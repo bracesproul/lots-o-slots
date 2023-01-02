@@ -1,6 +1,6 @@
 import { ReactElement, useState } from 'react';
 import { Button, GenerateAccountDialog, PlayNowDialog } from '@/components';
-import { DialogStage } from '../play-now-dialog/types';
+import { DialogStage, GameType } from '../play-now-dialog/types';
 import { PaymentProvider } from '@/generated/graphql';
 
 export type HeaderProps = {
@@ -14,6 +14,8 @@ function Header(): ReactElement {
   const [stage, setStage] = useState(DialogStage.STAGE_ONE);
   const [paymentProvider, setPaymentProvider] =
     useState<PaymentProvider | null>(null);
+  const [gameType, setGameType] = useState<GameType | null>(null);
+
   return (
     <div className="header">
       <div className="nav-container">
@@ -52,6 +54,8 @@ function Header(): ReactElement {
         setStage={setStage}
         open={playNowDialogOpen}
         setOpen={setPlayNowDialogOpen}
+        gameType={gameType}
+        setGameType={setGameType}
       />
     </div>
   );

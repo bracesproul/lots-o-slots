@@ -6,8 +6,8 @@ import { DialogStage, GameType } from '@/features/play-now-dialog/types';
 import { PaymentProvider } from '@/generated/graphql';
 
 export type GameSelectionProps = {
-  selectedGame: GameType;
-  setSelectedGame: (selectedGame: GameType) => void;
+  selectedGame: GameType | null;
+  setSelectedGame: (selectedGame: GameType | null) => void;
   handleSubmit: () => void;
   showSkrill?: boolean;
   depositDialogOpen: boolean;
@@ -48,16 +48,20 @@ function GameSelection(props: GameSelectionProps): ReactElement {
         setPaymentProvider={p.setPaymentProvider}
         open={p.depositDialogOpen}
         setOpen={p.setDepositDialogOpen}
-        gameType={selectedGame}
         stage={stage}
         setStage={setStage}
+        includePaymentIdentifier
+        gameType={selectedGame}
+        setGameType={setSelectedGame}
       />
     </div>
   );
 }
 
 export default function GameSelectionContainer(): ReactElement {
-  const [selectedGame, setSelectedGame] = useState(GameType.POKER);
+  const [selectedGame, setSelectedGame] = useState<GameType | null>(
+    GameType.POKER
+  );
   const [depositDialogOpen, setDepositDialogOpen] = useState(false);
   const [paymentProvider, setPaymentProvider] =
     useState<PaymentProvider | null>(PaymentProvider.PAYPAL);

@@ -1,7 +1,7 @@
 import { Field, ObjectType } from 'type-graphql';
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { MainEntity, User } from '@/entities';
-import { PaymentProvider } from '../Payment/Payment';
+import { GameType, PaymentProvider } from '../Payment/Payment';
 
 @Entity({ name: 'user_payment' })
 @ObjectType({
@@ -17,8 +17,8 @@ export default class UserPayment extends MainEntity {
   @Field(() => PaymentProvider, {
     nullable: false,
   })
-  @Column({ type: 'varchar', nullable: false, enum: PaymentProvider })
-  paymentProvider!: string;
+  @Column({ type: 'enum', nullable: false, enum: PaymentProvider })
+  paymentProvider!: PaymentProvider;
 
   @Field(() => Number, {
     nullable: false,
@@ -42,4 +42,10 @@ export default class UserPayment extends MainEntity {
   })
   @Column({ type: 'numeric', nullable: false, default: false })
   processed!: boolean;
+
+  @Field(() => GameType, {
+    nullable: false,
+  })
+  @Column({ type: 'enum', nullable: false, enum: GameType })
+  gameType!: GameType;
 }
