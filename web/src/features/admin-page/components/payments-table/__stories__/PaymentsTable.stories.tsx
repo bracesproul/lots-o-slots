@@ -22,7 +22,6 @@ const PlaygroundTemplate: Story<PaymentsTableProps> = (props) => {
 
 export const Playground = PlaygroundTemplate.bind({});
 Playground.args = {
-  handlePageChange: action('handlePageChange'),
   handleMarkProcessed: action('handleMarkProcessed'),
   loading: false,
   data: dummyPaymentInfo,

@@ -1,18 +1,23 @@
 import { ButtonCard } from '@/components';
+import { GameType } from '@/features/play-now-dialog/PlayNowDialog';
 import { GameSelectionProps } from '../../GameSelection';
 
 export default function GameButtons(
-  props: Pick<GameSelectionProps, 'isCardGameSelected'>
+  props: Pick<GameSelectionProps, 'selectedGame'>
 ) {
-  const { isCardGameSelected } = props;
+  const { selectedGame } = props;
 
   return (
     <div className="card-selection-container">
-      <ButtonCard title="Poker" image="cards" isSelected={isCardGameSelected} />
+      <ButtonCard
+        title="Poker"
+        image="cards"
+        isSelected={selectedGame === GameType.POKER}
+      />
       <ButtonCard
         title="Slots"
         image="slots"
-        isSelected={!isCardGameSelected}
+        isSelected={selectedGame === GameType.SLOTS}
       />
     </div>
   );

@@ -285,10 +285,6 @@ export default function PlayNowDialogContainer(
     }
   }, [p.open]);
 
-  useEffect(() => {
-    console.log('stage', p.stage, p.paymentProvider);
-  }, [p.stage]);
-
   return (
     <>
       {p.stage === DialogStage.STAGE_ONE ? (
