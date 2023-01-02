@@ -6,8 +6,8 @@ import {
 } from '@/components';
 import { ReactElement, useState } from 'react';
 import clsx from 'clsx';
-import { DialogStage } from '../play-now-dialog/PlayNowDialog';
 import { PaymentProvider } from '@/generated/graphql';
+import { DialogStage } from '../play-now-dialog/types';
 
 export type PlayCreateBoxProps = {
   className?: string;

@@ -2,7 +2,19 @@ import { Button, Dialog, Input, Select, Badge } from '@/components';
 import { FormEvent, ReactElement, useEffect, useState } from 'react';
 import { PaymentProvider } from '@/generated/graphql';
 import Countdown from 'react-countdown';
-import { BadgeVariant } from '@/components';
+import {
+  findStringFromGameType,
+  findGameTypeFromString,
+  findBadgeVariantFromPaymentType,
+  findStringFromPaymentType,
+} from './utils';
+import {
+  PlayDialogProps,
+  DepositDialogProps,
+  PlayGameDialogProps,
+  GameType,
+  DialogStage,
+} from './types';
 
 export type PlayNowDialogProps = {
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
@@ -28,6 +40,8 @@ const PAYMENT_OPTIONS = [
   { name: 'PayPal', value: PaymentProvider.PAYPAL },
   { name: 'CashApp', value: PaymentProvider.CASHAPP },
   { name: 'Zelle', value: PaymentProvider.ZELLE },
+  { name: 'Bitcoin', value: PaymentProvider.BITCOIN },
+  { name: 'Ethereum', value: PaymentProvider.ETHEREUM },
 ];
 
 const COUNTDOWN_TIMER = 900000;
@@ -167,107 +181,6 @@ function StepTwoDialog(props: DepositDialogProps): ReactElement {
     </Dialog>
   );
 }
-
-export enum DialogStage {
-  STAGE_ONE = 'STAGE_ONE',
-  STAGE_TWO = 'STAGE_TWO',
-}
-
-export enum GameType {
-  POKER = 'POKER',
-  SLOTS = 'SLOTS',
-}
-
-type PlayGameDialogProps = {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-
-  stage: DialogStage;
-  setStage: (stage: DialogStage) => void;
-
-  gameType?: GameType;
-
-  paymentProvider: PaymentProvider | null;
-  setPaymentProvider: (paymentProvider: PaymentProvider | null) => void;
-};
-
-type PlayDialogProps = {
-  gameType: GameType | null;
-  setGameType: (gameType: GameType) => void;
-  paymentProvider: PaymentProvider | null;
-  setPaymentProvider: (paymentProvider: PaymentProvider | null) => void;
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  isNextDisabled: boolean;
-  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-};
-
-type DepositDialogProps = {
-  paymentProvider: PaymentProvider;
-  paymentHandle: string;
-  depositAmount: number;
-  setDepositAmount: (depositAmount: number) => void;
-  open: boolean;
-  setOpen: (open: boolean) => void;
-};
-
-const findGameTypeFromString = (gameType: string): GameType => {
-  switch (gameType) {
-    case 'POKER':
-      return GameType.POKER;
-    case 'SLOTS':
-      return GameType.SLOTS;
-    default:
-      return GameType.POKER;
-  }
-};
-
-const findStringFromGameType = (
-  gameType: GameType | null
-): string | undefined => {
-  switch (gameType) {
-    case GameType.POKER:
-      return 'POKER';
-    case GameType.SLOTS:
-      return 'SLOTS';
-    default:
-      return undefined;
-  }
-};
-
-const findBadgeVariantFromPaymentType = (
-  paymentType: PaymentProvider | null
-): BadgeVariant => {
-  switch (paymentType) {
-    case PaymentProvider.ZELLE:
-      return 'primary';
-    case PaymentProvider.PAYPAL:
-      return 'info';
-    case PaymentProvider.CASHAPP:
-      return 'success';
-    case PaymentProvider.BITCOIN:
-      return 'warning';
-    case PaymentProvider.ETHEREUM:
-      return 'info';
-    default:
-      return 'default';
-  }
-};
-
-const findStringFromPaymentType = (
-  paymentType: PaymentProvider | null
-): string => {
-  switch (paymentType) {
-    case PaymentProvider.ZELLE:
-      return 'Zelle';
-    case PaymentProvider.PAYPAL:
-      return 'PayPal';
-    case PaymentProvider.CASHAPP:
-      return 'CashApp';
-    default:
-      return '';
-  }
-};
 
 export default function PlayNowDialogContainer(
   props: PlayGameDialogProps

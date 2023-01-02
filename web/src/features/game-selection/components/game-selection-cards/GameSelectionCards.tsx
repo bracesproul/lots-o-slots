@@ -1,6 +1,6 @@
 import { ButtonCard } from '@/components';
+import { GameType } from '@/features/play-now-dialog/types';
 import { GameSelectionProps } from '../../GameSelection';
-import { GameType } from '@/features/play-now-dialog/PlayNowDialog';
 
 export default function GameSelectionCards(
   props: Pick<GameSelectionProps, 'selectedGame' | 'setSelectedGame'>

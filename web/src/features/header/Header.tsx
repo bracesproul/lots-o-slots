@@ -1,6 +1,6 @@
 import { ReactElement, useState } from 'react';
 import { Button, GenerateAccountDialog, PlayNowDialog } from '@/components';
-import { DialogStage } from '../play-now-dialog/PlayNowDialog';
+import { DialogStage } from '../play-now-dialog/types';
 import { PaymentProvider } from '@/generated/graphql';
 
 export type HeaderProps = {

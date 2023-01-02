@@ -1,5 +1,5 @@
 import { ButtonCard } from '@/components';
-import { GameType } from '@/features/play-now-dialog/PlayNowDialog';
+import { GameType } from '@/features/play-now-dialog/types';
 import { GameSelectionProps } from '../../GameSelection';
 
 export default function GameButtons(
