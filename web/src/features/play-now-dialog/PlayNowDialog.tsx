@@ -21,6 +21,7 @@ export default function PlayNowDialogContainer(
   const [gameType, setGameType] = useState<GameType | null>(p.gameType ?? null);
   const [depositAmount, setDepositAmount] = useState(0);
   const TEMP_PAYMENT_HANDLE = 'zelle@example.com';
+  const [paymentIdentifier, setPaymentIdentifier] = useState('');
 
   useEffect(() => {
     if (!p.open) {
@@ -28,6 +29,7 @@ export default function PlayNowDialogContainer(
       p.setPaymentProvider(null);
       setDepositAmount(0);
     }
+    console.log('open change');
   }, [p.open]);
 
   return (
@@ -36,7 +38,11 @@ export default function PlayNowDialogContainer(
         <StepOneDialog
           open={p.open}
           setOpen={p.setOpen}
-          isNextDisabled={gameType ? false : true}
+          paymentIdentifier={paymentIdentifier}
+          setPaymentIdentifier={setPaymentIdentifier}
+          isNextDisabled={
+            gameType && paymentIdentifier && p.paymentProvider ? false : true
+          }
           gameType={gameType}
           setGameType={setGameType}
           paymentProvider={p.paymentProvider}

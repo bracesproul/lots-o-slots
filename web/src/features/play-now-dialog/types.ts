@@ -32,6 +32,8 @@ export type PlayDialogProps = {
   setOpen: (open: boolean) => void;
   isNextDisabled: boolean;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  paymentIdentifier: string;
+  setPaymentIdentifier: (paymentIdentifier: string) => void;
 };
 
 export type DepositDialogProps = {

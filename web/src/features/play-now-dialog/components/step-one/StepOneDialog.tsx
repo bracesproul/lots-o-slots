@@ -1,4 +1,4 @@
-import { Button, Dialog, Select } from '@/components';
+import { Button, Dialog, Select, Input } from '@/components';
 import { PaymentProvider } from '@/generated/graphql';
 import { ReactElement } from 'react';
 import { PlayDialogProps } from '../../types';
@@ -19,8 +19,24 @@ const PAYMENT_OPTIONS = [
   { name: 'Ethereum', value: PaymentProvider.ETHEREUM },
 ];
 
+const getPaymentIdentifier = (paymentProvider: PaymentProvider): string => {
+  switch (paymentProvider) {
+    case PaymentProvider.ZELLE:
+      return 'Zelle Email/Phone Number';
+    case PaymentProvider.PAYPAL:
+      return 'PayPal Email';
+    case PaymentProvider.CASHAPP:
+      return 'CashTag';
+    case PaymentProvider.BITCOIN:
+      return 'Bitcoin Address';
+    case PaymentProvider.ETHEREUM:
+      return 'Ethereum Address';
+  }
+};
+
 export default function StepOneDialog(props: PlayDialogProps): ReactElement {
   const p = { ...props };
+
   return (
     <Dialog
       open={p.open}
@@ -59,6 +75,19 @@ export default function StepOneDialog(props: PlayDialogProps): ReactElement {
             }
           }}
         />
+        {p.paymentProvider && (
+          <>
+            <label className={`${PREFIX}-form-label`}>
+              Enter Your {getPaymentIdentifier(p.paymentProvider)}
+            </label>
+            <Input
+              type="string"
+              value={p.paymentIdentifier}
+              onChange={(e) => p.setPaymentIdentifier(e)}
+              required
+            />
+          </>
+        )}
         <Button
           className={`${PREFIX}-form-submit`}
           type="submit"
