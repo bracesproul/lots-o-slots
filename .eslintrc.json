@@ -9,7 +9,7 @@
   ],
   "rules": {
     "max-len": [
-      "warn",
+      "error",
       {
         "code": 80,
         "tabWidth": 2,

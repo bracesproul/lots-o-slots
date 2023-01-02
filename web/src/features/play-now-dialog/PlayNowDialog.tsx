@@ -81,7 +81,7 @@ function StepOneDialog(props: PlayDialogProps): ReactElement {
         </Button>
       </form>
     </Dialog>
-  )
+  );
 }
 
 function StepTwoDialog(props: DepositDialogProps): ReactElement {
@@ -96,78 +96,76 @@ function StepTwoDialog(props: DepositDialogProps): ReactElement {
 
   return (
     <Dialog
-    open={p.open}
-    onOpenChange={p.setOpen}
-    title={!isCountdownOver ? 'Complete Payment' : 'Expired'}
-    description={
-      !isCountdownOver
-        ? 'Please follow the instructions below on how to pay.'
-        : undefined
-    }
-    buttonTitle="Close"
-  >
-    <div className={`${DEPOSIT_PREFIX}`}>
-      {!isCountdownOver ? (
-        <>
-          <label className={`${DEPOSIT_PREFIX}-form-label`}>Deposit Amount</label>
-          <Input
-            type="number"
-            value={p.depositAmount.toString()}
-            onChange={(e) => p.setDepositAmount(Number(e))}
-          />
-          {p.depositAmount > 0 ? (
-            <>
-              <h1 className={`${DEPOSIT_PREFIX}-send-title`}>
-                Please send{' '}
-                <span className={`${DEPOSIT_PREFIX}-special-text`}>
-                  ${p.depositAmount}
-                </span>{' '}
-                to the below address.
-              </h1>
-              <Countdown
-                className={'text-white mt-[5px]'}
-                date={Date.now() + COUNTDOWN_TIMER}
-                onComplete={() => setIsCountdownOver(true)}
-              />
-              <p className={`${DEPOSIT_PREFIX}-sub-text`}>
-                You have 15 minutes to pay. Please click confirm paid once
-                finished. Thank you!
-              </p>
-              <div className={'flex flex-row m-auto gap-2'}>
-                <Badge
-                  variant={
-                    findBadgeVariantFromPaymentType(p.paymentProvider)
-                  }
-                >
-                  {findStringFromPaymentType(p.paymentProvider)}
-                </Badge>
-                <Badge
-                  variant={
-                    findBadgeVariantFromPaymentType(p.paymentProvider)
-                  }
-                >
-                  {p.paymentHandle}
-                </Badge>
-              </div>
-            </>
-          ) : (
-            <></>
-          )}
-          <Button className={`${DEPOSIT_PREFIX}-form-submit`} type="button">
-            Confirm Paid
-          </Button>
-        </>
-      ) : (
-        <>
-          <h1 className={`${DEPOSIT_PREFIX}-expired`}>Time Expired</h1>
-          <p className={`${DEPOSIT_PREFIX}-expired-body`}>
-            Your payment window has expired. Please try again.
-          </p>
-        </>
-      )}
-    </div>
-  </Dialog>
-  )
+      open={p.open}
+      onOpenChange={p.setOpen}
+      title={!isCountdownOver ? 'Complete Payment' : 'Expired'}
+      description={
+        !isCountdownOver
+          ? 'Please follow the instructions below on how to pay.'
+          : undefined
+      }
+      buttonTitle="Close"
+    >
+      <div className={`${DEPOSIT_PREFIX}`}>
+        {!isCountdownOver ? (
+          <>
+            <label className={`${DEPOSIT_PREFIX}-form-label`}>
+              Deposit Amount
+            </label>
+            <Input
+              type="number"
+              value={p.depositAmount.toString()}
+              onChange={(e) => p.setDepositAmount(Number(e))}
+            />
+            {p.depositAmount > 0 ? (
+              <>
+                <h1 className={`${DEPOSIT_PREFIX}-send-title`}>
+                  Please send{' '}
+                  <span className={`${DEPOSIT_PREFIX}-special-text`}>
+                    ${p.depositAmount}
+                  </span>{' '}
+                  to the below address.
+                </h1>
+                <Countdown
+                  className={'text-white mt-[5px]'}
+                  date={Date.now() + COUNTDOWN_TIMER}
+                  onComplete={() => setIsCountdownOver(true)}
+                />
+                <p className={`${DEPOSIT_PREFIX}-sub-text`}>
+                  You have 15 minutes to pay. Please click confirm paid once
+                  finished. Thank you!
+                </p>
+                <div className={'flex flex-row m-auto gap-2'}>
+                  <Badge
+                    variant={findBadgeVariantFromPaymentType(p.paymentProvider)}
+                  >
+                    {findStringFromPaymentType(p.paymentProvider)}
+                  </Badge>
+                  <Badge
+                    variant={findBadgeVariantFromPaymentType(p.paymentProvider)}
+                  >
+                    {p.paymentHandle}
+                  </Badge>
+                </div>
+              </>
+            ) : (
+              <></>
+            )}
+            <Button className={`${DEPOSIT_PREFIX}-form-submit`} type="button">
+              Confirm Paid
+            </Button>
+          </>
+        ) : (
+          <>
+            <h1 className={`${DEPOSIT_PREFIX}-expired`}>Time Expired</h1>
+            <p className={`${DEPOSIT_PREFIX}-expired-body`}>
+              Your payment window has expired. Please try again.
+            </p>
+          </>
+        )}
+      </div>
+    </Dialog>
+  );
 }
 
 type DialogStage = 'stageOne' | 'stageTwo';
@@ -186,7 +184,7 @@ type PlayGameDialogProps = {
   gameType?: GameType;
 
   paymentProvider?: PaymentProvider | null;
-}
+};
 
 type PlayDialogProps = {
   gameType: GameType | null;
@@ -197,7 +195,7 @@ type PlayDialogProps = {
   setOpen: (open: boolean) => void;
   isNextDisabled: boolean;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-}
+};
 
 type DepositDialogProps = {
   paymentProvider: PaymentProvider;
@@ -206,91 +204,116 @@ type DepositDialogProps = {
   setDepositAmount: (depositAmount: number) => void;
   open: boolean;
   setOpen: (open: boolean) => void;
-}
+};
 
 const findGameTypeFromString = (gameType: string): GameType => {
   switch (gameType) {
-    case 'POKER': return GameType.POKER;
-    case 'SLOTS': return GameType.SLOTS;
-    default: return GameType.POKER;
+    case 'POKER':
+      return GameType.POKER;
+    case 'SLOTS':
+      return GameType.SLOTS;
+    default:
+      return GameType.POKER;
   }
-}
+};
 
-const findStringFromGameType = (gameType: GameType | null): string | undefined => {
+const findStringFromGameType = (
+  gameType: GameType | null
+): string | undefined => {
   switch (gameType) {
-    case GameType.POKER: return 'POKER';
-    case GameType.SLOTS: return 'SLOTS';
-    default: return undefined;
+    case GameType.POKER:
+      return 'POKER';
+    case GameType.SLOTS:
+      return 'SLOTS';
+    default:
+      return undefined;
   }
-}
+};
 
-const findBadgeVariantFromPaymentType = (paymentType: PaymentProvider | null): BadgeVariant => {
+const findBadgeVariantFromPaymentType = (
+  paymentType: PaymentProvider | null
+): BadgeVariant => {
   switch (paymentType) {
-    case PaymentProvider.ZELLE: return 'primary';
-    case PaymentProvider.PAYPAL: return 'info';
-    case PaymentProvider.CASHAPP: return 'success';
-    case PaymentProvider.BITCOIN: return 'warning';
-    case PaymentProvider.ETHEREUM: return 'info';
-    default: return 'default';
+    case PaymentProvider.ZELLE:
+      return 'primary';
+    case PaymentProvider.PAYPAL:
+      return 'info';
+    case PaymentProvider.CASHAPP:
+      return 'success';
+    case PaymentProvider.BITCOIN:
+      return 'warning';
+    case PaymentProvider.ETHEREUM:
+      return 'info';
+    default:
+      return 'default';
   }
-}
+};
 
-const findStringFromPaymentType = (paymentType: PaymentProvider | null): string => {
+const findStringFromPaymentType = (
+  paymentType: PaymentProvider | null
+): string => {
   switch (paymentType) {
-    case PaymentProvider.ZELLE: return 'Zelle';
-    case PaymentProvider.PAYPAL: return 'PayPal';
-    case PaymentProvider.CASHAPP: return 'CashApp';
-    default: return '';
+    case PaymentProvider.ZELLE:
+      return 'Zelle';
+    case PaymentProvider.PAYPAL:
+      return 'PayPal';
+    case PaymentProvider.CASHAPP:
+      return 'CashApp';
+    default:
+      return '';
   }
-}
+};
 
-export default function PlayNowDialogContainer(props: PlayGameDialogProps): ReactElement {
+export default function PlayNowDialogContainer(
+  props: PlayGameDialogProps
+): ReactElement {
   const p = { ...props };
   const [gameType, setGameType] = useState<GameType | null>(p.gameType ?? null);
-  const [paymentProvider, setPaymentProvider] = useState<PaymentProvider | null>(p.paymentProvider ?? null);
+  const [paymentProvider, setPaymentProvider] =
+    useState<PaymentProvider | null>(p.paymentProvider ?? null);
   const [stage, setStage] = useState<DialogStage>(p.stage ?? 'stageOne');
   const [depositAmount, setDepositAmount] = useState(0);
   const TEMP_PAYMENT_HANDLE = 'zelle@example.com';
 
   useEffect(() => {
-    console.log('inside play now dialog container', paymentProvider)
+    console.log('inside play now dialog container', paymentProvider);
     if (!p.open) {
       setGameType(null);
       setPaymentProvider(null);
       setDepositAmount(0);
     }
-  }, [p.open])
+  }, [p.open]);
 
   return (
     <>
-    {stage === 'stageOne' ? (
-      <StepOneDialog
-        open={p.open}
-        setOpen={p.setOpen}
-        isNextDisabled={gameType ? false : true}
-        gameType={gameType}
-        setGameType={setGameType}
-        paymentProvider={paymentProvider}
-        setPaymentProvider={setPaymentProvider}
-        onSubmit={(e) => {
-          e.preventDefault();
-          setStage('stageTwo')
-        }}
-      />
-    ) : (
-      <>
-        {paymentProvider && (
-          <StepTwoDialog
-            open={p.open}
-            setOpen={p.setOpen}
-            depositAmount={depositAmount}
-            setDepositAmount={setDepositAmount}
-            paymentProvider={paymentProvider}
-            paymentHandle={TEMP_PAYMENT_HANDLE}
-          />
-        )}
-      </>
-    )}
+      {stage === 'stageOne' ? (
+        <StepOneDialog
+          open={p.open}
+          setOpen={p.setOpen}
+          isNextDisabled={gameType ? false : true}
+          gameType={gameType}
+          setGameType={setGameType}
+          paymentProvider={paymentProvider}
+          setPaymentProvider={setPaymentProvider}
+          onSubmit={(e) => {
+            e.preventDefault();
+            setStage('stageTwo');
+          }}
+        />
+      ) : (
+        <>
+          {paymentProvider && (
+            <StepTwoDialog
+              open={p.open}
+              setOpen={p.setOpen}
+              depositAmount={depositAmount}
+              setDepositAmount={setDepositAmount}
+              paymentProvider={paymentProvider}
+              paymentHandle={TEMP_PAYMENT_HANDLE}
+            />
+          )}
+        </>
+      )}
     </>
-  )
+  );
 }

@@ -41,10 +41,7 @@ function Header(): ReactElement {
         open={generateAccountDialogOpen}
         setOpen={setGenerateAccountDialogOpen}
       />
-      <PlayNowDialog
-        open={playNowDialogOpen}
-        setOpen={setPlayNowDialogOpen}
-      />
+      <PlayNowDialog open={playNowDialogOpen} setOpen={setPlayNowDialogOpen} />
     </div>
   );
 }

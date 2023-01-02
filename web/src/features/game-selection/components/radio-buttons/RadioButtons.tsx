@@ -9,7 +9,6 @@ import {
 import { Icon, CircleButton } from '@/components';
 import { PaymentProvider } from '@/generated/graphql';
 import { ReactElement } from 'react';
-import { GameSelectionProps } from '../../GameSelection';
 
 const PayPalRadioIcon = (
   <Icon content={<PayPalLogo />} height={40} width={30} size="xlarge" />
@@ -39,7 +38,7 @@ type RadioButtonPaymentProps = {
   showSkrill?: boolean;
   paymentProvider: PaymentProvider;
   setPaymentProvider: (paymentProvider: PaymentProvider) => void;
-}
+};
 
 export default function RadioButtons(
   props: RadioButtonPaymentProps

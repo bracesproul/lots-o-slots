@@ -43,60 +43,6 @@ export type DialogFooterButtonsProps = {
   children: ReactElement | ReactElement[];
 };
 
-// const DEFAULT_CONTENT_PROPS = {
-//   showCloseButton: true,
-// };
-
-// // function Content(props: DialogBodyProps): ReactElement {
-// //   const p = { ...DEFAULT_CONTENT_PROPS, ...props };
-
-// //   return (
-// //     <DialogPrimitive.Content
-// //       forceMount
-// //       // className={clsx([`${PREFIX}-content`, p.className])}
-// //       className={`${PREFIX}-content`}
-// //     >
-// //       {p.children}
-// //       <DialogPrimitive.Close className={`${PREFIX}-close-x`}>
-// //         <Cross1Icon className={`${PREFIX}-cross-icon`} />
-// //       </DialogPrimitive.Close>
-// //     </DialogPrimitive.Content>
-// //   );
-// // }
-
-// // function Title(props: DialogHeaderProps): ReactElement {
-// //   const p = { ...props };
-
-// //   return (
-// //     // <DialogPrimitive.Title className={clsx([`${PREFIX}-title`, p.className])}>
-// //     <DialogPrimitive.Title className={`${PREFIX}-title`}>
-// //       {p.title}
-// //     </DialogPrimitive.Title>
-// //   );
-// // }
-
-// // function Description(props: DialogSubHeaderProps): ReactElement {
-// //   const p = { ...props };
-
-// //   return (
-// //     <DialogPrimitive.Description
-// //       className={clsx([`${PREFIX}-description`, p.className])}
-// //     >
-// //       {p.description}
-// //     </DialogPrimitive.Description>
-// //   );
-// // }
-
-// // function Footer(props: DialogFooterButtonsProps): ReactElement {
-// //   const p = { ...props };
-
-// //   return (
-// //     <div className={clsx([`${PREFIX}-footer`, p.className])}>
-// //       <DialogPrimitive.Close asChild>{p.children}</DialogPrimitive.Close>
-// //     </div>
-// //   );
-// // }
-
 function Dialog(props: DialogRootProps): ReactElement {
   const p = { ...props };
   return (
