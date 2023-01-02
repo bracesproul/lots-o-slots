@@ -1,35 +1,19 @@
 import React, { ReactElement, useState } from 'react';
-import { Button } from '@/components';
+import { Button, Badge } from '@/components';
 import { GameSelectionCards, RadioButtons } from './components';
-import { DepositDialog } from '../deposit-dialog';
+import { PlayNowDialog } from '../';
+import { GameType } from '@/features/play-now-dialog/PlayNowDialog';
 import { PaymentProvider } from '@/generated/graphql';
-
-export type PaymentMethodSelectedType = {
-  paypalSelected: boolean;
-  zelleSelected: boolean;
-  cashAppSelected: boolean;
-  skrillSelected: boolean;
-  bitcoinSelected: boolean;
-  ethereumSelected: boolean;
-};
-
-export type SiteSelectionOptions = {
-  site1: boolean;
-  site2: boolean;
-  site3: boolean;
-  site4: boolean;
-};
 
 export type GameSelectionProps = {
   isCardGameSelected: boolean;
   setIsCardGameSelected: (isPokerSelected: boolean) => void;
-  paymentMethodSelected: PaymentMethodSelectedType;
-  handleRadioButtonSelection: (option: RadioButtonOptions) => void;
   handleSubmit: () => void;
   showSkrill?: boolean;
   depositDialogOpen: boolean;
   setDepositDialogOpen: (depositDialogOpen: boolean) => void;
   paymentProvider: PaymentProvider;
+  setPaymentProvider: (paymentProvider: PaymentProvider) => void;
 };
 
 function GameSelection(props: GameSelectionProps): ReactElement {
@@ -38,8 +22,6 @@ function GameSelection(props: GameSelectionProps): ReactElement {
     isCardGameSelected,
     setIsCardGameSelected,
     handleSubmit,
-    paymentMethodSelected,
-    handleRadioButtonSelection,
   } = p;
 
   return (
@@ -50,8 +32,8 @@ function GameSelection(props: GameSelectionProps): ReactElement {
           isCardGameSelected={isCardGameSelected}
         />
         <RadioButtons
-          paymentMethodSelected={paymentMethodSelected}
-          handleRadioButtonSelection={handleRadioButtonSelection}
+          setPaymentProvider={p.setPaymentProvider}
+          paymentProvider={p.paymentProvider}
         />
       </div>
       <div className="input-button-container">
@@ -64,82 +46,42 @@ function GameSelection(props: GameSelectionProps): ReactElement {
           Deposit
         </Button>
       </div>
-      <DepositDialog
+      <PlayNowDialog
         open={p.depositDialogOpen}
         setOpen={p.setDepositDialogOpen}
-        paymentType={p.paymentProvider}
+        paymentProvider={p.paymentProvider}
+        gameType={isCardGameSelected ? GameType.POKER : GameType.SLOTS}
+        stage={'stageTwo'}
       />
     </div>
   );
 }
 
-type RadioButtonOptions =
-  | 'paypalSelected'
-  | 'zelleSelected'
-  | 'cashAppSelected'
-  | 'skrillSelected'
-  | 'bitcoinSelected'
-  | 'ethereumSelected';
-
 export default function GameSelectionContainer(): ReactElement {
-  const [paymentSelected, setPaymentSelected] = useState({
-    paypalSelected: true,
-    zelleSelected: false,
-    cashAppSelected: false,
-    skrillSelected: false,
-    bitcoinSelected: false,
-    ethereumSelected: false,
-  });
   const [isPokerSelected, setIsPokerSelected] = useState(true);
   const [depositDialogOpen, setDepositDialogOpen] = useState(false);
   const [paymentProvider, setPaymentProvider] = useState(
     PaymentProvider.PAYPAL
   );
 
-  const handleSubmit = () => {
-    setDepositDialogOpen(true);
-    console.log(paymentProvider);
-  };
+  React.useEffect(() => {
+    console.log('inside game selection container', paymentProvider);
+  }, [paymentProvider, depositDialogOpen]);
 
-  const handleRadioButtonSelection = (option: RadioButtonOptions) => {
-    setPaymentSelected({
-      paypalSelected: false,
-      zelleSelected: false,
-      cashAppSelected: false,
-      skrillSelected: false,
-      bitcoinSelected: false,
-      ethereumSelected: false,
-      [option]: true,
-    });
-    switch (option) {
-      case 'bitcoinSelected':
-        setPaymentProvider(PaymentProvider.BITCOIN);
-        break;
-      case 'cashAppSelected':
-        setPaymentProvider(PaymentProvider.CASHAPP);
-        break;
-      case 'ethereumSelected':
-        setPaymentProvider(PaymentProvider.ETHEREUM);
-        break;
-      case 'zelleSelected':
-        setPaymentProvider(PaymentProvider.ZELLE);
-        break;
-      case 'paypalSelected':
-        setPaymentProvider(PaymentProvider.PAYPAL);
-        break;
-    }
+  const handleSubmit = () => {
+    console.log(paymentProvider);
+    setDepositDialogOpen(true);
   };
 
   return (
     <GameSelection
       isCardGameSelected={isPokerSelected}
       setIsCardGameSelected={setIsPokerSelected}
-      paymentMethodSelected={paymentSelected}
-      handleRadioButtonSelection={handleRadioButtonSelection}
       handleSubmit={handleSubmit}
       depositDialogOpen={depositDialogOpen}
       setDepositDialogOpen={setDepositDialogOpen}
       paymentProvider={paymentProvider}
+      setPaymentProvider={setPaymentProvider}
     />
   );
 }

@@ -1,0 +1,45 @@
+.badge {
+  @apply rounded-xl bg-[#C5002C] bg-opacity-40 border-[2.5px] border-[#C5002C] text-white;
+  @apply px-[20px] py-[2px] max-w-fit;
+
+  &.is-info {
+    @apply bg-[#1E88E5] bg-opacity-40 border-[2.5px] border-[#1E88E5];
+  }
+
+  &.is-primary {
+    @apply bg-purple-500 bg-opacity-40 border-[2.5px] border-purple-500;
+  }
+
+  &.is-secondary {
+    @apply bg-gray-500 bg-opacity-40 border-[2.5px] border-gray-500;
+    @apply text-gray-100;
+  }
+
+  &.is-success {
+    @apply bg-green-500 bg-opacity-40 border-[2.5px] border-green-500;
+  }
+
+  &.is-danger {
+    @apply bg-red-500 bg-opacity-40 border-[2.5px] border-red-500;
+  }
+
+  &.is-warning {
+    @apply bg-orange-500 bg-opacity-40 border-[2.5px] border-orange-500;
+  }
+
+  &.is-hovered {
+    @apply bg-opacity-[0.45] cursor-pointer;
+  }
+
+  &.is-pressed {
+    @apply bg-opacity-50;
+  }
+
+  &.is-pill {
+    @apply rounded-full;
+  }
+}
+
+.badge-title {
+  @apply text-[16px];
+}

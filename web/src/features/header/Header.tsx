@@ -1,7 +1,6 @@
 import { ReactElement, useState } from 'react';
 import { Button, GenerateAccountDialog, PlayNowDialog } from '@/components';
-import { PaymentProvider } from '@/generated/graphql';
-import { DepositDialog } from '@/features';
+
 export type HeaderProps = {
   // add props
 };
@@ -10,9 +9,6 @@ function Header(): ReactElement {
   const [generateAccountDialogOpen, setGenerateAccountDialogOpen] =
     useState(false);
   const [playNowDialogOpen, setPlayNowDialogOpen] = useState(false);
-  const [paymentProvider, setPaymentProvider] =
-    useState<PaymentProvider | null>(null);
-  const [depositDialogOpen, setDepositDialogOpen] = useState(false);
 
   return (
     <div className="header">
@@ -46,16 +42,8 @@ function Header(): ReactElement {
         setOpen={setGenerateAccountDialogOpen}
       />
       <PlayNowDialog
-        paymentProvider={paymentProvider}
-        setPaymentProvider={setPaymentProvider}
         open={playNowDialogOpen}
         setOpen={setPlayNowDialogOpen}
-        setDepositDialogOpen={setDepositDialogOpen}
-      />
-      <DepositDialog
-        open={depositDialogOpen}
-        setOpen={setDepositDialogOpen}
-        paymentType={paymentProvider}
       />
     </div>
   );

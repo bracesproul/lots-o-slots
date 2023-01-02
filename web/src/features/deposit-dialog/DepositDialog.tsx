@@ -3,6 +3,8 @@ import { ReactElement, useState, useEffect } from 'react';
 import { PaymentProvider } from '@/generated/graphql';
 import Countdown from 'react-countdown';
 
+type DialogStage = 'PlayNow' | 'Deposit' | 'Withdraw';
+
 export type DepositDialogProps = {
   className?: string;
   open: boolean;
@@ -12,11 +14,12 @@ export type DepositDialogProps = {
   setDepositAmount: (depositAmount: number) => void;
   paymentType: PaymentProvider | null;
   paymentHandle: string;
+  stage: DialogStage;
 };
 
 const PREFIX = 'deposit-dialog';
 
-const COUNTDOWN_TIMER = process.env.NODE_ENV !== 'production' ? 5000 : 900000;
+const COUNTDOWN_TIMER = 900000;
 
 function DepositDialog(props: DepositDialogProps): ReactElement {
   const p = { ...props };
@@ -91,9 +94,11 @@ function DepositDialog(props: DepositDialogProps): ReactElement {
     </Dialog>
   );
 }
-
+/**
+ * @deprecated Use *<PlayNowDialogContainer \/\>* instead
+ */
 export default function DepositDialogContainer(
-  props: Pick<DepositDialogProps, 'open' | 'setOpen' | 'paymentType'>
+  props: Pick<DepositDialogProps, 'open' | 'setOpen' | 'paymentType' | 'stage'>
 ): ReactElement {
   const [depositAmount, setDepositAmount] = useState<number>(0);
   const TEMP_PAYMENT_HANDLE = 'zelle@example.com';

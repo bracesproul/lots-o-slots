@@ -10,3 +10,4 @@ export { Header } from './header';
 export { AdminPage } from './admin-page';
 export { AdminAuthorizePage } from './admin-authorize-page';
 export { DepositDialog } from './deposit-dialog';
+export { PlayNowDialog } from './play-now-dialog';

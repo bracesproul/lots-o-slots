@@ -7,6 +7,7 @@ import {
   EthLogo,
 } from '@/assets';
 import { Icon, CircleButton } from '@/components';
+import { PaymentProvider } from '@/generated/graphql';
 import { ReactElement } from 'react';
 import { GameSelectionProps } from '../../GameSelection';
 
@@ -34,51 +35,54 @@ const EthereumRadioIcon = (
   <Icon content={<EthLogo />} height={45} width={30} size="xlarge" />
 );
 
+type RadioButtonPaymentProps = {
+  showSkrill?: boolean;
+  paymentProvider: PaymentProvider;
+  setPaymentProvider: (paymentProvider: PaymentProvider) => void;
+}
+
 export default function RadioButtons(
-  props: Pick<
-    GameSelectionProps,
-    'paymentMethodSelected' | 'handleRadioButtonSelection' | 'showSkrill'
-  >
+  props: RadioButtonPaymentProps
 ): ReactElement {
-  const { paymentMethodSelected, handleRadioButtonSelection } = props;
+  const { paymentProvider, setPaymentProvider } = props;
 
   return (
     <div className="payment-radio-container">
       <CircleButton
-        isSelected={paymentMethodSelected.paypalSelected}
-        onPress={() => handleRadioButtonSelection('paypalSelected')}
+        isSelected={paymentProvider === PaymentProvider.PAYPAL}
+        onPress={() => setPaymentProvider(PaymentProvider.PAYPAL)}
         iconBackground="white"
         icon={PayPalRadioIcon}
       />
       <CircleButton
-        isSelected={paymentMethodSelected.zelleSelected}
-        onPress={() => handleRadioButtonSelection('zelleSelected')}
+        isSelected={paymentProvider === PaymentProvider.ZELLE}
+        onPress={() => setPaymentProvider(PaymentProvider.ZELLE)}
         iconBackground="purple"
         icon={ZelleRadioIcon}
       />
       <CircleButton
-        isSelected={paymentMethodSelected.cashAppSelected}
-        onPress={() => handleRadioButtonSelection('cashAppSelected')}
+        isSelected={paymentProvider === PaymentProvider.CASHAPP}
+        onPress={() => setPaymentProvider(PaymentProvider.CASHAPP)}
         iconBackground="green"
         icon={CashAppRadioIcon}
       />
       {props.showSkrill && (
         <CircleButton
-          isSelected={paymentMethodSelected.skrillSelected}
-          onPress={() => handleRadioButtonSelection('skrillSelected')}
+          isSelected={paymentProvider === PaymentProvider.PAYPAL}
+          onPress={() => setPaymentProvider(PaymentProvider.PAYPAL)}
           iconBackground="gradient"
           icon={SkrillRadioIcon}
         />
       )}
       <CircleButton
-        isSelected={paymentMethodSelected.bitcoinSelected}
-        onPress={() => handleRadioButtonSelection('bitcoinSelected')}
+        isSelected={paymentProvider === PaymentProvider.BITCOIN}
+        onPress={() => setPaymentProvider(PaymentProvider.BITCOIN)}
         iconBackground="yellow"
         icon={BitcoinRadioIcon}
       />
       <CircleButton
-        isSelected={paymentMethodSelected.ethereumSelected}
-        onPress={() => handleRadioButtonSelection('ethereumSelected')}
+        isSelected={paymentProvider === PaymentProvider.ETHEREUM}
+        onPress={() => setPaymentProvider(PaymentProvider.ETHEREUM)}
         iconBackground="blue"
         icon={EthereumRadioIcon}
       />

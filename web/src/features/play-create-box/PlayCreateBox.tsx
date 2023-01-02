@@ -93,21 +93,13 @@ export default function PlayCreateBox(
           </Button>
         </div>
       </div>
+      <PlayNowDialog
+        open={playNowDialogOpen}
+        setOpen={setPlayNowDialogOpen}
+      />
       <GenerateAccountDialog
         open={generateAccountDialogOpen}
         setOpen={setGenerateAccountDialogOpen}
-      />
-      <PlayNowDialog
-        paymentProvider={paymentProvider}
-        setPaymentProvider={setPaymentProvider}
-        open={playNowDialogOpen}
-        setOpen={setPlayNowDialogOpen}
-        setDepositDialogOpen={setDepositDialogOpen}
-      />
-      <DepositDialog
-        open={depositDialogOpen}
-        setOpen={setDepositDialogOpen}
-        paymentType={paymentProvider}
       />
     </div>
   );
