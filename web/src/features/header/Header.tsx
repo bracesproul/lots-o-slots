@@ -1,5 +1,7 @@
 import { ReactElement, useState } from 'react';
 import { Button, GenerateAccountDialog, PlayNowDialog } from '@/components';
+import { DialogStage } from '../play-now-dialog/PlayNowDialog';
+import { PaymentProvider } from '@/generated/graphql';
 
 export type HeaderProps = {
   // add props
@@ -9,7 +11,9 @@ function Header(): ReactElement {
   const [generateAccountDialogOpen, setGenerateAccountDialogOpen] =
     useState(false);
   const [playNowDialogOpen, setPlayNowDialogOpen] = useState(false);
-
+  const [stage, setStage] = useState(DialogStage.STAGE_ONE);
+  const [paymentProvider, setPaymentProvider] =
+    useState<PaymentProvider | null>(null);
   return (
     <div className="header">
       <div className="nav-container">
@@ -41,7 +45,14 @@ function Header(): ReactElement {
         open={generateAccountDialogOpen}
         setOpen={setGenerateAccountDialogOpen}
       />
-      <PlayNowDialog open={playNowDialogOpen} setOpen={setPlayNowDialogOpen} />
+      <PlayNowDialog
+        paymentProvider={paymentProvider}
+        setPaymentProvider={setPaymentProvider}
+        stage={stage}
+        setStage={setStage}
+        open={playNowDialogOpen}
+        setOpen={setPlayNowDialogOpen}
+      />
     </div>
   );
 }

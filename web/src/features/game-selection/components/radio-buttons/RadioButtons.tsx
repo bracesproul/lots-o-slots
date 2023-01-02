@@ -36,14 +36,18 @@ const EthereumRadioIcon = (
 
 type RadioButtonPaymentProps = {
   showSkrill?: boolean;
-  paymentProvider: PaymentProvider;
-  setPaymentProvider: (paymentProvider: PaymentProvider) => void;
+  paymentProvider: PaymentProvider | null;
+  setPaymentProvider: (paymentProvider: PaymentProvider | null) => void;
 };
 
 export default function RadioButtons(
   props: RadioButtonPaymentProps
 ): ReactElement {
   const { paymentProvider, setPaymentProvider } = props;
+
+  if (!paymentProvider) {
+    setPaymentProvider(PaymentProvider.PAYPAL);
+  }
 
   return (
     <div className="payment-radio-container">

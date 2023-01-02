@@ -6,6 +6,8 @@ import {
 } from '@/components';
 import { ReactElement, useState } from 'react';
 import clsx from 'clsx';
+import { DialogStage } from '../play-now-dialog/PlayNowDialog';
+import { PaymentProvider } from '@/generated/graphql';
 
 export type PlayCreateBoxProps = {
   className?: string;
@@ -28,6 +30,9 @@ export default function PlayCreateBox(
   const [generateAccountDialogOpen, setGenerateAccountDialogOpen] =
     useState(false);
   const [playNowDialogOpen, setPlayNowDialogOpen] = useState(false);
+  const [stage, setStage] = useState(DialogStage.STAGE_ONE);
+  const [paymentProvider, setPaymentProvider] =
+    useState<PaymentProvider | null>(null);
 
   return (
     <div className={clsx(['action-container', p.className])}>
@@ -88,7 +93,14 @@ export default function PlayCreateBox(
           </Button>
         </div>
       </div>
-      <PlayNowDialog open={playNowDialogOpen} setOpen={setPlayNowDialogOpen} />
+      <PlayNowDialog
+        paymentProvider={paymentProvider}
+        setPaymentProvider={setPaymentProvider}
+        stage={stage}
+        setStage={setStage}
+        open={playNowDialogOpen}
+        setOpen={setPlayNowDialogOpen}
+      />
       <GenerateAccountDialog
         open={generateAccountDialogOpen}
         setOpen={setGenerateAccountDialogOpen}

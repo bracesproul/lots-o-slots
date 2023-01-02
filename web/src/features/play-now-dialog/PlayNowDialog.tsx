@@ -168,7 +168,10 @@ function StepTwoDialog(props: DepositDialogProps): ReactElement {
   );
 }
 
-type DialogStage = 'stageOne' | 'stageTwo';
+export enum DialogStage {
+  STAGE_ONE = 'STAGE_ONE',
+  STAGE_TWO = 'STAGE_TWO',
+}
 
 export enum GameType {
   POKER = 'POKER',
@@ -179,18 +182,20 @@ type PlayGameDialogProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
 
-  stage?: DialogStage;
+  stage: DialogStage;
+  setStage: (stage: DialogStage) => void;
 
   gameType?: GameType;
 
-  paymentProvider?: PaymentProvider | null;
+  paymentProvider: PaymentProvider | null;
+  setPaymentProvider: (paymentProvider: PaymentProvider | null) => void;
 };
 
 type PlayDialogProps = {
   gameType: GameType | null;
   setGameType: (gameType: GameType) => void;
   paymentProvider: PaymentProvider | null;
-  setPaymentProvider: (paymentProvider: PaymentProvider) => void;
+  setPaymentProvider: (paymentProvider: PaymentProvider | null) => void;
   open: boolean;
   setOpen: (open: boolean) => void;
   isNextDisabled: boolean;
@@ -269,46 +274,46 @@ export default function PlayNowDialogContainer(
 ): ReactElement {
   const p = { ...props };
   const [gameType, setGameType] = useState<GameType | null>(p.gameType ?? null);
-  const [paymentProvider, setPaymentProvider] =
-    useState<PaymentProvider | null>(p.paymentProvider ?? null);
-  const [stage, setStage] = useState<DialogStage>(p.stage ?? 'stageOne');
   const [depositAmount, setDepositAmount] = useState(0);
   const TEMP_PAYMENT_HANDLE = 'zelle@example.com';
 
   useEffect(() => {
-    console.log('inside play now dialog container', paymentProvider);
     if (!p.open) {
       setGameType(null);
-      setPaymentProvider(null);
+      p.setPaymentProvider(null);
       setDepositAmount(0);
     }
   }, [p.open]);
 
+  useEffect(() => {
+    console.log('stage', p.stage, p.paymentProvider);
+  }, [p.stage]);
+
   return (
     <>
-      {stage === 'stageOne' ? (
+      {p.stage === DialogStage.STAGE_ONE ? (
         <StepOneDialog
           open={p.open}
           setOpen={p.setOpen}
           isNextDisabled={gameType ? false : true}
           gameType={gameType}
           setGameType={setGameType}
-          paymentProvider={paymentProvider}
-          setPaymentProvider={setPaymentProvider}
+          paymentProvider={p.paymentProvider}
+          setPaymentProvider={p.setPaymentProvider}
           onSubmit={(e) => {
             e.preventDefault();
-            setStage('stageTwo');
+            p.setStage(DialogStage.STAGE_TWO);
           }}
         />
       ) : (
         <>
-          {paymentProvider && (
+          {p.paymentProvider && (
             <StepTwoDialog
               open={p.open}
               setOpen={p.setOpen}
               depositAmount={depositAmount}
               setDepositAmount={setDepositAmount}
-              paymentProvider={paymentProvider}
+              paymentProvider={p.paymentProvider}
               paymentHandle={TEMP_PAYMENT_HANDLE}
             />
           )}
