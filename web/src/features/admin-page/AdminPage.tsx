@@ -1,5 +1,5 @@
 import { ReactElement } from 'react';
-import { PaymentsTable, AccountsCard } from './components';
+import { PaymentsTable, AccountsCard, UserPaymentsTable } from './components';
 import { PageChangeType, TableType } from '@/types/page-change';
 import { Button } from '@/components';
 import { useRouter } from 'next/router';
@@ -40,7 +40,7 @@ export default function AdminPage(): ReactElement {
         <AccountsCard />
       </div>
       <div className={`${PREFIX}-second-level`}>
-        <div className={`${PREFIX}-accounts-container`}></div>
+        <UserPaymentsTable />
       </div>
     </div>
   );

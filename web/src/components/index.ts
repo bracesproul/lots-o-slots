@@ -14,3 +14,4 @@ export { GenerateAccountDialog } from './generate-account-dialog';
 export { PlayNowDialog } from '../features/play-now-dialog';
 export { Badge } from './badge';
 export type { BadgeVariant } from './badge';
+// export { DataTable } from './data-table';

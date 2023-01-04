@@ -5,8 +5,8 @@ import clsx from 'clsx';
 const PREFIX = 'select-component';
 
 export type SelectOptionType = {
-  value: string;
-  name: string;
+  value: string | number;
+  name: string | number;
 };
 
 export type SelectComponentProps = SelectProps & {

@@ -1,0 +1,10 @@
+query GetUserPayments($input: GetUserPaymentsInput) {
+  getUserPayments(input: $input) {
+    id
+    createdAt
+    paymentIdentifier
+    paymentProvider
+    amount
+    gameType
+  }
+}

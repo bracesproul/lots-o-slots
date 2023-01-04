@@ -22,6 +22,7 @@
     "@radix-ui/react-icons": "^1.1.1",
     "@radix-ui/react-select": "^1.1.2",
     "@react-aria/focus": "^3.10.0",
+    "@tanstack/react-table": "^8.7.4",
     "@types/node": "18.11.9",
     "@types/react": "18.0.25",
     "@types/react-dom": "18.0.9",

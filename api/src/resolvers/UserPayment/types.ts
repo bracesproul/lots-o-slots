@@ -1,5 +1,6 @@
-import { Field, InputType } from 'type-graphql';
+import { Field, InputType, ObjectType } from 'type-graphql';
 import { GameType, PaymentProvider } from '@/entities/Payment/Payment';
+import { UserPayment } from '@/entities';
 
 @InputType({
   description: 'Input type for creating a user payment.',
@@ -45,4 +46,32 @@ export class MarkUserPaymentAsProcessedInput {
     description: 'The ID of the user payment.',
   })
   userPaymentId!: string;
+}
+
+@InputType({
+  description: 'Input type for a user payment as processed.',
+})
+export class GetUserPaymentsInput {
+  @Field(() => Boolean, {
+    nullable: false,
+    description: 'The ID of the user payment.',
+  })
+  processed?: boolean;
+}
+
+@ObjectType({
+  description: 'The result of marking a user payment as processed.',
+})
+export class MarkUserPaymentAsProcessedResult {
+  @Field(() => Boolean, {
+    nullable: false,
+    description: 'Whether or not the payment is marked as processed.',
+  })
+  success!: boolean;
+
+  @Field(() => UserPayment, {
+    nullable: false,
+    description: 'The user payment marked as processed.',
+  })
+  userPayment!: UserPayment;
 }

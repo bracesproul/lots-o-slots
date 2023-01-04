@@ -1,0 +1,49 @@
+.user-payments-table-container {
+  @apply bg-[#0E0F19] border-[2px] border-gray-500 p-[12px];
+  @apply w-fit h-[700px];
+}
+
+.user-payments-table-title {
+  @apply text-center text-white text-[30px] leading-[35px];
+  @apply my-[24px];
+}
+
+.user-payments-table {
+  @apply table-fixed border-separate border-spacing-y-[5px] text-white;
+  @apply overflow-y-scroll w-full block max-h-[500px];
+}
+
+.user-payments-table-div-container {
+  @apply m-auto;
+}
+
+.user-payments-table-row {
+  @apply bg-[#383B50] h-[50px];
+  @apply rounded-md;
+
+  &.is-even {
+    @apply bg-[#414147];
+  }
+}
+
+.user-payments-table-th {
+  @apply text-white px-8 py-4 font-normal;
+}
+
+.user-payments-table-header {
+  @apply bg-[#C5002C] h-[50px];
+  @apply sticky top-0;
+}
+
+.user-payments-table-header-row {
+  @apply px-8 py-4;
+}
+
+.user-payments-table-action-cell-container {
+  @apply bg-neutral-800 p-[3.5px] border border-gray-500;
+  @apply cursor-pointer;
+}
+
+.user-payments-table-pagination-container {
+  @apply flex flex-row mt-[12px] mb-[5px] justify-end;
+}

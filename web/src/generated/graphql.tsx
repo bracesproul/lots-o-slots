@@ -153,6 +153,12 @@ export type GetRecentEmailLogUpdate = {
   createdAt: Scalars['DateTime'];
 };
 
+/** Input type for a user payment as processed. */
+export type GetUserPaymentsInput = {
+  /** The ID of the user payment. */
+  processed: Scalars['Boolean'];
+};
+
 /** An object with standard fields for created and updated data */
 export type MainEntity = {
   createdAt: Scalars['DateTime'];
@@ -182,6 +188,15 @@ export type MarkUserPaymentAsProcessedInput = {
   userPaymentId: Scalars['String'];
 };
 
+/** The result of marking a user payment as processed. */
+export type MarkUserPaymentAsProcessedResult = {
+  __typename?: 'MarkUserPaymentAsProcessedResult';
+  /** Whether or not the payment is marked as processed. */
+  success: Scalars['Boolean'];
+  /** The user payment marked as processed. */
+  userPayment: UserPayment;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   addAccount: Account;
@@ -190,7 +205,7 @@ export type Mutation = {
   createUser: User;
   createUserPayment: UserPayment;
   markPaymentAsProcessed: MarkPaymentAsProcessedResponse;
-  markUserPaymentAsProcessed: UserPayment;
+  markUserPaymentAsProcessed: MarkUserPaymentAsProcessedResult;
   switchDefaultAccount: Account;
 };
 
@@ -271,11 +286,11 @@ export enum PaymentType {
 
 export type Query = {
   __typename?: 'Query';
-  getAll: Array<UserPayment>;
   getAllAccounts: Array<Account>;
   getAllPayments: Array<Payment>;
   getAllUsers: Array<User>;
   getRecentUpdate: GetRecentEmailLogUpdate;
+  getUserPayments: Array<UserPayment>;
   seedData: Scalars['Boolean'];
 };
 
@@ -287,6 +302,11 @@ export type QueryGetAllAccountsArgs = {
 
 export type QueryGetAllPaymentsArgs = {
   input?: InputMaybe<GetPaymentsInput>;
+};
+
+
+export type QueryGetUserPaymentsArgs = {
+  input?: InputMaybe<GetUserPaymentsInput>;
 };
 
 /** Input type for switching the default type account. */
@@ -372,6 +392,20 @@ export type MarkPaymentAsProcessedMutationVariables = Exact<{
 
 
 export type MarkPaymentAsProcessedMutation = { __typename?: 'Mutation', markPaymentAsProcessed: { __typename?: 'MarkPaymentAsProcessedResponse', success: boolean, payment: { __typename?: 'Payment', id: string, userId: string, amount: number, processed: boolean, emailId: string, provider: PaymentProvider, senderName: string, transactionId?: string | null, paymentType: PaymentType } } };
+
+export type GetUserPaymentsQueryVariables = Exact<{
+  input?: InputMaybe<GetUserPaymentsInput>;
+}>;
+
+
+export type GetUserPaymentsQuery = { __typename?: 'Query', getUserPayments: Array<{ __typename?: 'UserPayment', id: string, createdAt: string, paymentIdentifier: string, paymentProvider: PaymentProvider, amount: number, gameType: GameType }> };
+
+export type MarkUserPaymentAsProcessedMutationVariables = Exact<{
+  input: MarkUserPaymentAsProcessedInput;
+}>;
+
+
+export type MarkUserPaymentAsProcessedMutation = { __typename?: 'Mutation', markUserPaymentAsProcessed: { __typename?: 'MarkUserPaymentAsProcessedResult', success: boolean, userPayment: { __typename?: 'UserPayment', id: string, createdAt: string, paymentIdentifier: string, paymentProvider: PaymentProvider, amount: number, gameType: GameType } } };
 
 export type CreateUserPaymentMutationVariables = Exact<{
   input: CreateUserPaymentInput;
@@ -656,6 +690,87 @@ export function useMarkPaymentAsProcessedMutation(baseOptions?: Apollo.MutationH
 export type MarkPaymentAsProcessedMutationHookResult = ReturnType<typeof useMarkPaymentAsProcessedMutation>;
 export type MarkPaymentAsProcessedMutationResult = Apollo.MutationResult<MarkPaymentAsProcessedMutation>;
 export type MarkPaymentAsProcessedMutationOptions = Apollo.BaseMutationOptions<MarkPaymentAsProcessedMutation, MarkPaymentAsProcessedMutationVariables>;
+export const GetUserPaymentsDocument = gql`
+    query GetUserPayments($input: GetUserPaymentsInput) {
+  getUserPayments(input: $input) {
+    id
+    createdAt
+    paymentIdentifier
+    paymentProvider
+    amount
+    gameType
+  }
+}
+    `;
+
+/**
+ * __useGetUserPaymentsQuery__
+ *
+ * To run a query within a React component, call `useGetUserPaymentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserPaymentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserPaymentsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetUserPaymentsQuery(baseOptions?: Apollo.QueryHookOptions<GetUserPaymentsQuery, GetUserPaymentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserPaymentsQuery, GetUserPaymentsQueryVariables>(GetUserPaymentsDocument, options);
+      }
+export function useGetUserPaymentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserPaymentsQuery, GetUserPaymentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserPaymentsQuery, GetUserPaymentsQueryVariables>(GetUserPaymentsDocument, options);
+        }
+export type GetUserPaymentsQueryHookResult = ReturnType<typeof useGetUserPaymentsQuery>;
+export type GetUserPaymentsLazyQueryHookResult = ReturnType<typeof useGetUserPaymentsLazyQuery>;
+export type GetUserPaymentsQueryResult = Apollo.QueryResult<GetUserPaymentsQuery, GetUserPaymentsQueryVariables>;
+export const MarkUserPaymentAsProcessedDocument = gql`
+    mutation MarkUserPaymentAsProcessed($input: MarkUserPaymentAsProcessedInput!) {
+  markUserPaymentAsProcessed(input: $input) {
+    success
+    userPayment {
+      id
+      createdAt
+      paymentIdentifier
+      paymentProvider
+      amount
+      gameType
+    }
+  }
+}
+    `;
+export type MarkUserPaymentAsProcessedMutationFn = Apollo.MutationFunction<MarkUserPaymentAsProcessedMutation, MarkUserPaymentAsProcessedMutationVariables>;
+
+/**
+ * __useMarkUserPaymentAsProcessedMutation__
+ *
+ * To run a mutation, you first call `useMarkUserPaymentAsProcessedMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMarkUserPaymentAsProcessedMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [markUserPaymentAsProcessedMutation, { data, loading, error }] = useMarkUserPaymentAsProcessedMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useMarkUserPaymentAsProcessedMutation(baseOptions?: Apollo.MutationHookOptions<MarkUserPaymentAsProcessedMutation, MarkUserPaymentAsProcessedMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<MarkUserPaymentAsProcessedMutation, MarkUserPaymentAsProcessedMutationVariables>(MarkUserPaymentAsProcessedDocument, options);
+      }
+export type MarkUserPaymentAsProcessedMutationHookResult = ReturnType<typeof useMarkUserPaymentAsProcessedMutation>;
+export type MarkUserPaymentAsProcessedMutationResult = Apollo.MutationResult<MarkUserPaymentAsProcessedMutation>;
+export type MarkUserPaymentAsProcessedMutationOptions = Apollo.BaseMutationOptions<MarkUserPaymentAsProcessedMutation, MarkUserPaymentAsProcessedMutationVariables>;
 export const CreateUserPaymentDocument = gql`
     mutation CreateUserPayment($input: CreateUserPaymentInput!) {
   createUserPayment(input: $input) {

@@ -1,0 +1,13 @@
+mutation MarkUserPaymentAsProcessed($input: MarkUserPaymentAsProcessedInput!) {
+  markUserPaymentAsProcessed(input: $input) {
+    success
+    userPayment {
+      id
+      createdAt
+      paymentIdentifier
+      paymentProvider
+      amount
+      gameType
+    }
+  }
+}

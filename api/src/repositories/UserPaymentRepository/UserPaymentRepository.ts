@@ -5,10 +5,16 @@ import { GameType, PaymentProvider } from '@/entities/Payment/Payment';
 @EntityRepository(UserPayment)
 /* eslint-disable-next-line max-len */
 export default class UserPaymentRepository extends AbstractRepository<UserPayment> {
-  async getAll(): Promise<UserPayment[]> {
-    const query = this.repository
+  async getAll({ processed }: { processed?: boolean }): Promise<UserPayment[]> {
+    let query = this.repository
       .createQueryBuilder('user_payment')
       .addSelect('"user_payment"."updatedAt"', 'updatedAt');
+
+    if (processed !== undefined) {
+      query = query.andWhere('"user_payment"."processed" = :processed', {
+        processed,
+      });
+    }
 
     return query.addOrderBy('"updatedAt"', 'DESC').getMany();
   }

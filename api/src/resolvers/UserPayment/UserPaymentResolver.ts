@@ -5,14 +5,20 @@ import { getCustomRepository } from 'typeorm';
 import {
   CreateUserPaymentInput,
   MarkUserPaymentAsProcessedInput,
+  GetUserPaymentsInput,
+  MarkUserPaymentAsProcessedResult,
 } from './types';
 import { ApolloError } from 'apollo-server-express';
 
 @Resolver()
 export class UserPaymentResolver {
   @Query(() => [UserPayment], { nullable: false })
-  async getAll(): Promise<UserPayment[]> {
-    return getCustomRepository(UserPaymentRepository).getAll();
+  async getUserPayments(
+    @Arg('input', { nullable: true }) input: GetUserPaymentsInput
+  ): Promise<UserPayment[]> {
+    return getCustomRepository(UserPaymentRepository).getAll({
+      processed: input?.processed,
+    });
   }
 
   @Mutation(() => UserPayment, { nullable: false })
@@ -28,16 +34,19 @@ export class UserPaymentResolver {
     });
   }
 
-  @Mutation(() => UserPayment, { nullable: false })
+  @Mutation(() => MarkUserPaymentAsProcessedResult, { nullable: false })
   async markUserPaymentAsProcessed(
     @Arg('input', { nullable: false }) input: MarkUserPaymentAsProcessedInput
-  ): Promise<UserPayment> {
+  ): Promise<MarkUserPaymentAsProcessedResult> {
     const userPayment = await getCustomRepository(
       UserPaymentRepository
     ).markAsProcessed(input.userPaymentId);
     if (!userPayment) {
       throw new ApolloError('User payment not found.');
     }
-    return userPayment;
+    return {
+      success: true,
+      userPayment,
+    };
   }
 }
