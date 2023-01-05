@@ -28,6 +28,7 @@
     "cdktf": "^0.8.6",
     "cdktf-cli": "^0.8.6",
     "chalk": "4.1.0",
+    "class-validator": "^0.14.0",
     "constructs": "^10.0.29",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
