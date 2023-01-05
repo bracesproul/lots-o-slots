@@ -10,7 +10,10 @@ import { isServer } from '../';
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 function createApolloClient() {
   const client = new ApolloClient({
-    uri: `${process.env.NEXT_PUBLIC_API_URL}/graphql`,
+    uri:
+      process.env.NODE_ENV === 'production'
+        ? `${process.env.NEXT_PUBLIC_API_URL}/graphql`
+        : 'http://localhost:8000/graphql',
     cache: new InMemoryCache(),
     ssrMode: isServer(),
     connectToDevTools: !isServer(),
