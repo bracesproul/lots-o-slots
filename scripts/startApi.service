@@ -1,9 +1,19 @@
 [Unit]
-Description=Lots o Slots API
-After=network.target
-
+Description=lots o slots api
 [Service]
-ExecStart=/home/bracesproul/lots-o-slots/scripts/startApi.sh
-
+ExecStart=/usr/local/bin/node /home/bracesproul/lots-o-slots/api/dist/index.js
+# Restart service after 10 seconds if node service crashes
+RestartSec=10
+Restart=always
+# Restart=on-failure
+# Output to syslog
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=lots-o-slots-api
+# #### please, not root users
+# RHEL/Fedora uses 'nobody'
+# User=nouser
+# Debian/Ubuntu uses 'nogroup', RHEL/Fedora uses 'nobody'
+Group=nogroup
 [Install]
 WantedBy=multi-user.target
