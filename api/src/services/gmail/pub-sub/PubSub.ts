@@ -127,12 +127,12 @@ export default class MessageListener {
      * Update DB with that. Only then start the rest of the app
      */
     const emailRepo = getCustomRepository(EmailLogRepository);
-    const { createdAt } = await emailRepo.getRecentUpdate();
-    if (!createdAt) {
+    const history = await emailRepo.getRecentUpdate();
+    if (!history?.createdAt) {
       console.info('No logs in email.');
       return;
     }
-    const prettyDate = format(createdAt, 'yyyy/mm/dd');
+    const prettyDate = format(history.createdAt, 'yyyy/mm/dd');
     const { messageIds } = await this.listMessages({
       count: 500,
       query: `after:${prettyDate}`,
