@@ -19,5 +19,5 @@ export default (): Promise<GraphQLSchema> =>
       SeedResolver,
       UserPaymentResolver,
     ],
-    validate: process.env.NODE_ENV === 'production' ? true : false,
+    // validate: process.env.NODE_ENV === 'production' ? true : false,
   });
