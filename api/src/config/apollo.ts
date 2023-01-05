@@ -12,14 +12,11 @@ export async function startApolloServer(): Promise<ApolloServer> {
   const schema = await buildSchema();
 
   const apolloServer: ApolloServer = new ApolloServer({
-    playground:
-      process.env.NODE_ENV !== 'production'
-        ? {
-            settings: {
-              ['request.credentials']: 'include',
-            },
-          }
-        : undefined,
+    playground: {
+      settings: {
+        ['request.credentials']: 'include',
+      },
+    },
     schema,
     debug: !!(
       process.env.NODE_ENV &&
