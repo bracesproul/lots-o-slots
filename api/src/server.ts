@@ -17,7 +17,10 @@ async function serverSetup(): Promise<express.Application> {
         const whiteList = process.env.CORS_ORIGIN
           ? String(process.env.CORS_ORIGIN).split(',')
           : [];
-        if (whiteList.includes(requestOrigin)) {
+        if (
+          whiteList.includes(requestOrigin) &&
+          process.env.NODE_ENV !== 'production'
+        ) {
           return callback(null, true);
         }
 
