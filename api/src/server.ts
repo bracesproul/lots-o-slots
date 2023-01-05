@@ -14,43 +14,9 @@ async function serverSetup(): Promise<express.Application> {
           return callback(null, true);
         }
 
-        const whiteList = process.env.CORS_ORIGIN
-          ? String(process.env.CORS_ORIGIN).split(',')
-          : [];
-        if (
-          whiteList.includes(requestOrigin) &&
-          process.env.NODE_ENV !== 'production'
-        ) {
-          return callback(null, true);
-        }
-
-        let hostname = requestOrigin;
-
-        try {
-          ({ hostname } = new URL(requestOrigin));
-        } catch (error) {
-          console.error(
-            `Could not parse origin: ${requestOrigin}. Continuing anyways...`
-          );
-        }
-
-        if (whiteList.includes(hostname)) {
-          return callback(null, true);
-        }
-
-        // check if the whiteList includes any hostname prefixed with the
-        // protocols
-        const acceptableProtocols = ['http', 'https'];
-        if (
-          acceptableProtocols.some((protocol) =>
-            whiteList.includes(`${protocol}://${hostname}`)
-          )
-        ) {
-          return callback(null, true);
-        }
-
         // HACK: for staging we want to enable all our PR builds which end
         // with .vercel.app
+        // add domain when we have it.
         if (
           process.env.NODE_ENV === 'staging' &&
           requestOrigin &&
@@ -59,11 +25,12 @@ async function serverSetup(): Promise<express.Application> {
           return callback(null, true);
         }
 
-        console.error(
-          `Could not accept origin: ${requestOrigin} with ${process.env.CORS_ORIGIN}`
-        );
+        // console.error(
+        //   `Could not accept origin: ${requestOrigin} with ${process.env.CORS_ORIGIN}`
+        // );
 
-        callback(new Error('Not allowed.'), false);
+        // callback(new Error('Not allowed.'), false);
+        return callback(null, true);
       },
       credentials: true,
       optionsSuccessStatus: 200,
