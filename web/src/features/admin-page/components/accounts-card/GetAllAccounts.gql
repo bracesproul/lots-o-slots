@@ -1,0 +1,16 @@
+query GetAllAccounts {
+  getAllAccounts {
+    id
+    updatedAt
+    email
+    balance
+    canWithdrawal
+    canAcceptDeposits
+    dailyWithdrawals
+    weeklyWithdrawals
+    cashtag
+    bitcoinAddress
+    ethereumAddress
+    type
+  }
+}

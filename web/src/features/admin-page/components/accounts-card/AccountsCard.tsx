@@ -2,6 +2,7 @@ import { ReactElement, useState } from 'react';
 import {
   AddCashappAccountForm,
   CashappAccountCard,
+  OtherAccountCard,
   ChangePaymentHandleDialog,
 } from './components';
 import { Button } from '@/components';
@@ -12,8 +13,25 @@ import {
   InputMaybe,
   PaymentProvider,
   useGetAccountsQuery,
+  useGetAllAccountsQuery,
 } from '@/generated/graphql';
 import { ApolloQueryResult } from '@apollo/client';
+import { OtherAccountCardProps } from './components/other-account-card/OtherAccountCard';
+
+const getEmailOrAddress = ({
+  email,
+  bitcoinAddress,
+  ethereumAddress,
+}: {
+  email: string | null;
+  bitcoinAddress: string | null;
+  ethereumAddress: string | null;
+}) => {
+  if (email) return email;
+  if (bitcoinAddress) return bitcoinAddress;
+  if (ethereumAddress) return ethereumAddress;
+  return '';
+};
 
 type CashAppAccountType = {
   cashtag: string;
@@ -35,6 +53,7 @@ export type RefetchAccountReturnType = Promise<
 
 export type AccountsCardProps = {
   cashappAccount: CashAppAccountType[];
+  otherAccounts: OtherAccountCardProps[];
   refetch: (variables: RefetchAccountInputType) => RefetchAccountReturnType;
 };
 
@@ -43,7 +62,7 @@ const PREFIX = 'accounts-card';
 export function AccountsCard(props: AccountsCardProps): ReactElement {
   const p = { ...props };
   const [changeCashtagModalOpen, setChangeCashtagModalOpen] = useState(false);
-  const [addCashappAccountOpen, setAddCashappAccountOpen] = useState(false);
+  const [addCashappAccountOpen, setAddCashappAccountOpen] = useState(true);
   return (
     <div className={`${PREFIX}`}>
       <h1 className={`${PREFIX}-header`}>Accounts & Balances</h1>
@@ -53,6 +72,14 @@ export function AccountsCard(props: AccountsCardProps): ReactElement {
             key={account.cashtag}
             cashtag={account.cashtag}
             balance={account.balance}
+            lastUpdate={account.lastUpdate}
+          />
+        ))}
+        {p.otherAccounts.map((account) => (
+          <OtherAccountCard
+            key={account.emailOrAddress}
+            emailOrAddress={account.emailOrAddress}
+            paymentProvider={account.paymentProvider}
             lastUpdate={account.lastUpdate}
           />
         ))}
@@ -96,6 +123,8 @@ export default function AccountsCardContainer(): ReactElement {
     },
   });
 
+  const { data: allAccountsData } = useGetAllAccountsQuery();
+
   const cashappAccounts: CashAppAccountType[] =
     data?.getAllAccounts.map((account) => {
       const cashappAccount: CashAppAccountType = {
@@ -106,5 +135,24 @@ export default function AccountsCardContainer(): ReactElement {
       return cashappAccount;
     }) ?? [];
 
-  return <AccountsCard refetch={refetch} cashappAccount={cashappAccounts} />;
+  const otherAccounts: OtherAccountCardProps[] =
+    allAccountsData?.getAllAccounts.map((account) => {
+      return {
+        paymentProvider: account.type,
+        emailOrAddress: getEmailOrAddress({
+          email: account.email ?? null,
+          bitcoinAddress: account.bitcoinAddress ?? null,
+          ethereumAddress: account.ethereumAddress ?? null,
+        }),
+        lastUpdate: account.updatedAt ? new Date(account.updatedAt) : undefined,
+      };
+    }) ?? [];
+
+  return (
+    <AccountsCard
+      refetch={refetch}
+      cashappAccount={cashappAccounts}
+      otherAccounts={otherAccounts}
+    />
+  );
 }

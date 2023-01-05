@@ -34,6 +34,7 @@ export async function updateDatabasePayment(
       balance: paymentInfo.amount,
       canWithdrawal: true,
       canAcceptDeposits: true,
+      paymentProvider: PaymentProvider.CASHAPP,
     });
   }
   const updatedAccount = await accountRepository.creditAccountBalance({

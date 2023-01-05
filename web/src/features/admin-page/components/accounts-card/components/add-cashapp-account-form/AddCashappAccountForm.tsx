@@ -1,4 +1,4 @@
-import { Button, Dialog } from '@/components';
+import { Button, Dialog, Select } from '@/components';
 import { FormEvent, ReactElement, useState } from 'react';
 import {
   PaymentProvider,
@@ -8,27 +8,100 @@ import {
   RefetchAccountInputType,
   RefetchAccountReturnType,
 } from '../../AccountsCard';
+import {
+  CashAppForm,
+  ZelleForm,
+  PayPalForm,
+  EthereumForm,
+  BitcoinForm,
+} from './components';
 
-export type AddCashappAccountFormProps = {
-  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
-  refetch: (variables: RefetchAccountInputType) => RefetchAccountReturnType;
-  cashtag: string;
-  setCashtag: (cashtag: string) => void;
-
-  email: string;
-  setEmail: (email: string) => void;
-
-  open: boolean;
-  setOpen: (open: boolean) => void;
-
+export type CashAppFormProps = {
   balance: number;
   setBalance: (balance: number) => void;
 
   sent: number;
   setSent: (sent: number) => void;
+
+  cashtag: string;
+  setCashtag: (cashtag: string) => void;
+
+  email: string;
+  setEmail: (email: string) => void;
 };
 
+export type ZelleFormProps = {
+  email: string;
+  setEmail: (email: string) => void;
+};
+
+export type PayPalFormProps = {
+  email: string;
+  setEmail: (email: string) => void;
+};
+
+export type CryptoFromProps = {
+  address: string;
+  setAddress: (address: string) => void;
+};
+
+export type AddCashappAccountFormProps = CashAppFormProps &
+  CryptoFromProps & {
+    onSubmit: (e: FormEvent<HTMLFormElement>) => void;
+    refetch: (variables: RefetchAccountInputType) => RefetchAccountReturnType;
+
+    resetForm: () => void;
+
+    open: boolean;
+    setOpen: (open: boolean) => void;
+
+    accountType?: PaymentProvider;
+    setAccountType: (accountType: PaymentProvider) => void;
+  };
+
 const PREFIX = 'cashapp-form';
+
+const PAYMENT_PROVIDER_OPTIONS = [
+  {
+    value: PaymentProvider.CASHAPP,
+    name: 'Cashapp',
+  },
+  {
+    value: PaymentProvider.PAYPAL,
+    name: 'PayPal',
+  },
+  {
+    value: PaymentProvider.ZELLE,
+    name: 'Zelle',
+  },
+  {
+    value: PaymentProvider.BITCOIN,
+    name: 'Bitcoin',
+  },
+  {
+    value: PaymentProvider.ETHEREUM,
+    name: 'Ethereum',
+  },
+];
+
+const getPaymentProviderFromString = (
+  paymentProvider: string
+): PaymentProvider => {
+  switch (paymentProvider.toUpperCase()) {
+    case 'CASHAPP':
+      return PaymentProvider.CASHAPP;
+    case 'PAYPAL':
+      return PaymentProvider.PAYPAL;
+    case 'ZELLE':
+      return PaymentProvider.ZELLE;
+    case 'BITCOIN':
+      return PaymentProvider.BITCOIN;
+    case 'ETHEREUM':
+      return PaymentProvider.ETHEREUM;
+    default:
+      return PaymentProvider.CASHAPP;
+  }
+};
 
 function AddCashappAccountForm(
   props: AddCashappAccountFormProps
@@ -42,51 +115,40 @@ function AddCashappAccountForm(
       buttonTitle="Close"
     >
       <form className={`${PREFIX}-dialog-form`} onSubmit={p.onSubmit}>
-        <label className={`${PREFIX}-form-label`}>
-          Cashtag{' '}
-          <span className={`${PREFIX}-subtext-label`}>
-            * Do not include {`'$'`} *
-          </span>
-        </label>
-        <input
-          value={p.cashtag}
-          onChange={(e) => p.setCashtag(e.target.value)}
-          required
-          name="cashtag"
-          placeholder="Cashtag"
-          id="cashtag"
-          type="text"
-          className={`${PREFIX}-form-input`}
+        <Select
+          value={p.accountType}
+          onValueChange={(e) => {
+            p.resetForm();
+            p.setAccountType(getPaymentProviderFromString(e));
+          }}
+          label="Payment Provider"
+          options={PAYMENT_PROVIDER_OPTIONS}
+          placeholder="Select an Account Type"
         />
-        <label className={`${PREFIX}-form-label`}>Email</label>
-        <input
-          value={p.email}
-          onChange={(e) => p.setEmail(e.target.value)}
-          required
-          name="email"
-          placeholder="email@catchall.com"
-          id="email"
-          type="email"
-          className={`${PREFIX}-form-input`}
-        />
-        <label className={`${PREFIX}-form-label`}>Starting Balance</label>
-        <input
-          className={`${PREFIX}-form-input`}
-          type="number"
-          placeholder="Starting balance"
-          id="balance"
-          value={p.balance.toString()}
-          onChange={(e) => p.setBalance(Number(e))}
-        />
-        <label className={`${PREFIX}-form-label`}>Amount Sent</label>
-        <input
-          className={`${PREFIX}-form-input`}
-          type="number"
-          placeholder="Amount Sent"
-          id="amount-sent"
-          value={p.sent.toString()}
-          onChange={(e) => p.setSent(Number(e))}
-        />
+        {p.accountType === PaymentProvider.CASHAPP && (
+          <CashAppForm
+            balance={p.balance}
+            setBalance={p.setBalance}
+            sent={p.sent}
+            setSent={p.setSent}
+            cashtag={p.cashtag}
+            setCashtag={p.setCashtag}
+            email={p.email}
+            setEmail={p.setEmail}
+          />
+        )}
+        {p.accountType === PaymentProvider.ZELLE && (
+          <ZelleForm email={p.email} setEmail={p.setEmail} />
+        )}
+        {p.accountType === PaymentProvider.PAYPAL && (
+          <PayPalForm email={p.email} setEmail={p.setEmail} />
+        )}
+        {p.accountType === PaymentProvider.BITCOIN && (
+          <BitcoinForm address={p.address} setAddress={p.setAddress} />
+        )}
+        {p.accountType === PaymentProvider.ETHEREUM && (
+          <EthereumForm address={p.address} setAddress={p.setAddress} />
+        )}
         <Button className={`${PREFIX}-form-submit`} type="submit">
           Submit
         </Button>
@@ -103,10 +165,16 @@ export default function AddCashappAccountFormContainer(
   const [newCashappEmail, setNewCashappEmail] = useState('');
   const [balance, setBalance] = useState(0);
   const [sent, setSent] = useState(0);
+  const [address, setAddress] = useState('');
+  const [accountType, setAccountType] = useState<PaymentProvider | undefined>(
+    undefined
+  );
 
   return (
     <AddCashappAccountForm
       {...props}
+      accountType={accountType}
+      setAccountType={setAccountType}
       balance={balance}
       setBalance={setBalance}
       sent={sent}
@@ -115,6 +183,8 @@ export default function AddCashappAccountFormContainer(
       setCashtag={setNewCashtag}
       email={newCashappEmail}
       setEmail={setNewCashappEmail}
+      address={address}
+      setAddress={setAddress}
       onSubmit={async (e) => {
         e.preventDefault();
         await addCashappAccount({
@@ -124,6 +194,11 @@ export default function AddCashappAccountFormContainer(
               cashtag: newCashtag,
               balance: balance,
               weeklyWithdrawals: sent,
+              paymentProvider: accountType ?? PaymentProvider.CASHAPP,
+              bitcoinAddress:
+                accountType === PaymentProvider.BITCOIN ? address : undefined,
+              ethereumAddress:
+                accountType === PaymentProvider.ETHEREUM ? address : undefined,
             },
           },
         });
@@ -135,6 +210,13 @@ export default function AddCashappAccountFormContainer(
         props.setOpen(false);
         setNewCashtag('');
         setNewCashappEmail('');
+      }}
+      resetForm={() => {
+        setNewCashtag('');
+        setNewCashappEmail('');
+        setBalance(0);
+        setSent(0);
+        setAddress('');
       }}
     />
   );

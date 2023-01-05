@@ -15,7 +15,8 @@
     "gmail:pubsub": "yarn build && node ./dist/services/gmail/pub-sub/RunPubSub.js",
     "gmail:watch": "yarn build && node ./dist/services/gmail/pub-sub/Watch.js",
     "test": "jest",
-    "start": "yarn build && NODE_ENV=production node ./dist/index.js"
+    "start": "yarn build && NODE_ENV=production node ./dist/index.js",
+    "prod": "nohup yarn start &"
   },
   "dependencies": {
     "@apollo/server": "^4.2.2",

@@ -1,6 +1,6 @@
 import { Field, ID, InputType, ObjectType } from 'type-graphql';
 import { Account } from '@/entities';
-import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
+import { PaymentProvider } from '@/entities/Payment/Payment';
 
 @InputType({
   description: 'Input type for creating an account.',
@@ -41,6 +41,24 @@ export class AddAccountInput {
     description: 'The amount sent from this account this week',
   })
   weeklyWithdrawals?: number;
+
+  @Field(() => String, {
+    nullable: true,
+    description: 'The bitcoin address of the account.',
+  })
+  bitcoinAddress?: string;
+
+  @Field(() => String, {
+    nullable: true,
+    description: 'The ethereum address of the account.',
+  })
+  ethereumAddress?: string;
+
+  @Field(() => PaymentProvider, {
+    nullable: false,
+    description: 'The payment provider of the account.',
+  })
+  paymentProvider!: PaymentProvider;
 }
 
 @ObjectType({

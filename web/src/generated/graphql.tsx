@@ -19,6 +19,7 @@ export type Scalars = {
 export type Account = MainEntity & Node & {
   __typename?: 'Account';
   balance: Scalars['Float'];
+  bitcoinAddress?: Maybe<Scalars['String']>;
   canAcceptDeposits: Scalars['Boolean'];
   canWithdrawal: Scalars['Boolean'];
   cashtag?: Maybe<Scalars['String']>;
@@ -27,6 +28,7 @@ export type Account = MainEntity & Node & {
   defaultAccount?: Maybe<Scalars['Boolean']>;
   deletedAt?: Maybe<Scalars['DateTime']>;
   email: Scalars['String'];
+  ethereumAddress?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
   type: PaymentProvider;
   updatedAt?: Maybe<Scalars['DateTime']>;
@@ -37,6 +39,8 @@ export type Account = MainEntity & Node & {
 export type AddAccountInput = {
   /** The starting balance of the account. */
   balance?: InputMaybe<Scalars['Float']>;
+  /** The bitcoin address of the account. */
+  bitcoinAddress?: InputMaybe<Scalars['String']>;
   /** Whether an account can accept funds. */
   canAcceptDeposits?: InputMaybe<Scalars['Boolean']>;
   /** Whether an account can withdrawal funds. */
@@ -45,6 +49,10 @@ export type AddAccountInput = {
   cashtag?: InputMaybe<Scalars['String']>;
   /** The email address of the account. */
   email: Scalars['String'];
+  /** The ethereum address of the account. */
+  ethereumAddress?: InputMaybe<Scalars['String']>;
+  /** The payment provider of the account. */
+  paymentProvider: PaymentProvider;
   /** The amount sent from this account this week */
   weeklyWithdrawals?: InputMaybe<Scalars['Float']>;
 };
@@ -353,6 +361,11 @@ export type CreateUserMutationVariables = Exact<{
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', id: string, email?: string | null, password?: string | null } };
 
+export type GetAllAccountsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAllAccountsQuery = { __typename?: 'Query', getAllAccounts: Array<{ __typename?: 'Account', id: string, updatedAt?: string | null, email: string, balance: number, canWithdrawal: boolean, canAcceptDeposits: boolean, dailyWithdrawals: number, weeklyWithdrawals: number, cashtag?: string | null, bitcoinAddress?: string | null, ethereumAddress?: string | null, type: PaymentProvider }> };
+
 export type GetAccountsQueryVariables = Exact<{
   input?: InputMaybe<GetAllAccountsInput>;
 }>;
@@ -366,11 +379,6 @@ export type AddCashappAccountMutationVariables = Exact<{
 
 
 export type AddCashappAccountMutation = { __typename?: 'Mutation', addAccount: { __typename?: 'Account', id: string, cashtag?: string | null, email: string } };
-
-export type GetAllAccountsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetAllAccountsQuery = { __typename?: 'Query', getAllAccounts: Array<{ __typename?: 'Account', id: string, email: string, type: PaymentProvider }> };
 
 export type SwitchDefaultAccountMutationVariables = Exact<{
   input: SwitchDefaultAccountInput;
@@ -464,6 +472,51 @@ export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
+export const GetAllAccountsDocument = gql`
+    query GetAllAccounts {
+  getAllAccounts {
+    id
+    updatedAt
+    email
+    balance
+    canWithdrawal
+    canAcceptDeposits
+    dailyWithdrawals
+    weeklyWithdrawals
+    cashtag
+    bitcoinAddress
+    ethereumAddress
+    type
+  }
+}
+    `;
+
+/**
+ * __useGetAllAccountsQuery__
+ *
+ * To run a query within a React component, call `useGetAllAccountsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAllAccountsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAllAccountsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAllAccountsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllAccountsQuery, GetAllAccountsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAllAccountsQuery, GetAllAccountsQueryVariables>(GetAllAccountsDocument, options);
+      }
+export function useGetAllAccountsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllAccountsQuery, GetAllAccountsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAllAccountsQuery, GetAllAccountsQueryVariables>(GetAllAccountsDocument, options);
+        }
+export type GetAllAccountsQueryHookResult = ReturnType<typeof useGetAllAccountsQuery>;
+export type GetAllAccountsLazyQueryHookResult = ReturnType<typeof useGetAllAccountsLazyQuery>;
+export type GetAllAccountsQueryResult = Apollo.QueryResult<GetAllAccountsQuery, GetAllAccountsQueryVariables>;
 export const GetAccountsDocument = gql`
     query GetAccounts($input: GetAllAccountsInput) {
   getAllAccounts(input: $input) {
@@ -542,42 +595,6 @@ export function useAddCashappAccountMutation(baseOptions?: Apollo.MutationHookOp
 export type AddCashappAccountMutationHookResult = ReturnType<typeof useAddCashappAccountMutation>;
 export type AddCashappAccountMutationResult = Apollo.MutationResult<AddCashappAccountMutation>;
 export type AddCashappAccountMutationOptions = Apollo.BaseMutationOptions<AddCashappAccountMutation, AddCashappAccountMutationVariables>;
-export const GetAllAccountsDocument = gql`
-    query GetAllAccounts {
-  getAllAccounts {
-    id
-    email
-    type
-  }
-}
-    `;
-
-/**
- * __useGetAllAccountsQuery__
- *
- * To run a query within a React component, call `useGetAllAccountsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllAccountsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAllAccountsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useGetAllAccountsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllAccountsQuery, GetAllAccountsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAllAccountsQuery, GetAllAccountsQueryVariables>(GetAllAccountsDocument, options);
-      }
-export function useGetAllAccountsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllAccountsQuery, GetAllAccountsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAllAccountsQuery, GetAllAccountsQueryVariables>(GetAllAccountsDocument, options);
-        }
-export type GetAllAccountsQueryHookResult = ReturnType<typeof useGetAllAccountsQuery>;
-export type GetAllAccountsLazyQueryHookResult = ReturnType<typeof useGetAllAccountsLazyQuery>;
-export type GetAllAccountsQueryResult = Apollo.QueryResult<GetAllAccountsQuery, GetAllAccountsQueryVariables>;
 export const SwitchDefaultAccountDocument = gql`
     mutation SwitchDefaultAccount($input: SwitchDefaultAccountInput!) {
   switchDefaultAccount(input: $input) {

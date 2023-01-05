@@ -1,7 +1,0 @@
-query GetAllAccounts {
-  getAllAccounts {
-    id
-    email
-    type
-  }
-}
