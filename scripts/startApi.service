@@ -1,0 +1,9 @@
+[Unit]
+Description=Lots o Slots API
+After=network.target
+
+[Service]
+ExecStart=/home/bracesproul/lots-o-slots/scripts/startApi.sh
+
+[Install]
+WantedBy=multi-user.target
