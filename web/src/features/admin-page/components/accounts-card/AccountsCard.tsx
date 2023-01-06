@@ -62,7 +62,7 @@ const PREFIX = 'accounts-card';
 export function AccountsCard(props: AccountsCardProps): ReactElement {
   const p = { ...props };
   const [changeCashtagModalOpen, setChangeCashtagModalOpen] = useState(false);
-  const [addCashappAccountOpen, setAddCashappAccountOpen] = useState(true);
+  const [addCashappAccountOpen, setAddCashappAccountOpen] = useState(false);
   return (
     <div className={`${PREFIX}`}>
       <h1 className={`${PREFIX}-header`}>Accounts & Balances</h1>
@@ -98,7 +98,7 @@ export function AccountsCard(props: AccountsCardProps): ReactElement {
           variant="secondary"
           type="button"
         >
-          Add CashApp Account
+          Add Account
         </Button>
       </div>
       <AddCashappAccountForm
@@ -135,18 +135,21 @@ export default function AccountsCardContainer(): ReactElement {
       return cashappAccount;
     }) ?? [];
 
-  const otherAccounts: OtherAccountCardProps[] =
-    allAccountsData?.getAllAccounts.map((account) => {
-      return {
-        paymentProvider: account.type,
-        emailOrAddress: getEmailOrAddress({
-          email: account.email ?? null,
-          bitcoinAddress: account.bitcoinAddress ?? null,
-          ethereumAddress: account.ethereumAddress ?? null,
-        }),
-        lastUpdate: account.updatedAt ? new Date(account.updatedAt) : undefined,
-      };
-    }) ?? [];
+  const otherAccounts: OtherAccountCardProps[] = [];
+  allAccountsData?.getAllAccounts.forEach((account) => {
+    if (account.type === PaymentProvider.CASHAPP) {
+      return;
+    }
+    otherAccounts.push({
+      paymentProvider: account.type,
+      emailOrAddress: getEmailOrAddress({
+        email: account.email ?? null,
+        bitcoinAddress: account.bitcoinAddress ?? null,
+        ethereumAddress: account.ethereumAddress ?? null,
+      }),
+      lastUpdate: account.updatedAt ? new Date(account.updatedAt) : undefined,
+    });
+  }) ?? [];
 
   return (
     <AccountsCard

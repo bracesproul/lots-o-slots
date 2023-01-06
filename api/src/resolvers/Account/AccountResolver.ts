@@ -30,6 +30,7 @@ export class AccountResolver {
   ): Promise<Account[]> {
     return getCustomRepository(AccountRepository).getAll({
       provider: input?.provider,
+      defaultAccounts: input?.defaultAccounts,
     });
   }
 }

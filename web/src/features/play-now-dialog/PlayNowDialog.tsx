@@ -1,7 +1,7 @@
 import { FormEvent, ReactElement, useEffect, useState } from 'react';
 import { PaymentProvider } from '@/generated/graphql';
 import { PlayGameDialogProps, DialogStage } from './types';
-import { StepOneDialog, StepTwoDialog } from './components';
+import { StepOneDialog, StepTwoDialog, SuccessDialog } from './components';
 import { useCreateUserPaymentMutation } from '@/generated/graphql';
 import { findUserId } from '@/utils';
 
@@ -26,6 +26,7 @@ export default function PlayNowDialogContainer(
   const [paymentIdentifier, setPaymentIdentifier] = useState('');
   const [createUserPayment] = useCreateUserPaymentMutation();
   const [error, setError] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     if (!p.open) {
@@ -61,7 +62,7 @@ export default function PlayNowDialogContainer(
           {p.paymentProvider && (
             <StepTwoDialog
               isConfirmPaidDisabled={
-                p.paymentProvider && depositAmount > 0 ? false : true
+                p.paymentProvider && depositAmount >= 20 ? false : true
               }
               open={p.open}
               setOpen={p.setOpen}
@@ -76,11 +77,6 @@ export default function PlayNowDialogContainer(
               onSubmit={async (e) => {
                 e.preventDefault();
                 if (!p.paymentProvider || !p.gameType) {
-                  console.log(
-                    'no payment provider or game type',
-                    p.paymentProvider,
-                    p.gameType
-                  );
                   return;
                 }
                 const { errors } = await createUserPayment({
@@ -99,11 +95,12 @@ export default function PlayNowDialogContainer(
                   setError(true);
                 } else {
                   console.log('no errors');
-                  p.setOpen(false);
+                  setSuccess(true);
                 }
               }}
             />
           )}
+          {success && <SuccessDialog open={p.open} setOpen={p.setOpen} />}
         </>
       )}
     </>

@@ -1,18 +1,17 @@
 import { AbstractRepository, EntityRepository } from 'typeorm';
 import { Account } from '@/entities';
 import { ApolloError } from 'apollo-server-express';
-import Payment, {
-  PaymentProvider,
-  PaymentType,
-} from '@/entities/Payment/Payment';
+import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
 
 @EntityRepository(Account)
 export default class AccountRepository extends AbstractRepository<Account> {
   async getAll({
     provider,
+    defaultAccounts,
   }: {
     type?: PaymentType;
     provider?: PaymentProvider;
+    defaultAccounts?: boolean;
   }): Promise<Account[]> {
     let query = this.repository
       .createQueryBuilder('account')
@@ -23,6 +22,13 @@ export default class AccountRepository extends AbstractRepository<Account> {
         type: provider,
       });
     }
+
+    if (defaultAccounts === true) {
+      query = query.andWhere('"defaultAccount" = :defaultAccount', {
+        defaultAccount: true,
+      });
+    }
+
     return query.getMany();
   }
 
@@ -47,12 +53,33 @@ export default class AccountRepository extends AbstractRepository<Account> {
     ethereumAddress?: string;
     paymentProvider: PaymentProvider;
   }): Promise<Account> {
-    const prevAccount = await this.repository.findOne({ where: { email } });
+    let prevAccount: Account | undefined;
+
+    if (email) {
+      email = email.toLowerCase();
+      prevAccount = await this.repository.findOne({
+        where: { email, type: paymentProvider },
+      });
+    } else if (cashtag) {
+      prevAccount = await this.repository.findOne({
+        where: { cashtag, type: paymentProvider },
+      });
+    } else if (bitcoinAddress) {
+      prevAccount = await this.repository.findOne({
+        where: { bitcoinAddress, type: paymentProvider },
+      });
+    } else if (ethereumAddress) {
+      prevAccount = await this.repository.findOne({
+        where: { ethereumAddress, type: paymentProvider },
+      });
+    }
+
     if (prevAccount) {
       throw new Error('Account already exists');
     }
+
     const account = this.repository.create({
-      email,
+      email: email.toLowerCase(),
       type: paymentProvider,
       balance: balance ?? 0,
       dailyWithdrawals: 0,
@@ -140,7 +167,9 @@ export default class AccountRepository extends AbstractRepository<Account> {
     this.repository.save(newDefaultAccount);
     const otherAccounts = await this.repository.find({ where: { type } });
     otherAccounts.forEach((a) => {
-      a.defaultAccount = false;
+      if (a.id !== id) {
+        a.defaultAccount = false;
+      }
     });
     await this.repository.save(otherAccounts);
     return newDefaultAccount;

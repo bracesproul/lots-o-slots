@@ -81,6 +81,12 @@ export class GetAllAccountsInput {
     description: 'The payment provider type.',
   })
   provider?: PaymentProvider;
+
+  @Field(() => Boolean, {
+    nullable: true,
+    description: 'The default payment providers.',
+  })
+  defaultAccounts?: boolean;
 }
 
 @InputType({
