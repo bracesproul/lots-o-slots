@@ -48,3 +48,7 @@
 .deposit-dialog-expired-body {
   @apply text-gray-400 text-[18px];
 }
+
+.deposit-dialog-countdown-badge {
+  @apply text-center items-center justify-center m-auto mt-[5px] mb-[12px];
+}

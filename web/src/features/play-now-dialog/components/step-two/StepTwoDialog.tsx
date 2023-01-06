@@ -76,15 +76,17 @@ export default function StepTwoDialog(props: DepositDialogProps): ReactElement {
                   >
                     This address is only good for 1 deposit.
                   </p>
-                  <Countdown
-                    className={'text-white mt-[5px]'}
-                    date={Date.now() + COUNTDOWN_TIMER}
-                    onComplete={() => setIsCountdownOver(true)}
-                  />
-                  <p className={`${DEPOSIT_PREFIX}-sub-text`}>
-                    You have 15 minutes to pay. Please click confirm paid once
-                    finished. Thank you!
-                  </p>
+                  <Badge
+                    className={`${DEPOSIT_PREFIX}-countdown-badge`}
+                    variant={findBadgeVariantFromPaymentType(p.paymentProvider)}
+                  >
+                    <Countdown
+                      className={'text-white '}
+                      date={Date.now() + COUNTDOWN_TIMER}
+                      onComplete={() => setIsCountdownOver(true)}
+                    />
+                  </Badge>
+
                   <div className={'flex flex-row m-auto gap-2'}>
                     <Badge
                       variant={findBadgeVariantFromPaymentType(
