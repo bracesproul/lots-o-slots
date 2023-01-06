@@ -1,9 +1,10 @@
 import { FormEvent, ReactElement, useEffect, useState } from 'react';
-import { PaymentProvider } from '@/generated/graphql';
+import { GetDefaultAccountsQuery, PaymentProvider } from '@/generated/graphql';
 import { PlayGameDialogProps, DialogStage } from './types';
 import { StepOneDialog, StepTwoDialog, SuccessDialog } from './components';
 import { useCreateUserPaymentMutation } from '@/generated/graphql';
 import { findUserId } from '@/utils';
+import { useGetDefaultAccountsQuery } from '@/generated/graphql';
 
 export type PlayNowDialogProps = {
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
@@ -22,11 +23,36 @@ export default function PlayNowDialogContainer(
   const p = { ...props };
 
   const [depositAmount, setDepositAmount] = useState(0);
-  const TEMP_PAYMENT_HANDLE = 'zelle@example.com';
   const [paymentIdentifier, setPaymentIdentifier] = useState('');
   const [createUserPayment] = useCreateUserPaymentMutation();
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
+
+  const { data } = useGetDefaultAccountsQuery();
+
+  const getPaymentHandle = (
+    data: GetDefaultAccountsQuery,
+    paymentProvider: PaymentProvider
+  ): string | null => {
+    const handle = data.getAllAccounts.find(
+      (account) => account.type === paymentProvider
+    );
+
+    switch (paymentProvider) {
+      case PaymentProvider.ZELLE:
+        return handle?.email ?? null;
+      case PaymentProvider.CASHAPP:
+        return handle?.cashtag ?? null;
+      case PaymentProvider.PAYPAL:
+        return handle?.email ?? null;
+      case PaymentProvider.BITCOIN:
+        return handle?.bitcoinAddress ?? null;
+      case PaymentProvider.ETHEREUM:
+        return handle?.ethereumAddress ?? null;
+      default:
+        return null;
+    }
+  };
 
   useEffect(() => {
     if (!p.open) {
@@ -34,8 +60,15 @@ export default function PlayNowDialogContainer(
       p.setPaymentProvider(null);
       setDepositAmount(0);
     }
-    console.log('open change');
   }, [p.open]);
+
+  const paymentHandle = () => {
+    if (data && p.paymentProvider) {
+      return getPaymentHandle(data, p.paymentProvider);
+    } else {
+      return null;
+    }
+  };
 
   return (
     <>
@@ -69,7 +102,7 @@ export default function PlayNowDialogContainer(
               depositAmount={depositAmount}
               setDepositAmount={setDepositAmount}
               paymentProvider={p.paymentProvider}
-              paymentHandle={TEMP_PAYMENT_HANDLE}
+              paymentHandle={paymentHandle()}
               paymentIdentifier={paymentIdentifier}
               setPaymentIdentifier={setPaymentIdentifier}
               includePaymentIdentifier={p.includePaymentIdentifier ?? false}
@@ -91,10 +124,8 @@ export default function PlayNowDialogContainer(
                   },
                 });
                 if (errors?.length) {
-                  console.log(errors);
                   setError(true);
                 } else {
-                  console.log('no errors');
                   setSuccess(true);
                 }
               }}

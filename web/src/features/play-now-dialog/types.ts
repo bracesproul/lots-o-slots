@@ -41,7 +41,7 @@ export type PlayDialogProps = {
 
 export type DepositDialogProps = {
   paymentProvider: PaymentProvider;
-  paymentHandle: string;
+  paymentHandle: string | null;
   depositAmount: number;
   setDepositAmount: (depositAmount: number) => void;
   open: boolean;

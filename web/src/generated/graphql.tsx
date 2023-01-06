@@ -140,6 +140,8 @@ export enum GameType {
 
 /** Input type for getting accounts. */
 export type GetAllAccountsInput = {
+  /** The default payment providers. */
+  defaultAccounts?: InputMaybe<Scalars['Boolean']>;
   /** The payment provider type. */
   provider?: InputMaybe<PaymentProvider>;
 };
@@ -421,6 +423,11 @@ export type CreateUserPaymentMutationVariables = Exact<{
 
 
 export type CreateUserPaymentMutation = { __typename?: 'Mutation', createUserPayment: { __typename?: 'UserPayment', id: string } };
+
+export type GetDefaultAccountsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetDefaultAccountsQuery = { __typename?: 'Query', getAllAccounts: Array<{ __typename?: 'Account', id: string, type: PaymentProvider, email: string, cashtag?: string | null, bitcoinAddress?: string | null, ethereumAddress?: string | null }> };
 
 export type PaymentFragmentFragment = { __typename?: 'Payment', id: string, userId: string, amount: number, processed: boolean, emailId: string, provider: PaymentProvider, senderName: string, transactionId?: string | null, paymentType: PaymentType };
 
@@ -821,3 +828,42 @@ export function useCreateUserPaymentMutation(baseOptions?: Apollo.MutationHookOp
 export type CreateUserPaymentMutationHookResult = ReturnType<typeof useCreateUserPaymentMutation>;
 export type CreateUserPaymentMutationResult = Apollo.MutationResult<CreateUserPaymentMutation>;
 export type CreateUserPaymentMutationOptions = Apollo.BaseMutationOptions<CreateUserPaymentMutation, CreateUserPaymentMutationVariables>;
+export const GetDefaultAccountsDocument = gql`
+    query GetDefaultAccounts {
+  getAllAccounts(input: {defaultAccounts: true}) {
+    id
+    type
+    email
+    cashtag
+    bitcoinAddress
+    ethereumAddress
+  }
+}
+    `;
+
+/**
+ * __useGetDefaultAccountsQuery__
+ *
+ * To run a query within a React component, call `useGetDefaultAccountsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDefaultAccountsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDefaultAccountsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetDefaultAccountsQuery(baseOptions?: Apollo.QueryHookOptions<GetDefaultAccountsQuery, GetDefaultAccountsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDefaultAccountsQuery, GetDefaultAccountsQueryVariables>(GetDefaultAccountsDocument, options);
+      }
+export function useGetDefaultAccountsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDefaultAccountsQuery, GetDefaultAccountsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDefaultAccountsQuery, GetDefaultAccountsQueryVariables>(GetDefaultAccountsDocument, options);
+        }
+export type GetDefaultAccountsQueryHookResult = ReturnType<typeof useGetDefaultAccountsQuery>;
+export type GetDefaultAccountsLazyQueryHookResult = ReturnType<typeof useGetDefaultAccountsLazyQuery>;
+export type GetDefaultAccountsQueryResult = Apollo.QueryResult<GetDefaultAccountsQuery, GetDefaultAccountsQueryVariables>;

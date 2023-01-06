@@ -1,0 +1,10 @@
+query GetDefaultAccounts {
+  getAllAccounts(input: { defaultAccounts: true }) {
+    id
+    type
+    email
+    cashtag
+    bitcoinAddress
+    ethereumAddress
+  }
+}
