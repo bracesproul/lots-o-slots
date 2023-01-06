@@ -7,6 +7,7 @@ import {
   findStringFromPaymentType,
 } from '../../utils';
 import { PaymentIdentifierInput } from '../';
+import clsx from 'clsx';
 
 const DEPOSIT_PREFIX = 'deposit-dialog';
 
@@ -67,6 +68,14 @@ export default function StepTwoDialog(props: DepositDialogProps): ReactElement {
                     </span>{' '}
                     to the below address.
                   </h1>
+                  <p
+                    className={clsx(
+                      `${`${DEPOSIT_PREFIX}-sub-text`}`,
+                      'underline'
+                    )}
+                  >
+                    This address is only good for 1 deposit.
+                  </p>
                   <Countdown
                     className={'text-white mt-[5px]'}
                     date={Date.now() + COUNTDOWN_TIMER}
