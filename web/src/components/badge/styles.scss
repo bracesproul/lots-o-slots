@@ -1,6 +1,7 @@
 .badge {
-  @apply rounded-xl bg-[#C5002C] bg-opacity-40 border-[2.5px] border-[#C5002C] text-white;
+  @apply rounded-xl bg-[#C5002C] bg-opacity-40 border-[1.5px] border-[#C5002C] text-white;
   @apply px-[20px] py-[2px] max-w-fit;
+  @apply text-center items-center justify-center m-auto;
 
   &.is-info {
     @apply bg-[#1E88E5] bg-opacity-40 border-[2.5px] border-[#1E88E5];
@@ -37,6 +38,14 @@
 
   &.is-pill {
     @apply rounded-full;
+  }
+
+  &.is-small {
+    @apply text-[12px] border-[1px] px-[10px] py-[1px];
+  }
+
+  &.is-large {
+    @apply text-[18px] border-[2px] px-[14px] py-[4px];
   }
 }
 

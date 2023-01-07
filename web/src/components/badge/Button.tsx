@@ -37,11 +37,18 @@ export type BadgeProps = AriaButtonProps & {
 
   /** The badge content as child */
   children?: React.ReactElement | string;
+
+  /**
+   * The badge size
+   * @default 'medium'
+   */
+  size?: 'small' | 'medium' | 'large';
 };
 
 const DEFAULT_PROPS = {
   variant: 'default',
   isPill: true,
+  size: 'medium',
 };
 
 const PREFIX = 'badge';
@@ -71,6 +78,8 @@ export default function Badge(props: BadgeProps): ReactElement {
           'is-danger': p.variant === 'danger',
           'is-warning': p.variant === 'warning',
           'is-info': p.variant === 'info',
+          'is-small': p.size === 'small',
+          'is-large': p.size === 'large',
         },
       ])}
       {...mergedProps}

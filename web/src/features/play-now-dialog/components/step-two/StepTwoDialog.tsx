@@ -8,6 +8,7 @@ import {
 } from '../../utils';
 import { PaymentIdentifierInput } from '../';
 import clsx from 'clsx';
+import { PaymentProvider } from '@/generated/graphql';
 
 const DEPOSIT_PREFIX = 'deposit-dialog';
 
@@ -77,6 +78,7 @@ export default function StepTwoDialog(props: DepositDialogProps): ReactElement {
                     This address is only good for 1 deposit.
                   </p>
                   <Badge
+                    size="small"
                     className={`${DEPOSIT_PREFIX}-countdown-badge`}
                     variant={findBadgeVariantFromPaymentType(p.paymentProvider)}
                   >
@@ -89,6 +91,7 @@ export default function StepTwoDialog(props: DepositDialogProps): ReactElement {
 
                   <div className={'flex flex-row m-auto gap-2'}>
                     <Badge
+                      size="large"
                       variant={findBadgeVariantFromPaymentType(
                         p.paymentProvider
                       )}
@@ -96,11 +99,15 @@ export default function StepTwoDialog(props: DepositDialogProps): ReactElement {
                       {findStringFromPaymentType(p.paymentProvider)}
                     </Badge>
                     <Badge
+                      size="large"
                       variant={findBadgeVariantFromPaymentType(
                         p.paymentProvider
                       )}
                     >
-                      {p.paymentHandle}
+                      <>
+                        {p.paymentProvider === PaymentProvider.CASHAPP && '$'}
+                        {p.paymentHandle}
+                      </>
                     </Badge>
                   </div>
                 </>
