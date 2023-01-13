@@ -2,10 +2,6 @@ import { EmailObjectType } from '@/types';
 import { handlePayout } from './handlePayout';
 import { handleReceivedPayment } from './handleReceivedPayment';
 import { handleWithdrawal } from './handleWithdrawal';
-/**
- * Will likely want to do all of this from the HTML tags inside each email body.
- * Search for some tag, check if it includes the correct text, etc.
- */
 
 type ParsedPaymentResponse = {
   success: boolean;
@@ -23,7 +19,7 @@ export async function parseCashAppEmail(
     return await handleReceivedPayment(email);
   } else if (subject.includes('You paid') && body.includes('Payment to $')) {
     return await handlePayout(email);
-  } else if (subject.includes('bitcoin')) {
+  } else if (subject.includes('You purchased Bitcoin')) {
     return await handleWithdrawal(email);
   } else {
     return {

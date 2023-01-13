@@ -1,3 +1,4 @@
+import { Account } from '@/entities';
 import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
 import {
   PaymentRepository,
@@ -24,7 +25,7 @@ export async function updateDatabasePayment(
     senderName: paymentInfo.name,
     transactionId: paymentInfo.transactionId,
     cashTag: paymentInfo.cashTag,
-    paymentType: PaymentType.DEPOSIT,
+    paymentType: paymentInfo.type ?? PaymentType.DEPOSIT,
   });
 
   let account = await accountRepository.findOne(paymentInfo.email.to);
@@ -37,9 +38,18 @@ export async function updateDatabasePayment(
       paymentProvider: PaymentProvider.CASHAPP,
     });
   }
-  const updatedAccount = await accountRepository.creditAccountBalance({
-    id: account.id,
-    amount: paymentInfo.amount,
-  });
+  let updatedAccount: Account;
+  if (paymentInfo.type === PaymentType.WITHDRAWAL) {
+    updatedAccount = await accountRepository.debitAccountBalance({
+      id: account.id,
+      amount: paymentInfo.amount,
+    });
+  } else {
+    updatedAccount = await accountRepository.creditAccountBalance({
+      id: account.id,
+      amount: paymentInfo.amount,
+    });
+  }
+
   return { success: true, account: updatedAccount, payment };
 }

@@ -57,7 +57,10 @@ export default class MessageListener {
     );
 
     const handleMessages = async (message: any) => {
-      console.log('✅ Received message');
+      console.log(
+        '✅ Received message. Date:',
+        format(new Date(), 'MM/dd/yyy h:mm a')
+      );
       message.ack();
       const { messageIds } = await this.listMessages({
         count: 1,

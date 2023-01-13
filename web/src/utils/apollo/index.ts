@@ -13,7 +13,7 @@ function createApolloClient() {
     uri:
       process.env.NODE_ENV === 'production'
         ? `${process.env.NEXT_PUBLIC_API_URL}/graphql`
-        : // : 'http://34.136.213.6/graphql',
+        : // 'http://34.136.213.6/graphql',
           'http://localhost:8000/graphql',
     cache: new InMemoryCache(),
     ssrMode: isServer(),

@@ -1,3 +1,4 @@
+import { PaymentType } from '@/entities/Payment/Payment';
 import { EmailObjectType } from './emails';
 
 export type PaymentInfoType = {
@@ -6,4 +7,5 @@ export type PaymentInfoType = {
   transactionId?: string;
   cashTag?: string;
   email: EmailObjectType;
+  type?: PaymentType;
 };
