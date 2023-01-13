@@ -75,7 +75,7 @@ export default class AccountRepository extends AbstractRepository<Account> {
     }
 
     if (prevAccount) {
-      throw new Error('Account already exists');
+      throw new ApolloError('Account already exists');
     }
 
     const account = this.repository.create({
@@ -86,7 +86,7 @@ export default class AccountRepository extends AbstractRepository<Account> {
       canWithdrawal: canWithdrawal ?? false,
       canAcceptDeposits: canAcceptDeposits ?? false,
       cashtag,
-      weeklyWithdrawals,
+      weeklyWithdrawals: weeklyWithdrawals ?? 0,
       bitcoinAddress,
       ethereumAddress,
     });
@@ -94,7 +94,7 @@ export default class AccountRepository extends AbstractRepository<Account> {
   }
 
   async findOne(email: string): Promise<Account | undefined> {
-    return this.repository.findOneOrFail({ where: { email } });
+    return this.repository.findOne({ where: { email } });
   }
 
   async makeAccountActive({
@@ -104,14 +104,10 @@ export default class AccountRepository extends AbstractRepository<Account> {
     id: string;
     isCashapp?: boolean;
   }): Promise<Account> {
-    const account = await this.repository.findOneOrFail({ where: { id } });
+    const account = await this.repository.findOne({ where: { id } });
 
-    if (isCashapp) {
-      const previousAccount = await this.repository.findOneOrFail({
-        where: { id, type: PaymentProvider.CASHAPP },
-      });
-      previousAccount.canAcceptDeposits = false;
-      await this.repository.save(previousAccount);
+    if (!account) {
+      throw new ApolloError('Account not found');
     }
 
     if (account.canAcceptDeposits) {
@@ -127,8 +123,11 @@ export default class AccountRepository extends AbstractRepository<Account> {
   }: {
     id: string;
     amount: number;
-  }): Promise<Account> {
-    const account = await this.repository.findOneOrFail({ where: { id } });
+  }): Promise<Account | null> {
+    const account = await this.repository.findOne({ where: { id } });
+    if (!account) {
+      return null;
+    }
     account.balance = Number(account.balance) + Number(amount);
     return this.repository.save(account);
   }
@@ -139,15 +138,18 @@ export default class AccountRepository extends AbstractRepository<Account> {
   }: {
     id: string;
     amount: number;
-  }): Promise<Account> {
-    const account = await this.repository.findOneOrFail({ where: { id } });
+  }): Promise<Account | null> {
+    const account = await this.repository.findOne({ where: { id } });
+    if (!account) {
+      return null;
+    }
     account.balance = account.balance - amount;
     return this.repository.save(account);
   }
 
   async checkIfAccountCanWithdraw({ id }: { id: string }): Promise<boolean> {
-    const account = await this.repository.findOneOrFail({ where: { id } });
-    if (!account.canWithdrawal) {
+    const account = await this.repository.findOne({ where: { id } });
+    if (!account || !account.canWithdrawal) {
       return false;
     }
     return true;
@@ -160,9 +162,14 @@ export default class AccountRepository extends AbstractRepository<Account> {
     id: string;
     type: PaymentProvider;
   }): Promise<Account> {
-    const newDefaultAccount = await this.repository.findOneOrFail({
+    const newDefaultAccount = await this.repository.findOne({
       where: { id },
     });
+
+    if (!newDefaultAccount) {
+      throw new ApolloError('Account not found');
+    }
+
     newDefaultAccount.defaultAccount = true;
     this.repository.save(newDefaultAccount);
     const otherAccounts = await this.repository.find({ where: { type } });

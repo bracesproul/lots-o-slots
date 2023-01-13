@@ -10,7 +10,7 @@ export default class EmailLogRepository extends AbstractRepository<EmailLog> {
   }
 
   async findOne(id: string): Promise<EmailLog | undefined> {
-    return this.emailLogRepo.findOneOrFail({ where: { id } });
+    return this.emailLogRepo.findOne({ where: { id } });
   }
 
   async getRecentUpdate(): Promise<EmailLog> {

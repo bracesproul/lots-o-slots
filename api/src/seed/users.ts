@@ -3,15 +3,15 @@ import { User } from '@/entities';
 import { getRepository } from 'typeorm';
 
 export async function seedFakeUsers(): Promise<User[]> {
+  const userRepository = getRepository(User);
   const users: User[] = [];
   for (let i = 0; i < 5; i++) {
     users.push(
-      User.create({
+      userRepository.create({
         userIdentifier_zelle: `${faker.name.firstName()}_${faker.name.lastName()}`,
         balance: faker.datatype.number(),
       })
     );
   }
-
-  return getRepository(User).save(users);
+  return userRepository.save(users);
 }

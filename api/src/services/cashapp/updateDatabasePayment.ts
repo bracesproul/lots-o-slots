@@ -38,7 +38,8 @@ export async function updateDatabasePayment(
       paymentProvider: PaymentProvider.CASHAPP,
     });
   }
-  let updatedAccount: Account;
+
+  let updatedAccount: Account | null;
   if (paymentInfo.type === PaymentType.WITHDRAWAL) {
     updatedAccount = await accountRepository.debitAccountBalance({
       id: account.id,

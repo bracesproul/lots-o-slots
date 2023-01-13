@@ -1,9 +1,15 @@
-import { AbstractRepository, EntityRepository } from 'typeorm';
+import {
+  AbstractRepository,
+  EntityRepository,
+  getCustomRepository,
+} from 'typeorm';
 import { Payment, User } from '@/entities';
 import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
 import { GetPaymentsInput } from '@/resolvers/Payment/types';
 import { PayoutUserReturnType } from './types';
 import { EmailObjectType } from '@/types';
+import { ApolloError } from 'apollo-server-express';
+import { UserRepository } from '../UserRepository';
 
 @EntityRepository(Payment)
 export default class PaymentRepository extends AbstractRepository<Payment> {
@@ -118,7 +124,10 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
   }
 
   async markPaymentAsProcessed({ id }: { id: string }): Promise<Payment> {
-    const payment = await this.repository.findOneOrFail({ where: { id } });
+    const payment = await this.repository.findOne({ where: { id } });
+    if (!payment) {
+      throw new ApolloError('Payment not found', 'PAYMENT_NOT_FOUND');
+    }
     payment.processed = true;
     return this.repository.save(payment);
   }
@@ -149,16 +158,27 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
      * 3. if yes, subtract amount from user balance
      */
 
-    const user = await User.findOne({
-      where: [
-        { userIdentifier_paypal: uniqueIdentifier },
-        { userIdentifier_zelle: uniqueIdentifier },
-        { userIdentifier_cashapp: uniqueIdentifier },
-        { cashTag: cashTag },
-      ],
+    let user = await User.findOne({
+      where: { userIdentifier_paypal: uniqueIdentifier },
     });
     if (!user) {
-      // discord message.
+      user = await User.findOne({
+        where: { userIdentifier_zelle: uniqueIdentifier },
+      });
+    }
+    if (!user) {
+      user = await User.findOne({
+        where: { userIdentifier_cashapp: uniqueIdentifier },
+      });
+    }
+    if (!user) {
+      user = await User.findOne({
+        where: { cashTag: cashTag },
+      });
+    }
+
+    if (!user) {
+      console.log('no user found');
       return {
         success: false,
         message: 'User not found',
@@ -167,7 +187,7 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
       };
     }
     if (user.balance < amount) {
-      // discord message
+      console.log('user bal too low');
       return {
         success: false,
         message: 'User does not have enough balance',
@@ -175,8 +195,11 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
         payment: null,
       };
     }
-    user.balance = Number(user.balance) - Number(amount);
-    await User.save(user);
+    const userRepository = getCustomRepository(UserRepository);
+    user = await userRepository.debitUserBalance({
+      id: user.id,
+      balance: amount,
+    });
 
     const payment = await this.createPayment({
       userIdentifier: uniqueIdentifier,

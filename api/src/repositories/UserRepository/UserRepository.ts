@@ -63,8 +63,31 @@ export default class UserRepository extends AbstractRepository<User> {
     id: string;
     balance: number;
   }): Promise<User> {
-    const user = await this.repository.findOneOrFail({ where: { id } });
+    const user = await this.repository.findOne({ where: { id } });
+
+    if (!user) {
+      throw new ApolloError('User does not exist');
+    }
+
     user.balance = user.balance + balance;
+    return this.repository.save(user);
+  }
+
+  async debitUserBalance({
+    id,
+    balance,
+  }: {
+    id: string;
+    balance: number;
+  }): Promise<User> {
+    const user = await this.repository.findOne({ where: { id } });
+
+    if (!user) {
+      throw new ApolloError('User does not exist');
+    }
+
+    const newBalance = Number((user.balance - balance).toFixed(2));
+    user.balance = newBalance;
     return this.repository.save(user);
   }
 }

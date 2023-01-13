@@ -5,6 +5,10 @@ import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
 import { PaymentInfoType } from '@/types/paymentInfo';
 
 export async function parsePayPalPayment(email: EmailObjectType) {
+  if (email.subject.includes('eCheque') || email.body.includes('eCheque')) {
+    console.warn('eCheque', email);
+  }
+
   let { body } = email;
   body = body.replace(/\r/g, '');
   const senderNameRegex = /^(.*) sent you /m;

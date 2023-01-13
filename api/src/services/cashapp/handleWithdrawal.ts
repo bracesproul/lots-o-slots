@@ -1,17 +1,12 @@
 import { EmailObjectType } from '@/types';
 import { getCustomRepository } from 'typeorm';
-import { updateDatabasePayment } from '../';
-import { EmailLogRepository } from '@/repositories';
+import { AccountRepository, EmailLogRepository } from '@/repositories';
 
 export async function handleWithdrawal(email: EmailObjectType) {
   const body = email.body.replace(/\r/g, '');
 
-  // amount should come from the total after fees
   const amountRegex = new RegExp(/Market Purchase Order\n\$([\d,.]+\.\d\d)/);
   const amountMatch = body.match(amountRegex);
-
-  // name is `Bitcoin` because it has no sender name.
-  const nameMatch = 'Bitcoin';
 
   if (!amountMatch) {
     console.log('failed to parse get cashapp bitcoin payment', amountMatch);
@@ -27,28 +22,35 @@ export async function handleWithdrawal(email: EmailObjectType) {
   }
 
   const amount = Number(amountMatch[1].replace(/,/g, ''));
-  const name = nameMatch[1];
-  const transactionId = email.id;
-  const cashTag = email.to;
-  console.log('amount', amount);
 
-  // const emailLogRepository = getCustomRepository(EmailLogRepository);
-  // await emailLogRepository.create(email.id);
+  const accountRepository = getCustomRepository(AccountRepository);
+  const account = await accountRepository.findOne(email.to);
 
-  // await updateDatabasePayment({
-  //   amount,
-  //   name,
-  //   transactionId,
-  //   cashTag,
-  //   email,
-  // });
+  if (!account) {
+    console.log('account does not exist', email.to);
+    return {
+      success: false,
+      amount: 0,
+      name: null,
+      cashTag: null,
+      transactionId: '',
+    };
+  }
+
+  const emailLogRepository = getCustomRepository(EmailLogRepository);
+  await emailLogRepository.create(email.id);
+
+  accountRepository.debitAccountBalance({
+    id: account.id,
+    amount: amount,
+  });
 
   return {
     success: true,
     amount: 10,
     name: null,
-    transactionId: 'string',
-    cashTag: null,
+    transactionId: email.id,
+    cashTag: account.cashtag ?? null,
   };
 }
 

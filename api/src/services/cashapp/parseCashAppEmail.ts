@@ -17,7 +17,8 @@ export async function parseCashAppEmail(
   const { subject, body } = email;
   if (subject.includes('sent you $')) {
     return await handleReceivedPayment(email);
-  } else if (subject.includes('You paid') && body.includes('Payment to $')) {
+  } else if (subject.includes('You paid')) {
+    console.log('payout', { subject, body });
     return await handlePayout(email);
   } else if (subject.includes('You purchased Bitcoin')) {
     return await handleWithdrawal(email);

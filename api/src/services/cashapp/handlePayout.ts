@@ -48,7 +48,7 @@ export async function handlePayout(email: EmailObjectType) {
     amount,
     email,
   });
-
+  console.log('PAID OUT', { name, cashTag, amount });
   return {
     success: true,
     amount,

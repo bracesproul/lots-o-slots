@@ -16,7 +16,10 @@
     "gmail:watch": "yarn build && node ./dist/services/gmail/pub-sub/Watch.js",
     "test": "jest",
     "start": "yarn build && NODE_ENV=production node ./dist/index.js",
-    "prod": "nohup yarn start &"
+    "prod": "nohup yarn start",
+    "docker:gmail:watch": "docker compose exec -i api \"yarn build:api\"",
+    "docker:seed:run": "docker compose exec api yarn seed:run",
+    "seed:run": "yarn tsnode --files src/seed/index.ts"
   },
   "dependencies": {
     "@apollo/server": "^4.2.2",
