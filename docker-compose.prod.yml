@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   api:
-    container_name: slots-api
+    container_name: slots-api-prod
     stdin_open: true
     build:
       context: ./
@@ -21,7 +21,7 @@ services:
     command: yarn start:api
 
   database:
-    container_name: slots-database
+    container_name: slots-database-prod
     image: postgres:alpine
     restart: unless-stopped
     ports:
@@ -30,6 +30,6 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: dev
-      POSTGRES_HOST: 127.0.0.1
     volumes:
       - ./data:/var/lib/postgresql/data\
+

@@ -15,9 +15,8 @@
   },
   "scripts": {
     "dev:api": "cd ./api && yarn dev",
-    "start:api": "cd ./api && yarn start",
-    "build": "cd ./api && yarn build && cd ../web && yarn build",
-    "build:api": "tsc -p ./api/tsconfig.build.json && tsc-alias -p ./api/tsconfig.json",
+    "build": "cd ./api && yarn build",
+    "build:api": "npx tsc -p ./api/tsconfig.build.json && tsc-alias -p ./api/tsconfig.json",
     "build:web": "cd ./web && yarn build",
     "docker:compose": "docker compose --profile web up --build",
     "docker:compose:api": "docker compose --profile api up --build",
