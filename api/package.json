@@ -15,7 +15,7 @@
     "gmail:pubsub": "yarn build && node ./dist/services/gmail/pub-sub/RunPubSub.js",
     "gmail:watch": "yarn build && node ./dist/services/gmail/pub-sub/Watch.js",
     "test": "jest",
-    "start:api": "tsc -p ./api/tsconfig.build.json && tsc-alias -p ./api/tsconfig.json && yarn start",
+    "start:api": "yarn start",
     "prod": "nohup yarn start",
     "docker:gmail:watch": "docker compose exec -i api \"yarn build:api\"",
     "docker:seed:run": "docker compose exec api yarn seed:run",
