@@ -17,7 +17,7 @@ services:
       - /app/api/node_modules/ # do not mount node_modules
     depends_on:
       - database
-    command: yarn start:api
+    # command: yarn start:api
 
   database:
     container_name: slots-database-prod
