@@ -18,6 +18,7 @@ services:
     depends_on:
       - database
     # command: yarn start:api
+    command: sleeo 3600
 
   database:
     container_name: slots-database-prod
