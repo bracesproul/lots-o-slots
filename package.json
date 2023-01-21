@@ -16,6 +16,7 @@
   "scripts": {
     "dev:api": "cd ./api && yarn dev",
     "build": "cd ./api && yarn build",
+    "start": "cd ./api && yarn start",
     "build:api": "tsc -p ./api/tsconfig.build.json && tsc-alias -p ./api/tsconfig.json",
     "build:web": "cd ./web && yarn build",
     "docker:compose": "docker compose --profile web up --build",
