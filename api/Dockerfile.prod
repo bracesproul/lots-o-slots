@@ -3,9 +3,9 @@ FROM node:16-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 COPY yarn.lock ./
-RUN apk add nodejs npm findutils-locate
-RUN npm install --global yarn
+RUN apk add findutils-locate
 RUN yarn install
+RUN yarn add typescript
 
 FROM node:16-alpine AS prod
 
