@@ -3,7 +3,7 @@ FROM node:16-alpine AS builder
 WORKDIR /app
 COPY package*.json ./
 COPY yarn.lock ./
-RUN apk add nodejs npm
+RUN apk add nodejs npm findutils-locate
 RUN npm install --global yarn
 RUN yarn install
 
