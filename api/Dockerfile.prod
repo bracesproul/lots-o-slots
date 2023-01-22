@@ -13,7 +13,6 @@ COPY --from=builder /app/ /app/
 COPY . .
 RUN apk add bash
 WORKDIR /app/api
-RUN yarn install
 RUN yarn build
 
 EXPOSE 8000
