@@ -4,8 +4,8 @@ services:
     container_name: slots-api-prod
     stdin_open: true
     build:
-      context: ./
-      dockerfile: api/Dockerfile.prod
+      context: ./api
+      dockerfile: Dockerfile.prod
       target: prod
     environment:
       NODE_ENV: production
@@ -24,11 +24,12 @@ services:
     image: postgres:alpine
     restart: unless-stopped
     ports:
-      - 5432:5432
+      - "5432:5432"
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: dev
+      POSTGRES_HOST: 172.17.0.1
     volumes:
       - ./data:/var/lib/postgresql/data\
 

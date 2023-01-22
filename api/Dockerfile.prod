@@ -10,8 +10,7 @@ FROM node:16-alpine AS prod
 WORKDIR /app
 COPY --from=builder /app/ /app/
 COPY . .
-WORKDIR /app/api
-RUN yarn build
+RUN yarn build:api
 
 EXPOSE 8000
 
