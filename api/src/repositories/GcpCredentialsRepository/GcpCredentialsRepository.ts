@@ -4,11 +4,17 @@ import { GcpCredentials } from '@/entities';
 @EntityRepository(GcpCredentials)
 // eslint-disable-next-line max-len
 export default class GcpCredentialsRepository extends AbstractRepository<GcpCredentials> {
-  async getCredentials(): Promise<GcpCredentials> {
-    const credentials = await this.repository.findOne();
-    if (!credentials) {
-      throw new Error('No credentials found');
-    }
-    return credentials;
+  async findRecent(): Promise<GcpCredentials | undefined> {
+    return this.repository.findOne({
+      order: {
+        createdAt: 'DESC',
+      },
+    });
+  }
+
+  async create(input: Partial<GcpCredentials>): Promise<GcpCredentials> {
+    const entity = this.repository.create(input);
+
+    return this.repository.save(entity);
   }
 }
