@@ -4,3 +4,5 @@ export { Payment } from './Payment';
 export { Account } from './Account';
 export { EmailLog } from './EmailLog';
 export { UserPayment } from './UserPayment';
+export { GcpToken } from './GcpToken';
+export { GcpCredentials } from './GcpCredentials';
