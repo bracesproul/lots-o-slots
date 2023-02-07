@@ -7,11 +7,11 @@ import { config as setupEnv } from 'dotenv-flow';
 setupEnv({ silent: true });
 
 async function main() {
-  await postgresConnection().then(async () => {
-    console.info('🤠 Database connected!');
-  });
-  await authorizeGoogle();
-  const messageListener = new MessageListener();
+  // await postgresConnection().then(async () => {
+  //   console.info('🤠 Database connected!');
+  // });
+  // await authorizeGoogle();
+  // const messageListener = new MessageListener();
   // if (process.env.NODE_ENV === 'production') {
   //   console.log('Getting message history...');
   //   messageListener.getMissingMessages();

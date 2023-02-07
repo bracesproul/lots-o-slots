@@ -28,5 +28,25 @@ export default async function postgresConnection(): Promise<Connection> {
     cache: shouldCache(),
   } as PostgresConnectionOptions;
 
+  // const config2 = {
+  //   database: '',
+  //   entities: Object.values(entities),
+  //   host: '/cloudsql/',
+  //   extra: {
+  //     socketPath: '/cloudsql/',
+  //   },
+  //   password: '',
+  //   port: 0000,
+  //   type: process.env.POSTGRES_CONNECTION as DatabaseType,
+  //   username: '',
+  //   synchronize: false,
+  //   dropSchema:
+  //     process.env.NODE_ENV !== 'production' &&
+  //     process.env.POSTGRES_DROP_SCHEMA === 'true',
+  //   migrations: ['dist/migrations/*.js'],
+  //   migrationsRun: true,
+  //   cache: shouldCache(),
+  // } as PostgresConnectionOptions;
+
   return await createConnection(config);
 }

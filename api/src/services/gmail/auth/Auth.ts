@@ -3,6 +3,12 @@ import path from 'path';
 import process from 'process';
 import { authenticate } from '@google-cloud/local-auth';
 import { google } from 'googleapis';
+import { getCustomRepository } from 'typeorm';
+import {
+  GcpTokenRepository,
+  GcpCredentialsRepository,
+  GcpServiceAccountRepository,
+} from '@/repositories';
 
 const SCOPES = ['https://www.googleapis.com/auth/gmail.readonly'];
 const TOKEN_PATH = path.join(process.cwd(), 'token.json');
@@ -15,9 +21,38 @@ const CREDENTIALS_PATH = path.join(process.cwd(), 'credentials.json');
  */
 export async function loadSavedCredentialsIfExist() {
   try {
-    const content = (await fs.readFile(TOKEN_PATH)).toString();
-    const credentials = JSON.parse(content);
-    return google.auth.fromJSON(credentials);
+    const content = await getCustomRepository(GcpTokenRepository).findRecent();
+
+    if (!content) {
+      return null;
+    }
+
+    const { client_id, client_secret, refresh_token } = content;
+
+    const credentialsContent = await getCustomRepository(
+      GcpCredentialsRepository
+    ).findRecent();
+
+    await fs.writeFile(
+      CREDENTIALS_PATH,
+      JSON.stringify({
+        client_id: credentialsContent?.client_id,
+        project_id: credentialsContent?.project_id,
+        auth_uri: credentialsContent?.auth_uri,
+        token_uri: credentialsContent?.token_uri,
+        auth_provider_x509_cert_url:
+          credentialsContent?.auth_provider_x509_cert_url,
+        client_secret: credentialsContent?.client_secret,
+        redirect_uris: credentialsContent?.redirect_uris,
+      })
+    );
+
+    return google.auth.fromJSON({
+      type: 'authorized_user',
+      client_id,
+      client_secret,
+      refresh_token,
+    });
   } catch (err) {
     return null;
   }
@@ -30,16 +65,24 @@ export async function loadSavedCredentialsIfExist() {
  * @return {Promise<void>}
  */
 async function saveCredentials(client: any) {
-  const content = (await fs.readFile(CREDENTIALS_PATH)).toString();
-  const keys = JSON.parse(content);
-  const key = keys.installed || keys.web;
-  const payload = JSON.stringify({
+  const content = await getCustomRepository(
+    GcpCredentialsRepository
+  ).findRecent();
+
+  if (!content) {
+    throw new Error('No credentials found.');
+  }
+
+  const payload = {
     type: 'authorized_user',
-    client_id: key.client_id,
-    client_secret: key.client_secret,
+    client_id: content.client_id,
+    client_secret: content.client_secret,
     refresh_token: client.credentials.refresh_token,
-  });
-  await fs.writeFile(TOKEN_PATH, payload);
+  };
+
+  await getCustomRepository(GcpTokenRepository).create(payload);
+
+  await fs.writeFile(TOKEN_PATH, JSON.stringify(payload));
 }
 
 /**
