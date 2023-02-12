@@ -106,8 +106,8 @@ export default async function authorize() {
 
 export function getOAuth2Client() {
   const oauth2Client = new google.auth.OAuth2(
-    '14616064911-e54ghnd35smnpale2en2mme5eun60nta.apps.googleusercontent.com',
-    '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',
+    'client_id',
+    'client_secret',
     'http://localhost:8000/oauth2callback'
   );
 

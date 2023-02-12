@@ -7,7 +7,7 @@ npm install -g yarn
 
 sudo apt-get install -y git
 
-PAT="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"
+PAT=
 
 git clone https://bracesproul:$PAT@github.com/bracesproul/lots-o-slots.git
 
