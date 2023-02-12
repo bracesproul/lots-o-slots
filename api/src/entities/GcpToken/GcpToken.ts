@@ -5,14 +5,14 @@ import { MainEntity } from '@/entities';
 @Entity({ name: 'gcp_tokens' })
 export default class GcpToken extends MainEntity {
   @Column({ type: 'varchar' })
-  type!: string;
+  token_type!: string;
 
   @Column({ type: 'varchar' })
-  client_id!: string;
-
-  @Column({ type: 'varchar' })
-  client_secret!: string;
+  access_token!: string;
 
   @Column({ type: 'varchar' })
   refresh_token!: string;
+
+  @Column({ type: 'varchar' })
+  expiry_date!: string;
 }

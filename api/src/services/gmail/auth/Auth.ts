@@ -4,11 +4,7 @@ import process from 'process';
 import { authenticate } from '@google-cloud/local-auth';
 import { google } from 'googleapis';
 import { getCustomRepository } from 'typeorm';
-import {
-  GcpTokenRepository,
-  GcpCredentialsRepository,
-  GcpServiceAccountRepository,
-} from '@/repositories';
+import { GcpTokenRepository, GcpCredentialsRepository } from '@/repositories';
 
 const SCOPES = ['https://www.googleapis.com/auth/gmail.readonly'];
 const TOKEN_PATH = path.join(process.cwd(), 'token.json');
@@ -27,7 +23,11 @@ export async function loadSavedCredentialsIfExist() {
       return null;
     }
 
-    const { client_id, client_secret, refresh_token } = content;
+    const {
+      access_token: client_id,
+      expiry_date: client_secret,
+      refresh_token,
+    } = content;
 
     const credentialsContent = await getCustomRepository(
       GcpCredentialsRepository
@@ -102,4 +102,31 @@ export default async function authorize() {
     await saveCredentials(authenticatedClient);
   }
   return authenticatedClient;
+}
+
+export function getOAuth2Client() {
+  const oauth2Client = new google.auth.OAuth2(
+    'client_id',
+    'client_secret',
+    'http://localhost:8000/oauth2callback'
+  );
+
+  return oauth2Client;
+}
+
+export function handleAuth() {
+  // generate a url that asks permissions for Blogger and Google Calendar scopes
+  const scopes = ['https://mail.google.com/'];
+
+  const oauth2Client = getOAuth2Client();
+
+  const url = oauth2Client.generateAuthUrl({
+    // 'online' (default) or 'offline' (gets refresh_token)
+    access_type: 'offline',
+
+    // If you only need one scope you can pass it as a string
+    scope: scopes,
+  });
+
+  console.log('url', url);
 }
