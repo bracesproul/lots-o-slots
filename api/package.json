@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc -p ./tsconfig.build.json && tsc-alias -p tsconfig.json",
+    "build:prod": "npx yarn install && tsc -p ./tsconfig.build.json && tsc-alias -p tsconfig.json",
     "docker:compose": "docker compose up --build api",
     "dev": "tsc-watch -p ./tsconfig.build.json --noClear --onSuccess \"yarn tsc:watch:success\"",
     "tsc:watch:success": "tsc-alias -p tsconfig.json && NODE_ENV=development GOOGLE_CLOUD_PROJECT=lots-o-slots node --inspect=0.0.0.0:9229 ./dist/index.js",
