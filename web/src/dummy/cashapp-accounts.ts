@@ -10,7 +10,7 @@ export const dummyCashappAccounts = [
     lastUpdate: new Date(),
   },
   {
-    cashtag: 'cashapp3',
+    cashtag: 'cashapp32',
     balance: 1003,
     lastUpdate: new Date(),
   },

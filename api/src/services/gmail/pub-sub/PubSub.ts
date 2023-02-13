@@ -1,8 +1,8 @@
 // Imports the Google Cloud client library
 import { PubSub } from '@google-cloud/pubsub';
-import { EmailLogRepository } from '@/repositories';
+import { EmailLogRepository, GcpTokenRepository } from '@/repositories';
 import { google, gmail_v1 } from 'googleapis';
-import { authorize } from '../auth';
+import { getOAuth2Client, authorize } from '../auth';
 import { getCustomRepository } from 'typeorm';
 import format from 'date-fns/format';
 import { parseEmailBody, parseEmailHeaders, findSender } from '@/utils';
@@ -36,19 +36,22 @@ export default class MessageListener {
   subscriptionNameOrId = 'projects/lots-o-slots/subscriptions/cashapp-messages';
   async authGmail(): Promise<gmail_v1.Gmail> {
     const auth = await authorize();
-    return google.gmail({ version: 'v1', auth });
+    return google.gmail({
+      version: 'v1',
+      auth,
+    });
   }
 
   async watch() {
-    const auth = await authorize();
-    const watcher = await google.gmail({ version: 'v1', auth }).users.watch({
+    const gmail = await this.authGmail();
+    const res = await gmail.users.watch({
       userId: 'me',
       requestBody: {
-        topicName: 'projects/lots-o-slots/topics/cashapp-messages',
         labelIds: ['INBOX'],
+        topicName: `projects/lots-o-slots/topics/cashapp-messages`,
       },
     });
-    console.log('👀 Watch re-initialized!', watcher);
+    console.log('👀 Watch re-initialized!', res);
   }
 
   async listenForMessages(): Promise<void> {
@@ -89,10 +92,6 @@ export default class MessageListener {
 
     const messageIds: string[] = [];
     data.messages?.forEach(async (message: any) => {
-      // if (message.id && !(await emailLogRepo.findOne(message.id))) {
-      //   messageIds.push(message.id);
-      //   await emailLogRepo.create({ emailId: message.id });
-      // }
       if (message.id) {
         messageIds.push(message.id);
       }

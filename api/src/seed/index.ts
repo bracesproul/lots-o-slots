@@ -2,6 +2,7 @@ import { seedFakeUsers } from './users';
 import { seedFakePayments } from './payments';
 import { seedFakeAccounts } from './accounts';
 import postgresConnection from '@/config/typeorm';
+import { ConnectionManager } from 'typeorm';
 
 export async function seedDatabase() {
   if (process.env.NODE_ENV !== 'development') {
@@ -11,9 +12,13 @@ export async function seedDatabase() {
     );
     return;
   }
-  await postgresConnection().then(async () => {
-    console.info('🤠 Database connected!');
-  });
+  const connectionManager = new ConnectionManager();
+  if (!connectionManager.has('default')) {
+    await postgresConnection().then(async () => {
+      console.info('🤠 Database connected! (inside authorize function)');
+    });
+  }
+
   const users = await seedFakeUsers();
   console.log('saved users', users);
   await seedFakePayments(users);

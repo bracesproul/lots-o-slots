@@ -5,6 +5,11 @@ import { authenticate } from '@google-cloud/local-auth';
 import { google } from 'googleapis';
 import { getCustomRepository } from 'typeorm';
 import { GcpTokenRepository, GcpCredentialsRepository } from '@/repositories';
+import { config as setupEnv } from 'dotenv-flow';
+import postgresConnection from '@/config/typeorm';
+import { ConnectionManager } from 'typeorm';
+
+setupEnv({ silent: true });
 
 const SCOPES = ['https://www.googleapis.com/auth/gmail.readonly'];
 const TOKEN_PATH = path.join(process.cwd(), 'token.json');
@@ -23,47 +28,38 @@ export async function loadSavedCredentialsIfExist() {
       return null;
     }
 
-    const {
-      access_token: client_id,
-      expiry_date: client_secret,
-      refresh_token,
-    } = content;
-
-    const credentialsContent = await getCustomRepository(
-      GcpCredentialsRepository
-    ).findRecent();
+    const { refresh_token } = content;
 
     await fs.writeFile(
       CREDENTIALS_PATH,
       JSON.stringify({
-        client_id: credentialsContent?.client_id,
-        project_id: credentialsContent?.project_id,
-        auth_uri: credentialsContent?.auth_uri,
-        token_uri: credentialsContent?.token_uri,
-        auth_provider_x509_cert_url:
-          credentialsContent?.auth_provider_x509_cert_url,
-        client_secret: credentialsContent?.client_secret,
-        redirect_uris: credentialsContent?.redirect_uris,
+        client_id: process.env.CLIENT_ID,
+        project_id: process.env.PROJECT_ID,
+        auth_uri: process.env.AUTH_URI,
+        token_uri: process.env.TOKEN_URI,
+        auth_provider_x509_cert_url: process.env.AUTH_PROVIDER_CERT,
+        client_secret: process.env.CLIENT_SECRET,
+        redirect_uris: [process.env.REDIRECT_URIS],
       })
     );
 
     return google.auth.fromJSON({
       type: 'authorized_user',
-      client_id,
-      client_secret,
+      client_id: process.env.CLIENT_ID,
+      client_secret: process.env.CLIENT_SECRET,
       refresh_token,
     });
   } catch (err) {
-    return null;
+    throw new Error('Error loading saved credentials', { cause: err });
   }
 }
 
-/**
- * Serializes credentials to a file comptible with GoogleAUth.fromJSON.
- *
- * @param {OAuth2Client} client
- * @return {Promise<void>}
- */
+// /**
+//  * Serializes credentials to a file comptible with GoogleAUth.fromJSON.
+//  *
+//  * @param {OAuth2Client} client
+//  * @return {Promise<void>}
+//  */
 async function saveCredentials(client: any) {
   const content = await getCustomRepository(
     GcpCredentialsRepository
@@ -85,29 +81,40 @@ async function saveCredentials(client: any) {
   await fs.writeFile(TOKEN_PATH, JSON.stringify(payload));
 }
 
-/**
- * Load or request or authorization to call APIs.
- *
- */
+// /**
+//  * Load or request or authorization to call APIs.
+//  *
+//  */
 export default async function authorize() {
+  const connectionManager = new ConnectionManager();
+  if (!connectionManager.has('default')) {
+    await postgresConnection().then(async () => {
+      console.info('🤠 Database connected! (inside authorize function)');
+    });
+  }
+
   const client = await loadSavedCredentialsIfExist();
+
   if (client) {
     return client;
   }
+
   const authenticatedClient = await authenticate({
     scopes: SCOPES,
     keyfilePath: CREDENTIALS_PATH,
   });
+
   if (authenticatedClient.credentials) {
     await saveCredentials(authenticatedClient);
   }
+
   return authenticatedClient;
 }
 
 export function getOAuth2Client() {
   const oauth2Client = new google.auth.OAuth2(
-    'client_id',
-    'client_secret',
+    process.env.CLIENT_ID,
+    process.env.CLIENT_SECRET,
     'http://localhost:8000/oauth2callback'
   );
 
@@ -115,17 +122,11 @@ export function getOAuth2Client() {
 }
 
 export function handleAuth() {
-  // generate a url that asks permissions for Blogger and Google Calendar scopes
-  const scopes = ['https://mail.google.com/'];
-
   const oauth2Client = getOAuth2Client();
 
   const url = oauth2Client.generateAuthUrl({
-    // 'online' (default) or 'offline' (gets refresh_token)
     access_type: 'offline',
-
-    // If you only need one scope you can pass it as a string
-    scope: scopes,
+    scope: ['https://mail.google.com/'],
   });
 
   console.log('url', url);

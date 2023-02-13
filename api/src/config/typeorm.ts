@@ -28,6 +28,7 @@ export default async function postgresConnection(): Promise<Connection> {
     migrations: ['dist/migrations/*.js'],
     migrationsRun: true,
     cache: shouldCache(),
+    keepConnectionAlive: true,
   } as PostgresConnectionOptions;
 
   return await createConnection(config);
