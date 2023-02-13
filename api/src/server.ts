@@ -48,8 +48,12 @@ async function serverSetup(): Promise<express.Application> {
 
   oauth2Client.on('tokens', async (tokens) => {
     if (tokens.refresh_token) {
-      const tokenRepo = getCustomRepository(GcpTokenRepository);
+      oauth2Client.setCredentials({
+        refresh_token: tokens.refresh_token,
+      });
+
       if (tokens.access_token && tokens.refresh_token) {
+        const tokenRepo = getCustomRepository(GcpTokenRepository);
         await tokenRepo.create({
           token_type: tokens.token_type ?? 'Bearer',
           access_token: tokens.access_token,
@@ -58,30 +62,18 @@ async function serverSetup(): Promise<express.Application> {
             tokens.expiry_date?.toString() ??
             (Date.now() + 86400000).toString(),
         });
-      } else {
-        console.log('not all values are true', tokens.access_token);
       }
-      return;
     }
-    console.info("if statement didn't catch");
   });
 
   app.get('/oauth2callback', async (req, res) => {
     const query = req.query;
     const code = query.code as string;
+
     const { tokens } = await oauth2Client.getToken(code);
-    oauth2Client.setCredentials(tokens);
-    console.log('tokens', tokens);
-    const tokenRepo = getCustomRepository(GcpTokenRepository);
-    if (tokens.access_token && tokens.refresh_token) {
-      await tokenRepo.create({
-        token_type: tokens.token_type ?? 'Bearer',
-        access_token: tokens.access_token,
-        refresh_token: tokens.refresh_token,
-        expiry_date:
-          tokens.expiry_date?.toString() ?? (Date.now() + 86400000).toString(),
-      });
-    }
+    oauth2Client.setCredentials({
+      refresh_token: tokens.refresh_token,
+    });
   });
 
   const apollo = await startApolloServer();

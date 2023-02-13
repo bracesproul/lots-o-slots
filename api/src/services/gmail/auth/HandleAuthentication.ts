@@ -1,3 +1,3 @@
-import { handleAuth } from './Auth';
+import authorize from './Auth';
 
-handleAuth();
+authorize();
