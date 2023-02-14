@@ -20,10 +20,6 @@ export async function handleReceivedPayment(email: EmailObjectType) {
 
   if (!cashtagMatch || !amountMatch || !nameMatch || !transactionIdMatch) {
     console.log('failed to parse cashapp payment', {
-      cashtagMatch,
-      amountMatch,
-      nameMatch,
-      transactionIdMatch,
       body,
     });
     return {
