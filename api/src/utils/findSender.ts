@@ -21,7 +21,11 @@ export async function findSender(email: EmailObjectType): Promise<void> {
   ) {
     await parseCashAppEmail(email);
   } else {
-    console.warn('❌ no provider');
+    console.warn('❌ no provider', {
+      from,
+      subject,
+      to,
+    });
   }
 }
 
