@@ -3,6 +3,9 @@ import { EmailLog } from '@/entities';
 import { Arg, Query, Resolver, Mutation } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 import { CreateEmailLogInput, GetRecentEmailLogUpdate } from './types';
+import { DiscordLog } from '@/services';
+import { EmailLogType } from '@/entities/EmailLog/EmailLog';
+import { LogType } from '@/utils/logEmail';
 
 // @Resolver(Repo)
 @Resolver()
@@ -11,7 +14,9 @@ export class EmailLogResolver {
   async createEmailLog(
     @Arg('input', { nullable: false }) input: CreateEmailLogInput
   ): Promise<EmailLog> {
-    return getCustomRepository(EmailLogRepository).create(input.emailId);
+    return getCustomRepository(EmailLogRepository).create({
+      emailId: input.emailId,
+    });
   }
 
   @Query(() => GetRecentEmailLogUpdate, { nullable: false })

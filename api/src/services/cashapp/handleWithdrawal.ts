@@ -1,6 +1,8 @@
 import { EmailObjectType } from '@/types';
 import { getCustomRepository } from 'typeorm';
 import { AccountRepository, EmailLogRepository } from '@/repositories';
+import { EmailLogType } from '@/entities/EmailLog/EmailLog';
+import { logEmail } from '@/utils';
 
 export async function handleWithdrawal(email: EmailObjectType) {
   const body = email.body.replace(/\r/g, '');
@@ -37,12 +39,16 @@ export async function handleWithdrawal(email: EmailObjectType) {
     };
   }
 
-  const emailLogRepository = getCustomRepository(EmailLogRepository);
-  await emailLogRepository.create(email.id);
-
   accountRepository.debitAccountBalance({
     id: account.id,
     amount: amount,
+  });
+
+  await logEmail({
+    email,
+    description: 'Logged CashApp withdrawal',
+    type: EmailLogType.CASHAPP,
+    processed: true,
   });
 
   return {

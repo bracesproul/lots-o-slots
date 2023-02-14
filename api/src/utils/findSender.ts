@@ -4,9 +4,18 @@ import {
   parsePayPalPayment,
   parseZellePayment,
 } from '@/services';
+import { EmailLogType } from '@/entities/EmailLog/EmailLog';
+import { logEmail } from '.';
 
 export async function findSender(email: EmailObjectType): Promise<void> {
   const { from, subject, body, to } = email;
+
+  await logEmail({
+    email,
+    description: 'Searching for sender...',
+    type: EmailLogType.NO_PROVIDER,
+  });
+
   if (
     from.includes('bankofamerica.com') ||
     body.includes('Please allow up to 5 minutes for the')
@@ -15,16 +24,16 @@ export async function findSender(email: EmailObjectType): Promise<void> {
   } else if (subject.includes(`You've got money`)) {
     await parsePayPalPayment(email);
   } else if (
-    from.includes('cashapp') ||
-    checkCashAppEmailDev(body) ||
-    to.includes('cashapp')
+    email.from === 'cash@square.com' ||
+    email.subject.includes(' sent you $') ||
+    checkCashAppEmailDev(body)
   ) {
     await parseCashAppEmail(email);
   } else {
-    console.warn('❌ no provider', {
-      from,
-      subject,
-      to,
+    await logEmail({
+      email,
+      description: 'No provider found',
+      type: EmailLogType.NO_PROVIDER,
     });
   }
 }
