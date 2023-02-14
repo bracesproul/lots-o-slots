@@ -70,10 +70,12 @@ async function saveCredentials(client: any) {
   }
 
   const payload = {
-    type: 'authorized_user',
-    client_id: content.client_id,
-    client_secret: content.client_secret,
+    token_type: 'authorized_user',
     refresh_token: client.credentials.refresh_token,
+    access_token: client.credentials.access_token,
+    expiry_date:
+      client.credentials.expiry_date?.toString() ??
+      (Date.now() + 86400000).toString(),
   };
 
   await getCustomRepository(GcpTokenRepository).create(payload);
@@ -86,18 +88,19 @@ async function saveCredentials(client: any) {
 //  *
 //  */
 export default async function authorize() {
-  // const connectionManager = new ConnectionManager();
-  // if (!connectionManager.has('default')) {
-  //   await postgresConnection().then(async () => {
-  //     console.info('🤠 Database connected! (inside authorize function)');
-  //   });
-  // }
-
-  const client = await loadSavedCredentialsIfExist();
-
-  if (client) {
-    return client;
+  const connectionManager = new ConnectionManager();
+  if (!connectionManager.has('default')) {
+    await postgresConnection().then(async () => {
+      console.info('🤠 Database connected! (inside authorize function)');
+    });
   }
+
+  // const client = await loadSavedCredentialsIfExist();
+
+  // if (client) {
+  //   console.log('creds exist');
+  //   return client;
+  // }
 
   const authenticatedClient = await authenticate({
     scopes: SCOPES,
