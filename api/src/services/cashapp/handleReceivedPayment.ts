@@ -24,6 +24,7 @@ export async function handleReceivedPayment(email: EmailObjectType) {
       amountMatch,
       nameMatch,
       transactionIdMatch,
+      body,
     });
     return {
       success: false,
