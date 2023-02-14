@@ -3,10 +3,11 @@ import { PubSub } from '@google-cloud/pubsub';
 import { EmailLogRepository, GcpTokenRepository } from '@/repositories';
 import { google, gmail_v1 } from 'googleapis';
 import { getOAuth2Client, authorize } from '../auth';
-import { getCustomRepository } from 'typeorm';
+import { getCustomRepository, getRepository } from 'typeorm';
 import format from 'date-fns/format';
 import { parseEmailBody, parseEmailHeaders, findSender } from '@/utils';
 import { EmailObjectType } from '@/types';
+import { EmailLog } from '@/entities';
 
 type PubSubDataResponse = {
   emailAddress: string;
@@ -117,13 +118,28 @@ export default class MessageListener {
           id,
         });
 
+        const hasEmailBeenLogged = await getRepository(EmailLog).findOne({
+          where: { emailId: id },
+        });
+
+        if (hasEmailBeenLogged) {
+          console.log('Email has already been logged');
+          return {
+            to: '',
+            from: '',
+            subject: '',
+            body: '',
+            id: id,
+          };
+        }
+
         // Parses the headers of the email.
         const { to, from, subject } = parseEmailHeaders(
           data.payload?.headers ?? []
         );
 
         // Parses the body of the email, returns a string containing the entire body.
-        const body = parseEmailBody(data.payload?.parts ?? []);
+        const body = await parseEmailBody(data.payload?.parts ?? []);
 
         // Handles parsing and updating database and the corresponding accounts.
         await findSender({ to, from, subject, body, id });

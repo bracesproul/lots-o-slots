@@ -164,6 +164,8 @@ export default class DiscordLog {
     type: 'log' | 'error' | 'warning';
     fields?: { name: string; value: string }[];
   }) {
+    if (process.env.NODE_ENV !== 'production') return;
+
     if (type === 'error' && !process.env.DISCORD_WEBHOOK_ERROR_URL) {
       console.warn('Cannot send error to discord without webhook env var');
       console.error(title);
