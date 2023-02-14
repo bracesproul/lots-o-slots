@@ -14,6 +14,7 @@ export async function seedDatabase() {
   }
   const connectionManager = new ConnectionManager();
   if (!connectionManager.has('default')) {
+    console.warn('NO DEFAULT FOUND (seed)');
     await postgresConnection().then(async () => {
       console.info('🤠 Database connected! (inside authorize function)');
     });

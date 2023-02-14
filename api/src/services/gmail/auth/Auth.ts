@@ -86,12 +86,12 @@ async function saveCredentials(client: any) {
 //  *
 //  */
 export default async function authorize() {
-  const connectionManager = new ConnectionManager();
-  if (!connectionManager.has('default')) {
-    await postgresConnection().then(async () => {
-      console.info('🤠 Database connected! (inside authorize function)');
-    });
-  }
+  // const connectionManager = new ConnectionManager();
+  // if (!connectionManager.has('default')) {
+  //   await postgresConnection().then(async () => {
+  //     console.info('🤠 Database connected! (inside authorize function)');
+  //   });
+  // }
 
   const client = await loadSavedCredentialsIfExist();
 
