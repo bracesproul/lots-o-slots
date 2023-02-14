@@ -2,10 +2,12 @@ import { EmailLogRepository } from '@/repositories';
 import { EmailLog } from '@/entities';
 import { Arg, Query, Resolver, Mutation } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
-import { CreateEmailLogInput, GetRecentEmailLogUpdate } from './types';
-import { DiscordLog } from '@/services';
-import { EmailLogType } from '@/entities/EmailLog/EmailLog';
-import { LogType } from '@/utils/logEmail';
+import {
+  CreateEmailLogInput,
+  GetEmailByIdPayload,
+  GetRecentEmailLogUpdate,
+} from './types';
+import { MessageListener } from '@/services';
 
 // @Resolver(Repo)
 @Resolver()
@@ -27,5 +29,18 @@ export class EmailLogResolver {
     return {
       createdAt,
     };
+  }
+
+  @Query(() => GetEmailByIdPayload, { nullable: false })
+  async getEmailById(
+    @Arg('id', { nullable: false }) id: string
+  ): Promise<GetEmailByIdPayload> {
+    const messageListener = new MessageListener();
+
+    const email = await messageListener.getMessages({
+      messageIds: [id],
+    });
+
+    return email[0];
   }
 }

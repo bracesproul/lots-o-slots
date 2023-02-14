@@ -1,3 +1,4 @@
+import { EmailObjectType } from '@/types';
 import { Field, ID, InputType, ObjectType } from 'type-graphql';
 
 @InputType({
@@ -21,3 +22,41 @@ export class GetRecentEmailLogUpdate {
   })
   createdAt!: Date;
 }
+
+@ObjectType()
+export class EmailObject {
+  @Field(() => String, {
+    nullable: false,
+    description: 'The emails ID.',
+  })
+  id!: string;
+
+  @Field(() => String, {
+    nullable: false,
+    description: 'Who the email was sent to.',
+  })
+  to!: string;
+
+  @Field(() => String, {
+    nullable: false,
+    description: 'Who the email was sent from.',
+  })
+  from!: string;
+
+  @Field(() => String, {
+    nullable: false,
+    description: 'The subject of the email.',
+  })
+  subject!: string;
+
+  @Field(() => String, {
+    nullable: false,
+    description: 'The body of the email.',
+  })
+  body!: string;
+}
+
+@ObjectType({
+  description: 'An email object.',
+})
+export class GetEmailByIdPayload extends EmailObject {}
