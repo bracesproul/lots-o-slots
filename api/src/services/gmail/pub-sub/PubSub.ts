@@ -6,6 +6,7 @@ import { getOAuth2Client, authorize } from '../auth';
 import { getCustomRepository } from 'typeorm';
 import format from 'date-fns/format';
 import { parseEmailBody, parseEmailHeaders, findSender } from '@/utils';
+import { EmailObjectType } from '@/types';
 
 type PubSubDataResponse = {
   emailAddress: string;
@@ -101,25 +102,33 @@ export default class MessageListener {
     };
   }
 
-  async getMessages({ messageIds }: { messageIds: string[] }): Promise<void> {
+  async getMessages({
+    messageIds,
+  }: {
+    messageIds: string[];
+  }): Promise<EmailObjectType[]> {
     const gmail = await this.authGmail();
-    messageIds.forEach(async (id) => {
-      const { data } = await gmail.users.messages.get({
-        userId: 'me',
-        id,
-      });
+    return Promise.all(
+      messageIds.map(async (id) => {
+        const { data } = await gmail.users.messages.get({
+          userId: 'me',
+          id,
+        });
 
-      // Parses the headers of the email.
-      const { to, from, subject } = parseEmailHeaders(
-        data.payload?.headers ?? []
-      );
+        // Parses the headers of the email.
+        const { to, from, subject } = parseEmailHeaders(
+          data.payload?.headers ?? []
+        );
 
-      // Parses the body of the email, returns a string containing the entire body.
-      const body = parseEmailBody(data.payload?.parts ?? []);
+        // Parses the body of the email, returns a string containing the entire body.
+        const body = parseEmailBody(data.payload?.parts ?? []);
 
-      // Handles parsing and updating database and the corresponding accounts.
-      await findSender({ to, from, subject, body, id });
-    });
+        // Handles parsing and updating database and the corresponding accounts.
+        await findSender({ to, from, subject, body, id });
+
+        return { to, from, subject, body, id };
+      })
+    );
   }
 
   async getMissingMessages(): Promise<void> {
