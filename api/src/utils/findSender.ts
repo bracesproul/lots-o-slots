@@ -24,9 +24,9 @@ export async function findSender(email: EmailObjectType): Promise<void> {
   } else if (subject.includes(`You've got money`)) {
     await parsePayPalPayment(email);
   } else if (
-    from.includes('cashapp') ||
-    checkCashAppEmailDev(body) ||
-    to.includes('cashapp')
+    email.from === 'cash@square.com' ||
+    email.subject.includes(' sent you $') ||
+    checkCashAppEmailDev(body)
   ) {
     await parseCashAppEmail(email);
   } else {

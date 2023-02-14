@@ -1,8 +1,8 @@
-import { EmailLog } from '@/entities';
 import { EmailLogType } from '@/entities/EmailLog/EmailLog';
 import { EmailObjectType } from '@/types';
 import { EmailLogRepository } from '@/repositories';
 import { getCustomRepository } from 'typeorm';
+import Discord from '@/services/discord/Discord';
 
 export enum LogType {
   INFO = 'INFO',
@@ -23,6 +23,8 @@ export async function logEmail({
   processed?: boolean;
   logType?: LogType;
 }): Promise<void> {
+  const discordLog = new Discord();
+
   await getCustomRepository(EmailLogRepository).create({
     emailId: email.id,
     type: type,
@@ -35,6 +37,11 @@ export async function logEmail({
       subject: email.subject,
       to: email.to,
     });
+    await discordLog.logEmail({
+      email,
+      message: description,
+      logType: LogType.INFO,
+    });
     return;
   }
 
@@ -44,6 +51,11 @@ export async function logEmail({
       subject: email.subject,
       to: email.to,
     });
+    await discordLog.logEmail({
+      email,
+      message: description,
+      logType: LogType.ERROR,
+    });
     return;
   }
 
@@ -52,6 +64,11 @@ export async function logEmail({
       from: email.from,
       subject: email.subject,
       to: email.to,
+    });
+    await discordLog.logEmail({
+      email,
+      message: description,
+      logType: LogType.WARNING,
     });
     return;
   }

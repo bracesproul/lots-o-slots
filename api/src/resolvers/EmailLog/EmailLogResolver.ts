@@ -3,6 +3,9 @@ import { EmailLog } from '@/entities';
 import { Arg, Query, Resolver, Mutation } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 import { CreateEmailLogInput, GetRecentEmailLogUpdate } from './types';
+import { DiscordLog } from '@/services';
+import { EmailLogType } from '@/entities/EmailLog/EmailLog';
+import { LogType } from '@/utils/logEmail';
 
 // @Resolver(Repo)
 @Resolver()
