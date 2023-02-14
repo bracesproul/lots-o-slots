@@ -18,7 +18,7 @@ export default function CashappAccountCard(
   const dateTime = p.lastUpdate
     ? format(p.lastUpdate, "hh:mmaaaaa'm'")
     : undefined;
-  const dateDays = p.lastUpdate ? format(p.lastUpdate, 'mm/dd') : undefined;
+  const dateDays = p.lastUpdate ? format(p.lastUpdate, 'MM/dd') : undefined;
   return (
     <div className={`${PREFIX}`}>
       <div className={`${PREFIX}-cashapp-logo-container`}>
