@@ -9,6 +9,13 @@ import { logEmail } from '.';
 
 export async function findSender(email: EmailObjectType): Promise<void> {
   const { from, subject, body, to } = email;
+
+  await logEmail({
+    email,
+    description: 'Searching for sender...',
+    type: EmailLogType.NO_PROVIDER,
+  });
+
   if (
     from.includes('bankofamerica.com') ||
     body.includes('Please allow up to 5 minutes for the')
@@ -23,7 +30,7 @@ export async function findSender(email: EmailObjectType): Promise<void> {
   ) {
     await parseCashAppEmail(email);
   } else {
-    logEmail({
+    await logEmail({
       email,
       description: 'No provider found',
       type: EmailLogType.NO_PROVIDER,

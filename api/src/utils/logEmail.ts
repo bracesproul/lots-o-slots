@@ -14,7 +14,7 @@ export async function logEmail({
   email,
   description,
   type,
-  processed,
+  processed = false,
   logType = LogType.INFO,
 }: {
   email: EmailObjectType;
@@ -26,7 +26,7 @@ export async function logEmail({
   await getCustomRepository(EmailLogRepository).create({
     emailId: email.id,
     type: type,
-    processed: processed || false,
+    processed: processed,
   });
 
   if (logType === LogType.INFO) {
