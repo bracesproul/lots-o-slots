@@ -66,10 +66,12 @@ export default class MessageListener {
         format(new Date(), 'MM/dd/yyy h:mm a')
       );
       message.ack();
+
       const { messageIds } = await this.listMessages({
         count: 1,
       });
-      const decodedBodies = await this.getMessages({ messageIds });
+
+      await this.getMessages({ messageIds });
     };
 
     console.log('📫 Started message listener!');
