@@ -4,6 +4,8 @@ import {
   parsePayPalPayment,
   parseZellePayment,
 } from '@/services';
+import { EmailLogType } from '@/entities/EmailLog/EmailLog';
+import { logEmail } from '.';
 
 export async function findSender(email: EmailObjectType): Promise<void> {
   const { from, subject, body, to } = email;
@@ -21,10 +23,10 @@ export async function findSender(email: EmailObjectType): Promise<void> {
   ) {
     await parseCashAppEmail(email);
   } else {
-    console.warn('❌ no provider', {
-      from,
-      subject,
-      to,
+    logEmail({
+      email,
+      description: 'No provider found',
+      type: EmailLogType.NO_PROVIDER,
     });
   }
 }

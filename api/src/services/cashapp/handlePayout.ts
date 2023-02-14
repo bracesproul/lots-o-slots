@@ -1,5 +1,7 @@
+import { EmailLogType } from '@/entities/EmailLog/EmailLog';
 import { PaymentRepository, EmailLogRepository } from '@/repositories';
 import { EmailObjectType } from '@/types';
+import { logEmail } from '@/utils';
 import { getCustomRepository } from 'typeorm';
 
 export async function handlePayout(email: EmailObjectType) {
@@ -38,9 +40,6 @@ export async function handlePayout(email: EmailObjectType) {
   const transactionId = transactionIdMatch[1];
   const cashTag = cashtagMatch[1];
 
-  const emailLogRepository = getCustomRepository(EmailLogRepository);
-  await emailLogRepository.create(email.id);
-
   const paymentRepository = getCustomRepository(PaymentRepository);
   await paymentRepository.payoutUser({
     uniqueIdentifier: name,
@@ -48,7 +47,14 @@ export async function handlePayout(email: EmailObjectType) {
     amount,
     email,
   });
-  console.log('PAID OUT', { name, cashTag, amount });
+
+  await logEmail({
+    email,
+    description: 'Logged CashApp payout',
+    type: EmailLogType.CASHAPP,
+    processed: true,
+  });
+
   return {
     success: true,
     amount,

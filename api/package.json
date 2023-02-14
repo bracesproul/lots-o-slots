@@ -20,8 +20,12 @@
     "docker:gmail:watch": "docker compose exec -i api \"yarn build:api\"",
     "docker:seed:run": "docker compose exec api yarn seed:run",
     "seed:run": "yarn tsnode --files src/seed/index.ts",
-    "typeorm": "node --require ts-node/register ../node_modules/typeorm/cli.js --config dist/config/typeorm.js",
-    "start:api:prod": "yarn build && node ./dist/index.js"
+    "typeorm": "yarn ts-node ../node_modules/typeorm/cli.js --config src/config/typeorm.ts",
+    "start:api:prod": "yarn build && node ./dist/index.js",
+    "migration:generate": "yarn typeorm migration:generate --pretty",
+    "docker:migration:generate": "docker exec -t api yarn migration:generate",
+    "schema:drop": "yarn typeorm schema:drop",
+    "docker:schema:drop": "docker exec -t api yarn schema:drop"
   },
   "dependencies": {
     "@apollo/server": "^4.2.2",

@@ -4,9 +4,27 @@ import { EmailLog } from '@/entities';
 @EntityRepository(EmailLog)
 export default class EmailLogRepository extends AbstractRepository<EmailLog> {
   emailLogRepo = getRepository(EmailLog);
-  async create(emailId: string): Promise<EmailLog> {
-    const newEmailLog = this.repository.create({ emailId });
-    return this.repository.save(newEmailLog);
+
+  async create(input: Partial<EmailLog>): Promise<EmailLog> {
+    const previousEmail = await this.emailLogRepo.findOne({
+      where: { emailId: input.emailId },
+    });
+
+    if (previousEmail) {
+      if (previousEmail.processed) {
+        // discord webhook trying to process email that has already been processed
+      }
+      if (previousEmail.type !== input.type) {
+        // discord webhook trying to process email with new type
+      }
+    }
+
+    return this.repository
+      .create({
+        ...previousEmail,
+        ...input,
+      })
+      .save();
   }
 
   async findOne(id: string): Promise<EmailLog | undefined> {

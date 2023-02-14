@@ -11,7 +11,9 @@ export class EmailLogResolver {
   async createEmailLog(
     @Arg('input', { nullable: false }) input: CreateEmailLogInput
   ): Promise<EmailLog> {
-    return getCustomRepository(EmailLogRepository).create(input.emailId);
+    return getCustomRepository(EmailLogRepository).create({
+      emailId: input.emailId,
+    });
   }
 
   @Query(() => GetRecentEmailLogUpdate, { nullable: false })

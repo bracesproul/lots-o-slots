@@ -3,6 +3,8 @@ import { PaymentRepository, EmailLogRepository } from '@/repositories';
 import { getCustomRepository } from 'typeorm';
 import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
 import { PaymentInfoType } from '@/types/paymentInfo';
+import { EmailLogType } from '@/entities/EmailLog/EmailLog';
+import { logEmail } from '@/utils';
 
 export async function parsePayPalPayment(email: EmailObjectType) {
   if (email.subject.includes('eCheque') || email.body.includes('eCheque')) {
@@ -36,6 +38,13 @@ export async function parsePayPalPayment(email: EmailObjectType) {
     email,
   });
 
+  await logEmail({
+    email,
+    description: 'Logged PayPal payment',
+    type: EmailLogType.PAYPAL,
+    processed: true,
+  });
+
   return {
     success: true,
     amount,
@@ -47,7 +56,6 @@ export async function parsePayPalPayment(email: EmailObjectType) {
 async function updateDatabase(paymentInfo: PaymentInfoType) {
   const paymentRepository = getCustomRepository(PaymentRepository);
   const emailLogRepository = getCustomRepository(EmailLogRepository);
-  await emailLogRepository.create(paymentInfo.email.id);
 
   return paymentRepository.createPayment({
     userIdentifier: paymentInfo.name,

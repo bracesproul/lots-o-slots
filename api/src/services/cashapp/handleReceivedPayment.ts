@@ -1,4 +1,6 @@
+import { EmailLogType } from '@/entities/EmailLog/EmailLog';
 import { EmailObjectType } from '@/types';
+import { logEmail } from '@/utils';
 import { updateDatabasePayment } from './updateDatabasePayment';
 
 export async function handleReceivedPayment(email: EmailObjectType) {
@@ -43,6 +45,13 @@ export async function handleReceivedPayment(email: EmailObjectType) {
     transactionId,
     cashTag,
     email,
+  });
+
+  await logEmail({
+    email,
+    description: 'Logged CashApp payment',
+    type: EmailLogType.CASHAPP,
+    processed: true,
   });
 
   return {
