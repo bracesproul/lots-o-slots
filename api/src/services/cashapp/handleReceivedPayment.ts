@@ -9,7 +9,7 @@ export async function handleReceivedPayment(
 ) {
   if (cashappData) {
     const detailRowValues = cashappData.detail_rows.map((row) => row.value);
-    const amount = Number(detailRowValues[0]);
+    const amount = Number(detailRowValues[0].split('$')[1]);
     const name = detailRowValues[4];
     const transactionId = cashappData.transaction_id;
     const cashTag = cashappData.header_subtext.split('$')[1];

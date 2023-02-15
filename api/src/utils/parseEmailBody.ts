@@ -24,11 +24,7 @@ export async function parseEmailBody(
         if (body.includes('https://cash.app/payments/')) {
           try {
             const newUrl = body.split('receipt, visit: ')[1];
-            const url = body.match(REGEX_URL);
-            console.log({
-              regexUrl: url,
-              splitUrl: newUrl,
-            });
+            // const url = body.match(REGEX_URL);
 
             const config = {
               method: 'get',
