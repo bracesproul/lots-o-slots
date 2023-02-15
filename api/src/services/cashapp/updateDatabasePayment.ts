@@ -14,7 +14,6 @@ export async function updateDatabasePayment(
 ): Promise<UpdatePaymentAndAccountResponse> {
   const paymentRepository = getCustomRepository(PaymentRepository);
   const accountRepository = getCustomRepository(AccountRepository);
-  const emailLogRepository = getCustomRepository(EmailLogRepository);
 
   const payment = await paymentRepository.createPayment({
     userIdentifier: paymentInfo.name,
