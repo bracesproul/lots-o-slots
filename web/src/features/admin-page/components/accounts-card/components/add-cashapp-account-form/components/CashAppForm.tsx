@@ -40,7 +40,7 @@ export default function CashAppForm(props: CashAppFormProps): ReactElement {
         placeholder="Starting balance"
         id="balance"
         value={p.balance.toString()}
-        onChange={(e) => p.setBalance(Number(e))}
+        onChange={(e) => p.setBalance(Number(e.target.value))}
       />
       <label className={`${PREFIX}-form-label`}>Amount Sent</label>
       <input
@@ -49,7 +49,7 @@ export default function CashAppForm(props: CashAppFormProps): ReactElement {
         placeholder="Amount Sent"
         id="amount-sent"
         value={p.sent.toString()}
-        onChange={(e) => p.setSent(Number(e))}
+        onChange={(e) => p.setSent(Number(e.target.value))}
       />
     </>
   );
