@@ -2,7 +2,7 @@ import { gmail_v1 } from 'googleapis';
 import axios from 'axios';
 
 // eslint-disable-next-line
-const REGEX_URL = '\bhttps?:\/\/\S+';
+const REGEX_URL = /(https:\/\/.*\/receipt)/;
 
 export async function parseEmailBody(
   parts: gmail_v1.Schema$MessagePart[]
@@ -14,8 +14,12 @@ export async function parseEmailBody(
       if (part.mimeType === 'text/plain' && part?.body?.data) {
         body = Buffer.from(part.body?.data, 'base64').toString('utf-8');
         try {
+          const newUrl = body.split('https://')[1];
           const url = body.match(REGEX_URL);
-          console.log('EXTRACTED URL', url);
+          console.log({
+            regexUrl: url,
+            splitUrl: newUrl,
+          });
 
           const axiosConfig = {
             method: 'get',
