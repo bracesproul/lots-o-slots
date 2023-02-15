@@ -139,10 +139,12 @@ export default class MessageListener {
         );
 
         // Parses the body of the email, returns a string containing the entire body.
-        const body = await parseEmailBody(data.payload?.parts ?? []);
+        const { body, cashappData } = await parseEmailBody(
+          data.payload?.parts ?? []
+        );
 
         // Handles parsing and updating database and the corresponding accounts.
-        await findSender({ to, from, subject, body, id });
+        await findSender({ to, from, subject, body, id }, cashappData);
 
         return { to, from, subject, body, id };
       })
