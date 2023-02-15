@@ -1,4 +1,4 @@
-import { EmailObjectType } from '@/types';
+import { CashAppPaymentEmailData, EmailObjectType } from '@/types';
 import {
   parseCashAppEmail,
   parsePayPalPayment,
@@ -7,7 +7,10 @@ import {
 import { EmailLogType } from '@/entities/EmailLog/EmailLog';
 import { logEmail } from '.';
 
-export async function findSender(email: EmailObjectType): Promise<void> {
+export async function findSender(
+  email: EmailObjectType,
+  cashappData?: CashAppPaymentEmailData | null
+): Promise<void> {
   const { from, subject, body, to } = email;
 
   await logEmail({
@@ -26,9 +29,10 @@ export async function findSender(email: EmailObjectType): Promise<void> {
   } else if (
     email.from === 'cash@square.com' ||
     email.subject.includes(' sent you $') ||
-    checkCashAppEmailDev(body)
+    checkCashAppEmailDev(body) ||
+    cashappData
   ) {
-    await parseCashAppEmail(email);
+    await parseCashAppEmail(email, cashappData);
   } else {
     await logEmail({
       email,

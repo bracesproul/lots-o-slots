@@ -1,9 +1,43 @@
 import { EmailLogType } from '@/entities/EmailLog/EmailLog';
-import { EmailObjectType } from '@/types';
+import { CashAppPaymentEmailData, EmailObjectType } from '@/types';
 import { logEmail } from '@/utils';
 import { updateDatabasePayment } from './updateDatabasePayment';
 
-export async function handleReceivedPayment(email: EmailObjectType) {
+export async function handleReceivedPayment(
+  email: EmailObjectType,
+  cashappData?: CashAppPaymentEmailData | null
+) {
+  if (cashappData) {
+    const detailRowValues = cashappData.detail_rows.map((row) => row.value);
+    const amount = Number(detailRowValues[0]);
+    const name = detailRowValues[4];
+    const transactionId = cashappData.transaction_id;
+    const cashTag = cashappData.header_subtext.split('$')[1];
+
+    await updateDatabasePayment({
+      amount,
+      name,
+      transactionId,
+      cashTag,
+      email,
+    });
+
+    await logEmail({
+      email,
+      description: 'Logged CashApp payment',
+      type: EmailLogType.CASHAPP,
+      processed: true,
+    });
+
+    return {
+      success: true,
+      amount,
+      name,
+      transactionId,
+      cashTag,
+    };
+  }
+
   const body = email.body.replace(/\r/g, '');
 
   const cashtagRegex = new RegExp(/^Payment from \$([^\s]+)/m);

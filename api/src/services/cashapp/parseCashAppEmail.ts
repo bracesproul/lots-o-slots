@@ -1,5 +1,5 @@
 import { EmailLogType } from '@/entities/EmailLog/EmailLog';
-import { EmailObjectType } from '@/types';
+import { CashAppPaymentEmailData, EmailObjectType } from '@/types';
 import { logEmail } from '@/utils';
 import { LogType } from '@/utils/logEmail';
 import { handlePayout } from './handlePayout';
@@ -15,11 +15,12 @@ type ParsedPaymentResponse = {
 };
 
 export async function parseCashAppEmail(
-  email: EmailObjectType
+  email: EmailObjectType,
+  cashappData?: CashAppPaymentEmailData | null
 ): Promise<ParsedPaymentResponse> {
   const { subject } = email;
-  if (subject.includes('sent you $')) {
-    return await handleReceivedPayment(email);
+  if (subject.includes('sent you $') || cashappData) {
+    return await handleReceivedPayment(email, cashappData);
   } else if (subject.includes('You paid')) {
     return await handlePayout(email);
   } else if (subject.includes('You purchased Bitcoin')) {
