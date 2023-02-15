@@ -9,6 +9,7 @@ import {
   MarkUserPaymentAsProcessedResult,
 } from './types';
 import { ApolloError } from 'apollo-server-express';
+import { DiscordLog } from '@/services';
 
 @Resolver()
 export class UserPaymentResolver {
@@ -25,6 +26,9 @@ export class UserPaymentResolver {
   async createUserPayment(
     @Arg('input', { nullable: false }) input: CreateUserPaymentInput
   ): Promise<UserPayment> {
+    const discordLogger = new DiscordLog();
+    await discordLogger.logUserPayment(input);
+
     return getCustomRepository(UserPaymentRepository).create({
       paymentIdentifier: input.paymentIdentifier,
       paymentProvider: input.paymentProvider,

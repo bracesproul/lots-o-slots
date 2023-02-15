@@ -1,7 +1,9 @@
 import { EmailLogType } from '@/entities/EmailLog/EmailLog';
+import { GameType, PaymentProvider } from '@/entities/Payment/Payment';
 import { EmailObjectType } from '@/types';
 import { LogType } from '@/utils/logEmail';
 import axios from 'axios';
+import { title } from 'process';
 
 export default class DiscordLog {
   async logEmail({
@@ -115,6 +117,49 @@ export default class DiscordLog {
         {
           name: 'Email ID',
           value: email.id,
+        },
+      ],
+    });
+  }
+
+  async logUserPayment({
+    paymentIdentifier,
+    paymentProvider,
+    amount,
+    userId,
+    gameType,
+  }: {
+    paymentIdentifier: string;
+    paymentProvider: PaymentProvider;
+    amount: number;
+    userId?: string;
+    gameType: GameType;
+  }) {
+    await this.webhook({
+      title: 'New User Payment Received',
+      description: '',
+      color: 156843,
+      type: 'log',
+      fields: [
+        {
+          name: 'Payment Identifier',
+          value: paymentIdentifier,
+        },
+        {
+          name: 'Payment Provider',
+          value: paymentProvider,
+        },
+        {
+          name: 'Amount',
+          value: amount.toString(),
+        },
+        {
+          name: 'Game Type',
+          value: gameType,
+        },
+        {
+          name: 'User ID (?)',
+          value: userId ?? 'n/a',
         },
       ],
     });
