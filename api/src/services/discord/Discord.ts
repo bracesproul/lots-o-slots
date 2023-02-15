@@ -1,7 +1,9 @@
 import { EmailLogType } from '@/entities/EmailLog/EmailLog';
+import { GameType, PaymentProvider } from '@/entities/Payment/Payment';
 import { EmailObjectType } from '@/types';
 import { LogType } from '@/utils/logEmail';
 import axios from 'axios';
+import { title } from 'process';
 
 export default class DiscordLog {
   async logEmail({
@@ -120,6 +122,98 @@ export default class DiscordLog {
     });
   }
 
+  async logUserPayment({
+    paymentIdentifier,
+    paymentProvider,
+    amount,
+    userId,
+    gameType,
+  }: {
+    paymentIdentifier: string;
+    paymentProvider: PaymentProvider;
+    amount: number;
+    userId?: string;
+    gameType: GameType;
+  }) {
+    await this.webhook({
+      title: 'New User Payment Received',
+      description: '',
+      color: 156843,
+      type: 'info',
+      fields: [
+        {
+          name: 'Payment Identifier',
+          value: paymentIdentifier,
+        },
+        {
+          name: 'Payment Provider',
+          value: paymentProvider,
+        },
+        {
+          name: 'Amount',
+          value: amount.toString(),
+        },
+        {
+          name: 'Game Type',
+          value: gameType,
+        },
+        {
+          name: 'User ID (?)',
+          value: userId ?? 'n/a',
+        },
+      ],
+    });
+  }
+
+  async logNewUser({
+    userIdentifier,
+    balance,
+    email,
+    cashtag,
+    zelleEmail,
+    payPalEmail,
+  }: {
+    userIdentifier?: string;
+    balance: number;
+    email?: string;
+    cashtag?: string;
+    zelleEmail?: string;
+    payPalEmail?: string;
+  }) {
+    await this.webhook({
+      title: 'New User Account Created',
+      description: '',
+      color: 156843,
+      type: 'info',
+      fields: [
+        {
+          name: 'User Identifier (?)',
+          value: userIdentifier ?? 'n/a',
+        },
+        {
+          name: 'Starting balance',
+          value: balance.toString(),
+        },
+        {
+          name: 'Email (?)',
+          value: email ?? 'n/a',
+        },
+        {
+          name: 'Zelle Email (?)',
+          value: zelleEmail ?? 'n/a',
+        },
+        {
+          name: 'PayPal Email (?)',
+          value: payPalEmail ?? 'n/a',
+        },
+        {
+          name: 'Cashtag (?)',
+          value: cashtag ?? 'n/a',
+        },
+      ],
+    });
+  }
+
   async logWarning({
     title,
     description,
@@ -161,7 +255,7 @@ export default class DiscordLog {
     title: string;
     description: string;
     color: number;
-    type: 'log' | 'error' | 'warning';
+    type: 'log' | 'error' | 'warning' | 'info';
     fields?: { name: string; value: string }[];
   }) {
     if (process.env.NODE_ENV !== 'production') return;
@@ -180,6 +274,13 @@ export default class DiscordLog {
       return;
     }
 
+    if (type === 'info' && !process.env.DISCORD_WEBHOOK_INFO_URL) {
+      console.warn('Cannot send log to discord without webhook env var');
+      console.error(title);
+      console.error(description);
+      return;
+    }
+
     const data = {
       embeds: [
         {
@@ -191,12 +292,15 @@ export default class DiscordLog {
       ],
     };
 
+    const getWebhookUrl = () => {
+      if (type === 'error') return process.env.DISCORD_WEBHOOK_ERROR_URL;
+      if (type === 'log') return process.env.DISCORD_WEBHOOK_LOG_URL;
+      return process.env.DISCORD_WEBHOOK_INFO_URL;
+    };
+
     const config = {
       method: 'post',
-      url:
-        type === 'error'
-          ? process.env.DISCORD_WEBHOOK_ERROR_URL
-          : process.env.DISCORD_WEBHOOK_LOG_URL,
+      url: getWebhookUrl(),
       headers: {
         'Content-Type': 'application/json',
       },

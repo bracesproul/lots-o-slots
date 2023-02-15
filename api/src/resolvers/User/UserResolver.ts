@@ -3,6 +3,7 @@ import { User } from '@/entities';
 import { Arg, Query, Mutation, Resolver } from 'type-graphql';
 import { getManager, getCustomRepository } from 'typeorm';
 import { CreateUserInput } from './types';
+import { DiscordLog } from '@/services';
 
 @Resolver()
 export class UserResolver {
@@ -15,6 +16,9 @@ export class UserResolver {
   async createUser(
     @Arg('input', { nullable: false }) input: CreateUserInput
   ): Promise<User> {
+    const discordLogger = new DiscordLog();
+    await discordLogger.logNewUser(input);
+
     return getCustomRepository(UserRepository).createUser({
       userIdentifier: input.userIdentifier,
       balance: input.balance,
