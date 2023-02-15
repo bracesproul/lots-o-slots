@@ -118,21 +118,6 @@ export default class MessageListener {
           id,
         });
 
-        const hasEmailBeenLogged = await getRepository(EmailLog).findOne({
-          where: { emailId: id },
-        });
-
-        if (hasEmailBeenLogged) {
-          console.log('Email has already been logged');
-          return {
-            to: '',
-            from: '',
-            subject: '',
-            body: '',
-            id: id,
-          };
-        }
-
         // Parses the headers of the email.
         const { to, from, subject } = parseEmailHeaders(
           data.payload?.headers ?? []

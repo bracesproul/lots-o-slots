@@ -4,14 +4,24 @@ import {
   parsePayPalPayment,
   parseZellePayment,
 } from '@/services';
-import { EmailLogType } from '@/entities/EmailLog/EmailLog';
+import EmailLog, { EmailLogType } from '@/entities/EmailLog/EmailLog';
 import { logEmail } from '.';
+import { getRepository } from 'typeorm';
 
 export async function findSender(
   email: EmailObjectType,
   cashappData?: CashAppPaymentEmailData | null
 ): Promise<void> {
-  const { from, subject, body, to } = email;
+  const { from, subject, body, id } = email;
+
+  const hasEmailBeenLogged = await getRepository(EmailLog).findOne({
+    where: { emailId: id },
+  });
+
+  if (hasEmailBeenLogged) {
+    console.log('Email has already been logged');
+    return;
+  }
 
   await logEmail({
     email,
