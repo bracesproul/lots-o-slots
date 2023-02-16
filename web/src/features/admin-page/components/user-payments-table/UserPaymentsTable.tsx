@@ -68,14 +68,9 @@ function ActionCell(props: ActionCellProps): ReactElement {
 export function UserPaymentsTable(props: PaymentsTableProps): ReactElement {
   const p = { ...props };
 
-  const title =
-    p.tableType === TableType.PENDING
-      ? 'Pending Payments'
-      : 'Processed Payments';
-
   return (
     <div className={clsx(`${PREFIX}-container`)}>
-      <h1 className={`${PREFIX}-title`}>{title}</h1>
+      <h1 className={`${PREFIX}-title`}>Deposit Requests</h1>
       <div className={`${PREFIX}-div-container`}>
         <table className={'payments-table'}>
           <thead className={`${PREFIX}-header`}>
