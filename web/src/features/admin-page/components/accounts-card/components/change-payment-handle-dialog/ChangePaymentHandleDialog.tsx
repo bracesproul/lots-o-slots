@@ -1,10 +1,16 @@
 import { Button, Dialog, Select } from '@/components';
 import React, { ReactElement, useState, FormEvent } from 'react';
 import {
+  PaymentProvider,
   useGetAllAccountsQuery,
   useSwitchDefaultAccountMutation,
 } from '@/generated/graphql';
 import { SelectOptionType } from '@/components/select/Select';
+import {
+  paymentProviderOptions,
+  getPaymentProviderFromString,
+  getStringFromPaymentProvider,
+} from '@/utils';
 
 export type ChangePaymentHandleDialogProps = {
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
@@ -12,7 +18,9 @@ export type ChangePaymentHandleDialogProps = {
   setOpen: (open: boolean) => void;
   selectedAccount: string;
   setSelectedAccount: (selectedAccount: string) => void;
-  options: SelectOptionType[];
+  options?: SelectOptionType[];
+  setAccountType: (accountType: PaymentProvider | null) => void;
+  accountType: PaymentProvider | null;
 };
 
 const PREFIX = 'change-handle-form';
@@ -26,7 +34,7 @@ function ChangePaymentHandleDialog(
     <Dialog
       open={p.open}
       onOpenChange={p.setOpen}
-      title="Add New CashApp Account"
+      title="Set default account"
       buttonTitle="Close"
     >
       <form className={`${PREFIX}-dialog-form`} onSubmit={(e) => p.onSubmit(e)}>
@@ -34,13 +42,29 @@ function ChangePaymentHandleDialog(
           Select account to make default
         </label>
         <Select
-          placeholder={'Please select an account'}
-          value={p.selectedAccount}
-          onValueChange={p.setSelectedAccount}
+          placeholder={'Account type'}
+          value={
+            p.accountType
+              ? getStringFromPaymentProvider(p.accountType)
+              : undefined
+          }
+          onValueChange={(value: string) =>
+            p.setAccountType(getPaymentProviderFromString(value))
+          }
           open={true}
-          options={p.options}
+          options={paymentProviderOptions}
           label="select account"
         />
+        {p.accountType && p.options && (
+          <Select
+            placeholder={'Please select an account'}
+            value={p.selectedAccount}
+            onValueChange={p.setSelectedAccount}
+            open={true}
+            options={p.options}
+            label="select account"
+          />
+        )}
         <Button className={`${PREFIX}-form-submit`} type="submit">
           Submit
         </Button>
@@ -53,22 +77,26 @@ export default function ChangePaymentHandleDialogContainer(
   props: Pick<ChangePaymentHandleDialogProps, 'open' | 'setOpen'>
 ): ReactElement {
   const [selectedAccount, setSelectedAccount] = useState('');
+  const [accountType, setAccountType] = useState<PaymentProvider | null>(null);
 
   const { data } = useGetAllAccountsQuery();
+
+  const accountsByType = data?.getAllAccounts
+    .filter((account) => account.type === accountType)
+    .map((account) => ({
+      name:
+        accountType === PaymentProvider.CASHAPP && account.cashtag
+          ? account.cashtag
+          : account.email,
+      value: account.id,
+    }));
 
   const [switchDefaultAccount] = useSwitchDefaultAccountMutation();
 
   return (
     <ChangePaymentHandleDialog
       {...props}
-      options={
-        data?.getAllAccounts.map((account) => {
-          return {
-            name: account.email,
-            value: account.id,
-          };
-        }) ?? []
-      }
+      options={accountsByType}
       selectedAccount={selectedAccount}
       setSelectedAccount={setSelectedAccount}
       onSubmit={(e) => {
@@ -89,6 +117,8 @@ export default function ChangePaymentHandleDialogContainer(
         });
         props.setOpen(false);
       }}
+      setAccountType={setAccountType}
+      accountType={accountType}
     />
   );
 }

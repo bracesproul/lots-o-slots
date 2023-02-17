@@ -90,7 +90,7 @@ export function AccountsCard(props: AccountsCardProps): ReactElement {
           type="button"
           onPress={() => setChangeCashtagModalOpen(true)}
         >
-          Change Default CashTag
+          Change Default Account
         </Button>
         <Button
           onPress={() => setAddCashappAccountOpen(true)}
