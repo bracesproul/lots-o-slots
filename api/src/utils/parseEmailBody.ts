@@ -45,8 +45,6 @@ export async function parseEmailBody(
         }
       } else if (part?.body?.data) {
         body = Buffer.from(part.body?.data, 'base64').toString('utf-8');
-        console.log('Body not in text/plain format', body);
-        console.log('Body without buffer decode', part.body?.data);
       }
     })
   );
