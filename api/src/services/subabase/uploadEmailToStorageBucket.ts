@@ -7,14 +7,20 @@ type UploadToStorageBucketPayload = {
   reason?: string;
 };
 
-export async function uploadEmailToStorageBucket(
-  body: string,
-  folderPath: SupabaseRawEmailFolderPath,
-  bucket: SupabaseBucket
-): Promise<UploadToStorageBucketPayload> {
+export async function uploadEmailToStorageBucket({
+  body,
+  folderPath,
+  file,
+  bucket,
+}: {
+  body: string;
+  folderPath: SupabaseRawEmailFolderPath;
+  file: string;
+  bucket: SupabaseBucket;
+}): Promise<UploadToStorageBucketPayload> {
   const { data, error } = await storageClient
     .from(bucket)
-    .upload(folderPath, body);
+    .upload(`${folderPath}/${file}`, body);
 
   if (error) {
     // discord alert

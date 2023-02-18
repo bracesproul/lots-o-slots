@@ -25,11 +25,15 @@ type SignedUrlPayload = {
   reason?: string;
 };
 
-export async function getSignedUrlForFile(
-  folder: SupabaseRawEmailFolderPath,
-  file: string,
-  bucket: SupabaseBucket
-): Promise<SignedUrlPayload> {
+export async function getSignedUrlForFile({
+  folder,
+  file,
+  bucket,
+}: {
+  folder: SupabaseRawEmailFolderPath;
+  file: string;
+  bucket: SupabaseBucket;
+}): Promise<SignedUrlPayload> {
   const { data, error } = await storageClient
     .from(bucket)
     .createSignedUrl(`${folder}/${file}`, EXPIRES_IN);
