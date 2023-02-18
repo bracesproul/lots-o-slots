@@ -135,9 +135,6 @@ export default class MessageListener {
 
         const returnObject = { to, from, subject, body, id };
 
-        // Handles parsing and updating database and the corresponding accounts.
-        await findSender(returnObject, cashappData);
-
         // Uploads entire data object to Supabase Storage.
         // Feature flag protected and will only run if the proper env variable is present.
         await this.uploadEmailObjectToStorage({
@@ -146,6 +143,9 @@ export default class MessageListener {
           subject,
           id,
         });
+
+        // Handles parsing and updating database and the corresponding accounts.
+        await findSender(returnObject, cashappData);
 
         return returnObject;
       })
@@ -164,7 +164,10 @@ export default class MessageListener {
     id: string;
   }) {
     if (!process.env.UPLOAD_TO_SUPABASE_BUCKET) {
+      console.warn('Feature not enabled. | UPLOAD_TO_SUPABASE_BUCKET');
       return;
+    } else {
+      console.log('Feature enabled. | UPLOAD_TO_SUPABASE_BUCKET');
     }
 
     const allowedEmailsToUpload = [
