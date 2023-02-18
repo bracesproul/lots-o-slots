@@ -8,6 +8,11 @@ import format from 'date-fns/format';
 import { parseEmailBody, parseEmailHeaders, findSender } from '@/utils';
 import { EmailObjectType } from '@/types';
 import { EmailLog } from '@/entities';
+import {
+  SupabaseBucket,
+  SupabaseRawEmailFolderPath,
+  uploadEmailToStorageBucket,
+} from '@/services/subabase';
 
 type PubSubDataResponse = {
   emailAddress: string;
@@ -128,12 +133,90 @@ export default class MessageListener {
           data.payload?.parts ?? []
         );
 
-        // Handles parsing and updating database and the corresponding accounts.
-        await findSender({ to, from, subject, body, id }, cashappData);
+        const returnObject = { to, from, subject, body, id };
 
-        return { to, from, subject, body, id };
+        // Handles parsing and updating database and the corresponding accounts.
+        await findSender(returnObject, cashappData);
+
+        // Uploads entire data object to Supabase Storage.
+        // Feature flag protected and will only run if the proper env variable is present.
+        await this.uploadEmailObjectToStorage({
+          data,
+          from,
+          subject,
+          id,
+        });
+
+        return returnObject;
       })
     );
+  }
+
+  async uploadEmailObjectToStorage({
+    data,
+    from,
+    subject,
+    id,
+  }: {
+    data: gmail_v1.Schema$Message;
+    from: string;
+    subject: string;
+    id: string;
+  }) {
+    if (!process.env.UPLOAD_TO_SUPABASE_BUCKET) {
+      return;
+    }
+
+    const allowedEmailsToUpload = [
+      'customerservice@ealerts.bankofamerica.com',
+      'cash@square.com',
+      'service@paypal.com',
+    ];
+
+    const cashappWithdrawalSubject = 'You sent $';
+
+    if (!allowedEmailsToUpload.includes(from)) {
+      return;
+    }
+
+    if (from === allowedEmailsToUpload[0]) {
+      const { path } = await uploadEmailToStorageBucket({
+        body: JSON.stringify(data),
+        folderPath: SupabaseRawEmailFolderPath.BANK_OF_AMERICA_DEPOSITS,
+        file: `${id}.json`,
+        bucket: SupabaseBucket.RAW_EMAILS,
+      });
+      if (path) {
+        console.log('📤 Uploaded cashapp withdrawal email to storage.');
+      }
+    }
+
+    if (
+      subject.startsWith(cashappWithdrawalSubject) &&
+      from === allowedEmailsToUpload[1]
+    ) {
+      const { path } = await uploadEmailToStorageBucket({
+        body: JSON.stringify(data),
+        folderPath: SupabaseRawEmailFolderPath.CASHAPP_WITHDRAWALS,
+        file: `${id}.json`,
+        bucket: SupabaseBucket.RAW_EMAILS,
+      });
+      if (path) {
+        console.log('📤 Uploaded cashapp withdrawal email to storage.');
+      }
+    }
+
+    if (from === allowedEmailsToUpload[2]) {
+      const { path } = await uploadEmailToStorageBucket({
+        body: JSON.stringify(data),
+        folderPath: SupabaseRawEmailFolderPath.PAYPAL_DEPOSITS,
+        file: `${id}.json`,
+        bucket: SupabaseBucket.RAW_EMAILS,
+      });
+      if (path) {
+        console.log('📤 Uploaded cashapp withdrawal email to storage.');
+      }
+    }
   }
 
   async getMissingMessages(): Promise<void> {

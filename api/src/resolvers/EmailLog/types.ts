@@ -1,5 +1,8 @@
-import { EmailObjectType } from '@/types';
-import { Field, ID, InputType, ObjectType } from 'type-graphql';
+import {
+  SupabaseBucket,
+  SupabaseRawEmailFolderPath,
+} from '@/services/subabase';
+import { Field, InputType, ObjectType } from 'type-graphql';
 
 @InputType({
   description: 'Input type for creating an email log.',
@@ -60,3 +63,46 @@ export class EmailObject {
   description: 'An email object.',
 })
 export class GetEmailByIdPayload extends EmailObject {}
+
+@InputType({
+  description: 'Input type for getting a signed url for a file.',
+})
+export class GetSupabaseSignedUrlInput {
+  @Field(() => SupabaseRawEmailFolderPath)
+  folder!: SupabaseRawEmailFolderPath;
+
+  @Field(() => String)
+  file!: string;
+
+  @Field(() => SupabaseBucket)
+  bucket!: SupabaseBucket;
+}
+
+@ObjectType({
+  description: 'Payload for getting signed storage urls.',
+})
+export class GetSupabaseSignedUrlPayload {
+  @Field(() => SupabaseRawEmailFolderPath)
+  folder!: SupabaseRawEmailFolderPath;
+
+  @Field(() => String)
+  file!: string;
+
+  @Field(() => SupabaseBucket)
+  bucket!: SupabaseBucket;
+
+  @Field(() => String, {
+    nullable: true,
+  })
+  signedUrl?: string | null;
+
+  @Field(() => String, {
+    nullable: true,
+  })
+  errorMessage?: string;
+
+  @Field(() => String, {
+    nullable: true,
+  })
+  reason?: string;
+}

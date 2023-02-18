@@ -6,8 +6,16 @@ import {
   CreateEmailLogInput,
   GetEmailByIdPayload,
   GetRecentEmailLogUpdate,
+  GetSupabaseSignedUrlInput,
+  GetSupabaseSignedUrlPayload,
 } from './types';
 import { MessageListener } from '@/services';
+import {
+  getSignedUrlForFile,
+  SupabaseBucket,
+  SupabaseRawEmailFolderPath,
+  uploadEmailToStorageBucket,
+} from '@/services/subabase';
 
 // @Resolver(Repo)
 @Resolver()
@@ -42,5 +50,19 @@ export class EmailLogResolver {
     });
 
     return email[0];
+  }
+
+  @Query(() => GetSupabaseSignedUrlPayload, { nullable: false })
+  async getSupabaseSignedUrl(
+    @Arg('input', { nullable: false }) input: GetSupabaseSignedUrlInput
+  ): Promise<GetSupabaseSignedUrlPayload> {
+    const signedUrlPayload = await getSignedUrlForFile(input);
+
+    return {
+      ...input,
+      signedUrl: signedUrlPayload.url,
+      errorMessage: signedUrlPayload.errorMessage,
+      reason: signedUrlPayload.reason,
+    };
   }
 }
