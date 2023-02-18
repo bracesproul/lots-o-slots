@@ -195,7 +195,7 @@ export default class MessageListener {
         bucket: SupabaseBucket.RAW_EMAILS,
       });
       if (path) {
-        console.log('📤 Uploaded cashapp withdrawal email to storage.');
+        console.log('📤 Uploaded bank of america email to storage.');
       }
     } else console.log('not bank of america email.', from);
 
@@ -219,7 +219,7 @@ export default class MessageListener {
         bucket: SupabaseBucket.RAW_EMAILS,
       });
       if (path) {
-        console.log('📤 Uploaded cashapp withdrawal email to storage.');
+        console.log('📤 Uploaded paypal email to storage.');
       }
     } else console.log('not paypal email.', from);
   }
