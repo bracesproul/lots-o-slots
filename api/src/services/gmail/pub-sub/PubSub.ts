@@ -170,19 +170,24 @@ export default class MessageListener {
       console.log('Feature enabled. | UPLOAD_TO_SUPABASE_BUCKET');
     }
 
+    const bankOfAmericaEmail = 'customerservice@ealerts.bankofamerica.com';
+    const cashappEmail = 'cash@square.com';
+    const paypalEmail = 'service@paypal.com';
+
     const allowedEmailsToUpload = [
-      'customerservice@ealerts.bankofamerica.com',
-      'cash@square.com',
-      'service@paypal.com',
+      bankOfAmericaEmail,
+      cashappEmail,
+      paypalEmail,
     ];
 
     const cashappWithdrawalSubject = 'You sent $';
 
     if (!allowedEmailsToUpload.includes(from)) {
+      console.log('Email not allowed to upload.', from);
       return;
     }
 
-    if (from === allowedEmailsToUpload[0]) {
+    if (from === bankOfAmericaEmail) {
       const { path } = await uploadEmailToStorageBucket({
         body: JSON.stringify(data),
         folderPath: SupabaseRawEmailFolderPath.BANK_OF_AMERICA_DEPOSITS,
@@ -192,12 +197,9 @@ export default class MessageListener {
       if (path) {
         console.log('📤 Uploaded cashapp withdrawal email to storage.');
       }
-    }
+    } else console.log('not bank of america email.', from);
 
-    if (
-      subject.startsWith(cashappWithdrawalSubject) &&
-      from === allowedEmailsToUpload[1]
-    ) {
+    if (subject.includes(cashappWithdrawalSubject) && from === cashappEmail) {
       const { path } = await uploadEmailToStorageBucket({
         body: JSON.stringify(data),
         folderPath: SupabaseRawEmailFolderPath.CASHAPP_WITHDRAWALS,
@@ -207,9 +209,9 @@ export default class MessageListener {
       if (path) {
         console.log('📤 Uploaded cashapp withdrawal email to storage.');
       }
-    }
+    } else console.log('not cashapp email.', from, ' | ', subject);
 
-    if (from === allowedEmailsToUpload[2]) {
+    if (from === paypalEmail) {
       const { path } = await uploadEmailToStorageBucket({
         body: JSON.stringify(data),
         folderPath: SupabaseRawEmailFolderPath.PAYPAL_DEPOSITS,
@@ -219,7 +221,7 @@ export default class MessageListener {
       if (path) {
         console.log('📤 Uploaded cashapp withdrawal email to storage.');
       }
-    }
+    } else console.log('not paypal email.', from);
   }
 
   async getMissingMessages(): Promise<void> {
