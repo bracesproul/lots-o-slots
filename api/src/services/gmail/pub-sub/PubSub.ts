@@ -180,7 +180,7 @@ export default class MessageListener {
       paypalEmail,
     ];
 
-    const cashappWithdrawalSubject = 'You sent $';
+    const cashappWithdrawalSubject = 'You paid ';
 
     if (!allowedEmailsToUpload.includes(from)) {
       console.log('Email not allowed to upload.', from);
