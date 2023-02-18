@@ -169,8 +169,11 @@ export default class MessageListener {
 
     const allowedEmailsToUpload = [
       'customerservice@ealerts.bankofamerica.com',
+      'cash@square.com',
       'service@paypal.com',
     ];
+
+    const cashappWithdrawalSubject = 'You sent $';
 
     if (!allowedEmailsToUpload.includes(from)) {
       return;
@@ -188,7 +191,22 @@ export default class MessageListener {
       }
     }
 
-    if (from === allowedEmailsToUpload[1]) {
+    if (
+      subject.startsWith(cashappWithdrawalSubject) &&
+      from === allowedEmailsToUpload[1]
+    ) {
+      const { path } = await uploadEmailToStorageBucket({
+        body: JSON.stringify(data),
+        folderPath: SupabaseRawEmailFolderPath.CASHAPP_WITHDRAWALS,
+        file: `${id}.json`,
+        bucket: SupabaseBucket.RAW_EMAILS,
+      });
+      if (path) {
+        console.log('📤 Uploaded cashapp withdrawal email to storage.');
+      }
+    }
+
+    if (from === allowedEmailsToUpload[2]) {
       const { path } = await uploadEmailToStorageBucket({
         body: JSON.stringify(data),
         folderPath: SupabaseRawEmailFolderPath.PAYPAL_DEPOSITS,
