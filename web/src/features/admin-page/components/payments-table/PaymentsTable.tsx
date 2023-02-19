@@ -24,28 +24,17 @@ export type PaymentsTableProps = {
   data: PaymentTableData[];
   loading: boolean;
 
-  /**
-   * Whether or not to show the action column.
-   */
-  includeActionColumn?: boolean;
-
-  /**
-   * The type of the table.
-   */
-  tableType: TableType;
-
-  /**
-   * Function to handle marking the payment as processed.
-   */
-  handleMarkProcessed?: (id: string) => void;
+  /** Whether or not to show the action column. */
+  includeProcessPaymentColumn?: boolean;
 
   /** Column to handle undoing marking the payment as processed. */
   includeUndoColumn?: boolean;
 
-  /**
-   * Function to handle undoing the payment as processed.
-   */
-  handleUndoProcessed?: (id: string) => void;
+  /** The type of the table. */
+  tableType: TableType;
+
+  /** Function to handle processing payments. */
+  handleProcessingPayment?: (id: string, processed: boolean) => void;
 };
 
 type ActionCellProps = {
@@ -87,7 +76,7 @@ export function PaymentsTable(props: PaymentsTableProps): ReactElement {
               <th>Username</th>
               <th>Amount</th>
               <th>Payment</th>
-              {p.includeActionColumn && <th>Actions</th>}
+              {p.includeProcessPaymentColumn && <th>Actions</th>}
               {p.includeUndoColumn && <th>Undo</th>}
             </tr>
           </thead>
@@ -108,11 +97,11 @@ export function PaymentsTable(props: PaymentsTableProps): ReactElement {
                   ${row.amount.toLocaleString()}
                 </th>
                 <th className={`${PREFIX}-th`}>{row.paymentProvider}</th>
-                {p.includeActionColumn && (
+                {p.includeProcessPaymentColumn && (
                   <th className={`${PREFIX}-th`}>
                     <ActionCell
                       id={row.id}
-                      onPress={(id) => p.handleMarkProcessed?.(id)}
+                      onPress={(id) => p.handleProcessingPayment?.(id, true)}
                       icon={<ArrowRight />}
                     />
                   </th>
@@ -121,7 +110,7 @@ export function PaymentsTable(props: PaymentsTableProps): ReactElement {
                   <th className={`${PREFIX}-th`}>
                     <ActionCell
                       id={row.id}
-                      onPress={(id) => p.handleUndoProcessed?.(id)}
+                      onPress={(id) => p.handleProcessingPayment?.(id, false)}
                       icon={<Undo />}
                     />
                   </th>
@@ -219,8 +208,8 @@ export default function PaymentsTableContainer(): ReactElement {
     <>
       <PaymentsTable
         loading={pendingLoading}
-        handleMarkProcessed={(id) => handlePaymentProcessing(id, true)}
-        includeActionColumn
+        handleProcessingPayment={handlePaymentProcessing}
+        includeProcessPaymentColumn
         data={pendingPayments}
         tableType={TableType.PENDING}
       />
@@ -229,7 +218,7 @@ export default function PaymentsTableContainer(): ReactElement {
         tableType={TableType.PROCESSED}
         data={processedPayments}
         includeUndoColumn
-        handleUndoProcessed={(id) => handlePaymentProcessing(id, false)}
+        handleProcessingPayment={handlePaymentProcessing}
       />
     </>
   );
