@@ -166,7 +166,7 @@ export default class MessageListener {
     subject: string;
     id: string;
   }) {
-    if (!process.env.UPLOAD_TO_SUPABASE_BUCKET) {
+    if (process.env.UPLOAD_TO_SUPABASE_BUCKET !== 'true') {
       console.warn('Feature not enabled. | UPLOAD_TO_SUPABASE_BUCKET');
       return;
     } else {
