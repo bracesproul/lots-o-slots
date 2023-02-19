@@ -5,14 +5,14 @@ import { ArrowRight } from '@/assets';
 import { TableType } from '@/types/page-change';
 import {
   useGetAllPaymentsQuery,
-  PaymentProvider,
   useMarkPaymentAsProcessedMutation,
 } from '@/generated/graphql';
 import Undo from '@/assets/svgs/Undo';
 import { StylePrefix } from '@/types/style-prefix';
+import { getPaymentProviderAbbreviation } from '@/utils';
 
 export type PaymentTableData = {
-  paymentProvider: PaymentProvider;
+  paymentProvider: string;
   name: string;
   username: string;
   amount: number;
@@ -44,7 +44,7 @@ type ActionCellProps = {
   icon: ReactElement | ReactNode;
 };
 
-const PREFIX = StylePrefix.PAYMENTS_TABLE;
+const PREFIX = StylePrefix.USER_PAYMENTS_TABLE;
 
 function ActionCell(props: ActionCellProps): ReactElement {
   const { onPress, id, icon } = props;
@@ -157,7 +157,7 @@ export default function PaymentsTableContainer(): ReactElement {
     processedData?.getAllPayments.map((data) => {
       return {
         id: data.id,
-        paymentProvider: data.provider,
+        paymentProvider: getPaymentProviderAbbreviation(data.provider),
         username: 'Todo',
         amount: data.amount,
         name: data.senderName,
@@ -168,7 +168,7 @@ export default function PaymentsTableContainer(): ReactElement {
     pendingData?.getAllPayments.map((data) => {
       return {
         id: data.id,
-        paymentProvider: data.provider,
+        paymentProvider: getPaymentProviderAbbreviation(data.provider),
         username: 'Todo',
         amount: data.amount,
         name: data.senderName,
