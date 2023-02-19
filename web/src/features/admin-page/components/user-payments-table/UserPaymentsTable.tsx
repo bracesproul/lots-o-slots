@@ -4,18 +4,18 @@ import { Icon } from '@/components';
 import { ArrowRight } from '@/assets';
 import { TableType } from '@/types/page-change';
 import {
-  PaymentProvider,
   useMarkUserPaymentAsProcessedMutation,
   useGetUserPaymentsQuery,
 } from '@/generated/graphql';
 import { format } from 'date-fns';
 import { StylePrefix } from '@/types/style-prefix';
+import { getPaymentProviderAbbreviation } from '@/utils';
 
 export type UserPaymentTableData = {
   id: string;
   paymentIdentifier: string;
   createdAt: Date;
-  paymentProvider: PaymentProvider;
+  paymentProvider: string;
   amount: number;
   gameType: string;
 };
@@ -47,6 +47,7 @@ type ActionCellProps = Pick<PaymentsTableProps, 'handleMarkProcessed'> & {
 };
 
 const PREFIX = StylePrefix.USER_PAYMENTS_TABLE;
+// const PREFIX = 'user-payments-table';
 
 function ActionCell(props: ActionCellProps): ReactElement {
   const { handleMarkProcessed, id } = props;
@@ -72,51 +73,47 @@ export function UserPaymentsTable(props: PaymentsTableProps): ReactElement {
   return (
     <div className={clsx(`${PREFIX}-container`)}>
       <h1 className={`${PREFIX}-title`}>Deposit Requests</h1>
-      <div className={`${PREFIX}-div-container`}>
-        <table className={'payments-table'}>
-          <thead className={`${PREFIX}-header`}>
-            <tr className={`${PREFIX}-header-row`}>
-              <th>Identifier</th>
-              <th>Provider</th>
-              <th>Amount</th>
-              <th>Game</th>
-              <th>Date</th>
-              {p.includeActionColumn && <th>Actions</th>}
+      <table className={`${PREFIX}`}>
+        <thead className={`${PREFIX}-header`}>
+          <tr className={`${PREFIX}-header-row`}>
+            <th>Identifier</th>
+            <th>Provider</th>
+            <th>Amount</th>
+            <th>Game</th>
+            <th>Date</th>
+            {p.includeActionColumn && <th>Actions</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {p.data.map((row, index) => (
+            <tr
+              key={row.id}
+              className={clsx([
+                `${PREFIX}-row`,
+                {
+                  'is-even': index % 2 === 0,
+                },
+              ])}
+            >
+              <th className={`${PREFIX}-th`}>{row.paymentIdentifier}</th>
+              <th className={`${PREFIX}-th`}>{row.paymentProvider}</th>
+              <th className={`${PREFIX}-th`}>${row.amount.toLocaleString()}</th>
+              <th className={`${PREFIX}-th`}>{row.gameType}</th>
+              <th className={`${PREFIX}-th`}>
+                {format(row.createdAt, 'MM/dd/yyyy h:mm a')}
+              </th>
+              {p.includeActionColumn && (
+                <th className={`${PREFIX}-th`}>
+                  <ActionCell
+                    id={row.id}
+                    handleMarkProcessed={p.handleMarkProcessed}
+                  />
+                </th>
+              )}
             </tr>
-          </thead>
-          <tbody className={`${PREFIX}-rows-container`}>
-            {p.data.map((row, index) => (
-              <tr
-                key={row.id}
-                className={clsx([
-                  `${PREFIX}-row`,
-                  {
-                    'is-even': index % 2 === 0,
-                  },
-                ])}
-              >
-                <th className={`${PREFIX}-th`}>{row.paymentIdentifier}</th>
-                <th className={`${PREFIX}-th`}>{row.paymentProvider}</th>
-                <th className={`${PREFIX}-th`}>
-                  ${row.amount.toLocaleString()}
-                </th>
-                <th className={`${PREFIX}-th`}>{row.gameType}</th>
-                <th className={`${PREFIX}-th`}>
-                  {format(row.createdAt, 'MM/dd/yyyy h:mm a')}
-                </th>
-                {p.includeActionColumn && (
-                  <th className={`${PREFIX}-th`}>
-                    <ActionCell
-                      id={row.id}
-                      handleMarkProcessed={p.handleMarkProcessed}
-                    />
-                  </th>
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
@@ -141,7 +138,7 @@ export default function UserPaymentsTableContainer(): ReactElement {
     userPaymentData?.getUserPayments.map((data) => {
       return {
         id: data.id,
-        paymentProvider: data.paymentProvider,
+        paymentProvider: getPaymentProviderAbbreviation(data.paymentProvider),
         createdAt: new Date(data.createdAt),
         amount: data.amount,
         gameType: data.gameType.toString(),

@@ -56,3 +56,22 @@ export const paymentProviderOptions = [
     name: 'Ethereum',
   },
 ];
+
+export function getPaymentProviderAbbreviation(
+  provider: PaymentProvider
+): string {
+  switch (provider) {
+    case PaymentProvider.PAYPAL:
+      return 'PP';
+    case PaymentProvider.CASHAPP:
+      return 'CA';
+    case PaymentProvider.ZELLE:
+      return 'ZLE';
+    case PaymentProvider.BITCOIN:
+      return 'BTC';
+    case PaymentProvider.ETHEREUM:
+      return 'ETH';
+    default:
+      throw new Error('Invalid payment provider');
+  }
+}

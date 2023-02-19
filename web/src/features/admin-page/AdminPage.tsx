@@ -37,10 +37,10 @@ export default function AdminPage(): ReactElement {
         </Button>
       </div>
       <div className={`${PREFIX}-table-container`}>
+        <UserPaymentsTable />
         <PaymentsTable />
       </div>
       <div className={`${PREFIX}-second-level`}>
-        <UserPaymentsTable />
         <AccountsCard />
       </div>
     </div>

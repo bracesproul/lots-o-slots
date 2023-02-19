@@ -1,4 +1,4 @@
-import { EmailObjectType } from '@/types';
+import { EmailObjectType, ZelleSnippetData } from '@/types';
 import { getCustomRepository } from 'typeorm';
 import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
 import { PaymentRepository, EmailLogRepository } from '@/repositories';
@@ -6,7 +6,31 @@ import { PaymentInfoType } from '@/types/paymentInfo';
 import { logEmail } from '@/utils';
 import { EmailLogType } from '@/entities/EmailLog/EmailLog';
 
-export async function parseZellePayment(email: EmailObjectType) {
+export async function parseZellePayment(
+  email: EmailObjectType,
+  zelleSnippetData?: ZelleSnippetData | null
+) {
+  if (zelleSnippetData) {
+    await updateDatabase({
+      amount: Number(zelleSnippetData.amount),
+      name: zelleSnippetData.senderName ?? '',
+      email,
+    });
+
+    await logEmail({
+      email,
+      description: 'Logged Zelle payment',
+      type: EmailLogType.ZELLE,
+      processed: true,
+    });
+
+    return {
+      success: true,
+      amount: Number(zelleSnippetData.amount),
+      name: zelleSnippetData.senderName ?? '',
+    };
+  }
+
   let { body } = email;
   body = body.replace(/\r/g, '');
 

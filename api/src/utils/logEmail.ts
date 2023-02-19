@@ -32,15 +32,18 @@ export async function logEmail({
   });
 
   if (logType === LogType.INFO) {
+    // Do not want these getting discord logged.
+    if (description !== 'Searching for sender...') {
+      await discordLog.logEmail({
+        email,
+        message: description,
+        logType: LogType.INFO,
+      });
+    }
     console.info(`INFO ------ Email | ${description} | ${email.id}`, {
       from: email.from,
       subject: email.subject,
       to: email.to,
-    });
-    await discordLog.logEmail({
-      email,
-      message: description,
-      logType: LogType.INFO,
     });
     return;
   }
