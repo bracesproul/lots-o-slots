@@ -75,7 +75,6 @@ export async function parseZellePayment(
 
 async function updateDatabase(paymentInfo: PaymentInfoType) {
   const paymentRepository = getCustomRepository(PaymentRepository);
-  const emailLogRepository = getCustomRepository(EmailLogRepository);
 
   return paymentRepository.createPayment({
     userIdentifier: paymentInfo.name,

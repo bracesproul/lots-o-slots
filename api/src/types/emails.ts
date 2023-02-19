@@ -4,4 +4,5 @@ export type EmailObjectType = {
   subject: string;
   body: string;
   id: string;
+  originalSenderEmail?: string;
 };

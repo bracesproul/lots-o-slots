@@ -9,10 +9,15 @@ export async function handleWithdrawal(
   snippetData?: CashappSnippedData | null
 ) {
   const accountRepository = getCustomRepository(AccountRepository);
-  const account = await accountRepository.findOne(email.to);
+  const account = await accountRepository.findOne(
+    email.originalSenderEmail ?? email.to
+  );
 
   if (!account) {
-    console.log('account does not exist', email.to);
+    console.warn('Cashapp account does not exist', {
+      to: email.to,
+      originalSenderEmail: email.originalSenderEmail,
+    });
     return {
       success: false,
       amount: 0,

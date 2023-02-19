@@ -8,10 +8,18 @@ export function parseEmailHeaders(
     (header) => header.name === 'Delivered-To' && header.value
   );
   const to = schemaTo?.value;
+
   const schemaFrom = headers?.find(
     (header) => header.name === 'From' && header.value
   );
   const from = schemaFrom?.value?.split('<')[1].split('>')[0];
+
+  const originalSenderFrom = headers?.find(
+    (header) => header.name === 'Return-Path' && header.value
+  );
+  const originalSenderEmail =
+    originalSenderFrom?.value?.split('<')[1].split('+caf_=')[0] + '@gmail.com';
+
   const schemaSubject = headers?.find(
     (header) => header.name === 'Subject' && header.value
   );
@@ -22,7 +30,8 @@ export function parseEmailHeaders(
       to: '',
       from: '',
       subject: '',
+      originalSenderEmail: '',
     };
   }
-  return { to, from, subject };
+  return { to, from, subject, originalSenderEmail };
 }

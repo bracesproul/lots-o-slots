@@ -124,19 +124,28 @@ export default class MessageListener {
         });
 
         // Parses the headers of the email.
-        const { to, from, subject } = parseEmailHeaders(
+        const { to, from, subject, originalSenderEmail } = parseEmailHeaders(
           data.payload?.headers ?? []
         );
 
         // Parses the body of the email, returns a string containing the entire body.
-        const { body, cashappData, snippetData } = await parseEmailBody(
-          data.payload?.parts ?? [],
-          data.snippet ?? '',
-          from,
-          subject
-        );
+        const { body, cashappData, snippetData, paypalData } =
+          await parseEmailBody(
+            data.payload?.parts ?? [],
+            data.snippet ?? '',
+            from,
+            subject,
+            data.payload
+          );
 
-        const returnObject = { to, from, subject, body, id };
+        const returnObject = {
+          to,
+          from,
+          subject,
+          body,
+          id,
+          originalSenderEmail,
+        };
 
         // Uploads entire data object to Supabase Storage.
         // Feature flag protected and will only run if the proper env variable is present.
@@ -148,7 +157,7 @@ export default class MessageListener {
         });
 
         // Handles parsing and updating database and the corresponding accounts.
-        await findSender(returnObject, cashappData, snippetData);
+        await findSender(returnObject, cashappData, snippetData, paypalData);
 
         return returnObject;
       })

@@ -2,6 +2,7 @@ import {
   CashAppPaymentEmailData,
   CashappSnippedData,
   EmailObjectType,
+  PayPalDecodedData,
   ZelleSnippetData,
 } from '@/types';
 import {
@@ -18,7 +19,8 @@ export async function findSender(
   email: EmailObjectType,
   cashappData?: CashAppPaymentEmailData | null,
   snippetData?: CashappSnippedData | null,
-  zelleSnippetData?: ZelleSnippetData | null
+  zelleSnippetData?: ZelleSnippetData | null,
+  paypalData?: PayPalDecodedData | null
 ): Promise<void> {
   const { from, subject, body, id } = email;
 
@@ -46,6 +48,12 @@ export async function findSender(
   // If zelle snippet data is true, we already know it's a BOFA email and is a zelle payment received.
   if (zelleSnippetData) {
     await parseZellePayment(email, zelleSnippetData);
+    return;
+  }
+
+  // If paypal data is true, we already know it's a paypal email and is a payment received.
+  if (paypalData) {
+    await parsePayPalPayment(email, paypalData);
     return;
   }
 

@@ -9,3 +9,9 @@ export type ZelleSnippetData = {
   amount?: string;
   senderName?: string;
 };
+
+export type PayPalDecodedData = {
+  amount?: string;
+  transactionId?: string;
+  customerName?: string;
+};
