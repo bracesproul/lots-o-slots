@@ -69,7 +69,7 @@ function ActionCell(props: ActionCellProps): ReactElement {
 
 export function UserPaymentsTable(props: PaymentsTableProps): ReactElement {
   const p = { ...props };
-  console.log('prefix', PREFIX);
+
   return (
     <div className={clsx(`${PREFIX}-container`)}>
       <h1 className={`${PREFIX}-title`}>Deposit Requests</h1>
