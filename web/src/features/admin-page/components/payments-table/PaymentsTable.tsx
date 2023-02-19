@@ -193,24 +193,14 @@ export default function PaymentsTableContainer(): ReactElement {
       processedPayments.unshift(foundItem);
     }
 
-    if (processed) {
-      await markPaymentAsProcessed({
-        variables: {
-          input: {
-            id,
-          },
+    await markPaymentAsProcessed({
+      variables: {
+        input: {
+          id,
+          processed,
         },
-      });
-    } else {
-      /** @Todo change to undo */
-      // await markPaymentAsProcessed({
-      //   variables: {
-      //     input: {
-      //       id,
-      //     },
-      //   },
-      // });
-    }
+      },
+    });
 
     // refetching the prev queries.
     refetchPending({

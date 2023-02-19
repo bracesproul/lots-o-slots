@@ -88,6 +88,12 @@ export class MarkPaymentAsProcessedInput {
     description: 'The payment ID.',
   })
   id!: string;
+
+  @Field(() => Boolean, {
+    nullable: false,
+    description: 'Whether or not to mark the payment as processed.',
+  })
+  processed!: boolean;
 }
 
 @ObjectType({

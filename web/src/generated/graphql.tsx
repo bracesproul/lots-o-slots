@@ -130,8 +130,19 @@ export type EmailLog = MainEntity & Node & {
   deletedAt?: Maybe<Scalars['DateTime']>;
   emailId: Scalars['String'];
   id: Scalars['ID'];
+  processed?: Maybe<Scalars['Boolean']>;
+  type?: Maybe<EmailLogType>;
   updatedAt?: Maybe<Scalars['DateTime']>;
 };
+
+export enum EmailLogType {
+  BTC = 'BTC',
+  CASHAPP = 'CASHAPP',
+  ETH = 'ETH',
+  NO_PROVIDER = 'NO_PROVIDER',
+  PAYPAL = 'PAYPAL',
+  ZELLE = 'ZELLE'
+}
 
 export enum GameType {
   POKER = 'POKER',
@@ -144,6 +155,21 @@ export type GetAllAccountsInput = {
   defaultAccounts?: InputMaybe<Scalars['Boolean']>;
   /** The payment provider type. */
   provider?: InputMaybe<PaymentProvider>;
+};
+
+/** An email object. */
+export type GetEmailByIdPayload = {
+  __typename?: 'GetEmailByIdPayload';
+  /** The body of the email. */
+  body: Scalars['String'];
+  /** Who the email was sent from. */
+  from: Scalars['String'];
+  /** The emails ID. */
+  id: Scalars['String'];
+  /** The subject of the email. */
+  subject: Scalars['String'];
+  /** Who the email was sent to. */
+  to: Scalars['String'];
 };
 
 /** Input type for getting payments. */
@@ -161,6 +187,24 @@ export type GetRecentEmailLogUpdate = {
   __typename?: 'GetRecentEmailLogUpdate';
   /** The date of the most recent update. */
   createdAt: Scalars['DateTime'];
+};
+
+/** Input type for getting a signed url for a file. */
+export type GetSupabaseSignedUrlInput = {
+  bucket: SupabaseBucket;
+  file: Scalars['String'];
+  folder: SupabaseRawEmailFolderPath;
+};
+
+/** Payload for getting signed storage urls. */
+export type GetSupabaseSignedUrlPayload = {
+  __typename?: 'GetSupabaseSignedUrlPayload';
+  bucket: SupabaseBucket;
+  errorMessage?: Maybe<Scalars['String']>;
+  file: Scalars['String'];
+  folder: SupabaseRawEmailFolderPath;
+  reason?: Maybe<Scalars['String']>;
+  signedUrl?: Maybe<Scalars['String']>;
 };
 
 /** Input type for a user payment as processed. */
@@ -181,6 +225,8 @@ export type MainEntity = {
 export type MarkPaymentAsProcessedInput = {
   /** The payment ID. */
   id: Scalars['String'];
+  /** Whether or not to mark the payment as processed. */
+  processed: Scalars['Boolean'];
 };
 
 /** The updated payment object. */
@@ -299,7 +345,9 @@ export type Query = {
   getAllAccounts: Array<Account>;
   getAllPayments: Array<Payment>;
   getAllUsers: Array<User>;
+  getEmailById: GetEmailByIdPayload;
   getRecentUpdate: GetRecentEmailLogUpdate;
+  getSupabaseSignedUrl: GetSupabaseSignedUrlPayload;
   getUserPayments: Array<UserPayment>;
   seedData: Scalars['Boolean'];
 };
@@ -315,9 +363,30 @@ export type QueryGetAllPaymentsArgs = {
 };
 
 
+export type QueryGetEmailByIdArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryGetSupabaseSignedUrlArgs = {
+  input: GetSupabaseSignedUrlInput;
+};
+
+
 export type QueryGetUserPaymentsArgs = {
   input?: InputMaybe<GetUserPaymentsInput>;
 };
+
+export enum SupabaseBucket {
+  RAW_EMAILS = 'RAW_EMAILS'
+}
+
+export enum SupabaseRawEmailFolderPath {
+  BANK_OF_AMERICA_DEPOSITS = 'BANK_OF_AMERICA_DEPOSITS',
+  CASHAPP_DEPOSITS = 'CASHAPP_DEPOSITS',
+  CASHAPP_WITHDRAWALS = 'CASHAPP_WITHDRAWALS',
+  PAYPAL_DEPOSITS = 'PAYPAL_DEPOSITS'
+}
 
 /** Input type for switching the default type account. */
 export type SwitchDefaultAccountInput = {
@@ -473,7 +542,7 @@ export type CreateUserMutationFn = Apollo.MutationFunction<CreateUserMutation, C
  * });
  */
 export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<CreateUserMutation, CreateUserMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions};
+        const options = {...defaultOptions, ...baseOptions}
         return Apollo.useMutation<CreateUserMutation, CreateUserMutationVariables>(CreateUserDocument, options);
       }
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
@@ -514,11 +583,11 @@ export const GetAllAccountsDocument = gql`
  * });
  */
 export function useGetAllAccountsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllAccountsQuery, GetAllAccountsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions};
+        const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllAccountsQuery, GetAllAccountsQueryVariables>(GetAllAccountsDocument, options);
       }
 export function useGetAllAccountsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllAccountsQuery, GetAllAccountsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions};
+          const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllAccountsQuery, GetAllAccountsQueryVariables>(GetAllAccountsDocument, options);
         }
 export type GetAllAccountsQueryHookResult = ReturnType<typeof useGetAllAccountsQuery>;
@@ -557,11 +626,11 @@ export const GetAccountsDocument = gql`
  * });
  */
 export function useGetAccountsQuery(baseOptions?: Apollo.QueryHookOptions<GetAccountsQuery, GetAccountsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions};
+        const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAccountsQuery, GetAccountsQueryVariables>(GetAccountsDocument, options);
       }
 export function useGetAccountsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAccountsQuery, GetAccountsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions};
+          const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAccountsQuery, GetAccountsQueryVariables>(GetAccountsDocument, options);
         }
 export type GetAccountsQueryHookResult = ReturnType<typeof useGetAccountsQuery>;
@@ -596,7 +665,7 @@ export type AddCashappAccountMutationFn = Apollo.MutationFunction<AddCashappAcco
  * });
  */
 export function useAddCashappAccountMutation(baseOptions?: Apollo.MutationHookOptions<AddCashappAccountMutation, AddCashappAccountMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions};
+        const options = {...defaultOptions, ...baseOptions}
         return Apollo.useMutation<AddCashappAccountMutation, AddCashappAccountMutationVariables>(AddCashappAccountDocument, options);
       }
 export type AddCashappAccountMutationHookResult = ReturnType<typeof useAddCashappAccountMutation>;
@@ -631,7 +700,7 @@ export type SwitchDefaultAccountMutationFn = Apollo.MutationFunction<SwitchDefau
  * });
  */
 export function useSwitchDefaultAccountMutation(baseOptions?: Apollo.MutationHookOptions<SwitchDefaultAccountMutation, SwitchDefaultAccountMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions};
+        const options = {...defaultOptions, ...baseOptions}
         return Apollo.useMutation<SwitchDefaultAccountMutation, SwitchDefaultAccountMutationVariables>(SwitchDefaultAccountDocument, options);
       }
 export type SwitchDefaultAccountMutationHookResult = ReturnType<typeof useSwitchDefaultAccountMutation>;
@@ -668,11 +737,11 @@ export const GetAllPaymentsDocument = gql`
  * });
  */
 export function useGetAllPaymentsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllPaymentsQuery, GetAllPaymentsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions};
+        const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetAllPaymentsQuery, GetAllPaymentsQueryVariables>(GetAllPaymentsDocument, options);
       }
 export function useGetAllPaymentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllPaymentsQuery, GetAllPaymentsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions};
+          const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetAllPaymentsQuery, GetAllPaymentsQueryVariables>(GetAllPaymentsDocument, options);
         }
 export type GetAllPaymentsQueryHookResult = ReturnType<typeof useGetAllPaymentsQuery>;
@@ -708,7 +777,7 @@ export type MarkPaymentAsProcessedMutationFn = Apollo.MutationFunction<MarkPayme
  * });
  */
 export function useMarkPaymentAsProcessedMutation(baseOptions?: Apollo.MutationHookOptions<MarkPaymentAsProcessedMutation, MarkPaymentAsProcessedMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions};
+        const options = {...defaultOptions, ...baseOptions}
         return Apollo.useMutation<MarkPaymentAsProcessedMutation, MarkPaymentAsProcessedMutationVariables>(MarkPaymentAsProcessedDocument, options);
       }
 export type MarkPaymentAsProcessedMutationHookResult = ReturnType<typeof useMarkPaymentAsProcessedMutation>;
@@ -744,11 +813,11 @@ export const GetUserPaymentsDocument = gql`
  * });
  */
 export function useGetUserPaymentsQuery(baseOptions?: Apollo.QueryHookOptions<GetUserPaymentsQuery, GetUserPaymentsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions};
+        const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetUserPaymentsQuery, GetUserPaymentsQueryVariables>(GetUserPaymentsDocument, options);
       }
 export function useGetUserPaymentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserPaymentsQuery, GetUserPaymentsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions};
+          const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetUserPaymentsQuery, GetUserPaymentsQueryVariables>(GetUserPaymentsDocument, options);
         }
 export type GetUserPaymentsQueryHookResult = ReturnType<typeof useGetUserPaymentsQuery>;
@@ -789,7 +858,7 @@ export type MarkUserPaymentAsProcessedMutationFn = Apollo.MutationFunction<MarkU
  * });
  */
 export function useMarkUserPaymentAsProcessedMutation(baseOptions?: Apollo.MutationHookOptions<MarkUserPaymentAsProcessedMutation, MarkUserPaymentAsProcessedMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions};
+        const options = {...defaultOptions, ...baseOptions}
         return Apollo.useMutation<MarkUserPaymentAsProcessedMutation, MarkUserPaymentAsProcessedMutationVariables>(MarkUserPaymentAsProcessedDocument, options);
       }
 export type MarkUserPaymentAsProcessedMutationHookResult = ReturnType<typeof useMarkUserPaymentAsProcessedMutation>;
@@ -822,7 +891,7 @@ export type CreateUserPaymentMutationFn = Apollo.MutationFunction<CreateUserPaym
  * });
  */
 export function useCreateUserPaymentMutation(baseOptions?: Apollo.MutationHookOptions<CreateUserPaymentMutation, CreateUserPaymentMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions};
+        const options = {...defaultOptions, ...baseOptions}
         return Apollo.useMutation<CreateUserPaymentMutation, CreateUserPaymentMutationVariables>(CreateUserPaymentDocument, options);
       }
 export type CreateUserPaymentMutationHookResult = ReturnType<typeof useCreateUserPaymentMutation>;
@@ -857,11 +926,11 @@ export const GetDefaultAccountsDocument = gql`
  * });
  */
 export function useGetDefaultAccountsQuery(baseOptions?: Apollo.QueryHookOptions<GetDefaultAccountsQuery, GetDefaultAccountsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions};
+        const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetDefaultAccountsQuery, GetDefaultAccountsQueryVariables>(GetDefaultAccountsDocument, options);
       }
 export function useGetDefaultAccountsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDefaultAccountsQuery, GetDefaultAccountsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions};
+          const options = {...defaultOptions, ...baseOptions}
           return Apollo.useLazyQuery<GetDefaultAccountsQuery, GetDefaultAccountsQueryVariables>(GetDefaultAccountsDocument, options);
         }
 export type GetDefaultAccountsQueryHookResult = ReturnType<typeof useGetDefaultAccountsQuery>;
