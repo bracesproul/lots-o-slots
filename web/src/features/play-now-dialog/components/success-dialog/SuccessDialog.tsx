@@ -1,5 +1,6 @@
 import { ReactElement } from 'react';
 import { Dialog, Badge } from '@/components';
+import { StylePrefix } from '@/types/style-prefix';
 
 export type SuccessDialogProps = {
   className?: string;
@@ -8,7 +9,7 @@ export type SuccessDialogProps = {
   setOpen: (open: boolean) => void;
 };
 
-const PREFIX = 'success-dialog';
+const PREFIX = StylePrefix.SUCCESS_DIALOG;
 
 export default function SuccessDialog(props: SuccessDialogProps): ReactElement {
   const p = { ...props };

@@ -4,6 +4,7 @@ import { useButton } from '@react-aria/button';
 import { useHover } from '@react-aria/interactions';
 import { mergeProps } from '@react-aria/utils';
 import type { AriaButtonProps } from '@react-types/button';
+import { StylePrefix } from '@/types/style-prefix';
 
 export type BadgeVariant =
   | 'default'
@@ -51,7 +52,7 @@ const DEFAULT_PROPS = {
   size: 'medium',
 };
 
-const PREFIX = 'badge';
+const PREFIX = StylePrefix.BADGE;
 
 export default function Badge(props: BadgeProps): ReactElement {
   const p = { ...DEFAULT_PROPS, ...props };

@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { Button } from '@/components';
 import { CookieStorage } from 'local-storage-fallback';
 import { useRouter } from 'next/router';
+import { StylePrefix } from '@/types/style-prefix';
 
 export type AdminAuthorizePageProps = {
   className?: string;
@@ -12,7 +13,7 @@ export type AdminAuthorizePageProps = {
   handleSubmit: () => void;
 };
 
-const PREFIX = 'admin-authorize-page';
+const PREFIX = StylePrefix.ADMIN_AUTHORIZE_PAGE;
 
 function WrongPassword(): ReactElement {
   return (

@@ -1,5 +1,6 @@
 import { ReactElement } from 'react';
 import clsx from 'clsx';
+import { StylePrefix } from '@/types/style-prefix';
 
 export type InputProps = {
   className?: string;
@@ -13,7 +14,7 @@ export type InputProps = {
   required?: boolean;
 };
 
-const PREFIX = 'input-component';
+const PREFIX = StylePrefix.INPUT_COMPONENT;
 
 export default function Input(props: InputProps): ReactElement {
   const p = { ...props };

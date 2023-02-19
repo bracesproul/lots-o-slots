@@ -2,6 +2,7 @@ import { Button, Dialog, Input } from '@/components';
 import { ReactElement, useState } from 'react';
 import { useCreateUserMutation } from '@/generated/graphql';
 import { handleSetUserCookie } from '@/utils';
+import { StylePrefix } from '@/types/style-prefix';
 
 type OptionalFieldsType = {
   cashtag: string;
@@ -23,7 +24,7 @@ export type GenerateAccountDialogProps = {
   optionalFields: OptionalFieldsType;
 };
 
-const PREFIX = 'generate-account-dialog';
+const PREFIX = StylePrefix.GENERATE_ACCOUNT_DIALOG;
 
 function GenerateAccountDialog(
   props: GenerateAccountDialogProps

@@ -9,6 +9,7 @@ import {
   useMarkPaymentAsProcessedMutation,
 } from '@/generated/graphql';
 import Undo from '@/assets/svgs/Undo';
+import { StylePrefix } from '@/types/style-prefix';
 
 export type PaymentTableData = {
   paymentProvider: PaymentProvider;
@@ -43,7 +44,7 @@ type ActionCellProps = {
   icon: ReactElement | ReactNode;
 };
 
-const PREFIX = 'payments-table';
+const PREFIX = StylePrefix.PAYMENTS_TABLE;
 
 function ActionCell(props: ActionCellProps): ReactElement {
   const { onPress, id, icon } = props;

@@ -1,6 +1,8 @@
 import { ReactElement } from 'react';
-const PREFIX = 'cashapp-form';
+import { StylePrefix } from '@/types/style-prefix';
 import { CashAppFormProps } from '../AddCashappAccountForm';
+
+const PREFIX = StylePrefix.CASHAPP_FORM;
 
 export default function CashAppForm(props: CashAppFormProps): ReactElement {
   const p = { ...props };

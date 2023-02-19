@@ -17,6 +17,7 @@ import {
 } from '@/generated/graphql';
 import { ApolloQueryResult } from '@apollo/client';
 import { OtherAccountCardProps } from './components/other-account-card/OtherAccountCard';
+import { StylePrefix } from '@/types/style-prefix';
 
 const getEmailOrAddress = ({
   email,
@@ -57,7 +58,7 @@ export type AccountsCardProps = {
   refetch: (variables: RefetchAccountInputType) => RefetchAccountReturnType;
 };
 
-const PREFIX = 'accounts-card';
+const PREFIX = StylePrefix.ACCOUNTS_CARD;
 
 export function AccountsCard(props: AccountsCardProps): ReactElement {
   const p = { ...props };

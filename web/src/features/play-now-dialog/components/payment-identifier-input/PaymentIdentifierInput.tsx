@@ -1,5 +1,6 @@
 import { Input } from '@/components';
 import { PaymentProvider } from '@/generated/graphql';
+import { StylePrefix } from '@/types/style-prefix';
 import clsx from 'clsx';
 import { ReactElement } from 'react';
 
@@ -25,7 +26,7 @@ const getPaymentIdentifier = (paymentProvider: PaymentProvider): string => {
   }
 };
 
-const PREFIX = 'payment-identifier-input';
+const PREFIX = StylePrefix.PAYMENT_IDENTIFIER_INPUT;
 
 export default function PaymentIdentifierInput(
   props: PaymentIdentifierInputProps

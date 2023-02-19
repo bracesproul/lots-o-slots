@@ -11,6 +11,7 @@ import {
   getPaymentProviderFromString,
   getStringFromPaymentProvider,
 } from '@/utils';
+import { StylePrefix } from '@/types/style-prefix';
 
 export type ChangePaymentHandleDialogProps = {
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
@@ -23,7 +24,7 @@ export type ChangePaymentHandleDialogProps = {
   accountType: PaymentProvider | null;
 };
 
-const PREFIX = 'change-handle-form';
+const PREFIX = StylePrefix.CHANGE_HANDLE_FORM;
 
 function ChangePaymentHandleDialog(
   props: ChangePaymentHandleDialogProps

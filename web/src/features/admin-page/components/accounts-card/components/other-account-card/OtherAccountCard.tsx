@@ -3,6 +3,7 @@ import { Icon } from '@/components';
 import { BitcoinLogo, PayPalLogo, ZelleLogo } from '@/assets';
 import { format } from 'date-fns';
 import { PaymentProvider } from '@/generated/graphql';
+import { StylePrefix } from '@/types/style-prefix';
 
 export type OtherAccountCardProps = {
   paymentProvider: PaymentProvider;
@@ -10,7 +11,7 @@ export type OtherAccountCardProps = {
   lastUpdate?: Date;
 };
 
-const PREFIX = 'cashapp-account-card';
+const PREFIX = StylePrefix.CASHAPP_ACCOUNT_CARD;
 
 const getAccountLogo = (accountType: PaymentProvider): ReactElement => {
   switch (accountType) {

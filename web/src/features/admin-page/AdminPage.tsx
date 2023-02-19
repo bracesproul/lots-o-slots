@@ -3,6 +3,7 @@ import { PaymentsTable, AccountsCard, UserPaymentsTable } from './components';
 import { PageChangeType, TableType } from '@/types/page-change';
 import { Button } from '@/components';
 import { useRouter } from 'next/router';
+import { StylePrefix } from '@/types/style-prefix';
 
 export type AdminPageProps = {
   /**
@@ -16,7 +17,7 @@ export type AdminPageProps = {
   handlePageChange: (direction: PageChangeType, table: TableType) => void;
 };
 
-const PREFIX = 'admin-page';
+const PREFIX = StylePrefix.ADMIN_PAGE;
 
 export default function AdminPage(): ReactElement {
   const router = useRouter();

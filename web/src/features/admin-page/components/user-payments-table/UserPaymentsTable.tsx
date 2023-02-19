@@ -9,6 +9,7 @@ import {
   useGetUserPaymentsQuery,
 } from '@/generated/graphql';
 import { format } from 'date-fns';
+import { StylePrefix } from '@/types/style-prefix';
 
 export type UserPaymentTableData = {
   id: string;
@@ -45,7 +46,7 @@ type ActionCellProps = Pick<PaymentsTableProps, 'handleMarkProcessed'> & {
   id: string;
 };
 
-const PREFIX = 'user-payments-table';
+const PREFIX = StylePrefix.USER_PAYMENTS_TABLE;
 
 function ActionCell(props: ActionCellProps): ReactElement {
   const { handleMarkProcessed, id } = props;

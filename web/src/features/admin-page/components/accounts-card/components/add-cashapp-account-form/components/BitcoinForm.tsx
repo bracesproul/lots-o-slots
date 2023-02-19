@@ -1,6 +1,8 @@
 import { ReactElement } from 'react';
-const PREFIX = 'cashapp-form';
 import { CryptoFromProps } from '../AddCashappAccountForm';
+import { StylePrefix } from '@/types/style-prefix';
+
+const PREFIX = StylePrefix.CASHAPP_FORM;
 
 export default function BitcoinForm(props: CryptoFromProps): ReactElement {
   const p = { ...props };

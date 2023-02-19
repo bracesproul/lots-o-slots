@@ -1,6 +1,8 @@
+import { StylePrefix } from '@/types/style-prefix';
 import { ReactElement } from 'react';
-const PREFIX = 'cashapp-form';
 import { PayPalFormProps } from '../AddCashappAccountForm';
+
+const PREFIX = StylePrefix.CASHAPP_FORM;
 
 export default function PayPalForm(props: PayPalFormProps): ReactElement {
   const p = { ...props };
