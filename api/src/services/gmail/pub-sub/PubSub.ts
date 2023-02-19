@@ -124,7 +124,7 @@ export default class MessageListener {
         });
 
         // Parses the headers of the email.
-        const { to, from, subject } = parseEmailHeaders(
+        const { to, from, subject, originalSenderEmail } = parseEmailHeaders(
           data.payload?.headers ?? []
         );
 
@@ -136,7 +136,14 @@ export default class MessageListener {
           subject
         );
 
-        const returnObject = { to, from, subject, body, id };
+        const returnObject = {
+          to,
+          from,
+          subject,
+          body,
+          id,
+          originalSenderEmail,
+        };
 
         // Uploads entire data object to Supabase Storage.
         // Feature flag protected and will only run if the proper env variable is present.
