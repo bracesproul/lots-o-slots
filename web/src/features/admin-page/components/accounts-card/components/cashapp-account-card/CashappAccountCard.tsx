@@ -2,6 +2,7 @@ import { ReactElement } from 'react';
 import { Icon } from '@/components';
 import { CashAppLogo } from '@/assets';
 import { format } from 'date-fns';
+import { StylePrefix } from '@/types/style-prefix';
 
 export type CashappAccountCardProps = {
   cashtag: string;
@@ -9,7 +10,7 @@ export type CashappAccountCardProps = {
   lastUpdate?: Date;
 };
 
-const PREFIX = 'cashapp-account-card';
+const PREFIX = StylePrefix.CASHAPP_ACCOUNT_CARD;
 
 export default function CashappAccountCard(
   props: CashappAccountCardProps

@@ -2,6 +2,7 @@ import { Button, Dialog, Input } from '@/components';
 import { ReactElement, useState, useEffect } from 'react';
 import { PaymentProvider } from '@/generated/graphql';
 import Countdown from 'react-countdown';
+import { StylePrefix } from '@/types/style-prefix';
 
 type DialogStage = 'PlayNow' | 'Deposit' | 'Withdraw';
 
@@ -17,7 +18,7 @@ export type DepositDialogProps = {
   stage: DialogStage;
 };
 
-const PREFIX = 'deposit-dialog';
+const PREFIX = StylePrefix.DEPOSIT_DIALOG;
 
 const COUNTDOWN_TIMER = 900000;
 

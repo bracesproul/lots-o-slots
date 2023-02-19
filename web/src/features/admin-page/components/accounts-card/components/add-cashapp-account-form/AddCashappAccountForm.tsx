@@ -15,6 +15,7 @@ import {
   EthereumForm,
   BitcoinForm,
 } from './components';
+import { StylePrefix } from '@/types/style-prefix';
 
 export type CashAppFormProps = {
   balance: number;
@@ -59,7 +60,7 @@ export type AddCashappAccountFormProps = CashAppFormProps &
     setAccountType: (accountType: PaymentProvider) => void;
   };
 
-const PREFIX = 'cashapp-form';
+const PREFIX = StylePrefix.CASHAPP_FORM;
 
 const PAYMENT_PROVIDER_OPTIONS = [
   {

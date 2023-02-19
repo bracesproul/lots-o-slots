@@ -2,6 +2,7 @@ import { ReactElement, useState } from 'react';
 import { Button, GenerateAccountDialog, PlayNowDialog } from '@/components';
 import { DialogStage, GameType } from '../play-now-dialog/types';
 import { PaymentProvider } from '@/generated/graphql';
+import { AppStoreButtonsDialog } from '..';
 
 export type HeaderProps = {
   // add props
@@ -47,16 +48,24 @@ function Header(): ReactElement {
         open={generateAccountDialogOpen}
         setOpen={setGenerateAccountDialogOpen}
       />
-      <PlayNowDialog
-        paymentProvider={paymentProvider}
-        setPaymentProvider={setPaymentProvider}
-        stage={stage}
-        setStage={setStage}
-        open={playNowDialogOpen}
-        setOpen={setPlayNowDialogOpen}
-        gameType={gameType}
-        setGameType={setGameType}
-      />
+      {process.env.NEXT_PUBLIC_APP_STORE_BUTTONS_DIALOG_ENABLED === 'true' && (
+        <AppStoreButtonsDialog
+          open={playNowDialogOpen}
+          setOpen={setPlayNowDialogOpen}
+        />
+      )}
+      {process.env.NEXT_PUBLIC_PLAY_NOW_DIALOG_ENABLED === 'true' && (
+        <PlayNowDialog
+          paymentProvider={paymentProvider}
+          setPaymentProvider={setPaymentProvider}
+          stage={stage}
+          setStage={setStage}
+          open={playNowDialogOpen}
+          setOpen={setPlayNowDialogOpen}
+          gameType={gameType}
+          setGameType={setGameType}
+        />
+      )}
     </div>
   );
 }

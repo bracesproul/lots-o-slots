@@ -4,8 +4,9 @@ import { ReactElement } from 'react';
 import { PlayDialogProps } from '../../types';
 import { findStringFromGameType, findGameTypeFromString } from '../../utils';
 import { PaymentIdentifierInput } from '../';
+import { StylePrefix } from '@/types/style-prefix';
 
-const PREFIX = 'play-now-dialog';
+const PREFIX = StylePrefix.PLAY_NOW_DIALOG;
 
 const GAME_OPTIONS = [
   { name: 'Slots', value: 'slots' },
