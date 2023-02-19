@@ -1,7 +1,6 @@
 import { Story } from '@storybook/react';
 import { PaymentsTable } from '../PaymentsTable';
 import type { PaymentsTableProps } from '../PaymentsTable';
-import { action } from '@storybook/addon-actions';
 import { dummyPaymentInfo } from '@/dummy';
 import { TableType } from '@/types/page-change';
 
@@ -22,7 +21,6 @@ const PlaygroundTemplate: Story<PaymentsTableProps> = (props) => {
 
 export const Playground = PlaygroundTemplate.bind({});
 Playground.args = {
-  handleMarkProcessed: action('handleMarkProcessed'),
   loading: false,
   data: dummyPaymentInfo,
   tableType: TableType.PENDING,
