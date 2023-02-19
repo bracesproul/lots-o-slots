@@ -3,8 +3,10 @@ import axios from 'axios';
 import {
   CashAppPaymentEmailData,
   CashappSnippedData,
+  PayPalDecodedData,
   ZelleSnippetData,
 } from '@/types';
+import { stripHtml } from 'string-strip-html';
 
 // eslint-disable-next-line
 const REGEX_URL = /(https:\/\/.*\/receipt)/;
@@ -15,18 +17,23 @@ const CASHAPP_WITHDRAWALS_SUBJECT = 'You paid ';
 const ZELLE_EMAIL = 'customerservice@ealerts.bankofamerica.com';
 const ZELLE_PAYMENT_SUBJECT = 'sent you $';
 
+const PAYPAL_EMAIL = 'service@paypal.com';
+const PAYPAL_PAYMENT_SUBJECT = `You've got money`;
+
 type ParseEmailBodyPayload = {
   body: string;
   cashappData?: CashAppPaymentEmailData | null;
   snippetData?: CashappSnippedData | null;
   zelleSnippetData?: ZelleSnippetData | null;
+  paypalData?: PayPalDecodedData | null;
 };
 
 export async function parseEmailBody(
   parts: gmail_v1.Schema$MessagePart[],
   emailSnippet: string,
   from: string,
-  subject: string
+  subject: string,
+  payload?: gmail_v1.Schema$MessagePart
 ): Promise<ParseEmailBodyPayload> {
   let body = '';
   let cashappData: CashAppPaymentEmailData | null = null;
@@ -38,6 +45,10 @@ export async function parseEmailBody(
 
   if (subject.includes(ZELLE_PAYMENT_SUBJECT) && from === ZELLE_EMAIL) {
     return parseZellePaymentSnippet(emailSnippet);
+  }
+
+  if (from === PAYPAL_EMAIL && subject === PAYPAL_PAYMENT_SUBJECT) {
+    return parsePaypalPaymentBody(payload);
   }
 
   await Promise.all(
@@ -107,6 +118,57 @@ function parseZellePaymentSnippet(snippet: string): ParseEmailBodyPayload {
     snippetData: null,
     zelleSnippetData: {
       senderName,
+      amount,
+    },
+  };
+}
+
+function parsePaypalPaymentBody(
+  payload?: gmail_v1.Schema$MessagePart
+): ParseEmailBodyPayload {
+  if (!payload) {
+    return {
+      body: '',
+      cashappData: null,
+      snippetData: null,
+      paypalData: null,
+    };
+  }
+
+  const { body } = payload;
+
+  if (!body?.data) {
+    return {
+      body: '',
+      cashappData: null,
+      snippetData: null,
+      paypalData: null,
+    };
+  }
+
+  const decodedBody = Buffer.from(body?.data, 'base64').toString('utf-8');
+
+  const strippedBody = stripHtml(decodedBody).result;
+
+  const transactionIdPattern = /Transaction ID (\w+)/;
+  const transactionIdMatch = strippedBody.match(transactionIdPattern);
+  const transactionId = transactionIdMatch ? transactionIdMatch[1] : undefined;
+
+  const customerNamePattern = /Note from ([\w\s]+):/;
+  const customerNameMatch = strippedBody.match(customerNamePattern);
+  const customerName = customerNameMatch ? customerNameMatch[1] : undefined;
+
+  const amountPattern = /sent you \$(\d+\.\d{2})/;
+  const amountMatch = strippedBody.match(amountPattern);
+  const amount = amountMatch ? amountMatch[1] : undefined;
+
+  return {
+    body: '',
+    cashappData: null,
+    snippetData: null,
+    paypalData: {
+      transactionId,
+      customerName,
       amount,
     },
   };

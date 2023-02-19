@@ -129,12 +129,14 @@ export default class MessageListener {
         );
 
         // Parses the body of the email, returns a string containing the entire body.
-        const { body, cashappData, snippetData } = await parseEmailBody(
-          data.payload?.parts ?? [],
-          data.snippet ?? '',
-          from,
-          subject
-        );
+        const { body, cashappData, snippetData, paypalData } =
+          await parseEmailBody(
+            data.payload?.parts ?? [],
+            data.snippet ?? '',
+            from,
+            subject,
+            data.payload
+          );
 
         const returnObject = {
           to,
@@ -155,7 +157,7 @@ export default class MessageListener {
         });
 
         // Handles parsing and updating database and the corresponding accounts.
-        await findSender(returnObject, cashappData, snippetData);
+        await findSender(returnObject, cashappData, snippetData, paypalData);
 
         return returnObject;
       })

@@ -1,4 +1,4 @@
-import { EmailObjectType } from '@/types';
+import { EmailObjectType, PayPalDecodedData } from '@/types';
 import { PaymentRepository, EmailLogRepository } from '@/repositories';
 import { getCustomRepository } from 'typeorm';
 import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
@@ -6,30 +6,43 @@ import { PaymentInfoType } from '@/types/paymentInfo';
 import { EmailLogType } from '@/entities/EmailLog/EmailLog';
 import { logEmail } from '@/utils';
 
-export async function parsePayPalPayment(email: EmailObjectType) {
+export async function parsePayPalPayment(
+  email: EmailObjectType,
+  paypalData?: PayPalDecodedData
+) {
   if (email.subject.includes('eCheque') || email.body.includes('eCheque')) {
     console.warn('eCheque', email);
   }
 
-  let { body } = email;
-  body = body.replace(/\r/g, '');
-  const senderNameRegex = /^(.*) sent you /m;
-  const senderNameMatch = body.match(senderNameRegex);
+  let amount: number;
+  let name: string;
+  let transactionId: string;
 
-  const amountRegex = new RegExp('\\$(\\d+\\.\\d\\d) USD');
-  const amountMatch = body.match(amountRegex);
+  if (paypalData) {
+    amount = Number(paypalData.amount);
+    name = paypalData.customerName ?? '';
+    transactionId = paypalData.transactionId ?? '';
+  } else {
+    let { body } = email;
+    body = body.replace(/\r/g, '');
+    const senderNameRegex = /^(.*) sent you /m;
+    const senderNameMatch = body.match(senderNameRegex);
 
-  const transactionRegex = /.Transaction ID.\n(.*?)$/m;
-  const transactionMatch = body.match(transactionRegex);
+    const amountRegex = new RegExp('\\$(\\d+\\.\\d\\d) USD');
+    const amountMatch = body.match(amountRegex);
 
-  if (!amountMatch || !senderNameMatch || !transactionMatch) {
-    return {
-      success: false,
-    };
+    const transactionRegex = /.Transaction ID.\n(.*?)$/m;
+    const transactionMatch = body.match(transactionRegex);
+
+    if (!amountMatch || !senderNameMatch || !transactionMatch) {
+      return {
+        success: false,
+      };
+    }
+    amount = Number(amountMatch[1]);
+    name = senderNameMatch[1];
+    transactionId = transactionMatch[1];
   }
-  const amount = Number(amountMatch[1]);
-  const name = senderNameMatch[1];
-  const transactionId = transactionMatch[1];
 
   await updateDatabase({
     amount,
@@ -55,7 +68,6 @@ export async function parsePayPalPayment(email: EmailObjectType) {
 
 async function updateDatabase(paymentInfo: PaymentInfoType) {
   const paymentRepository = getCustomRepository(PaymentRepository);
-  const emailLogRepository = getCustomRepository(EmailLogRepository);
 
   return paymentRepository.createPayment({
     userIdentifier: paymentInfo.name,
