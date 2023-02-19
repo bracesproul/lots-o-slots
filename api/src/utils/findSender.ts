@@ -2,6 +2,7 @@ import {
   CashAppPaymentEmailData,
   CashappSnippedData,
   EmailObjectType,
+  ZelleSnippetData,
 } from '@/types';
 import {
   parseCashAppEmail,
@@ -16,7 +17,8 @@ import { handleWithdrawal } from '@/services/cashapp/handleWithdrawal';
 export async function findSender(
   email: EmailObjectType,
   cashappData?: CashAppPaymentEmailData | null,
-  snippetData?: CashappSnippedData | null
+  snippetData?: CashappSnippedData | null,
+  zelleSnippetData?: ZelleSnippetData | null
 ): Promise<void> {
   const { from, subject, body, id } = email;
 
@@ -38,6 +40,12 @@ export async function findSender(
   // If snippet data is true, we already know it's a cashapp email and is a withdrawal.
   if (snippetData) {
     await handleWithdrawal(email, snippetData);
+    return;
+  }
+
+  // If zelle snippet data is true, we already know it's a BOFA email and is a zelle payment received.
+  if (zelleSnippetData) {
+    await parseZellePayment(email, zelleSnippetData);
     return;
   }
 

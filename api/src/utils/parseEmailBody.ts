@@ -1,6 +1,10 @@
 import { gmail_v1 } from 'googleapis';
 import axios from 'axios';
-import { CashAppPaymentEmailData, CashappSnippedData } from '@/types';
+import {
+  CashAppPaymentEmailData,
+  CashappSnippedData,
+  ZelleSnippetData,
+} from '@/types';
 
 // eslint-disable-next-line
 const REGEX_URL = /(https:\/\/.*\/receipt)/;
@@ -8,10 +12,14 @@ const REGEX_URL = /(https:\/\/.*\/receipt)/;
 const CASHAPP_EMAIL = 'cash@square.com';
 const CASHAPP_WITHDRAWALS_SUBJECT = 'You paid ';
 
+const ZELLE_EMAIL = 'customerservice@ealerts.bankofamerica.com';
+const ZELLE_PAYMENT_SUBJECT = 'sent you $';
+
 type ParseEmailBodyPayload = {
   body: string;
   cashappData?: CashAppPaymentEmailData | null;
   snippetData?: CashappSnippedData | null;
+  zelleSnippetData?: ZelleSnippetData | null;
 };
 
 export async function parseEmailBody(
@@ -26,6 +34,10 @@ export async function parseEmailBody(
   // Pulls cashapp withdrawal data from email snippet
   if (subject.includes(CASHAPP_WITHDRAWALS_SUBJECT) && from === CASHAPP_EMAIL) {
     return parseCashappWithdrawalSnippet(emailSnippet);
+  }
+
+  if (subject.includes(ZELLE_PAYMENT_SUBJECT) && from === ZELLE_EMAIL) {
+    return parseZellePaymentSnippet(emailSnippet);
   }
 
   await Promise.all(
@@ -81,6 +93,21 @@ function parseCashappWithdrawalSnippet(snippet: string): ParseEmailBodyPayload {
       amount,
       paymentId,
       receiverName,
+    },
+  };
+}
+
+function parseZellePaymentSnippet(snippet: string): ParseEmailBodyPayload {
+  const amount = snippet.match(/\$\d+\.\d{2}/)?.[0].split('$')[1];
+  const senderName = snippet.match(/^(.+?)\ssent\syou/)?.[1];
+
+  return {
+    body: '',
+    cashappData: null,
+    snippetData: null,
+    zelleSnippetData: {
+      senderName,
+      amount,
     },
   };
 }
