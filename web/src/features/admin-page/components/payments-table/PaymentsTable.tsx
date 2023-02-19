@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import { ReactElement, ReactNode } from 'react';
 import clsx from 'clsx';
 import { Icon } from '@/components';
 import { ArrowRight } from '@/assets';
@@ -8,9 +8,11 @@ import {
   PaymentProvider,
   useMarkPaymentAsProcessedMutation,
 } from '@/generated/graphql';
+import Undo from '@/assets/svgs/Undo';
 
 export type PaymentTableData = {
   paymentProvider: PaymentProvider;
+  name: string;
   username: string;
   amount: number;
   id: string;
@@ -22,41 +24,34 @@ export type PaymentsTableProps = {
   data: PaymentTableData[];
   loading: boolean;
 
-  /**
-   * Whether or not to show the action column.
-   */
-  includeActionColumn?: boolean;
+  /** Whether or not to show the action column. */
+  includeProcessPaymentColumn?: boolean;
 
-  /**
-   * The type of the table.
-   */
+  /** Column to handle undoing marking the payment as processed. */
+  includeUndoColumn?: boolean;
+
+  /** The type of the table. */
   tableType: TableType;
 
-  /**
-   * Function to handle marking the payment as processed.
-   */
-  handleMarkProcessed?: (id: string) => void;
+  /** Function to handle processing payments. */
+  handleProcessingPayment?: (id: string, processed: boolean) => void;
 };
 
-type ActionCellProps = Pick<PaymentsTableProps, 'handleMarkProcessed'> & {
+type ActionCellProps = {
   id: string;
+  onPress: (id: string) => void;
+  icon: ReactElement | ReactNode;
 };
 
 const PREFIX = 'payments-table';
 
 function ActionCell(props: ActionCellProps): ReactElement {
-  const { handleMarkProcessed, id } = props;
-  if (!handleMarkProcessed) {
-    return <></>;
-  }
+  const { onPress, id, icon } = props;
+
   return (
-    <a onClick={() => handleMarkProcessed(id)}>
+    <a onClick={() => onPress(id)}>
       <div className={`${PREFIX}-action-cell-container`}>
-        <Icon
-          className={'pm-[5px] my-[2px]'}
-          content={<ArrowRight />}
-          size="medium"
-        />
+        <Icon className={'pm-[5px] my-[2px]'} content={icon} size="medium" />
       </div>
     </a>
   );
@@ -77,10 +72,12 @@ export function PaymentsTable(props: PaymentsTableProps): ReactElement {
         <table className={'payments-table'}>
           <thead className={`${PREFIX}-header`}>
             <tr className={`${PREFIX}-header-row`}>
+              <th>Name</th>
               <th>Username</th>
               <th>Amount</th>
               <th>Payment</th>
-              {p.includeActionColumn && <th>Actions</th>}
+              {p.includeProcessPaymentColumn && <th>Actions</th>}
+              {p.includeUndoColumn && <th>Undo</th>}
             </tr>
           </thead>
           <tbody className={`${PREFIX}-rows-container`}>
@@ -94,16 +91,27 @@ export function PaymentsTable(props: PaymentsTableProps): ReactElement {
                   },
                 ])}
               >
+                <th className={`${PREFIX}-th`}>{row.name}</th>
                 <th className={`${PREFIX}-th`}>{row.username}</th>
                 <th className={`${PREFIX}-th`}>
                   ${row.amount.toLocaleString()}
                 </th>
                 <th className={`${PREFIX}-th`}>{row.paymentProvider}</th>
-                {p.includeActionColumn && (
+                {p.includeProcessPaymentColumn && (
                   <th className={`${PREFIX}-th`}>
                     <ActionCell
                       id={row.id}
-                      handleMarkProcessed={p.handleMarkProcessed}
+                      onPress={(id) => p.handleProcessingPayment?.(id, true)}
+                      icon={<ArrowRight />}
+                    />
+                  </th>
+                )}
+                {p.includeUndoColumn && (
+                  <th className={`${PREFIX}-th`}>
+                    <ActionCell
+                      id={row.id}
+                      onPress={(id) => p.handleProcessingPayment?.(id, false)}
+                      icon={<Undo />}
                     />
                   </th>
                 )}
@@ -149,8 +157,9 @@ export default function PaymentsTableContainer(): ReactElement {
       return {
         id: data.id,
         paymentProvider: data.provider,
-        username: data.senderName,
+        username: 'Todo',
         amount: data.amount,
+        name: data.senderName,
       };
     }) ?? [];
 
@@ -159,12 +168,13 @@ export default function PaymentsTableContainer(): ReactElement {
       return {
         id: data.id,
         paymentProvider: data.provider,
-        username: data.senderName,
+        username: 'Todo',
         amount: data.amount,
+        name: data.senderName,
       };
     }) ?? [];
 
-  const handleMarkProcessed = async (id: string) => {
+  const handlePaymentProcessing = async (id: string, processed: boolean) => {
     const index = pendingPayments.findIndex((item) => item.id === id);
 
     if (index !== -1) {
@@ -176,6 +186,7 @@ export default function PaymentsTableContainer(): ReactElement {
       variables: {
         input: {
           id,
+          processed,
         },
       },
     });
@@ -197,8 +208,8 @@ export default function PaymentsTableContainer(): ReactElement {
     <>
       <PaymentsTable
         loading={pendingLoading}
-        handleMarkProcessed={handleMarkProcessed}
-        includeActionColumn
+        handleProcessingPayment={handlePaymentProcessing}
+        includeProcessPaymentColumn
         data={pendingPayments}
         tableType={TableType.PENDING}
       />
@@ -206,6 +217,8 @@ export default function PaymentsTableContainer(): ReactElement {
         loading={processedLoading}
         tableType={TableType.PROCESSED}
         data={processedPayments}
+        includeUndoColumn
+        handleProcessingPayment={handlePaymentProcessing}
       />
     </>
   );

@@ -53,6 +53,7 @@ export class PaymentResolver {
       PaymentRepository
     ).markPaymentAsProcessed({
       id: input.id,
+      processed: input.processed,
     });
     return {
       success: true,

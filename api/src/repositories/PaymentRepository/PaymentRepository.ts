@@ -123,12 +123,18 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
     return this.repository.save(payment);
   }
 
-  async markPaymentAsProcessed({ id }: { id: string }): Promise<Payment> {
+  async markPaymentAsProcessed({
+    id,
+    processed,
+  }: {
+    id: string;
+    processed: boolean;
+  }): Promise<Payment> {
     const payment = await this.repository.findOne({ where: { id } });
     if (!payment) {
       throw new ApolloError('Payment not found', 'PAYMENT_NOT_FOUND');
     }
-    payment.processed = true;
+    payment.processed = processed;
     return this.repository.save(payment);
   }
 
