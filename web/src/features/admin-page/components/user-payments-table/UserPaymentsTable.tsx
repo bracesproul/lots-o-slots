@@ -73,47 +73,57 @@ export function UserPaymentsTable(props: PaymentsTableProps): ReactElement {
   return (
     <div className={clsx(`${PREFIX}-container`)}>
       <h1 className={`${PREFIX}-title`}>Deposit Requests</h1>
-      <table className={`${PREFIX}`}>
-        <thead className={`${PREFIX}-header`}>
-          <tr className={`${PREFIX}-header-row`}>
-            <th>Identifier</th>
-            <th>Provider</th>
-            <th>Amount</th>
-            <th>Game</th>
-            <th>Date</th>
-            {p.includeActionColumn && <th>Actions</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {p.data.map((row, index) => (
-            <tr
-              key={row.id}
-              className={clsx([
-                `${PREFIX}-row`,
-                {
-                  'is-even': index % 2 === 0,
-                },
-              ])}
-            >
-              <th className={`${PREFIX}-th`}>{row.paymentIdentifier}</th>
-              <th className={`${PREFIX}-th`}>{row.paymentProvider}</th>
-              <th className={`${PREFIX}-th`}>${row.amount.toLocaleString()}</th>
-              <th className={`${PREFIX}-th`}>{row.gameType}</th>
-              <th className={`${PREFIX}-th`}>
-                {format(row.createdAt, 'MM/dd/yyyy h:mm a')}
-              </th>
-              {p.includeActionColumn && (
-                <th className={`${PREFIX}-th`}>
-                  <ActionCell
-                    id={row.id}
-                    handleMarkProcessed={p.handleMarkProcessed}
-                  />
-                </th>
-              )}
+      {p.data.length ? (
+        <table className={`${PREFIX}`}>
+          <thead className={`${PREFIX}-header`}>
+            <tr className={`${PREFIX}-header-row`}>
+              <th>Identifier</th>
+              <th>Provider</th>
+              <th>Amount</th>
+              <th>Game</th>
+              <th>Date</th>
+              {p.includeActionColumn && <th>Actions</th>}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {p.data.map((row, index) => (
+              <tr
+                key={row.id}
+                className={clsx([
+                  `${PREFIX}-row`,
+                  {
+                    'is-even': index % 2 === 0,
+                  },
+                ])}
+              >
+                <th className={`${PREFIX}-th`}>{row.paymentIdentifier}</th>
+                <th className={`${PREFIX}-th`}>{row.paymentProvider}</th>
+                <th className={`${PREFIX}-th`}>
+                  ${row.amount.toLocaleString()}
+                </th>
+                <th className={`${PREFIX}-th`}>{row.gameType}</th>
+                <th className={`${PREFIX}-th`}>
+                  {format(row.createdAt, 'MM/dd/yyyy h:mm a')}
+                </th>
+                {p.includeActionColumn && (
+                  <th className={`${PREFIX}-th`}>
+                    <ActionCell
+                      id={row.id}
+                      handleMarkProcessed={p.handleMarkProcessed}
+                    />
+                  </th>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <div>
+          <p className={`${PREFIX}-none-found-text`}>
+            No deposit requests found.
+          </p>
+        </div>
+      )}
     </div>
   );
 }
