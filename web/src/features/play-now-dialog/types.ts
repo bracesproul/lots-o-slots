@@ -11,8 +11,11 @@ export enum GameType {
 }
 
 export type PlayGameDialogProps = {
-  open: boolean;
-  setOpen: (open: boolean) => void;
+  stepOneOpen: boolean;
+  setStepOneOpen: (open: boolean) => void;
+
+  stepTwoOpen: boolean;
+  setStepTwoOpen: (open: boolean) => void;
 
   stage: DialogStage;
   setStage: (stage: DialogStage) => void;

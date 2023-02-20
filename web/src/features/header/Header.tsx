@@ -11,7 +11,8 @@ export type HeaderProps = {
 function Header(): ReactElement {
   const [generateAccountDialogOpen, setGenerateAccountDialogOpen] =
     useState(false);
-  const [playNowDialogOpen, setPlayNowDialogOpen] = useState(false);
+  const [playNowStepOneOpen, setPlayNowStepOneOpen] = useState(false);
+  const [playNowStepTwoOpen, setPlayNowStepTwoOpen] = useState(false);
   const [stage, setStage] = useState(DialogStage.STAGE_ONE);
   const [paymentProvider, setPaymentProvider] =
     useState<PaymentProvider | null>(null);
@@ -34,7 +35,7 @@ function Header(): ReactElement {
           <Button
             type="button"
             variant="primary"
-            onPress={() => setPlayNowDialogOpen(true)}
+            onPress={() => setPlayNowStepOneOpen(true)}
           >
             Play Now!
           </Button>
@@ -50,8 +51,8 @@ function Header(): ReactElement {
       />
       {process.env.NEXT_PUBLIC_APP_STORE_BUTTONS_DIALOG_ENABLED === 'true' && (
         <AppStoreButtonsDialog
-          open={playNowDialogOpen}
-          setOpen={setPlayNowDialogOpen}
+          open={playNowStepOneOpen}
+          setOpen={setPlayNowStepOneOpen}
         />
       )}
       {process.env.NEXT_PUBLIC_PLAY_NOW_DIALOG_ENABLED === 'true' && (
@@ -60,8 +61,10 @@ function Header(): ReactElement {
           setPaymentProvider={setPaymentProvider}
           stage={stage}
           setStage={setStage}
-          open={playNowDialogOpen}
-          setOpen={setPlayNowDialogOpen}
+          stepOneOpen={playNowStepOneOpen}
+          setStepOneOpen={setPlayNowStepOneOpen}
+          stepTwoOpen={playNowStepTwoOpen}
+          setStepTwoOpen={setPlayNowStepTwoOpen}
           gameType={gameType}
           setGameType={setGameType}
         />
