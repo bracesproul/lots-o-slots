@@ -24,3 +24,11 @@
 .action-buttons-right-container {
   @apply flex flex-col gap-[20px];
 }
+
+.play-create-box-actions-container {
+  @apply flex flex-col gap-[18px] w-full;
+}
+
+.play-create-box-action-row {
+  @apply flex flex-row gap-[12px] w-full;
+}

@@ -15,11 +15,11 @@ export default function FaqSection(): ReactElement {
         body="Lorem Ipsum is simply dummy text of the printing and typesetting industry 1500s, when an unknown printer."
       />
       <Accordion
-        title={`Why Should I Choose Lots O' Slots?`}
+        title="How do I play slots?"
         body="Lorem Ipsum is simply dummy text of the printing and typesetting industry 1500s, when an unknown printer."
       />
       <Accordion
-        title="How Do I Play Slots?"
+        title={`Why should I choose Lots O' Slots?`}
         body="Lorem Ipsum is simply dummy text of the printing and typesetting industry 1500s, when an unknown printer."
       />
       <Accordion
