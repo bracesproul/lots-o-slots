@@ -1,10 +1,13 @@
 import {
+  BANK_OF_AMERICA_DEPOSITS_SUBJECT,
   CashAppPaymentEmailData,
   CashappSnippedData,
+  CASHAPP_DEPOSITS_SUBJECT,
+  CASHAPP_WITHDRAWALS_SUBJECT,
   EmailObjectType,
   PayPalDecodedData,
+  PAYPAL_DEPOSITS_SUBJECT,
   ProviderEmail,
-  ProviderEmailSubject,
   ZelleSnippetData,
 } from '@/types';
 import {
@@ -63,7 +66,7 @@ export async function findSender(
 
   if (
     from === ProviderEmail.CASHAPP &&
-    subject.includes(ProviderEmailSubject.CASHAPP_DEPOSITS)
+    subject.includes(CASHAPP_DEPOSITS_SUBJECT)
   ) {
     await handleReceivedPayment(email, cashappData);
     return;
@@ -75,10 +78,10 @@ export async function findSender(
     from === ProviderEmail.PAYPAL
   ) {
     if (
-      subject.includes(ProviderEmailSubject.CASHAPP_DEPOSITS) ||
-      subject.includes(ProviderEmailSubject.BANK_OF_AMERICA_DEPOSITS) ||
-      subject.includes(ProviderEmailSubject.PAYPAL_DEPOSITS) ||
-      subject.includes(ProviderEmailSubject.CASHAPP_WITHDRAWALS)
+      subject.includes(CASHAPP_DEPOSITS_SUBJECT) ||
+      subject.includes(BANK_OF_AMERICA_DEPOSITS_SUBJECT) ||
+      subject.includes(PAYPAL_DEPOSITS_SUBJECT) ||
+      subject.includes(CASHAPP_WITHDRAWALS_SUBJECT)
     ) {
       await logEmail({
         email,
@@ -95,11 +98,11 @@ export async function findSender(
     body.includes('Please allow up to 5 minutes for the')
   ) {
     await parseZellePayment(email);
-  } else if (subject.includes(ProviderEmailSubject.PAYPAL_DEPOSITS)) {
+  } else if (subject.includes(PAYPAL_DEPOSITS_SUBJECT)) {
     await parsePayPalPayment(email);
   } else if (
     email.from === ProviderEmail.CASHAPP ||
-    email.subject.includes(ProviderEmailSubject.CASHAPP_DEPOSITS) ||
+    email.subject.includes(CASHAPP_DEPOSITS_SUBJECT) ||
     checkCashAppEmailDev(body) ||
     cashappData
   ) {

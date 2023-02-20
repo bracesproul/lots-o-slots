@@ -17,9 +17,7 @@ export enum ProviderEmail {
   PAYPAL = 'service@paypal.com',
 }
 
-export enum ProviderEmailSubject {
-  BANK_OF_AMERICA_DEPOSITS = ' sent you $',
-  CASHAPP_DEPOSITS = ' sent you $',
-  CASHAPP_WITHDRAWALS = 'You paid ',
-  PAYPAL_DEPOSITS = `You've got money`,
-}
+export const BANK_OF_AMERICA_DEPOSITS_SUBJECT = ' sent you $';
+export const CASHAPP_DEPOSITS_SUBJECT = ' sent you $';
+export const CASHAPP_WITHDRAWALS_SUBJECT = 'You paid ';
+export const PAYPAL_DEPOSITS_SUBJECT = `You've got money`;
