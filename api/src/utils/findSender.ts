@@ -16,6 +16,8 @@ import EmailLog, { EmailLogType } from '@/entities/EmailLog/EmailLog';
 import { logEmail } from '.';
 import { getRepository } from 'typeorm';
 import { handleWithdrawal } from '@/services/cashapp/handleWithdrawal';
+import { handleReceivedPayment } from '@/services/cashapp/handleReceivedPayment';
+import { LogType } from './logEmail';
 
 export async function findSender(
   email: EmailObjectType,
@@ -57,6 +59,35 @@ export async function findSender(
   if (paypalData && from === ProviderEmail.PAYPAL) {
     await parsePayPalPayment(email, paypalData);
     return;
+  }
+
+  if (
+    from === ProviderEmail.CASHAPP &&
+    subject.includes(ProviderEmailSubject.CASHAPP_DEPOSITS)
+  ) {
+    await handleReceivedPayment(email, cashappData);
+    return;
+  }
+
+  if (
+    from === ProviderEmail.CASHAPP ||
+    from === ProviderEmail.BANK_OF_AMERICA ||
+    from === ProviderEmail.PAYPAL
+  ) {
+    if (
+      subject.includes(ProviderEmailSubject.CASHAPP_DEPOSITS) ||
+      subject.includes(ProviderEmailSubject.BANK_OF_AMERICA_DEPOSITS) ||
+      subject.includes(ProviderEmailSubject.PAYPAL_DEPOSITS) ||
+      subject.includes(ProviderEmailSubject.CASHAPP_WITHDRAWALS)
+    ) {
+      await logEmail({
+        email,
+        description: 'Email meets criteria but no data found',
+        type: EmailLogType.NO_PROVIDER,
+        logType: LogType.ERROR,
+      });
+      return;
+    }
   }
 
   if (

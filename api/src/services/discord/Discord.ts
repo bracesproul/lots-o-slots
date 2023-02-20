@@ -87,6 +87,10 @@ export default class DiscordLog {
           name: 'Email ID',
           value: email.id,
         },
+        {
+          name: 'Original Recipient',
+          value: email.originalSenderEmail ?? 'n/a',
+        },
       ],
     });
   }
@@ -117,6 +121,10 @@ export default class DiscordLog {
         {
           name: 'Email ID',
           value: email.id,
+        },
+        {
+          name: 'Original Recipient',
+          value: email.originalSenderEmail ?? 'n/a',
         },
       ],
     });
@@ -240,6 +248,10 @@ export default class DiscordLog {
         {
           name: 'Email ID',
           value: email.id,
+        },
+        {
+          name: 'Original Recipient',
+          value: email.originalSenderEmail ?? 'n/a',
         },
       ],
     });
