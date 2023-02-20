@@ -4,6 +4,8 @@ import {
   CashAppPaymentEmailData,
   CashappSnippedData,
   PayPalDecodedData,
+  ProviderEmail,
+  ProviderEmailSubject,
   ZelleSnippetData,
 } from '@/types';
 import { stripHtml } from 'string-strip-html';
@@ -11,14 +13,14 @@ import { stripHtml } from 'string-strip-html';
 // eslint-disable-next-line
 const REGEX_URL = /(https:\/\/.*\/receipt)/;
 
-const CASHAPP_EMAIL = 'cash@square.com';
-const CASHAPP_WITHDRAWALS_SUBJECT = 'You paid ';
+const CASHAPP_EMAIL = ProviderEmail.CASHAPP;
+const CASHAPP_WITHDRAWALS_SUBJECT = ProviderEmailSubject.CASHAPP_WITHDRAWALS;
 
-const ZELLE_EMAIL = 'customerservice@ealerts.bankofamerica.com';
-const ZELLE_PAYMENT_SUBJECT = 'sent you $';
+const ZELLE_EMAIL = ProviderEmail.BANK_OF_AMERICA;
+const ZELLE_PAYMENT_SUBJECT = ProviderEmailSubject.BANK_OF_AMERICA_DEPOSITS;
 
-const PAYPAL_EMAIL = 'service@paypal.com';
-const PAYPAL_PAYMENT_SUBJECT = `You've got money`;
+const PAYPAL_EMAIL = ProviderEmail.PAYPAL;
+const PAYPAL_PAYMENT_SUBJECT = ProviderEmailSubject.PAYPAL_DEPOSITS;
 
 type ParseEmailBodyPayload = {
   body: string;
@@ -47,7 +49,7 @@ export async function parseEmailBody(
     return parseZellePaymentSnippet(emailSnippet);
   }
 
-  if (from === PAYPAL_EMAIL && subject === PAYPAL_PAYMENT_SUBJECT) {
+  if (from === PAYPAL_EMAIL && subject.includes(PAYPAL_PAYMENT_SUBJECT)) {
     return parsePaypalPaymentBody(payload);
   }
 

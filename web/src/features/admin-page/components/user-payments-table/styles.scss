@@ -43,3 +43,8 @@
 .user-payments-table-pagination-container {
   @apply flex flex-row mt-[12px] mb-[5px] justify-end;
 }
+
+.user-payments-table-none-found-text {
+  @apply text-white text-center text-[18px] leading-[25px];
+  @apply my-[24px];
+}

@@ -6,7 +6,14 @@ import { getOAuth2Client, authorize } from '../auth';
 import { getCustomRepository, getRepository } from 'typeorm';
 import format from 'date-fns/format';
 import { parseEmailBody, parseEmailHeaders, findSender } from '@/utils';
-import { EmailObjectType } from '@/types';
+import {
+  BANK_OF_AMERICA_EMAIL,
+  CASHAPP_EMAIL,
+  EmailObjectType,
+  PAYPAL_EMAIL,
+  ProviderEmail,
+  ProviderEmailSubject,
+} from '@/types';
 import { EmailLog } from '@/entities';
 import {
   SupabaseBucket,
@@ -182,17 +189,17 @@ export default class MessageListener {
       console.log('Feature enabled. | UPLOAD_TO_SUPABASE_BUCKET');
     }
 
-    const bankOfAmericaEmail = 'customerservice@ealerts.bankofamerica.com';
-    const cashappEmail = 'cash@square.com';
-    const paypalEmail = 'service@paypal.com';
+    const bankOfAmericaEmail = ProviderEmail.BANK_OF_AMERICA;
+    const cashappEmail = ProviderEmail.CASHAPP;
+    const paypalEmail = ProviderEmail.PAYPAL;
 
     const allowedEmailsToUpload = [
-      bankOfAmericaEmail,
-      cashappEmail,
-      paypalEmail,
+      BANK_OF_AMERICA_EMAIL,
+      CASHAPP_EMAIL,
+      PAYPAL_EMAIL,
     ];
 
-    const cashappWithdrawalSubject = 'You paid ';
+    const cashappWithdrawalSubject = ProviderEmailSubject.CASHAPP_WITHDRAWALS;
 
     if (!allowedEmailsToUpload.includes(from)) {
       console.log('Email not allowed to upload.', from);
