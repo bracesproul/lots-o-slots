@@ -15,6 +15,7 @@ const REGEX_URL = /(https:\/\/.*\/receipt)/;
 
 const CASHAPP_EMAIL = ProviderEmail.CASHAPP;
 const CASHAPP_WITHDRAWALS_SUBJECT = ProviderEmailSubject.CASHAPP_WITHDRAWALS;
+const CASHAPP_DEPOSITS_SUBJECT = ProviderEmailSubject.CASHAPP_DEPOSITS;
 
 const ZELLE_EMAIL = ProviderEmail.BANK_OF_AMERICA;
 const ZELLE_PAYMENT_SUBJECT = ProviderEmailSubject.BANK_OF_AMERICA_DEPOSITS;
@@ -51,6 +52,43 @@ export async function parseEmailBody(
 
   if (from === PAYPAL_EMAIL && subject.includes(PAYPAL_PAYMENT_SUBJECT)) {
     return parsePaypalPaymentBody(payload);
+  }
+
+  if (from === CASHAPP_EMAIL && subject.includes(CASHAPP_DEPOSITS_SUBJECT)) {
+    await Promise.all(
+      parts?.map(async (part) => {
+        if (part.mimeType === 'text/plain' && part?.body?.data) {
+          body = Buffer.from(part.body?.data, 'base64').toString('utf-8');
+
+          if (body.includes('https://cash.app/payments/')) {
+            try {
+              const newUrl = body.split('receipt, visit: ')[1];
+              // const url = body.match(REGEX_URL);
+
+              const config = {
+                method: 'get',
+                url: newUrl,
+                headers: {
+                  'Content-Type': 'text/plain',
+                },
+              };
+
+              const { data } = await axios(config);
+
+              const dataFromStringSplit =
+                data.split('{paymentHistoryData:')[1].split('} };')[0] + '}';
+              cashappData = JSON.parse(dataFromStringSplit);
+            } catch (error) {
+              console.error('error trying to fetch receipt url', error);
+            }
+          }
+        }
+      })
+    );
+    return {
+      body,
+      cashappData,
+    };
   }
 
   await Promise.all(
