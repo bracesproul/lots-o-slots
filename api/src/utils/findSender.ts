@@ -3,6 +3,8 @@ import {
   CashappSnippedData,
   EmailObjectType,
   PayPalDecodedData,
+  ProviderEmail,
+  ProviderEmailSubject,
   ZelleSnippetData,
 } from '@/types';
 import {
@@ -40,19 +42,19 @@ export async function findSender(
   });
 
   // If snippet data is true, we already know it's a cashapp email and is a withdrawal.
-  if (snippetData) {
+  if (snippetData && from === ProviderEmail.CASHAPP) {
     await handleWithdrawal(email, snippetData);
     return;
   }
 
   // If zelle snippet data is true, we already know it's a BOFA email and is a zelle payment received.
-  if (zelleSnippetData) {
+  if (zelleSnippetData && from === ProviderEmail.BANK_OF_AMERICA) {
     await parseZellePayment(email, zelleSnippetData);
     return;
   }
 
   // If paypal data is true, we already know it's a paypal email and is a payment received.
-  if (paypalData) {
+  if (paypalData && from === ProviderEmail.PAYPAL) {
     await parsePayPalPayment(email, paypalData);
     return;
   }
@@ -62,11 +64,11 @@ export async function findSender(
     body.includes('Please allow up to 5 minutes for the')
   ) {
     await parseZellePayment(email);
-  } else if (subject.includes(`You've got money`)) {
+  } else if (subject.includes(ProviderEmailSubject.PAYPAL_DEPOSITS)) {
     await parsePayPalPayment(email);
   } else if (
-    email.from === 'cash@square.com' ||
-    email.subject.includes(' sent you $') ||
+    email.from === ProviderEmail.CASHAPP ||
+    email.subject.includes(ProviderEmailSubject.CASHAPP_DEPOSITS) ||
     checkCashAppEmailDev(body) ||
     cashappData
   ) {
