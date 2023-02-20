@@ -55,12 +55,19 @@ export default function PlayNowDialogContainer(
   };
 
   useEffect(() => {
-    if (!p.open) {
+    if (!p.stepOneOpen && !p.stepTwoOpen) {
       p.setGameType(null);
       p.setPaymentProvider(null);
       setDepositAmount(0);
     }
-  }, [p.open]);
+  }, [p.stepOneOpen, p.stepTwoOpen]);
+
+  useEffect(() => {
+    if (success) {
+      p.setStepOneOpen(false);
+      p.setStepTwoOpen(false);
+    }
+  }, [success]);
 
   const paymentHandle = () => {
     if (data && p.paymentProvider) {
@@ -74,8 +81,8 @@ export default function PlayNowDialogContainer(
     <>
       {p.stage === DialogStage.STAGE_ONE ? (
         <StepOneDialog
-          open={p.open}
-          setOpen={p.setOpen}
+          open={p.stepOneOpen}
+          setOpen={p.setStepOneOpen}
           paymentIdentifier={paymentIdentifier}
           setPaymentIdentifier={setPaymentIdentifier}
           isNextDisabled={
@@ -87,6 +94,7 @@ export default function PlayNowDialogContainer(
           setPaymentProvider={p.setPaymentProvider}
           onSubmit={(e) => {
             e.preventDefault();
+            p.setStepOneOpen(false);
             p.setStage(DialogStage.STAGE_TWO);
           }}
         />
@@ -97,8 +105,8 @@ export default function PlayNowDialogContainer(
               isConfirmPaidDisabled={
                 p.paymentProvider && depositAmount >= 20 ? false : true
               }
-              open={p.open}
-              setOpen={p.setOpen}
+              open={p.stepTwoOpen}
+              setOpen={p.setStepTwoOpen}
               depositAmount={depositAmount}
               setDepositAmount={setDepositAmount}
               paymentProvider={p.paymentProvider}
@@ -131,7 +139,7 @@ export default function PlayNowDialogContainer(
               }}
             />
           )}
-          {success && <SuccessDialog open={p.open} setOpen={p.setOpen} />}
+          {success && <SuccessDialog open={success} setOpen={setSuccess} />}
         </>
       )}
     </>

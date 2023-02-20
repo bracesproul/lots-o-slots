@@ -29,11 +29,21 @@ export default function PlayCreateBox(
   const p = { ...DEFAULT_PROPS, ...props };
   const [generateAccountDialogOpen, setGenerateAccountDialogOpen] =
     useState(false);
-  const [playNowDialogOpen, setPlayNowDialogOpen] = useState(false);
+  const [playNowStepOneOpen, setPlayNowStepOneOpen] = useState(false);
+  const [playNowStepTwoOpen, setPlayNowStepTwoOpen] = useState(false);
   const [stage, setStage] = useState(DialogStage.STAGE_ONE);
   const [paymentProvider, setPaymentProvider] =
     useState<PaymentProvider | null>(null);
   const [gameType, setGameType] = useState<GameType | null>(null);
+
+  const handleStageChange = (newStage: DialogStage) => {
+    if (newStage === DialogStage.STAGE_TWO) {
+      setPlayNowStepTwoOpen(true);
+    } else if (newStage === DialogStage.STAGE_ONE) {
+      setPlayNowStepOneOpen(true);
+    }
+    setStage(newStage);
+  };
 
   return (
     <div className={clsx(['action-container', p.className])}>
@@ -62,7 +72,7 @@ export default function PlayCreateBox(
             <Button
               type="button"
               variant="primary"
-              onPress={() => setPlayNowDialogOpen(true)}
+              onPress={() => setPlayNowStepOneOpen(true)}
             >
               Play Now
             </Button>
@@ -70,7 +80,7 @@ export default function PlayCreateBox(
           <Button
             type="button"
             variant="primary"
-            onPress={() => setPlayNowDialogOpen(true)}
+            onPress={() => setPlayNowStepOneOpen(true)}
           >
             Play Now
           </Button>
@@ -98,9 +108,11 @@ export default function PlayCreateBox(
         paymentProvider={paymentProvider}
         setPaymentProvider={setPaymentProvider}
         stage={stage}
-        setStage={setStage}
-        open={playNowDialogOpen}
-        setOpen={setPlayNowDialogOpen}
+        setStage={handleStageChange}
+        stepOneOpen={playNowStepOneOpen}
+        setStepOneOpen={setPlayNowStepOneOpen}
+        stepTwoOpen={playNowStepTwoOpen}
+        setStepTwoOpen={setPlayNowStepTwoOpen}
         gameType={gameType}
         setGameType={setGameType}
       />
