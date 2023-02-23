@@ -1,20 +1,18 @@
-// Imports the Google Cloud client library
 import { PubSub } from '@google-cloud/pubsub';
-import { EmailLogRepository, GcpTokenRepository } from '@/repositories';
+import { EmailLogRepository } from '@/repositories';
 import { google, gmail_v1 } from 'googleapis';
-import { getOAuth2Client, authorize } from '../auth';
-import { getCustomRepository, getRepository } from 'typeorm';
+import { authorize } from '../auth';
+import { getCustomRepository } from 'typeorm';
 import format from 'date-fns/format';
 import { parseEmailBody, parseEmailHeaders, findSender } from '@/utils';
 import {
   BANK_OF_AMERICA_EMAIL,
   CASHAPP_EMAIL,
+  CASHAPP_WITHDRAWALS_SUBJECT,
   EmailObjectType,
   PAYPAL_EMAIL,
   ProviderEmail,
-  ProviderEmailSubject,
 } from '@/types';
-import { EmailLog } from '@/entities';
 import {
   SupabaseBucket,
   SupabaseRawEmailFolderPath,
@@ -199,7 +197,7 @@ export default class MessageListener {
       PAYPAL_EMAIL,
     ];
 
-    const cashappWithdrawalSubject = ProviderEmailSubject.CASHAPP_WITHDRAWALS;
+    const cashappWithdrawalSubject = CASHAPP_WITHDRAWALS_SUBJECT;
 
     if (!allowedEmailsToUpload.includes(from)) {
       console.log('Email not allowed to upload.', from);

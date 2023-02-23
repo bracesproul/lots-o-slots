@@ -6,22 +6,28 @@ import {
   HowToJoinLower,
   Header,
 } from '@/features';
-import { ReactElement } from 'react';
+import { ReactElement, useRef } from 'react';
 
 export default function HomePage(): ReactElement {
+  const slotsSectionRef = useRef<HTMLDivElement>(null);
+  const pokerSectionRef = useRef<HTMLDivElement>(null);
+
   return (
     <div>
       <div className="home-header">
-        <Header />
+        <Header
+          slotsSectionRef={slotsSectionRef}
+          pokerSectionRef={pokerSectionRef}
+        />
       </div>
       <div className="section-one">
         <GameSelectionContainer />;
       </div>
       <div className="section-two">
-        <HowToJoinTop />
+        <HowToJoinTop slotsSectionRef={slotsSectionRef} />
       </div>
       <div className="section-three">
-        <HowToJoinLower />
+        <HowToJoinLower pokerSectionRef={pokerSectionRef} />
       </div>
       <div className="section-four">
         <FaqSection />

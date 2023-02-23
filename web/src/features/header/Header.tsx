@@ -5,10 +5,12 @@ import { PaymentProvider } from '@/generated/graphql';
 import { AppStoreButtonsDialog } from '..';
 
 export type HeaderProps = {
-  // add props
+  slotsSectionRef: React.RefObject<HTMLDivElement>;
+  pokerSectionRef: React.RefObject<HTMLDivElement>;
 };
 
-function Header(): ReactElement {
+export default function Header(props: HeaderProps): ReactElement {
+  const { slotsSectionRef, pokerSectionRef } = props;
   const [generateAccountDialogOpen, setGenerateAccountDialogOpen] =
     useState(false);
   const [playNowStepOneOpen, setPlayNowStepOneOpen] = useState(false);
@@ -18,6 +20,14 @@ function Header(): ReactElement {
     useState<PaymentProvider | null>(null);
   const [gameType, setGameType] = useState<GameType | null>(null);
 
+  const handleScrollToSlots = () => {
+    slotsSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleScrollToPoker = () => {
+    pokerSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div className="header">
       <div className="nav-container">
@@ -25,7 +35,7 @@ function Header(): ReactElement {
           Lots <span className="red-span-text">{`O'`}</span> Slots
         </h2>
         <div className="nav-button-group">
-          <Button
+          {/* <Button
             type="button"
             variant="secondary"
             onPress={() => setGenerateAccountDialogOpen(true)}
@@ -38,6 +48,16 @@ function Header(): ReactElement {
             onPress={() => setPlayNowStepOneOpen(true)}
           >
             Play Now!
+          </Button> */}
+          <Button
+            type="button"
+            variant="secondary"
+            onPress={handleScrollToSlots}
+          >
+            Play Slots
+          </Button>
+          <Button type="button" variant="primary" onPress={handleScrollToPoker}>
+            Play Poker
           </Button>
         </div>
       </div>
@@ -71,8 +91,4 @@ function Header(): ReactElement {
       )}
     </div>
   );
-}
-
-export default function HeaderContainer(): ReactElement {
-  return <Header />;
 }

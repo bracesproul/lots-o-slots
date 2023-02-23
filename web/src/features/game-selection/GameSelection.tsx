@@ -53,6 +53,7 @@ function GameSelection(props: GameSelectionProps): ReactElement {
       </div>
       <div className="input-button-container">
         <Button
+          size="xlarge"
           className={'max-w-[150px]'}
           onPress={handleSubmit}
           type="submit"

@@ -1,11 +1,14 @@
 import { gmail_v1 } from 'googleapis';
 import axios from 'axios';
 import {
+  BANK_OF_AMERICA_DEPOSITS_SUBJECT as BANK_OF_AMERICA_DEPOSITS_SUBJECT_GLOBAL,
+  CASHAPP_WITHDRAWALS_SUBJECT as CASHAPP_WITHDRAWALS_SUBJECT_GLOBAL,
+  CASHAPP_DEPOSITS_SUBJECT as CASHAPP_DEPOSITS_SUBJECT_GLOBAL,
+  PAYPAL_DEPOSITS_SUBJECT as PAYPAL_DEPOSITS_SUBJECT_GLOBAL,
   CashAppPaymentEmailData,
   CashappSnippedData,
   PayPalDecodedData,
   ProviderEmail,
-  ProviderEmailSubject,
   ZelleSnippetData,
 } from '@/types';
 import { stripHtml } from 'string-strip-html';
@@ -14,14 +17,14 @@ import { stripHtml } from 'string-strip-html';
 const REGEX_URL = /(https:\/\/.*\/receipt)/;
 
 const CASHAPP_EMAIL = ProviderEmail.CASHAPP;
-const CASHAPP_WITHDRAWALS_SUBJECT = ProviderEmailSubject.CASHAPP_WITHDRAWALS;
-const CASHAPP_DEPOSITS_SUBJECT = ProviderEmailSubject.CASHAPP_DEPOSITS;
+const CASHAPP_WITHDRAWALS_SUBJECT = CASHAPP_WITHDRAWALS_SUBJECT_GLOBAL;
+const CASHAPP_DEPOSITS_SUBJECT = CASHAPP_DEPOSITS_SUBJECT_GLOBAL;
 
 const ZELLE_EMAIL = ProviderEmail.BANK_OF_AMERICA;
-const ZELLE_PAYMENT_SUBJECT = ProviderEmailSubject.BANK_OF_AMERICA_DEPOSITS;
+const ZELLE_PAYMENT_SUBJECT = BANK_OF_AMERICA_DEPOSITS_SUBJECT_GLOBAL;
 
 const PAYPAL_EMAIL = ProviderEmail.PAYPAL;
-const PAYPAL_PAYMENT_SUBJECT = ProviderEmailSubject.PAYPAL_DEPOSITS;
+const PAYPAL_PAYMENT_SUBJECT = PAYPAL_DEPOSITS_SUBJECT_GLOBAL;
 
 type ParseEmailBodyPayload = {
   body: string;

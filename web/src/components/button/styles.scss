@@ -1,5 +1,5 @@
 .button-main {
-  @apply min-w-[180px] h-[45px] px-[45px];
+  @apply h-[45px] px-[45px] min-w-fit;
   @apply border-[1px] border-[#C5002C];
   @apply text-white italic font-semibold;
 
@@ -28,5 +28,9 @@
 
   &.is-disabled {
     @apply bg-gray-300;
+  }
+
+  &.size-xlarge {
+    @apply h-[60px] px-[80px] text-[24px];
   }
 }

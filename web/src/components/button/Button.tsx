@@ -21,6 +21,8 @@ export type ButtonProps = AriaButtonProps & {
    * Whether or not the button is disabled.
    */
   isDisabled?: boolean;
+  /** The button size */
+  size?: 'small' | 'medium' | 'large' | 'xlarge';
 };
 
 const DEFAULT_PROPS = {
@@ -44,6 +46,10 @@ export default function Button(props: ButtonProps): ReactElement {
           'is-pressed': isPressed,
           'is-secondary': p.variant === 'secondary',
           'is-primary': p.variant === 'primary',
+          'size-small': p.size === 'small',
+          'size-medium': p.size === 'medium',
+          'size-large': p.size === 'large',
+          'size-xlarge': p.size === 'xlarge',
         },
         p.className,
       ])}

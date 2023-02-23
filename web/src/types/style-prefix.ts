@@ -17,4 +17,5 @@ export enum StylePrefix {
   PAYMENT_IDENTIFIER_INPUT = 'payment-identifier-input',
   PLAY_NOW_DIALOG = 'play-now-dialog',
   SUCCESS_DIALOG = 'success-dialog',
+  PLAY_CREATE_BOX = 'play-create-box',
 }
