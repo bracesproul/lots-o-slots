@@ -90,58 +90,6 @@ export default function PlayCreateBox(
             </div>
           ))}
         </div>
-        {/* <div className="game-selection-left-container">
-          {p.showAll && (
-            <GameButton
-              title="Game 1"
-              leftIconType="redChip"
-              rightIconType="link"
-              rightIconRedBackground
-            />
-          )}
-          <GameButton
-            title="Game 1"
-            leftIconType="blackChip"
-            rightIconType="link"
-            rightIconRedBackground
-          />
-        </div>
-        <div className="action-buttons-middle-container">
-          {p.showAll && (
-            <Button
-              type="button"
-              variant="primary"
-              onPress={() => setPlayNowStepOneOpen(true)}
-            >
-              Play Now
-            </Button>
-          )}
-          <Button
-            type="button"
-            variant="primary"
-            onPress={() => setPlayNowStepOneOpen(true)}
-          >
-            Play Now
-          </Button>
-        </div>
-        <div className="action-buttons-right-container">
-          {p.showAll && (
-            <Button
-              type="button"
-              variant="secondary"
-              onPress={() => setGenerateAccountDialogOpen(true)}
-            >
-              Create Account
-            </Button>
-          )}
-          <Button
-            type="button"
-            variant="secondary"
-            onPress={() => setGenerateAccountDialogOpen(true)}
-          >
-            Create Account
-          </Button>
-        </div> */}
       </div>
       <AppStoreButtonsDialog
         open={appStoreDialogOpen}

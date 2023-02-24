@@ -41,7 +41,7 @@ async function serverSetup(): Promise<express.Application> {
     })
   );
   app.get('/', (_, res) => {
-    return res.send('API is running');
+    return res.status(200).send('API is running');
   });
 
   const oauth2Client = getOAuth2Client();

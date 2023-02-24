@@ -18,6 +18,7 @@ import {
   SupabaseRawEmailFolderPath,
   uploadEmailToStorageBucket,
 } from '@/services/subabase';
+import { getOAuth2Client } from '../auth';
 
 type PubSubDataResponse = {
   emailAddress: string;
@@ -47,7 +48,8 @@ export default class MessageListener {
   topicNameAndId = 'projects/lots-o-slots/topics/cashapp-messages';
   subscriptionNameOrId = 'projects/lots-o-slots/subscriptions/cashapp-messages';
   async authGmail(): Promise<gmail_v1.Gmail> {
-    const auth = await authorize();
+    // const auth = await authorize();
+    const auth = getOAuth2Client();
     return google.gmail({
       version: 'v1',
       auth,
