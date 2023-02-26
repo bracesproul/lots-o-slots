@@ -18,4 +18,5 @@ export enum StylePrefix {
   PLAY_NOW_DIALOG = 'play-now-dialog',
   SUCCESS_DIALOG = 'success-dialog',
   PLAY_CREATE_BOX = 'play-create-box',
+  HEADER_V2 = 'header-v2',
 }

@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.2",
+    "@artsy/fresnel": "^6.1.0",
     "@graphql-codegen/add": "^3.2.3",
     "@headlessui/react": "^1.7.7",
     "@radix-ui/react-dialog": "^1.0.2",

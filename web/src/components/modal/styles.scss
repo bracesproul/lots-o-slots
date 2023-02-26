@@ -4,7 +4,7 @@
 
 .dialog-content {
   @apply fixed z-50;
-  @apply w-[95vw] max-w-md rounded-lg p-4 md:w-full;
+  @apply w-[95vw] max-w-md rounded-lg p-4 tablet:w-full;
   @apply top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%];
   @apply dark:bg-gray-800;
   @apply focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75;

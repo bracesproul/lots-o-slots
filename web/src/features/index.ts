@@ -12,3 +12,4 @@ export { AdminAuthorizePage } from './admin-authorize-page';
 export { DepositDialog } from './deposit-dialog';
 export { PlayNowDialog } from './play-now-dialog';
 export { AppStoreButtonsDialog } from './app-store-buttons-dialog';
+export { HomeV2 } from './home-v2';
