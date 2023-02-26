@@ -1,5 +1,5 @@
 import { ReactElement, useRef } from 'react';
-import { HeaderV2 } from './components';
+import { HeaderV2, DepositBoxV2 } from './components';
 
 export default function HomeV2(): ReactElement {
   const slotsSectionRef = useRef<HTMLDivElement>(null);
@@ -11,6 +11,7 @@ export default function HomeV2(): ReactElement {
         slotsSectionRef={slotsSectionRef}
         pokerSectionRef={pokerSectionRef}
       />
+      <DepositBoxV2 />
     </div>
   );
 }

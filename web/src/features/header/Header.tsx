@@ -16,8 +16,9 @@ export default function Header(props: HeaderProps): ReactElement {
   const [playNowStepOneOpen, setPlayNowStepOneOpen] = useState(false);
   const [playNowStepTwoOpen, setPlayNowStepTwoOpen] = useState(false);
   const [stage, setStage] = useState(DialogStage.STAGE_ONE);
-  const [paymentProvider, setPaymentProvider] =
-    useState<PaymentProvider | null>(null);
+  const [paymentProvider, setPaymentProvider] = useState<PaymentProvider>(
+    PaymentProvider.PAYPAL
+  );
   const [gameType, setGameType] = useState<GameType | null>(null);
 
   const handleScrollToSlots = () => {

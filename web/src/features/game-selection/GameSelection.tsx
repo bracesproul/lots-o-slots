@@ -19,8 +19,8 @@ export type GameSelectionProps = {
   depositDialogStepTwoOpen: boolean;
   setDepositDialogStepTwoOpen: (depositDialogOpen: boolean) => void;
 
-  paymentProvider: PaymentProvider | null;
-  setPaymentProvider: (paymentProvider: PaymentProvider | null) => void;
+  paymentProvider: PaymentProvider;
+  setPaymentProvider: (paymentProvider: PaymentProvider) => void;
 };
 
 function GameSelection(props: GameSelectionProps): ReactElement {
@@ -87,8 +87,9 @@ export default function GameSelectionContainer(): ReactElement {
     useState(false);
   const [depositDialogStepTwoOpen, setDepositDialogStepTwoOpen] =
     useState(false);
-  const [paymentProvider, setPaymentProvider] =
-    useState<PaymentProvider | null>(PaymentProvider.PAYPAL);
+  const [paymentProvider, setPaymentProvider] = useState<PaymentProvider>(
+    PaymentProvider.PAYPAL
+  );
 
   const handleSubmit = () => {
     setDepositDialogStepTwoOpen(true);

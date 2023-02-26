@@ -1,17 +1,9 @@
-import { createMedia } from '@artsy/fresnel';
+import useBreakpoint from 'use-breakpoint';
 import { ReactElement, ReactNode } from 'react';
 
-const AppMediaBreakpoints = createMedia({
-  // @ NOTE for consistency, these values should align with those configured in
-  // tailwind responsive config (@/tailwind.config.js)
-  breakpoints: {
-    mobile: 0,
-    tablet: 640,
-    desktop: 1280,
-  },
-});
-
-const { Media } = AppMediaBreakpoints;
+// @ NOTE for consistency, these values should align with those configured in
+// tailwind responsive config (@/tailwind.config.js)
+const BREAKPOINTS = { mobile: 0, tablet: 640, desktop: 1280 };
 
 type ResponsiveWrapperProps = {
   /**
@@ -26,32 +18,35 @@ type ResponsiveWrapperProps = {
 
 const Mobile = (props: ResponsiveWrapperProps): ReactElement => {
   const p = { ...props };
+  const { breakpoint } = useBreakpoint(BREAKPOINTS, 'mobile', true);
 
-  return (
-    <Media at="mobile" className={p.className}>
-      {props.children}
-    </Media>
-  );
+  if (breakpoint !== 'mobile') {
+    return <></>;
+  }
+
+  return <div className={p.className}>{props.children}</div>;
 };
 
 const Tablet = (props: ResponsiveWrapperProps): ReactElement => {
   const p = { ...props };
+  const { breakpoint } = useBreakpoint(BREAKPOINTS, 'tablet', true);
 
-  return (
-    <Media greaterThanOrEqual="tablet" className={p.className}>
-      {props.children}
-    </Media>
-  );
+  if (breakpoint !== 'tablet') {
+    return <></>;
+  }
+
+  return <div className={p.className}>{props.children}</div>;
 };
 
 const Desktop = (props: ResponsiveWrapperProps): ReactElement => {
   const p = { ...props };
+  const { breakpoint } = useBreakpoint(BREAKPOINTS, 'desktop', true);
 
-  return (
-    <Media greaterThanOrEqual="desktop" className={p.className}>
-      {props.children}
-    </Media>
-  );
+  if (breakpoint !== 'desktop') {
+    return <></>;
+  }
+
+  return <div className={p.className}>{props.children}</div>;
 };
 
 export { Desktop, Tablet, Mobile };

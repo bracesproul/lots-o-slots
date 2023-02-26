@@ -19,4 +19,5 @@ export enum StylePrefix {
   SUCCESS_DIALOG = 'success-dialog',
   PLAY_CREATE_BOX = 'play-create-box',
   HEADER_V2 = 'header-v2',
+  DEPOSIT_BOX_V2 = 'deposit-box-v2',
 }

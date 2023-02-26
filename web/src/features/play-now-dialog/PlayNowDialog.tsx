@@ -12,7 +12,7 @@ export type PlayNowDialogProps = {
   setOpen: (open: boolean) => void;
   selectedGame: string;
   setSelectedGame: (selectedGame: string) => void;
-  paymentProvider: PaymentProvider | null;
+  paymentProvider: PaymentProvider;
   setPaymentProvider: (paymentProvider: PaymentProvider) => void;
   setDepositDialogOpen: (open: boolean) => void;
 };
@@ -57,7 +57,7 @@ export default function PlayNowDialogContainer(
   useEffect(() => {
     if (!p.stepOneOpen && !p.stepTwoOpen) {
       p.setGameType(null);
-      p.setPaymentProvider(null);
+      p.setPaymentProvider(PaymentProvider.PAYPAL);
       setDepositAmount(0);
     }
   }, [p.stepOneOpen, p.stepTwoOpen]);

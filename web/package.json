@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.2",
-    "@artsy/fresnel": "^6.1.0",
     "@graphql-codegen/add": "^3.2.3",
     "@headlessui/react": "^1.7.7",
     "@radix-ui/react-dialog": "^1.0.2",
@@ -45,7 +44,8 @@
     "react-mobile-store-button": "^0.0.6",
     "sass": "^1.56.1",
     "sass-loader": "^13.2.0",
-    "typescript": "4.9.3"
+    "typescript": "4.9.3",
+    "use-breakpoint": "^3.0.7"
   },
   "devDependencies": {
     "@babel/core": "^7.20.2",
