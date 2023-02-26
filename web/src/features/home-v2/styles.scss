@@ -1,3 +1,5 @@
+@use './components/styles.scss' as home-v2-component-styles;
+
 .header-v2 {
   @apply flex flex-col;
   @apply mx-[36px] my-[24px];
