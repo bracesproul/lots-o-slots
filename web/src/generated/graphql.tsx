@@ -57,6 +57,12 @@ export type AddAccountInput = {
   weeklyWithdrawals?: InputMaybe<Scalars['Float']>;
 };
 
+/** The response from the checkAdminPagePassword query */
+export type AuthorizeAdminUserPayload = {
+  __typename?: 'AuthorizeAdminUserPayload';
+  success: Scalars['Boolean'];
+};
+
 /** Input type for creating an email log. */
 export type CreateEmailLogInput = {
   /** The email ID provided by gmail. */
@@ -342,6 +348,7 @@ export enum PaymentType {
 
 export type Query = {
   __typename?: 'Query';
+  checkAdminPagePassword: AuthorizeAdminUserPayload;
   getAllAccounts: Array<Account>;
   getAllPayments: Array<Payment>;
   getAllUsers: Array<User>;
@@ -350,6 +357,11 @@ export type Query = {
   getSupabaseSignedUrl: GetSupabaseSignedUrlPayload;
   getUserPayments: Array<UserPayment>;
   seedData: Scalars['Boolean'];
+};
+
+
+export type QueryCheckAdminPagePasswordArgs = {
+  password: Scalars['String'];
 };
 
 
@@ -431,6 +443,13 @@ export type CreateUserMutationVariables = Exact<{
 
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', id: string, email?: string | null, password?: string | null } };
+
+export type CheckAuthQueryVariables = Exact<{
+  password: Scalars['String'];
+}>;
+
+
+export type CheckAuthQuery = { __typename?: 'Query', checkAdminPagePassword: { __typename?: 'AuthorizeAdminUserPayload', success: boolean } };
 
 export type GetAllAccountsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -548,6 +567,41 @@ export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
+export const CheckAuthDocument = gql`
+    query CheckAuth($password: String!) {
+  checkAdminPagePassword(password: $password) {
+    success
+  }
+}
+    `;
+
+/**
+ * __useCheckAuthQuery__
+ *
+ * To run a query within a React component, call `useCheckAuthQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCheckAuthQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCheckAuthQuery({
+ *   variables: {
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useCheckAuthQuery(baseOptions: Apollo.QueryHookOptions<CheckAuthQuery, CheckAuthQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CheckAuthQuery, CheckAuthQueryVariables>(CheckAuthDocument, options);
+      }
+export function useCheckAuthLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CheckAuthQuery, CheckAuthQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CheckAuthQuery, CheckAuthQueryVariables>(CheckAuthDocument, options);
+        }
+export type CheckAuthQueryHookResult = ReturnType<typeof useCheckAuthQuery>;
+export type CheckAuthLazyQueryHookResult = ReturnType<typeof useCheckAuthLazyQuery>;
+export type CheckAuthQueryResult = Apollo.QueryResult<CheckAuthQuery, CheckAuthQueryVariables>;
 export const GetAllAccountsDocument = gql`
     query GetAllAccounts {
   getAllAccounts {

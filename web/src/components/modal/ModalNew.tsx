@@ -76,7 +76,7 @@ function Dialog(props: DialogRootProps): ReactElement {
               forceMount
               className={cx(
                 'fixed z-50',
-                'w-[95vw] max-w-md rounded-lg p-4 md:w-full',
+                'w-[95vw] max-w-md rounded-lg p-[16px] tablet:w-full',
                 'top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%]',
                 'bg-white dark:bg-gray-800',
                 'focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75'
@@ -104,11 +104,11 @@ function Dialog(props: DialogRootProps): ReactElement {
 
               <DialogPrimitive.Close
                 className={cx(
-                  'absolute top-3.5 right-3.5 inline-flex items-center justify-center rounded-full p-1',
+                  'absolute top-[14px] right-[14px] inline-flex items-center justify-center rounded-full p-[4px]',
                   'focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75'
                 )}
               >
-                <Cross1Icon className="h-4 w-4 text-gray-500 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-400" />
+                <Cross1Icon className="h-[16px] w-[16px] text-gray-500 hover:text-gray-700 dark:text-gray-500 dark:hover:text-gray-400" />
               </DialogPrimitive.Close>
             </DialogPrimitive.Content>
           </Transition.Child>

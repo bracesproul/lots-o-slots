@@ -4,6 +4,7 @@ import { Button } from '@/components';
 import { CookieStorage } from 'local-storage-fallback';
 import { useRouter } from 'next/router';
 import { StylePrefix } from '@/types/style-prefix';
+import { useCheckAuthLazyQuery } from '@/generated/graphql';
 
 export type AdminAuthorizePageProps = {
   className?: string;
@@ -11,6 +12,8 @@ export type AdminAuthorizePageProps = {
   password: string;
   setPassword: (password: string) => void;
   handleSubmit: () => void;
+  /** Whether or not inputs are disabled */
+  isDisabled?: boolean;
 };
 
 const PREFIX = StylePrefix.ADMIN_AUTHORIZE_PAGE;
@@ -26,12 +29,12 @@ function WrongPassword(): ReactElement {
 
 function AdminAuthorizePage(props: AdminAuthorizePageProps): ReactElement {
   const p = { ...props };
-  const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = () => {
-    setSubmitted(true);
     p.handleSubmit();
   };
+
+  const disableInputs = p.isDisabled;
 
   return (
     <div className={'grid place-content-center mt-[35vh]'}>
@@ -39,7 +42,7 @@ function AdminAuthorizePage(props: AdminAuthorizePageProps): ReactElement {
         <WrongPassword />
       ) : (
         <>
-          {!submitted ? (
+          {!p.isDisabled ? (
             <div className={clsx([`${PREFIX}`, props.className])}>
               <form onSubmit={handleSubmit} className={'flex flex-col'}>
                 <h1 className={`${PREFIX}-title`}>Enter Password</h1>
@@ -51,7 +54,7 @@ function AdminAuthorizePage(props: AdminAuthorizePageProps): ReactElement {
                   onChange={(e) => p.setPassword(e.target.value)}
                 />
                 <Button
-                  isDisabled={!p.password || submitted}
+                  isDisabled={!p.password}
                   onPress={handleSubmit}
                   className={'rounded-full'}
                   type="submit"
@@ -80,14 +83,21 @@ export default function AdminAuthorizePageContainer(): ReactElement {
   const [wrongPassword, setWrongPassword] = useState(false);
   const router = useRouter();
 
+  const [checkAuth, { data, loading, error }] = useCheckAuthLazyQuery();
+
   return (
     <AdminAuthorizePage
       password={password}
       setPassword={setPassword}
       wrongPassword={wrongPassword}
-      handleSubmit={() => {
-        // TODO: Hit backend to check if key is valid, for now just do if.
-        if (password === 'pizza') {
+      isDisabled={loading || !!error}
+      handleSubmit={async () => {
+        const { data } = await checkAuth({
+          variables: {
+            password,
+          }
+        })
+        if (data?.checkAdminPagePassword.success) {
           const cookieStorage = new CookieStorage();
           cookieStorage.setItem('lots_o_slots_auth', password);
           router.push('/admin');

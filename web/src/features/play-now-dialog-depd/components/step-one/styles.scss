@@ -1,0 +1,21 @@
+.play-now-dialog-dialog-form {
+  font-family: 'Inter', sans-serif;
+  @apply flex flex-col m-[22px];
+}
+
+.play-now-dialog-form-label {
+  @apply text-white mb-[5px]
+}
+
+.play-now-dialog-form-input {
+  @apply rounded-lg p-[5px] mb-[5px] bg-neutral-700;
+  @apply text-white;
+}
+
+.play-now-dialog-form-submit {
+  @apply rounded-full mt-[10px]
+}
+
+.play-now-dialog-label-sub-text {
+  @apply text-gray-300 text-[14px];
+}

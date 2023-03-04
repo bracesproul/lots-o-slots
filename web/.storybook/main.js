@@ -1,56 +1,57 @@
 const path = require('path');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = {
-  stories: ['../src/**/*.stories.mdx', '../src/**/*.stories.@(js|jsx|ts|tsx)'],
-  /** Expose public folder to storybook as static */
-  staticDirs: ['../src/public'],
+  stories: [
+    '../**/__stories__/*.@(js|jsx|ts|tsx|mdx)',
+    '../**/*.stories.@(js|jsx|ts|tsx|mdx)',
+  ],
   addons: [
     '@storybook/addon-links',
     '@storybook/addon-essentials',
+    // '@storybook/addon-a11y', // added
+    // '@storybook/addon-storysource', // added
+    // 'storybook-addon-apollo-client', // added
+    // '@storybook/addon-docs', // added
+    // 'storybook-addon-next-router', // added
     {
-      /**
-       * Fix Storybook issue with PostCSS@8
-       * @see https://github.com/storybookjs/storybook/issues/12668#issuecomment-773958085
-       */
       name: '@storybook/addon-postcss',
       options: {
         postcssLoaderOptions: {
           implementation: require('postcss'),
+          postcssOptions: {
+            plugins: {
+              tailwindcss: { config: './.storybook/tailwind.config.js' },
+              autoprefixer: {},
+            },
+          },
         },
       },
     },
   ],
+  typescript: {
+    reactDocgenTypescriptOptions: {
+      shouldRemoveUndefinedFromOptional: true,
+      propFilter: {
+        skipPropsWithoutDoc: false,
+      },
+    },
+  },
   core: {
     builder: 'webpack5',
   },
   webpackFinal: (config) => {
-    /**
-     * Add support for alias-imports
-     * @see https://github.com/storybookjs/storybook/issues/11989#issuecomment-715524391
-     */
-    config.resolve.alias = {
-      ...config.resolve?.alias,
-      '@': [path.resolve(__dirname, '../src/'), path.resolve(__dirname, '../')],
-    };
-
-    /**
-     * Fixes font import with /
-     * @see https://github.com/storybookjs/storybook/issues/12844#issuecomment-867544160
-     */
-    config.resolve.roots = [
-      path.resolve(__dirname, '../public'),
-      'node_modules',
+    config.resolve.plugins = [
+      new TsconfigPathsPlugin({
+        configFile: path.resolve(__dirname, '../tsconfig.json'),
+      }),
     ];
-
-    config.resolve.fallback = { "util": false };
-    config.resolve.fallback = { "assert": require.resolve("assert/") };
-    config.resolve.fallback = { "path": require.resolve("path-browserify") };
-
     const ruleCssIndex = config.module.rules.findIndex(
       (rule) => rule.test.toString() === '/\\.css$/'
     );
     const cssRule = config.module.rules[ruleCssIndex];
 
+    // sass rule
     const sassRule = {
       test: /\.s[ca]ss$/,
       use: [

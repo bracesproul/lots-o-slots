@@ -2,26 +2,30 @@
   "name": "web",
   "version": "0.1.0",
   "private": true,
+  "sideEffects": [
+    "*.scss",
+    "*.css",
+    "*.sass"
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "storybook": "start-storybook public -p 6006",
+    "storybook": "start-storybook -s public -p 6006",
     "build:storybook": "build-storybook public",
     "gen": "graphql-codegen --config codegen.yml"
   },
-  "resolutions": {
-    "webpack": "^5"
-  },
   "dependencies": {
     "@apollo/client": "^3.7.2",
+    "@artsy/fresnel": "^6.1.0",
     "@graphql-codegen/add": "^3.2.3",
     "@headlessui/react": "^1.7.7",
     "@radix-ui/react-dialog": "^1.0.2",
     "@radix-ui/react-icons": "^1.1.1",
     "@radix-ui/react-select": "^1.1.2",
     "@react-aria/focus": "^3.10.0",
+    "@tailwindcss/line-clamp": "^0.4.2",
     "@tanstack/react-table": "^8.7.4",
     "@types/node": "18.11.9",
     "@types/react": "18.0.25",
@@ -54,11 +58,14 @@
     "@graphql-codegen/typescript": "^2.8.5",
     "@graphql-codegen/typescript-operations": "^2.5.10",
     "@graphql-codegen/typescript-react-apollo": "^3.3.7",
+    "@storybook/addon-a11y": "^6.5.16",
     "@storybook/addon-actions": "^6.5.13",
+    "@storybook/addon-docs": "^6.5.16",
     "@storybook/addon-essentials": "^6.5.13",
     "@storybook/addon-interactions": "^6.5.13",
     "@storybook/addon-links": "^6.5.13",
     "@storybook/addon-postcss": "^2.0.0",
+    "@storybook/addon-storysource": "^6.5.16",
     "@storybook/builder-webpack5": "^6.5.13",
     "@storybook/manager-webpack5": "^6.5.13",
     "@storybook/react": "^6.5.13",
@@ -71,6 +78,11 @@
     "eslint-plugin-storybook": "^0.6.7",
     "path-browserify": "^1.0.1",
     "postcss": "^8.4.19",
-    "tailwindcss": "^3.2.4"
+    "sass-loader": "^13.2.0",
+    "storybook-addon-apollo-client": "^4.0.13",
+    "storybook-addon-next-router": "^4.0.2",
+    "tailwindcss": "^3.2.4",
+    "tsconfig-paths-webpack-plugin": "^4.0.0",
+    "webpack": "5"
   }
 }

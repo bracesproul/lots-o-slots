@@ -6,12 +6,16 @@
 @tailwind utilities;
 
 html {
-  @apply bg-black;
+  @apply bg-black w-full h-full;
 }
-
 body {
   font-family: 'SEQUEL100-66', 'SEQUEL100-96', 'SEQUEL100-66-light', sans-serif;
 }
+#__next {
+  height: 100%;
+}
+
+
 
 .red-span-text {
   @apply text-[#C5002C];

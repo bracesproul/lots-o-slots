@@ -1,0 +1,12 @@
+.faq-section {
+  @apply flex flex-col gap-[12px] items-center justify-center mx-[12px];
+}
+
+.faq-section-header-wrapper {
+  @apply flex flex-col text-center gap-[20px];
+  @apply items-center justify-center;
+  @apply text-red-600 text-center text-[36px];
+  @apply tablet:text-[56px];
+
+  font-family: 'SEQUEL100-96', sans-serif;
+}

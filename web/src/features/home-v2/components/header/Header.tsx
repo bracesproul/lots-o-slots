@@ -1,6 +1,6 @@
 import { Button, GenerateAccountDialog, PlayNowDialog } from '@/components';
 import { AppStoreButtonsDialog } from '@/features/app-store-buttons-dialog';
-import { DialogStage } from '@/features/play-now-dialog/types';
+import { DialogStage } from '@/features/play-now-dialog-depd/types';
 import { PaymentProvider, GameType } from '@/generated/graphql';
 import { StylePrefix } from '@/types/style-prefix';
 import { ReactElement, useState } from 'react';

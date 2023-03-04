@@ -1,9 +1,9 @@
 .button-card-main {
-  @apply w-[400px] h-[135px] border-[1.5px] border-[#C5002C];
+  @apply max-w-[400px] min-w-[300px] h-[135px] border-[1.5px] border-[#C5002C];
   @apply flex flex-row;
   @apply bg-transparent;
   @apply cursor-pointer;
-  @apply overflow-hidden;
+  @apply overflow-hidden rounded-sm;
 
   &.is-hovered {
     @apply transition duration-200;

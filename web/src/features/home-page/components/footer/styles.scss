@@ -1,0 +1,5 @@
+.footer {
+  @apply flex flex-row items-center justify-center w-full h-[60px];
+  @apply bg-red-600 text-white text-[10px];
+  @apply tablet:text-[14px];
+}

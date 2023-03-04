@@ -1,10 +1,10 @@
 .circle-button {
-  @apply grid place-items-center rounded-full w-[85px] h-[85px] border-[4px] border-[#C5002C];
+  @apply grid place-items-center rounded-full w-[85px] h-[85px] border-[3px] border-[#C5002C];
   @apply transition-all;
   @apply cursor-pointer;
 
   &.is-hovered {
-    @apply border-[2px];
+    @apply border-[4.5px];
   }
 
   &.is-selected {

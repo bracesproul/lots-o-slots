@@ -7,6 +7,7 @@ import {
   AccountResolver,
   SeedResolver,
   UserPaymentResolver,
+  AuthResolver,
 } from '@/resolvers';
 
 export default (): Promise<GraphQLSchema> =>
@@ -18,6 +19,7 @@ export default (): Promise<GraphQLSchema> =>
       AccountResolver,
       SeedResolver,
       UserPaymentResolver,
+      AuthResolver,
     ],
     // validate: process.env.NODE_ENV === 'production' ? true : false,
     validate: false,

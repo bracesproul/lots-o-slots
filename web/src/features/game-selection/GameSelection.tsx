@@ -2,7 +2,7 @@ import React, { ReactElement, useState } from 'react';
 import { Button } from '@/components';
 import { GameSelectionCards, RadioButtons } from './components';
 import { PlayNowDialog } from '../';
-import { DialogStage, GameType } from '@/features/play-now-dialog/types';
+import { DialogStage, GameType } from '@/features/play-now-dialog-depd/types';
 import { PaymentProvider } from '@/generated/graphql';
 
 export type GameSelectionProps = {

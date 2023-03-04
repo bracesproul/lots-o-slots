@@ -1,5 +1,5 @@
 import { Input } from '@/components';
-import { PaymentProvider } from '@/generated/graphql';
+import { PaymentProvider } from '@/types';
 import { StylePrefix } from '@/types/style-prefix';
 import clsx from 'clsx';
 import { ReactElement } from 'react';

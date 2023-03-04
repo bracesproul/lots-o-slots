@@ -20,4 +20,13 @@ export enum StylePrefix {
   PLAY_CREATE_BOX = 'play-create-box',
   HEADER_V2 = 'header-v2',
   DEPOSIT_BOX_V2 = 'deposit-box-v2',
+  DIVIDER_COMPONENT = 'divider-component',
+  HOME_V2 = 'home-v2',
+  HOME = 'home',
+  SECTION_ONE = 'section-one',
+  DEPOSIT_CARD = 'deposit-card',
+  SECTION_TWO = 'section-two',
+  HEADER = 'header',
+  FOOTER = 'footer',
+  FAQ_SECTION = 'faq-section',
 }

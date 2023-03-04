@@ -6,9 +6,9 @@ import {
   findBadgeVariantFromPaymentType,
   findStringFromPaymentType,
 } from '../../utils';
-import { PaymentIdentifierInput } from '../';
+import { PaymentIdentifierInput } from '..';
 import clsx from 'clsx';
-import { PaymentProvider } from '@/generated/graphql';
+import { PaymentProvider } from '@/types';
 
 const DEPOSIT_PREFIX = 'deposit-dialog';
 

@@ -5,7 +5,7 @@ import { Button, ButtonCard, PlayNowDialog } from '@/components';
 import { GameType, PaymentProvider } from '@/generated/graphql';
 import { Mobile, Tablet, Desktop } from '@/utils';
 import { RadioButtons } from '@/features/game-selection/components';
-import { DialogStage } from '@/features/play-now-dialog/types';
+import { DialogStage } from '@/features/play-now-dialog-depd/types';
 
 export type DepositBoxV2Props = {
   /** Optional class name for applying styles */
@@ -146,7 +146,14 @@ function DepositBoxV2(props: DepositBoxV2Props): ReactElement {
   );
 }
 
-function DepositBoxV2Container(): ReactElement {
+export type DepositBoxV2ContainerProps = {
+  /** Optional class name for applying styles */
+  className?: string;
+};
+
+function DepositBoxV2Container(
+  props: DepositBoxV2ContainerProps
+): ReactElement {
   const [selectedGame, setSelectedGame] = useState<GameType | null>(null);
   const [paymentProvider, setPaymentProvider] = useState<PaymentProvider>(
     PaymentProvider.PAYPAL
@@ -165,6 +172,7 @@ function DepositBoxV2Container(): ReactElement {
 
   return (
     <DepositBoxV2
+      {...props}
       selectedGame={selectedGame}
       setSelectedGame={setSelectedGame}
       paymentProvider={paymentProvider}

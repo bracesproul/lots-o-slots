@@ -1,0 +1,5 @@
+query CheckAuth($password: String!) {
+  checkAdminPagePassword(password: $password) {
+    success
+  }
+}

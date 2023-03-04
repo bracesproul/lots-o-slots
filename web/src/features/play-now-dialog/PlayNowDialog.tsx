@@ -1,10 +1,13 @@
 import { FormEvent, ReactElement, useEffect, useState } from 'react';
-import { GetDefaultAccountsQuery, PaymentProvider } from '@/generated/graphql';
 import { PlayGameDialogProps, DialogStage } from './types';
 import { StepOneDialog, StepTwoDialog, SuccessDialog } from './components';
-import { useCreateUserPaymentMutation } from '@/generated/graphql';
 import { findUserId } from '@/utils';
-import { useGetDefaultAccountsQuery } from '@/generated/graphql';
+import {
+  useGetDefaultAccountsQuery,
+  useCreateUserPaymentMutation,
+  GetDefaultAccountsQuery,
+} from '@/generated/graphql';
+import { PaymentProvider } from '@/types';
 
 export type PlayNowDialogProps = {
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
