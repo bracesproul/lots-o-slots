@@ -13,7 +13,7 @@
 }
 
 .circle-icon {
-  @apply w-[60px] h-[60px] absolute bg-white rounded-full items-center justify-center flex z-50;
+  @apply w-[60px] h-[60px] bg-white rounded-full items-center justify-center flex;
 
   &.bg-purple {
     @apply bg-purple-700;
