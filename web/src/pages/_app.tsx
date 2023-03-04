@@ -7,10 +7,8 @@ export default function App({
   pageProps,
 }: AppProps): React.ReactNode {
   return (
-    <div>
-      <AppProvider {...pageProps}>
-        <Component {...pageProps} />
-      </AppProvider>
-    </div>
+    <AppProvider {...pageProps}>
+      <Component {...pageProps} />
+    </AppProvider>
   );
 }

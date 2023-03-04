@@ -1,13 +1,17 @@
-/** @type {import('tailwindcss').Config} */
+/* eslint-disable @typescript-eslint/no-var-requires */
+const config = require('./src/assets/tokens/tailwind-config');
 
 module.exports = {
-  content: [
-    "./src/pages/**/*.{js,ts,jsx,tsx}",
-    "./src/components/**/*.{js,ts,jsx,tsx}",
-    "./src/features/**/*.{js,ts,jsx,tsx}",
-  ],
+  mode: 'jit',
+  purge: ['./src/**/*.@(tsx|mdx)'],
+  ...config,
+  // force explicit values
   theme: {
-    extend: {},
+    ...config.theme,
+    spacing: {},
+    extend: {
+      ...config.theme.extend,
+      inset: { 0: 0 },
+    },
   },
-  plugins: [],
-}
+};

@@ -5,6 +5,8 @@ import { mergeProps } from '@react-aria/utils';
 import type { AriaButtonProps } from '@react-types/button';
 import clsx from 'clsx';
 
+type ButtonType = 'button' | 'submit' | 'reset';
+
 export type ButtonProps = AriaButtonProps & {
   className?: string;
 
@@ -15,7 +17,7 @@ export type ButtonProps = AriaButtonProps & {
 
   children: string;
 
-  type: 'button' | 'submit' | 'reset';
+  type?: ButtonType;
 
   /**
    * Whether or not the button is disabled.
@@ -27,6 +29,7 @@ export type ButtonProps = AriaButtonProps & {
 
 const DEFAULT_PROPS = {
   variant: 'primary',
+  type: 'button' as ButtonType,
 };
 
 export default function Button(props: ButtonProps): ReactElement {
@@ -39,6 +42,7 @@ export default function Button(props: ButtonProps): ReactElement {
 
   return (
     <button
+      {...behaviorProps}
       className={clsx([
         'button-main',
         {
@@ -53,7 +57,6 @@ export default function Button(props: ButtonProps): ReactElement {
         },
         p.className,
       ])}
-      {...behaviorProps}
       type={p.type}
     >
       {p.children}

@@ -8,13 +8,12 @@ import { useMemo } from 'react';
 import { isServer } from '../';
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
-function createApolloClient() {
+export function createApolloClient(headers?: Record<string, unknown>) {
   const client = new ApolloClient({
     uri:
       process.env.NODE_ENV === 'production'
         ? `${process.env.NEXT_PUBLIC_API_URL}/graphql`
-        : // 'http://34.136.213.6/graphql',
-          'http://localhost:8000/graphql',
+        : 'http://localhost:8000/graphql',
     cache: new InMemoryCache(),
     ssrMode: isServer(),
     connectToDevTools: !isServer(),
@@ -23,11 +22,12 @@ function createApolloClient() {
 }
 
 export function initializeApollo(
-  initialState: NormalizedCacheObject | null = null
+  initialState: NormalizedCacheObject | null = null,
+  headers?: Record<string, unknown>
 ): ApolloClient<NormalizedCacheObject> {
   // For SSG and SSR always create a new Apollo Client
   const _apolloClient =
-    !apolloClient || isServer() ? createApolloClient() : apolloClient;
+    !apolloClient || isServer() ? createApolloClient(headers) : apolloClient;
 
   // If your page has Next.js data fetching methods that use Apollo Client, the initial state
   // gets hydrated here

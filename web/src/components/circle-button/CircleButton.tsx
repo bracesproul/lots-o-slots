@@ -5,7 +5,7 @@ import { useHover } from '@react-aria/interactions';
 import { mergeProps } from '@react-aria/utils';
 import type { AriaButtonProps } from '@react-types/button';
 
-type IconBackgroundOptions =
+export type IconBackgroundOptions =
   | 'white'
   | 'purple'
   | 'green'

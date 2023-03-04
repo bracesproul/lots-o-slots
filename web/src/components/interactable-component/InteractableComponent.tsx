@@ -3,14 +3,13 @@ import { useButton } from '@react-aria/button';
 import { useHover } from '@react-aria/interactions';
 import { mergeProps } from '@react-aria/utils';
 import type { AriaButtonProps } from '@react-types/button';
-import { StylePrefix } from '@/types/style-prefix';
 
 export type InteractableComponentProps = AriaButtonProps & {
   children: ReactElement;
   isDisabled?: boolean;
 };
 
-const PREFIX = StylePrefix.INTERACTABLE_COMPONENT;
+const PREFIX = 'interactable-component';
 
 export default function InteractableComponent(
   props: InteractableComponentProps

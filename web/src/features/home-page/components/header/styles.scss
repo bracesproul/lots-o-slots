@@ -1,0 +1,14 @@
+.header-wrapper {
+  @apply flex justify-between mx-[36px] my-[28px];
+  font-family: 'SEQUEL100-96', sans-serif;
+}
+
+.header-nav-logo {
+  @apply text-[36px] text-white;
+}
+
+.header-nav-wrapper {
+  @apply flex flex-col gap-[12px];
+  @apply tablet:flex-row;
+  font-family: 'SEQUEL100-66', sans-serif;
+}

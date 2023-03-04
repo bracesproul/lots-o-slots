@@ -1,7 +1,10 @@
 .accordion-main {
-  @apply w-[825px] min-h-[90px] rounded-lg border-[1.5px] border-[#C5002C];
+  @apply flex items-center justify-center;
+  @apply w-full min-h-[75px] rounded-lg border-[1.5px] border-red-600;
   @apply flex flex-row;
   @apply transition-all duration-300;
+  @apply tablet:w-[600px];
+
   background-image: linear-gradient(to bottom, rgba(185, 28, 28, 0.2), rgba(85, 28, 28, 0.15));
 }
 
@@ -10,9 +13,10 @@
 }
 
 .title {
-  @apply w-full h-full align-middle ml-[30px] mt-[25px];
-  @apply text-[20px] text-white font-semibold italic;
+  @apply flex w-full h-full items-center justify-start pl-[30px];
+  @apply text-[14px] text-white font-semibold italic;
   @apply transition-all duration-300;
+  @apply tablet:text-[20px];
 
   &.is-open {
     @apply mt-[15px] mb-[5px];
@@ -30,7 +34,8 @@
 }
 
 .icon {
-  @apply w-[30px] h-[30px] text-white ml-auto mt-[25px] mr-[30px];
+  @apply flex;
+  @apply w-[30px] h-[30px] text-white ml-auto mr-[30px];
   @apply transition-all duration-300;
   @apply cursor-pointer;
 

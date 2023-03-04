@@ -1,0 +1,11 @@
+.success-dialog {
+  @apply m-auto text-center items-center justify-center;
+}
+
+.success-dialog-title {
+  @apply text-2xl font-bold text-white;
+}
+
+.success-dialog-secondary {
+  @apply text-gray-400 pt-[12px];
+}

@@ -1,0 +1,27 @@
+.deposit-box-v2 {
+  @apply flex flex-col w-fit items-center justify-center m-auto;
+  @apply border-[2px] border-[#C5002C];
+  @apply p-[18px];
+  @apply mobile:w-fit;
+}
+
+.deposit-box-v2-desktop {
+  @apply flex flex-col items-center justify-center gap-[12px];
+}
+
+.deposit-box-v2-button-cards {
+  @apply flex flex-row gap-[12px] mb-[12px];
+}
+
+.deposit-box-v2-tablet {
+  @apply flex flex-col items-center justify-center gap-[12px];
+}
+
+.deposit-box-v2-mobile {
+  @apply flex flex-col items-center justify-center gap-[12px];
+}
+
+.deposit-box-v2-button-cards-mobile {
+  @apply flex flex-col gap-[12px] mb-[12px];
+}
+

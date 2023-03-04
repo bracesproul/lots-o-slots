@@ -2,7 +2,7 @@ import React, { ReactElement, useState } from 'react';
 import { Button } from '@/components';
 import { GameSelectionCards, RadioButtons } from './components';
 import { PlayNowDialog } from '../';
-import { DialogStage, GameType } from '@/features/play-now-dialog/types';
+import { DialogStage, GameType } from '@/features/play-now-dialog-depd/types';
 import { PaymentProvider } from '@/generated/graphql';
 
 export type GameSelectionProps = {
@@ -19,8 +19,8 @@ export type GameSelectionProps = {
   depositDialogStepTwoOpen: boolean;
   setDepositDialogStepTwoOpen: (depositDialogOpen: boolean) => void;
 
-  paymentProvider: PaymentProvider | null;
-  setPaymentProvider: (paymentProvider: PaymentProvider | null) => void;
+  paymentProvider: PaymentProvider;
+  setPaymentProvider: (paymentProvider: PaymentProvider) => void;
 };
 
 function GameSelection(props: GameSelectionProps): ReactElement {
@@ -72,7 +72,7 @@ function GameSelection(props: GameSelectionProps): ReactElement {
         stage={stage}
         setStage={handleStageChange}
         includePaymentIdentifier
-        gameType={selectedGame}
+        gameType={selectedGame ?? GameType.POKER}
         setGameType={setSelectedGame}
       />
     </div>
@@ -87,8 +87,9 @@ export default function GameSelectionContainer(): ReactElement {
     useState(false);
   const [depositDialogStepTwoOpen, setDepositDialogStepTwoOpen] =
     useState(false);
-  const [paymentProvider, setPaymentProvider] =
-    useState<PaymentProvider | null>(PaymentProvider.PAYPAL);
+  const [paymentProvider, setPaymentProvider] = useState<PaymentProvider>(
+    PaymentProvider.PAYPAL
+  );
 
   const handleSubmit = () => {
     setDepositDialogStepTwoOpen(true);

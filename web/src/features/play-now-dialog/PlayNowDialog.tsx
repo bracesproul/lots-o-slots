@@ -1,10 +1,13 @@
 import { FormEvent, ReactElement, useEffect, useState } from 'react';
-import { GetDefaultAccountsQuery, PaymentProvider } from '@/generated/graphql';
 import { PlayGameDialogProps, DialogStage } from './types';
 import { StepOneDialog, StepTwoDialog, SuccessDialog } from './components';
-import { useCreateUserPaymentMutation } from '@/generated/graphql';
 import { findUserId } from '@/utils';
-import { useGetDefaultAccountsQuery } from '@/generated/graphql';
+import {
+  useGetDefaultAccountsQuery,
+  useCreateUserPaymentMutation,
+  GetDefaultAccountsQuery,
+} from '@/generated/graphql';
+import { PaymentProvider } from '@/types';
 
 export type PlayNowDialogProps = {
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
@@ -12,7 +15,7 @@ export type PlayNowDialogProps = {
   setOpen: (open: boolean) => void;
   selectedGame: string;
   setSelectedGame: (selectedGame: string) => void;
-  paymentProvider: PaymentProvider | null;
+  paymentProvider: PaymentProvider;
   setPaymentProvider: (paymentProvider: PaymentProvider) => void;
   setDepositDialogOpen: (open: boolean) => void;
 };
@@ -57,7 +60,7 @@ export default function PlayNowDialogContainer(
   useEffect(() => {
     if (!p.stepOneOpen && !p.stepTwoOpen) {
       p.setGameType(null);
-      p.setPaymentProvider(null);
+      p.setPaymentProvider(PaymentProvider.PAYPAL);
       setDepositAmount(0);
     }
   }, [p.stepOneOpen, p.stepTwoOpen]);

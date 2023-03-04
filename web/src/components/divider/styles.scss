@@ -1,0 +1,11 @@
+.divider-component {
+  @apply border-t-[2px] border-[#C5002C] w-full h-full p-[0px] m-[0px];
+
+  &.is-left {
+    @apply border-l-[2px]
+  }
+
+  &.is-right {
+    @apply border-r-[2px]
+  }
+}

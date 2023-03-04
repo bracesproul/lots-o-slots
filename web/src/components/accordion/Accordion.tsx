@@ -5,16 +5,11 @@ import { useHover } from '@react-aria/interactions';
 import type { AriaButtonProps } from '@react-types/button';
 
 export type AccordionProps = AriaButtonProps & {
+  /** Optional style prop for overriding or adding styles */
   className?: string;
-
-  /**
-   * The title of the accordion
-   */
+  /** The title of the accordion */
   title: string;
-
-  /**
-   * The exposed body of the accordion when it is open.
-   */
+  /** The exposed body of the accordion when it is open. */
   body: string;
 };
 

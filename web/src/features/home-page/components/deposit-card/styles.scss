@@ -1,0 +1,31 @@
+.deposit-card-wrapper {
+  @apply flex flex-col gap-[44px] items-center justify-center;
+  @apply mx-[12px];
+}
+
+.deposit-card-text {
+  @apply text-[36px] text-white text-center;
+  @apply tablet:text-[56px];
+  font-family: 'SEQUEL100-96', sans-serif;
+}
+
+.deposit-card-actions-wrapper {
+  @apply flex flex-col gap-[12px];
+  @apply w-fit p-[24px];
+  @apply border-[1px] border-red-600 rounded-md;
+  background-image: linear-gradient(to bottom, rgba(185, 28, 28, 0.15), rgba(85, 28, 28, 0.1));
+}
+
+.deposit-card-game-cards-wrapper {
+  @apply flex flex-col gap-[22px] items-center justify-center;
+  @apply desktop:flex-row
+}
+
+.deposit-card-payment-options-wrapper {
+  @apply flex flex-wrap gap-[12px] items-center justify-center;
+  @apply desktop:flex-nowrap;
+}
+
+.deposit-card-submit-wrapper {
+  @apply flex items-center justify-center mt-[12px];
+}

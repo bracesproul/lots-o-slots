@@ -27,16 +27,16 @@
 }
 
 .payments-table-th {
-  @apply text-white px-8 py-4 font-normal;
+  @apply text-white px-[32px] py-[16px] font-normal;
 }
 
 .payments-table-header {
   @apply bg-[#C5002C] h-[50px];
-  @apply sticky top-0;
+  @apply sticky top-[0px];
 }
 
 .payments-table-header-row {
-  @apply px-8 py-4;
+  @apply px-[32px] py-[16px];
 }
 
 .payments-table-action-cell-container {

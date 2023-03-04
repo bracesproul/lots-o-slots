@@ -1,6 +1,6 @@
 import { ReactElement, useState } from 'react';
 import { Button, GenerateAccountDialog, PlayNowDialog } from '@/components';
-import { DialogStage, GameType } from '../play-now-dialog/types';
+import { DialogStage, GameType } from '../play-now-dialog-depd/types';
 import { PaymentProvider } from '@/generated/graphql';
 import { AppStoreButtonsDialog } from '..';
 
@@ -16,8 +16,9 @@ export default function Header(props: HeaderProps): ReactElement {
   const [playNowStepOneOpen, setPlayNowStepOneOpen] = useState(false);
   const [playNowStepTwoOpen, setPlayNowStepTwoOpen] = useState(false);
   const [stage, setStage] = useState(DialogStage.STAGE_ONE);
-  const [paymentProvider, setPaymentProvider] =
-    useState<PaymentProvider | null>(null);
+  const [paymentProvider, setPaymentProvider] = useState<PaymentProvider>(
+    PaymentProvider.PAYPAL
+  );
   const [gameType, setGameType] = useState<GameType | null>(null);
 
   const handleScrollToSlots = () => {
@@ -35,20 +36,6 @@ export default function Header(props: HeaderProps): ReactElement {
           Lots <span className="red-span-text">{`O'`}</span> Slots
         </h2>
         <div className="nav-button-group">
-          {/* <Button
-            type="button"
-            variant="secondary"
-            onPress={() => setGenerateAccountDialogOpen(true)}
-          >
-            Generate Account
-          </Button>
-          <Button
-            type="button"
-            variant="primary"
-            onPress={() => setPlayNowStepOneOpen(true)}
-          >
-            Play Now!
-          </Button> */}
           <Button
             type="button"
             variant="secondary"
@@ -85,7 +72,7 @@ export default function Header(props: HeaderProps): ReactElement {
           setStepOneOpen={setPlayNowStepOneOpen}
           stepTwoOpen={playNowStepTwoOpen}
           setStepTwoOpen={setPlayNowStepTwoOpen}
-          gameType={gameType}
+          gameType={gameType ?? GameType.POKER}
           setGameType={setGameType}
         />
       )}

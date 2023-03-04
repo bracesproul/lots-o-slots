@@ -1,40 +1,49 @@
 import {
-  GameSelectionContainer,
-  Footer,
-  FaqSection,
-  HowToJoinTop,
-  HowToJoinLower,
   Header,
-} from '@/features';
-import { ReactElement, useRef } from 'react';
+  DepositCard,
+  SectionOne,
+  SectionTwo,
+  Faq,
+  Footer,
+} from './components';
+import { StylePrefix } from '@/types/style-prefix';
+import clsx from 'clsx';
+import React, { ReactElement, useRef } from 'react';
+import { Divider } from '@/components';
 
-export default function HomePage(): ReactElement {
+export type HomePageProps = {
+  className?: string;
+};
+
+const PREFIX = StylePrefix.HOME;
+
+export default function HomePage(props: HomePageProps): ReactElement {
+  const p = { ...props };
   const slotsSectionRef = useRef<HTMLDivElement>(null);
   const pokerSectionRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div>
-      <div className="home-header">
-        <Header
-          slotsSectionRef={slotsSectionRef}
-          pokerSectionRef={pokerSectionRef}
-        />
-      </div>
-      <div className="section-one">
-        <GameSelectionContainer />;
-      </div>
-      <div className="section-two">
-        <HowToJoinTop slotsSectionRef={slotsSectionRef} />
-      </div>
-      <div className="section-three">
-        <HowToJoinLower pokerSectionRef={pokerSectionRef} />
-      </div>
-      <div className="section-four">
-        <FaqSection />
-      </div>
-      <div className="">
-        <Footer />
-      </div>
+    <div className={clsx(`${PREFIX}`, p.className)}>
+      <Header
+        slotsSectionRef={slotsSectionRef}
+        pokerSectionRef={pokerSectionRef}
+      />
+      <DepositCard />
+      <Divider className={`${PREFIX}-divider`} />
+      <SectionOne slotsSectionRef={slotsSectionRef} />
+      <Divider
+        className={clsx(`${PREFIX}-divider`, {
+          'is-middle-section': true,
+        })}
+      />
+      <SectionTwo pokerSectionRef={pokerSectionRef} />
+      <Divider
+        className={clsx(`${PREFIX}-divider`, {
+          'is-middle-section': true,
+        })}
+      />
+      <Faq />
+      <Footer />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { BadgeVariant } from '@/components';
-import { PaymentProvider } from '@/generated/graphql';
+import { PaymentProvider } from '@/types';
 import { GameType } from './types';
 
 export const findGameTypeFromString = (gameType: string): GameType => {

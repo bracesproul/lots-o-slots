@@ -1,9 +1,9 @@
 import { Button, Dialog, Select } from '@/components';
-import { PaymentProvider } from '@/generated/graphql';
+import { PaymentProvider } from '@/types';
 import { ReactElement } from 'react';
 import { PlayDialogProps } from '../../types';
 import { findStringFromGameType, findGameTypeFromString } from '../../utils';
-import { PaymentIdentifierInput } from '../';
+import { PaymentIdentifierInput } from '..';
 import { StylePrefix } from '@/types/style-prefix';
 
 const PREFIX = StylePrefix.PLAY_NOW_DIALOG;

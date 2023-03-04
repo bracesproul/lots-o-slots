@@ -1,9 +1,8 @@
 import { SelectProps } from '@radix-ui/react-select';
 import { ReactElement } from 'react';
 import clsx from 'clsx';
-import { StylePrefix } from '@/types/style-prefix';
 
-const PREFIX = StylePrefix.SELECT_COMPONENT;
+const PREFIX = 'select-component';
 
 export type SelectOptionType = {
   value: string | number;

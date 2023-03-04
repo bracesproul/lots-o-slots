@@ -1,7 +1,10 @@
 .button-main {
-  @apply h-[45px] px-[45px] min-w-fit;
-  @apply border-[1px] border-[#C5002C];
-  @apply text-white italic font-semibold;
+  @apply h-[35px] px-[25px] min-w-fit;
+  @apply border-[1px] border-[#C5002C] rounded-sm;
+  @apply text-white text-[12px] italic font-semibold;
+  @apply tablet:h-[45px]
+  tablet:px-[45px]
+  tablet:text-[18px];
 
   &.is-primary {
     @apply bg-[#C5002C];
@@ -31,6 +34,11 @@
   }
 
   &.size-xlarge {
-    @apply h-[60px] px-[80px] text-[24px];
+    @apply h-[60px]
+    px-[80px]
+    text-[24px];
+    @apply tablet:h-[60px]
+    tablet:px-[80px]
+    tablet:text-[24px];
   }
 }
