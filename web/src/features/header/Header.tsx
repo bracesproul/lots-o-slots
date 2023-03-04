@@ -36,20 +36,6 @@ export default function Header(props: HeaderProps): ReactElement {
           Lots <span className="red-span-text">{`O'`}</span> Slots
         </h2>
         <div className="nav-button-group">
-          {/* <Button
-            type="button"
-            variant="secondary"
-            onPress={() => setGenerateAccountDialogOpen(true)}
-          >
-            Generate Account
-          </Button>
-          <Button
-            type="button"
-            variant="primary"
-            onPress={() => setPlayNowStepOneOpen(true)}
-          >
-            Play Now!
-          </Button> */}
           <Button
             type="button"
             variant="secondary"
@@ -86,7 +72,7 @@ export default function Header(props: HeaderProps): ReactElement {
           setStepOneOpen={setPlayNowStepOneOpen}
           stepTwoOpen={playNowStepTwoOpen}
           setStepTwoOpen={setPlayNowStepTwoOpen}
-          gameType={gameType}
+          gameType={gameType ?? GameType.POKER}
           setGameType={setGameType}
         />
       )}

@@ -139,7 +139,7 @@ function DepositBoxV2(props: DepositBoxV2Props): ReactElement {
         stage={p.stage}
         setStage={p.setStage}
         includePaymentIdentifier
-        gameType={p.selectedGame}
+        gameType={p.selectedGame ?? GameType.POKER}
         setGameType={p.setSelectedGame}
       />
     </div>

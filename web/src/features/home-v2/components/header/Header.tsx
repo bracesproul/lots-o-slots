@@ -68,7 +68,7 @@ export default function HeaderV2(props: HeaderProps): ReactElement {
       )}
       {process.env.NEXT_PUBLIC_PLAY_NOW_DIALOG_ENABLED === 'true' && (
         <PlayNowDialog
-          paymentProvider={paymentProvider}
+          paymentProvider={paymentProvider ?? PaymentProvider.PAYPAL}
           setPaymentProvider={setPaymentProvider}
           stage={stage}
           setStage={setStage}
@@ -76,7 +76,7 @@ export default function HeaderV2(props: HeaderProps): ReactElement {
           setStepOneOpen={setPlayNowStepOneOpen}
           stepTwoOpen={playNowStepTwoOpen}
           setStepTwoOpen={setPlayNowStepTwoOpen}
-          gameType={gameType}
+          gameType={gameType ?? GameType.POKER}
           setGameType={setGameType}
         />
       )}

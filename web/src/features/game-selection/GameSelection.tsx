@@ -72,7 +72,7 @@ function GameSelection(props: GameSelectionProps): ReactElement {
         stage={stage}
         setStage={handleStageChange}
         includePaymentIdentifier
-        gameType={selectedGame}
+        gameType={selectedGame ?? GameType.POKER}
         setGameType={setSelectedGame}
       />
     </div>
