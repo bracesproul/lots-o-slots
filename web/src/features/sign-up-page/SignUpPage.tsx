@@ -123,7 +123,7 @@ export default function SignUpPageContainer(): ReactElement {
 
   const isDisabled = false;
 
-  return <SignUpPage
+  return <SignUpPage2
     isDisabled={isDisabled}
     formData={{
       username,
@@ -138,4 +138,123 @@ export default function SignUpPageContainer(): ReactElement {
       setLastName,
     }}
   />;
+}
+
+enum SignUpStep {
+  ENTER_INFO = 'enter-info',
+  PROCESSING = 'processing',
+}
+
+function SignUpPage2(props: SignUpPageProps): ReactElement {
+  const p = { ...props };
+  const {
+    username,
+    setUsername,
+    password,
+    setPassword,
+    email,
+    setEmail,
+    firstName,
+    setFirstName,
+    lastName,
+    setLastName,
+  } = p.formData;
+
+  const [step, setStep] = useState(SignUpStep.ENTER_INFO)
+  const isSubmitDisabled = p.isDisabled || !username || !password || !firstName || !lastName;
+
+  const handleSubmit = () => {
+    // todo implement
+  }
+
+
+
+
+  return (
+    <div
+      className={clsx(
+        `${PREFIX}`,
+      )}
+    >
+      <div className={`${PREFIX}-content`}>
+        <div className={`${PREFIX}-body`}>
+          {step === SignUpStep.ENTER_INFO && (
+            <div className={`${PREFIX}-card`}>
+              <form onSubmit={handleSubmit} className={`${PREFIX}-link-form`}>
+                <div className={`${PREFIX}-instructions`}>
+                  <h1 className={`${PREFIX}-heading`}>Sign Up</h1>
+                </div>
+
+                <div className={`${PREFIX}-fields`}>
+                  <div className={`${PREFIX}-side-by-side-fields`}>
+                    <Input
+                      type="text"
+                      required
+                      value={firstName}
+                      onChange={setFirstName}
+                      label="First Name"
+                      isDisabled={p.isDisabled}
+                      className={`${PREFIX}-small-input`}
+                      labelClassName={`${PREFIX}-input-label`}
+                    />
+                    <Input
+                      type="text"
+                      required
+                      value={lastName}
+                      onChange={setLastName}
+                      label="Last Name"
+                      isDisabled={p.isDisabled}
+                      className={`${PREFIX}-small-input`}
+                      labelClassName={`${PREFIX}-input-label`}
+                    />
+                  </div>
+                  <Input
+                    type="text"
+                    required
+                    value={username}
+                    onChange={setUsername}
+                    label="Username"
+                    isDisabled={p.isDisabled}
+                    className={`${PREFIX}-normal-input`}
+                    labelClassName={`${PREFIX}-input-label`}
+                  />
+                  <Input
+                    type="text"
+                    required
+                    value={password}
+                    onChange={setPassword}
+                    label="Password"
+                    isDisabled={p.isDisabled}
+                    className={`${PREFIX}-normal-input`}
+                    labelClassName={`${PREFIX}-input-label`}
+                  />
+                  <Input
+                    type="text"
+                    required
+                    value={email}
+                    onChange={setEmail}
+                    label="Email"
+                    isDisabled={p.isDisabled}
+                    className={`${PREFIX}-normal-input`}
+                    labelClassName={`${PREFIX}-input-label`}
+                  />
+                  <div>
+                    <Button
+                      type="submit"
+                      isDisabled={isSubmitDisabled}
+                      variant="primary"
+                      className={`${PREFIX}-submit-button`}
+                      labelClassName={`${PREFIX}-input-label`}
+                    >
+                      Submit
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  )
 }
