@@ -1,28 +1,7 @@
-// .sign-up-page {
-//   @apply h-screen w-full;
-//   @apply text-light-gray-500 bg-black;
-//   @apply flex flex-col;
-// }
-
-// .sign-up-page-wrapper {
-//   @apply h-fit border-[1px] border-red-600 rounded-md bg-gray-800;
-//   @apply py-[22px] px-[12px];
-//   @apply flex flex-col;
-//   @apply max-w-screen-desktop tablet:mx-[96px] desktop:mx-auto mx-[24px];
-//   @apply text-body-md tablet:text-body-lg;
-// }
-
-// .sign-up-page-title {
-//   @apply text-white text-center mb-[12px] text-[26px];
-// }
-
-// .sign-up-page-form {
-//   @apply flex flex-col items-center justify-center gap-[12px];
-// }
-
-// .sign-up-page-login {
-//   @apply text-blue-400 text-[8px] underline underline-offset-1 cursor-pointer;
-// }
+.sign-up-page-login {
+  @apply text-blue-400 text-[8px] underline underline-offset-1 cursor-pointer;
+  @apply tablet:text-[10px];
+}
 
 .sign-up-page-side-by-side-fields {
   @apply flex flex-row gap-[8px];
@@ -91,4 +70,9 @@
 
 .sign-up-page-input-label {
   @apply text-gray-800;
+}
+
+.sign-up-page-processing-body {
+  @apply text-white;
+  @apply text-h4 tablet:text-h2;
 }
