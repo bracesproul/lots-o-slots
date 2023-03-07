@@ -1,25 +1,78 @@
-.login-page {
-  @apply w-full h-full 
-}
-
-.login-page-wrapper {
-  @apply flex flex-col items-center justify-center;
-  @apply w-full h-fit border-[1px] border-red-600 rounded-md bg-gray-800;
-  @apply py-[22px] px-[12px];
-}
-
-.login-page-title {
-  @apply text-white text-center mb-[12px] text-[26px];
-}
-
-.login-page-form {
-  @apply flex flex-col items-center justify-center gap-[12px];
-}
-
-.login-page-sign-up {
+.login-page-login {
   @apply text-blue-400 text-[8px] underline underline-offset-1 cursor-pointer;
+  @apply tablet:text-[10px];
+}
+
+.login-page-side-by-side-fields {
+  @apply flex flex-row gap-[8px];
+}
+
+.login-page-small-input {
+  @apply w-[125px] border-b-[1px] border-gray-500 rounded-none;
 }
 
 .login-page-normal-input {
-  @apply w-[258px];
+  @apply w-[258px] border-b-[1px] border-gray-500 rounded-none;
+}
+
+.login-page {
+  @apply h-screen w-full;
+
+  @apply text-light-gray-500 bg-black;
+
+  @apply flex flex-col;
+
+  .login-page-content {
+    @apply h-full;
+
+    @apply flex flex-col;
+
+    @apply max-w-screen-desktop tablet:mx-[96px] desktop:mx-auto mx-[24px];
+
+    @apply text-body-md tablet:text-body-lg;
+  }
+}
+
+.login-page-header {
+  @apply h-[148px];
+  @apply flex items-center justify-center;
+}
+
+.login-page-body {
+  @apply tablet:mt-[25%] desktop:w-[576px] mt-[40%];
+  @apply text-center;
+}
+
+.login-page-card {
+  @apply tablet:p-[40px] mx-auto max-w-[480px] rounded-xl p-[24px];
+  @apply bg-white text-gray-900;
+}
+
+.login-page-instructions {
+  @apply flex flex-col gap-[32px] mb-[18px];
+
+  .login-page-heading {
+    @apply text-h2 tablet:text-h1;
+  }
+
+  .login-page-description {
+    @apply mt-[12px] text-gray-600;
+  }
+}
+
+.login-page-fields {
+  @apply flex flex-col gap-[16px] items-center justify-center;
+}
+
+.login-page-submit-button {
+  @apply w-full;
+}
+
+.login-page-input-label {
+  @apply text-gray-800;
+}
+
+.login-page-processing-body {
+  @apply text-white;
+  @apply text-h4 tablet:text-h2;
 }

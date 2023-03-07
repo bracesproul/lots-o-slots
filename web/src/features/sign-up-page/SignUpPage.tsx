@@ -1,6 +1,6 @@
 import { ReactElement, useState } from 'react';
 import clsx from 'clsx';
-import { LOGIN_PAGE, StylePrefix } from '@/types';
+import { AuthStep, LOGIN_PAGE, StylePrefix } from '@/types';
 import { Button, Input } from '@/components';
 import Link from 'next/link';
 
@@ -40,12 +40,7 @@ export type SignUpPageProps = {
 
 const PREFIX = StylePrefix.SIGN_UP_PAGE;
 
-enum SignUpStep {
-  ENTER_INFO = 'enter-info',
-  PROCESSING = 'processing',
-}
-
-function SignUpPage2(props: SignUpPageProps): ReactElement {
+function SignUpPage(props: SignUpPageProps): ReactElement {
   const p = { ...props };
   const {
     username,
@@ -60,11 +55,11 @@ function SignUpPage2(props: SignUpPageProps): ReactElement {
     setLastName,
   } = p.formData;
 
-  const [step, setStep] = useState(SignUpStep.ENTER_INFO)
+  const [step, setStep] = useState(AuthStep.ENTER_INFO)
   const isSubmitDisabled = p.isDisabled || !username || !password || !firstName || !lastName;
 
   const handleSubmit = () => {
-    setStep(SignUpStep.PROCESSING)
+    setStep(AuthStep.PROCESSING)
     p.handleSubmit();
   }
 
@@ -76,7 +71,7 @@ function SignUpPage2(props: SignUpPageProps): ReactElement {
     >
       <div className={`${PREFIX}-content`}>
         <div className={`${PREFIX}-body`}>
-          {step === SignUpStep.ENTER_INFO && (
+          {step === AuthStep.ENTER_INFO && (
             <div className={`${PREFIX}-card`}>
               <form onSubmit={handleSubmit} className={`${PREFIX}-link-form`}>
                 <div className={`${PREFIX}-instructions`}>
@@ -151,7 +146,7 @@ function SignUpPage2(props: SignUpPageProps): ReactElement {
               </form>
             </div>
           )}
-          {step === SignUpStep.PROCESSING && (
+          {step === AuthStep.PROCESSING && (
             <div className={`${PREFIX}-processing-body`}>
               <h1>Please wait while your account is created.</h1>
             </div>
@@ -175,7 +170,7 @@ export default function SignUpPageContainer(): ReactElement {
     /** @TODO call api */
   }
 
-  return <SignUpPage2
+  return <SignUpPage
     isDisabled={isDisabled}
     handleSubmit={handleSubmit}
     formData={{

@@ -1,12 +1,10 @@
 import { ReactElement, useState } from 'react';
 import clsx from 'clsx';
-import { SIGN_UP_PAGE, StylePrefix } from '@/types';
+import { AuthStep, SIGN_UP_PAGE, StylePrefix } from '@/types';
 import { Button, Input } from '@/components';
 import Link from 'next/link';
 
-export type LoginPageProps = {
-  /** Optional style prop for overriding the default styles. */
-  className?: string;
+type LoginFormData = {
   /** State variable for the username */
   username: string;
   /** State setter for controlling the username */
@@ -15,43 +13,95 @@ export type LoginPageProps = {
   password: string;
   /** State setter for controlling the password */
   setPassword: (password: string) => void;
+}
+
+export type LoginPageProps = {
+  /** Optional style prop for overriding the default styles. */
+  className?: string;
   /** Whether or not the submit and inputs are disabled */
   isDisabled?: boolean;
+  /** State variables and setter functions for the form fields */
+  formData: LoginFormData;
+  /** Submit handler for creating an account */
+  handleSubmit: () => void;
 };
 
 const PREFIX = StylePrefix.LOGIN_PAGE;
 
-function LoginPage(props: LoginPageProps): ReactElement {
+function LoginPage2(props: LoginPageProps): ReactElement {
   const p = { ...props };
+  const {
+    username,
+    setUsername,
+    password,
+    setPassword,
+  } = p.formData;
+  const isSubmitDisabled = p.isDisabled || !username || !password;
 
-  const isSubmitDisabled = p.isDisabled || !p.username || !p.password;
+  const [step, setStep] = useState(AuthStep.ENTER_INFO)
+
+  const handleSubmit = () => {
+    setStep(AuthStep.PROCESSING)
+    p.handleSubmit();
+  }
 
   return (
-    <div className={clsx([PREFIX, props.className])}>
-      <div className={`${PREFIX}-wrapper`}>
-        <h3 className={`${PREFIX}-title`}>Login</h3>
-        <form className={`${PREFIX}-form`}>
-          <Input
-            type="text"
-            required
-            value={p.username}
-            onChange={p.setUsername}
-            label="Username"
-            isDisabled={p.isDisabled}
-            className={`${PREFIX}-normal-input`}
-          />
-          <Input
-            type="text"
-            required
-            value={p.password}
-            onChange={p.setPassword}
-            label="Password"
-            isDisabled={p.isDisabled}
-            className={`${PREFIX}-normal-input`}
-          />
-          <p className={`${PREFIX}-sign-up`}><Link href={SIGN_UP_PAGE}>Don't have an account? Sign up now</Link></p>
-          <Button isDisabled={isSubmitDisabled} type='submit' className={`${PREFIX}-submit-button`}>Login</Button>
-        </form>
+    <div
+      className={clsx(
+        `${PREFIX}`,
+      )}
+    >
+      <div className={`${PREFIX}-content`}>
+        <div className={`${PREFIX}-body`}>
+          {step === AuthStep.ENTER_INFO && (
+            <div className={`${PREFIX}-card`}>
+              <form onSubmit={handleSubmit} className={`${PREFIX}-link-form`}>
+                <div className={`${PREFIX}-instructions`}>
+                  <h1 className={`${PREFIX}-heading`}>Sign Up</h1>
+                </div>
+
+                <div className={`${PREFIX}-fields`}>
+                  <Input
+                    type="text"
+                    required
+                    value={username}
+                    onChange={setUsername}
+                    label="Username"
+                    isDisabled={p.isDisabled}
+                    className={`${PREFIX}-normal-input`}
+                    labelClassName={`${PREFIX}-input-label`}
+                  />
+                  <Input
+                    type="text"
+                    required
+                    value={password}
+                    onChange={setPassword}
+                    label="Password"
+                    isDisabled={p.isDisabled}
+                    className={`${PREFIX}-normal-input`}
+                    labelClassName={`${PREFIX}-input-label`}
+                  />
+                  <p className={`${PREFIX}-login`}><Link href={SIGN_UP_PAGE}>Don't have an account? Sign up now</Link></p>
+                  <div>
+                    <Button
+                      type="submit"
+                      isDisabled={isSubmitDisabled}
+                      variant="primary"
+                      className={`${PREFIX}-submit-button`}
+                    >
+                      Submit
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          )}
+          {step === AuthStep.PROCESSING && (
+            <div className={`${PREFIX}-processing-body`}>
+              <h1>Logging in, please wait.</h1>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )
@@ -63,11 +113,18 @@ export default function LoginPageContainer(): ReactElement {
 
   const isDisabled = false;
 
-  return <LoginPage
-    username={username}
-    setUsername={setUsername}
-    password={password}
-    setPassword={setPassword}
+  const handleSubmit = () => {
+    /** @TODO call api */
+  }
+
+  return <LoginPage2
+    formData={{
+      username,
+      setUsername,
+      password,
+      setPassword,
+    }}
     isDisabled={isDisabled}
+    handleSubmit={handleSubmit}
   />;
 }
