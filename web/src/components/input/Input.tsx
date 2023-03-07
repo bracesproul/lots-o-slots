@@ -4,6 +4,8 @@ import { StylePrefix } from '@/types/style-prefix';
 
 export type InputProps = {
   className?: string;
+  /** Custom className to override the label styling */
+  labelClassName?: string;
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
@@ -25,11 +27,11 @@ const PREFIX = StylePrefix.INPUT_COMPONENT;
 export default function Input(props: InputProps): ReactElement {
   const p = { ...props };
   return (
-    <div className={clsx([`${PREFIX}`, p.className, {
+    <div className={clsx([`${PREFIX}`, {
       'has-label': !!p.label,
     }])}>
       <span className={`${PREFIX}-label-container`}>
-        {p.label && <p className={`${PREFIX}-label`}>{p.label}</p>}
+        {p.label && <p className={clsx(`${PREFIX}-label`, p.labelClassName)}>{p.label}</p>}
         {p.required && <p className={clsx([`${PREFIX}-required`, {
           'has-label': !!p.label,
         }])}>*</p>}

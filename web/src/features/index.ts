@@ -13,3 +13,5 @@ export { DepositDialog } from './deposit-dialog';
 export { PlayNowDialog } from './play-now-dialog-depd';
 export { AppStoreButtonsDialog } from './app-store-buttons-dialog';
 export { HomeV2 } from './home-v2';
+export { LoginPage } from './login-page';
+export { SignUpPage } from './sign-up-page';
