@@ -57,7 +57,7 @@ function LoginPage2(props: LoginPageProps): ReactElement {
             <div className={`${PREFIX}-card`}>
               <form onSubmit={handleSubmit} className={`${PREFIX}-link-form`}>
                 <div className={`${PREFIX}-instructions`}>
-                  <h1 className={`${PREFIX}-heading`}>Sign Up</h1>
+                  <h1 className={`${PREFIX}-heading`}>Login</h1>
                 </div>
 
                 <div className={`${PREFIX}-fields`}>
