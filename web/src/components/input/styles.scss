@@ -2,6 +2,10 @@
   &.has-label {
     @apply flex flex-col;
   }
+
+  &.has-error {
+    @apply text-red-400;
+  }
 }
 
 .input-component-label-container {
@@ -18,11 +22,19 @@
 
 .input-component-label {
   @apply text-[10px] text-gray-100 bg-transparent;
+
+  &.has-error {
+    @apply text-red-400;
+  }
 }
 
 .input-component-input {
   @apply p-[5px] rounded-md;
   @apply text-[12px] outline-none;
+
+  &.has-error {
+    @apply border-red-400;
+  }
 }
 
 .input-component-error {

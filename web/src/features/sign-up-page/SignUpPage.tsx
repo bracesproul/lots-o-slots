@@ -3,6 +3,7 @@ import clsx from 'clsx';
 import { AuthStep, LOGIN_PAGE, SignUpError, StylePrefix } from '@/types';
 import { Button, Input } from '@/components';
 import Link from 'next/link';
+import { validatePassword } from './utils';
 
 type SignUpFormData = {
   /** State variable for the username */
@@ -69,6 +70,8 @@ function SignUpPage(props: SignUpPageProps): ReactElement {
   const invalidPasswordError = p.errorMessages?.includes(SignUpError.INVALID_PASSWORD) ? p.errorMessages.find((e) => e === SignUpError.INVALID_PASSWORD) : undefined;
   const generalError = p.errorMessages?.includes(SignUpError.ERROR) ? p.errorMessages.find((e) => e === SignUpError.ERROR) : undefined;
 
+  const invalidPasswordMessage = 'Invalid Password, passwords must include two numbers, one uppercase and lowercase letter and no spaces.'
+
   return (
     <div
       className={clsx(
@@ -125,9 +128,9 @@ function SignUpPage(props: SignUpPageProps): ReactElement {
                     isDisabled={p.isDisabled}
                     className={`${PREFIX}-normal-input`}
                     labelClassName={`${PREFIX}-input-label`}
-                    hasError={!!invalidPasswordError}
                     error={invalidPasswordError}
                   />
+                  {invalidPasswordError && <p className={`${PREFIX}-error-message`}>{invalidPasswordMessage}</p>}
                   <Input
                     type="text"
                     value={email}
@@ -181,6 +184,17 @@ export default function SignUpPageContainer(): ReactElement {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<SignUpError[] | undefined>(undefined);
 
+  const handlePasswordChange = (password: string) => {
+    setPassword(password);
+    if (!validatePassword(password) && password !== '') {
+      if (!errors?.includes(SignUpError.INVALID_PASSWORD)) {
+        setErrors((prev) => [...(prev ? prev : []), SignUpError.INVALID_PASSWORD])
+      }
+    } else if (password === '') {
+      setErrors((prev) => prev?.filter((e) => e !== SignUpError.INVALID_PASSWORD))
+    }
+  }
+
   const isDisabled = false;
 
   const handleSubmit = () => {
@@ -195,7 +209,7 @@ export default function SignUpPageContainer(): ReactElement {
       username,
       setUsername,
       password,
-      setPassword,
+      setPassword: handlePasswordChange,
       email,
       setEmail,
       firstName,
