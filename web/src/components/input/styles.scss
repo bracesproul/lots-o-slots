@@ -1,3 +1,31 @@
 .input-component {
-  @apply p-[5px] rounded-lg border-[2px] border-[#C5002C];
+  &.has-label {
+    @apply flex flex-col;
+  }
+}
+
+.input-component-label-container {
+  @apply flex flex-row items-start justify-start;
+}
+
+.input-component-required {
+  @apply text-red-400 mb-[-4px];
+
+  &.has-label {
+    @apply pl-[4px];
+  }
+}
+
+.input-component-label {
+  @apply text-[10px] text-gray-100 bg-transparent;
+}
+
+.input-component-input {
+  @apply p-[5px] rounded-md;
+  @apply text-[12px] outline-none;
+}
+
+.input-component-error {
+  @apply text-[10px] pt-[4px];
+  @apply text-red-400 items-start justify-start;
 }
