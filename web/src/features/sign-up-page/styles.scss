@@ -76,3 +76,12 @@
   @apply text-white;
   @apply text-h4 tablet:text-h2;
 }
+
+.sign-up-page-error-message {
+  @apply text-red-400 text-[8px];
+  @apply tablet:text-[10px];
+
+  &.is-link {
+   @apply underline underline-offset-1 cursor-pointer; 
+  }
+}

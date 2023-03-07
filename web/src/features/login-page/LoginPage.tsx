@@ -1,6 +1,6 @@
 import { ReactElement, useState } from 'react';
 import clsx from 'clsx';
-import { AuthStep, SIGN_UP_PAGE, StylePrefix } from '@/types';
+import { AuthStep, LoginError, SIGN_UP_PAGE, StylePrefix } from '@/types';
 import { Button, Input } from '@/components';
 import Link from 'next/link';
 
@@ -24,6 +24,8 @@ export type LoginPageProps = {
   formData: LoginFormData;
   /** Submit handler for creating an account */
   handleSubmit: () => void;
+  /** Error message */
+  errorMessage?: string;
 };
 
 const PREFIX = StylePrefix.LOGIN_PAGE;
@@ -66,7 +68,7 @@ function LoginPage2(props: LoginPageProps): ReactElement {
                     required
                     value={username}
                     onChange={setUsername}
-                    label="Username"
+                    label="Username or Email"
                     isDisabled={p.isDisabled}
                     className={`${PREFIX}-normal-input`}
                     labelClassName={`${PREFIX}-input-label`}
@@ -92,6 +94,7 @@ function LoginPage2(props: LoginPageProps): ReactElement {
                       Submit
                     </Button>
                   </div>
+                  {p.errorMessage && <p className={`${PREFIX}-error-message`}>{p.errorMessage}</p>}
                 </div>
               </form>
             </div>
@@ -110,6 +113,7 @@ function LoginPage2(props: LoginPageProps): ReactElement {
 export default function LoginPageContainer(): ReactElement {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState<LoginError | undefined>(undefined);
 
   const isDisabled = false;
 
@@ -126,5 +130,6 @@ export default function LoginPageContainer(): ReactElement {
     }}
     isDisabled={isDisabled}
     handleSubmit={handleSubmit}
+    errorMessage={error}
   />;
 }

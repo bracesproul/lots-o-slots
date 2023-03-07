@@ -1,6 +1,6 @@
 import { ReactElement, useState } from 'react';
 import clsx from 'clsx';
-import { AuthStep, LOGIN_PAGE, StylePrefix } from '@/types';
+import { AuthStep, LOGIN_PAGE, SignUpError, StylePrefix } from '@/types';
 import { Button, Input } from '@/components';
 import Link from 'next/link';
 
@@ -36,6 +36,8 @@ export type SignUpPageProps = {
   formData: SignUpFormData;
   /** Submit handler for creating an account */
   handleSubmit: () => void;
+  /** A list of errors */
+  errorMessages?: SignUpError[];
 };
 
 const PREFIX = StylePrefix.SIGN_UP_PAGE;
@@ -62,6 +64,10 @@ function SignUpPage(props: SignUpPageProps): ReactElement {
     setStep(AuthStep.PROCESSING)
     p.handleSubmit();
   }
+
+  const accountExistsError = p.errorMessages?.includes(SignUpError.ACCOUNT_EXISTS) ? p.errorMessages.find((e) => e === SignUpError.ACCOUNT_EXISTS) : undefined;
+  const invalidPasswordError = p.errorMessages?.includes(SignUpError.INVALID_PASSWORD) ? p.errorMessages.find((e) => e === SignUpError.INVALID_PASSWORD) : undefined;
+  const generalError = p.errorMessages?.includes(SignUpError.ERROR) ? p.errorMessages.find((e) => e === SignUpError.ERROR) : undefined;
 
   return (
     <div
@@ -103,10 +109,9 @@ function SignUpPage(props: SignUpPageProps): ReactElement {
                   </div>
                   <Input
                     type="text"
-                    required
                     value={username}
                     onChange={setUsername}
-                    label="Username"
+                    label="Poker/Slots Username"
                     isDisabled={p.isDisabled}
                     className={`${PREFIX}-normal-input`}
                     labelClassName={`${PREFIX}-input-label`}
@@ -120,16 +125,18 @@ function SignUpPage(props: SignUpPageProps): ReactElement {
                     isDisabled={p.isDisabled}
                     className={`${PREFIX}-normal-input`}
                     labelClassName={`${PREFIX}-input-label`}
+                    hasError={!!invalidPasswordError}
+                    error={invalidPasswordError}
                   />
                   <Input
                     type="text"
-                    required
                     value={email}
                     onChange={setEmail}
                     label="Email"
                     isDisabled={p.isDisabled}
                     className={`${PREFIX}-normal-input`}
                     labelClassName={`${PREFIX}-input-label`}
+                    required
                   />
                   <p className={`${PREFIX}-login`}><Link href={LOGIN_PAGE}>Already have an account? Login now</Link></p>
                   <div>
@@ -142,6 +149,15 @@ function SignUpPage(props: SignUpPageProps): ReactElement {
                       Submit
                     </Button>
                   </div>
+                  {
+                    generalError ? 
+                      <p className={`${PREFIX}-error-message`}>{generalError}</p>
+                      : accountExistsError
+                      ? <p className={clsx(`${PREFIX}-error-message`, {
+                        'is-link': true
+                      })}><Link href={LOGIN_PAGE}>{accountExistsError}</Link></p>
+                      : <></>
+                  }
                 </div>
               </form>
             </div>
@@ -163,6 +179,7 @@ export default function SignUpPageContainer(): ReactElement {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState<SignUpError[] | undefined>(undefined);
 
   const isDisabled = false;
 
@@ -173,6 +190,7 @@ export default function SignUpPageContainer(): ReactElement {
   return <SignUpPage
     isDisabled={isDisabled}
     handleSubmit={handleSubmit}
+    errorMessages={errors}
     formData={{
       username,
       setUsername,
