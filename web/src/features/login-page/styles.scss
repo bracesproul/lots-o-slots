@@ -1,0 +1,25 @@
+.login-page {
+  @apply w-full h-full 
+}
+
+.login-page-wrapper {
+  @apply flex flex-col items-center justify-center;
+  @apply w-full h-fit border-[1px] border-red-600 rounded-md bg-gray-800;
+  @apply py-[22px] px-[12px];
+}
+
+.login-page-title {
+  @apply text-white text-center mb-[12px] text-[26px];
+}
+
+.login-page-form {
+  @apply flex flex-col items-center justify-center gap-[12px];
+}
+
+.login-page-sign-up {
+  @apply text-blue-400 text-[8px] underline underline-offset-1 cursor-pointer;
+}
+
+.login-page-normal-input {
+  @apply w-[258px];
+}
