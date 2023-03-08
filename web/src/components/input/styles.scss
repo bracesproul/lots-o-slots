@@ -2,9 +2,17 @@
   &.has-label {
     @apply flex flex-col;
   }
+
+  &.has-error {
+    @apply text-red-400;
+  }
 }
 
 .input-component-label-container {
+  @apply flex flex-row justify-between;
+}
+
+.input-component-label-content {
   @apply flex flex-row items-start justify-start;
 }
 
@@ -18,14 +26,26 @@
 
 .input-component-label {
   @apply text-[10px] text-gray-100 bg-transparent;
+
+  &.has-error {
+    @apply text-red-400;
+  }
 }
 
 .input-component-input {
   @apply p-[5px] rounded-md;
   @apply text-[12px] outline-none;
-}
+
+  &.has-error {
+    @apply border-red-400;
+  }
+ }
 
 .input-component-error {
   @apply text-[10px] pt-[4px];
   @apply text-red-400 items-start justify-start;
+}
+
+.input-component-eye-icon {
+  @apply flex float-right;
 }
