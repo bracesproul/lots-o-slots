@@ -3,8 +3,11 @@ import { useButton } from '@react-aria/button';
 import { useHover } from '@react-aria/interactions';
 import { mergeProps } from '@react-aria/utils';
 import type { AriaButtonProps } from '@react-types/button';
+import clsx from 'clsx';
 
 export type InteractableComponentProps = AriaButtonProps & {
+  /** Optional prop to override styles */
+  className?: string;
   children: ReactElement;
   isDisabled?: boolean;
 };
@@ -20,7 +23,7 @@ export default function InteractableComponent(
   const behaviorProps = mergeProps(buttonProps, hoverProps);
 
   return (
-    <div {...behaviorProps} className={`${PREFIX}`}>
+    <div {...behaviorProps} className={clsx([`${PREFIX}`, props.className])}>
       {props.children}
     </div>
   );

@@ -74,7 +74,7 @@ function LoginPage2(props: LoginPageProps): ReactElement {
                     labelClassName={`${PREFIX}-input-label`}
                   />
                   <Input
-                    type="text"
+                    type="password"
                     required
                     value={password}
                     onChange={setPassword}
@@ -82,6 +82,7 @@ function LoginPage2(props: LoginPageProps): ReactElement {
                     isDisabled={p.isDisabled}
                     className={`${PREFIX}-normal-input`}
                     labelClassName={`${PREFIX}-input-label`}
+                    showTogglePasswordIcon
                   />
                   <p className={`${PREFIX}-login`}><Link href={SIGN_UP_PAGE}>Don't have an account? Sign up now</Link></p>
                   <div>

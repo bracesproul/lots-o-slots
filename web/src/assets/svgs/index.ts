@@ -20,3 +20,5 @@ export { default as BigCardsSvg } from './BigCardsSvg';
 export { default as ArrowRight } from './ArrowRight';
 export { default as RightArrowButton } from './RightArrowButton';
 export { default as CloseIcon } from './CloseIcon';
+export { default as ShowEyeSvg } from './ShowEyeSvg';
+export { default as HideEyeSvg } from './HideEyeSvg';

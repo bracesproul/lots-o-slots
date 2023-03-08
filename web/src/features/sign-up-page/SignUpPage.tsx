@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { AuthStep, LOGIN_PAGE, SignUpError, StylePrefix } from '@/types';
 import { Button, Input } from '@/components';
@@ -39,6 +39,8 @@ export type SignUpPageProps = {
   handleSubmit: () => void;
   /** A list of errors */
   errorMessages?: SignUpError[];
+  /** Event handler for checking if a user has focused and exited an input */
+  setHasPasswordFocusExited: (e: boolean) => void;
 };
 
 const PREFIX = StylePrefix.SIGN_UP_PAGE;
@@ -58,7 +60,7 @@ function SignUpPage(props: SignUpPageProps): ReactElement {
     setLastName,
   } = p.formData;
 
-  const [step, setStep] = useState(AuthStep.ENTER_INFO)
+  const [step, setStep] = useState(AuthStep.ENTER_INFO);
   const isSubmitDisabled = p.isDisabled || !username || !password || !firstName || !lastName;
 
   const handleSubmit = () => {
@@ -120,7 +122,7 @@ function SignUpPage(props: SignUpPageProps): ReactElement {
                     labelClassName={`${PREFIX}-input-label`}
                   />
                   <Input
-                    type="text"
+                    type='password'
                     required
                     value={password}
                     onChange={setPassword}
@@ -129,6 +131,10 @@ function SignUpPage(props: SignUpPageProps): ReactElement {
                     className={`${PREFIX}-normal-input`}
                     labelClassName={`${PREFIX}-input-label`}
                     error={invalidPasswordError}
+                    handleOnBlur={() => {
+                      p.setHasPasswordFocusExited(true)
+                    }}
+                    showTogglePasswordIcon
                   />
                   {invalidPasswordError && <p className={`${PREFIX}-error-message`}>{invalidPasswordMessage}</p>}
                   <Input
@@ -183,10 +189,11 @@ export default function SignUpPageContainer(): ReactElement {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<SignUpError[] | undefined>(undefined);
+  const [hasPasswordFocusExited, setHasPasswordFocusExited] = useState(false);
 
   const handlePasswordChange = (password: string) => {
     setPassword(password);
-    if (!validatePassword(password) && password !== '') {
+    if (hasPasswordFocusExited && !validatePassword(password) && password !== '') {
       if (!errors?.includes(SignUpError.INVALID_PASSWORD)) {
         setErrors((prev) => [...(prev ? prev : []), SignUpError.INVALID_PASSWORD])
       }
@@ -194,6 +201,14 @@ export default function SignUpPageContainer(): ReactElement {
       setErrors((prev) => prev?.filter((e) => e !== SignUpError.INVALID_PASSWORD))
     }
   }
+
+  useEffect(() => {
+    if (hasPasswordFocusExited && !validatePassword(password) && password !== '') {
+      if (!errors?.includes(SignUpError.INVALID_PASSWORD)) {
+        setErrors((prev) => [...(prev ? prev : []), SignUpError.INVALID_PASSWORD])
+      }
+    }
+  }, [hasPasswordFocusExited])
 
   const isDisabled = false;
 
@@ -205,6 +220,7 @@ export default function SignUpPageContainer(): ReactElement {
     isDisabled={isDisabled}
     handleSubmit={handleSubmit}
     errorMessages={errors}
+    setHasPasswordFocusExited={setHasPasswordFocusExited}
     formData={{
       username,
       setUsername,
