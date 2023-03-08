@@ -46,8 +46,10 @@ export default async function postgresConnection(): Promise<Connection> {
     cache: shouldCache(),
     keepConnectionAlive: true,
     cli: {
-      migrationsDir: 'src/database/migrations',
+      migrationsDir: join(__dirname, '../migrations'),
     },
+    name: 'default',
+    default: true,
   } as PostgresConnectionOptions;
 
   return await createConnection(config);

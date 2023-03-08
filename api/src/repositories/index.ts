@@ -6,3 +6,4 @@ export { UserPaymentRepository } from './UserPaymentRepository';
 export { GcpTokenRepository } from './GcpTokenRepository';
 export { GcpCredentialsRepository } from './GcpCredentialsRepository';
 export { GcpServiceAccountRepository } from './GcpServiceAccountRepository';
+export { UserV2Repository } from './UserV2Repository';

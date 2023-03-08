@@ -1,8 +1,12 @@
 FROM node:16-alpine AS builder
 
 WORKDIR /app
+
 COPY package*.json ./
 COPY yarn.lock ./
+
+RUN apk add --update --no-cache python3 build-base gcc && ln -sf /usr/bin/python3 /usr/bin/python
+
 RUN yarn install
 
 FROM node:16-alpine AS dev
