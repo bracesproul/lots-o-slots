@@ -1,14 +1,10 @@
 import React from 'react';
 import { AdminAuthorizePage } from '@/features';
-import { withAuthRequired } from '@/utils/withAuthRequired';
-import { GetServerSidePropsContext } from 'next';
 
+/**
+ * @deprecated
+ * @todo Remove this page in favor is /login.
+ */
 export default function Authorize(): React.ReactNode {
   return <AdminAuthorizePage />;
 }
-
-export const getServerSideProps = withAuthRequired(null, {
-  redirect: false,
-  isFromAuthPage: true,
-});
-
