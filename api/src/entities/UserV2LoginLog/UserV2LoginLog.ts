@@ -14,7 +14,7 @@ export default class UserV2LoginLog extends MainEntity {
     type: 'timestamp with time zone',
     nullable: false,
   })
-  login!: Date;
+  loginDate!: Date;
 
   @ManyToOne(() => UserV2)
   user!: UserV2;

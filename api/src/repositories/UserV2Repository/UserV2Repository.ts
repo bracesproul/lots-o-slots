@@ -1,8 +1,9 @@
-import { AbstractRepository, EntityRepository } from 'typeorm';
+import { AbstractRepository, EntityRepository, getCustomRepository } from 'typeorm';
 import { UserV2 } from '@/entities';
 import { CreateUserInput, CreateUserResponse, LoginUserInput, LoginUserResponse, UpdateUserInput, UpdateUserResponse } from './types';
 import { UserInputError } from 'apollo-server-express';
 import { SupabaseAuth } from '@/services/subabase';
+import { UserV2LoginLogRepository } from '../UserV2LoginLogRepository';
 
 @EntityRepository(UserV2)
 export default class UserV2Repository extends AbstractRepository<UserV2> {
@@ -46,6 +47,8 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
       username: data.username,
     }).save()
 
+    await getCustomRepository(UserV2LoginLogRepository).updateLog(user.id);
+
     return {
       supabaseUserResponse: supabaseUser,
       user,
@@ -54,11 +57,11 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
 
   async login(input: LoginUserInput): Promise<LoginUserResponse> {
     const { email, password } = input;
-    const checkIfUserExists = await this.repository.findOne({
+    const user = await this.repository.findOne({
       where: { email }
     });
 
-    if (!checkIfUserExists) {
+    if (!user) {
       throw new UserInputError('User not found.');
     }
 
@@ -67,14 +70,11 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
       password,
     });
 
-    const updatedUser = await this.repository.create({
-      ...checkIfUserExists,
-      // log sign in date
-    }).save()
+    await getCustomRepository(UserV2LoginLogRepository).updateLog(user.id);
 
     return {
       supabaseUserResponse,
-      user: updatedUser,
+      user: user,
     }
   }
 
