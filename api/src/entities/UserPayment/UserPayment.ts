@@ -40,7 +40,7 @@ export default class UserPayment extends MainEntity {
   @Field(() => Boolean, {
     nullable: false,
   })
-  @Column({ type: 'numeric', nullable: false, default: false })
+  @Column({ type: 'boolean', nullable: false, default: false })
   processed!: boolean;
 
   @Field(() => GameType, {

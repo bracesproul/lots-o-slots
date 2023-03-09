@@ -7,3 +7,5 @@ export { UserPayment } from './UserPayment';
 export { GcpToken } from './GcpToken';
 export { GcpCredentials } from './GcpCredentials';
 export { GcpServiceAccount } from './GcpServiceAccount';
+export { UserV2 } from './UserV2';
+export { UserV2LoginLog } from './UserV2LoginLog';
