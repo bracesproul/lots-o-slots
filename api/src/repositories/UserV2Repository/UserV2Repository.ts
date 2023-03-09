@@ -60,7 +60,7 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
   async login(input: LoginUserInput): Promise<LoginUserResponse> {
     const { email, password } = input;
     const user = await this.repository.findOne({
-      where: { email }
+      where: [{ email }, { username: email }]
     });
 
     if (!user) {
@@ -68,7 +68,7 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
     }
 
     const supabaseUserResponse = await new SupabaseAuth().login({
-      email,
+      email: user.email,
       password,
     });
 
@@ -76,7 +76,7 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
 
     return {
       supabaseUserResponse,
-      user: user,
+      user,
     }
   }
 

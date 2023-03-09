@@ -3,6 +3,8 @@ import clsx from 'clsx';
 import { AuthStep, LoginError, SIGN_UP_PAGE, StylePrefix } from '@/types';
 import { Button, Input } from '@/components';
 import Link from 'next/link';
+import { useLoginMutation } from '@/generated/graphql';
+import { useRouter } from 'next/router';
 
 type LoginFormData = {
   /** State variable for the username */
@@ -112,14 +114,28 @@ function LoginPage2(props: LoginPageProps): ReactElement {
 }
 
 export default function LoginPageContainer(): ReactElement {
+  const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<LoginError | undefined>(undefined);
+  const [login, { error: loginError, loading }] = useLoginMutation({});
 
-  const isDisabled = false;
+  const isDisabled = loading || !!error || loginError !== undefined;
 
-  const handleSubmit = () => {
-    /** @TODO call api */
+  const handleSubmit = async () => {
+    const { data } = await login({
+      variables: {
+        input: {
+          email: username,
+          password,
+        }
+      },
+    });
+    if (data?.login.success) {
+      const accessToken = encodeURIComponent(data.login.session.access_token);
+      const refreshToken = encodeURIComponent(data.login.session.refresh_token);
+      await router.push(`/user?accessToken=${accessToken}&refreshToken=${refreshToken}`);
+    }
   }
 
   return <LoginPage2
