@@ -1,4 +1,4 @@
-import { ReactElement } from 'react';
+import React, { ReactElement } from 'react';
 import clsx from 'clsx';
 import { StylePrefix } from '@/types';
 

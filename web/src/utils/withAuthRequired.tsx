@@ -3,7 +3,7 @@ import { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult
 import { CheckAuthDocument, CheckAuthQuery, useCheckAuthLazyQuery } from '@/generated/graphql';
 import { initializeApollo } from './apollo';
 import { NormalizedCacheObject } from '@apollo/client';
-import { createServerSupabaseClient, User } from '@supabase/auth-helpers-nextjs'
+import { createServerSupabaseClient, Session, User } from '@supabase/auth-helpers-nextjs'
 
 export const STORAGE_KEY = 'lS_lots_o_slots_auth';
 
@@ -13,7 +13,7 @@ type WithAuthRequiredValue = {
 
 type WithAuthResult = GetServerSidePropsResult<{
   initialApolloState: NormalizedCacheObject;
-  user?: User;
+  supabaseSession?: Session | null;
 }>;
 
 type IncomingGetServerSideProps = GetServerSideProps<{
@@ -38,57 +38,78 @@ export const withAuthRequired =
       cookie: context.req.headers.cookie,
     });
 
+    const initialApolloState = apolloClient.cache.extract();
+
     // Create authenticated Supabase Client
     const supabase = createServerSupabaseClient(context)
-    // Check if we have a session
-    const {
-      data: { session },
-    } = await supabase.auth.getSession()
 
-    if (password && options?.isAuthPage) {
-      const response = await apolloClient
-      .query<CheckAuthQuery>({
-        query: CheckAuthDocument,
-        variables: {
-          password,
-        },
-      })
-      .catch(() => {
-        // no op
+    let session: Session | null = null;
+
+    // Set session from query params
+    if (context.query?.accessToken && context.query?.refreshToken) {
+      const access_token = decodeURIComponent(context.query.accessToken as string);
+      const refresh_token = decodeURIComponent(context.query.refreshToken as string);
+      const {
+        data: { session: supabaseSession },
+      } = await supabase.auth.setSession({
+        access_token,
+        refresh_token,
       });
-      const isAuthed = response?.data.checkAdminPagePassword.success
 
-      if (!isAuthed) {
+      session = supabaseSession;
+    } else {
+      // Check if we have a session
+      const {
+        data: { session: supabaseSession },
+      } = await supabase.auth.getSession();
+      console.log('no qp, checking session', supabaseSession)
+
+      session = supabaseSession;
+
+      if (!session) {
         return {
           redirect: {
-            destination: '/admin/authorize',
+            destination: '/login',
             permanent: false,
           },
-        };
-      } else {
-        return {
           props: {
-            initialApolloState: apolloClient.cache.extract(),
+            initialApolloState,
+            supabaseSession: session,
           },
         };
       }
-    } else { console.log('no password') }
-
-    if (options?.redirect === true && !options?.isFromAuthPage) {
-      return {
-        redirect: {
-          destination: '/admin/authorize',
-          permanent: false,
-        },
-      };
+  
+      if (session.user.user_metadata.role === 'ADMIN') {
+        return {
+          redirect: {
+            destination: '/admin',
+            permanent: false,
+          },
+          props: {
+            initialApolloState,
+            supabaseSession: session,
+          },
+        };
+      }
+  
+      if (session.user.user_metadata.role === 'USER') {
+        return {
+          redirect: {
+            destination: '/user',
+            permanent: false,
+          },
+          props: {
+            initialApolloState,
+            supabaseSession: session,
+          },
+        };
+      }
     }
-
-    const initialApolloState = apolloClient.cache.extract();
 
     return {
       props: {
         initialApolloState,
-        user: session?.user,
+        supabaseSession: session,
       },
-    };
+    }
   };

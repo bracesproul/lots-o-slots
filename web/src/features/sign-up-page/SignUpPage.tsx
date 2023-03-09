@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { validatePassword } from './utils';
 import { UserRole, useSignUpMutation } from '@/generated/graphql';
 import { useRouter } from 'next/router';
-import { setSession } from '@/utils/supabase';
 
 type SignUpFormData = {
   /** State variable for the username */
@@ -233,11 +232,15 @@ export default function SignUpPageContainer(): ReactElement {
       },
     })
     if (data?.signUp.success) {
+      console.log('successful signup')
       const accessToken = encodeURIComponent(data?.signUp.session.access_token);
       const refreshToken = encodeURIComponent(data?.signUp.session.refresh_token);
-      await setSession({ accessToken, refreshToken });
-      await router.push(`/user?accessToken=${accessToken}&refreshToken=${refreshToken}`);
-    }
+      console.log({
+        accessToken,
+        refreshToken,
+      })
+      await router.push(`/user?accessToken=${accessToken}&refreshToken=${refreshToken}`, undefined, { shallow: true });
+    } else console.log('signup failed', errors);
   }
 
   return <SignUpPage

@@ -1,18 +1,21 @@
-import { ReactElement, useEffect } from "react";
-import { useSupabaseClient } from '@supabase/auth-helpers-react'
-import { useRouter } from "next/router";
+import { ReactElement } from "react";
+import { createServerSupabaseClient } from "@supabase/auth-helpers-nextjs";
+import { GetServerSidePropsContext } from "next";
 
 export default function Logout(): ReactElement {
-
-  const signOut = async () => {
-    const supabase = useSupabaseClient()
-    await supabase.auth.signOut()
-    useRouter().push('/login')
-  }
-  
-  useEffect(() => {
-    signOut().catch((e) => console.error(e))
-  }, [])
-  
   return <div></div>;
 }
+
+export const getServerSideProps = async (context: GetServerSidePropsContext) => {
+  const supabase = createServerSupabaseClient(context)
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    console.log('Error logging out:', error.message);
+  }
+  return {
+    redirect: {
+      destination: '/login',
+      permanent: false,
+    }
+  }
+};
