@@ -5,11 +5,11 @@ const throwMissingKeyError = (key: string) => {
   throw new Error(`Missing ${key} environment variable`);
 };
 
-const STORAGE_URL = 'https://zrughjrddupywpmmuolg.supabase.co/storage/v1';
+const PROJECT_URL = process.env.SUPABASE_PROJECT_URL ?? throwMissingKeyError('SUPABASE_PROJECT_URL');
+const STORAGE_URL = PROJECT_URL + '/storage/v1';
 const SERVICE_KEY =
   process.env.SUPABASE_SERVICE_ROLE_KEY ?? throwMissingKeyError('SUPABASE_SERVICE_ROLE_KEY');
 const ANNON_KEY = process.env.SUPABASE_ANNON_KEY ?? throwMissingKeyError('SUPABASE_ANNON_KEY');
-const PROJECT_URL = process.env.SUPABASE_PROJECT_URL ?? throwMissingKeyError('SUPABASE_PROJECT_URL');
 
 export const storageClient = new StorageClient(STORAGE_URL, {
   apikey: SERVICE_KEY,
