@@ -219,6 +219,20 @@ export type GetUserPaymentsInput = {
   processed: Scalars['Boolean'];
 };
 
+/** Input type for logging in a user */
+export type LoginInput = {
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
+/** Response type for logging in a user */
+export type LoginPayload = {
+  __typename?: 'LoginPayload';
+  session: SupabaseSessionResponse;
+  success: Scalars['Boolean'];
+  user: UserV2;
+};
+
 /** An object with standard fields for created and updated data */
 export type MainEntity = {
   createdAt: Scalars['DateTime'];
@@ -266,9 +280,12 @@ export type Mutation = {
   createPayment: CreatedPaymentResponse;
   createUser: User;
   createUserPayment: UserPayment;
+  login: LoginPayload;
   markPaymentAsProcessed: MarkPaymentAsProcessedResponse;
   markUserPaymentAsProcessed: MarkUserPaymentAsProcessedResult;
+  signUp: SignUpPayload;
   switchDefaultAccount: Account;
+  updateUser: UpdatePayload;
 };
 
 
@@ -297,6 +314,11 @@ export type MutationCreateUserPaymentArgs = {
 };
 
 
+export type MutationLoginArgs = {
+  input: LoginInput;
+};
+
+
 export type MutationMarkPaymentAsProcessedArgs = {
   input: MarkPaymentAsProcessedInput;
 };
@@ -307,8 +329,18 @@ export type MutationMarkUserPaymentAsProcessedArgs = {
 };
 
 
+export type MutationSignUpArgs = {
+  input: SignUpInput;
+};
+
+
 export type MutationSwitchDefaultAccountArgs = {
   input: SwitchDefaultAccountInput;
+};
+
+
+export type MutationUpdateUserArgs = {
+  input: UpdateInput;
 };
 
 /** ID */
@@ -351,10 +383,11 @@ export type Query = {
   checkAdminPagePassword: AuthorizeAdminUserPayload;
   getAllAccounts: Array<Account>;
   getAllPayments: Array<Payment>;
-  getAllUsers: Array<User>;
+  getAllUsers: Array<UserV2>;
   getEmailById: GetEmailByIdPayload;
   getRecentUpdate: GetRecentEmailLogUpdate;
   getSupabaseSignedUrl: GetSupabaseSignedUrlPayload;
+  getUserById: UserV2;
   getUserPayments: Array<UserPayment>;
   seedData: Scalars['Boolean'];
 };
@@ -385,8 +418,28 @@ export type QueryGetSupabaseSignedUrlArgs = {
 };
 
 
+export type QueryGetUserByIdArgs = {
+  id: Scalars['String'];
+};
+
+
 export type QueryGetUserPaymentsArgs = {
   input?: InputMaybe<GetUserPaymentsInput>;
+};
+
+/** Input type for creating a new user */
+export type SignUpInput = {
+  data: UserData;
+  email: Scalars['String'];
+  password: Scalars['String'];
+};
+
+/** Response type for creating a new user */
+export type SignUpPayload = {
+  __typename?: 'SignUpPayload';
+  session: SupabaseSessionResponse;
+  success: Scalars['Boolean'];
+  user: UserV2;
 };
 
 export enum SupabaseBucket {
@@ -400,12 +453,47 @@ export enum SupabaseRawEmailFolderPath {
   PAYPAL_DEPOSITS = 'PAYPAL_DEPOSITS'
 }
 
+/** Response type for creating a new user with Supabase */
+export type SupabaseSessionResponse = {
+  __typename?: 'SupabaseSessionResponse';
+  /** The access token jwt. It is recommended to set the JWT_EXPIRY to a shorter expiry value. */
+  access_token: Scalars['String'];
+  /** A timestamp of when the token will expire. Returned when a login is confirmed. */
+  expires_at: Scalars['Float'];
+  /** The number of seconds until the token expires (since it was issued). Returned when a login is confirmed. */
+  expires_in: Scalars['Float'];
+  /** The oauth provider refresh token. If present, this can be used to refresh the provider_token via the oauth provider's API. Not all oauth providers return a provider refresh token. If the provider_refresh_token is missing, please refer to the oauth provider's documentation for information on how to obtain the provider refresh token. */
+  provider_refresh_token?: Maybe<Scalars['String']>;
+  /** The oauth provider token. If present, this can be used to make external API requests to the oauth provider used. */
+  provider_token?: Maybe<Scalars['String']>;
+  /** A one-time used refresh token that never expires. */
+  refresh_token: Scalars['String'];
+  /** The type of token. Returned when a login is confirmed. */
+  token_type: Scalars['String'];
+};
+
 /** Input type for switching the default type account. */
 export type SwitchDefaultAccountInput = {
   /** The ID of the account. */
   id: Scalars['ID'];
   /** The payment provider of the account. */
   type: PaymentProvider;
+};
+
+/** Input type for updating a new user */
+export type UpdateInput = {
+  data?: InputMaybe<UserData>;
+  email?: InputMaybe<Scalars['String']>;
+  id: Scalars['ID'];
+  jwt: Scalars['String'];
+  password?: InputMaybe<Scalars['String']>;
+};
+
+/** Input type for updating a user */
+export type UpdatePayload = {
+  __typename?: 'UpdatePayload';
+  success: Scalars['Boolean'];
+  user: UserV2;
 };
 
 export type User = MainEntity & Node & {
@@ -423,6 +511,14 @@ export type User = MainEntity & Node & {
   userIdentifier_zelle?: Maybe<Scalars['String']>;
 };
 
+/** Additional user data */
+export type UserData = {
+  firstName: Scalars['String'];
+  lastName: Scalars['String'];
+  role: UserRole;
+  username?: InputMaybe<Scalars['String']>;
+};
+
 export type UserPayment = MainEntity & Node & {
   __typename?: 'UserPayment';
   amount: Scalars['Float'];
@@ -435,6 +531,25 @@ export type UserPayment = MainEntity & Node & {
   processed: Scalars['Boolean'];
   updatedAt?: Maybe<Scalars['DateTime']>;
   userId?: Maybe<Scalars['String']>;
+};
+
+export enum UserRole {
+  ADMIN = 'ADMIN',
+  USER = 'USER'
+}
+
+export type UserV2 = MainEntity & Node & {
+  __typename?: 'UserV2';
+  createdAt: Scalars['DateTime'];
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  email: Scalars['String'];
+  firstName: Scalars['String'];
+  id: Scalars['ID'];
+  lastName: Scalars['String'];
+  password: Scalars['String'];
+  role: UserRole;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  username: Scalars['String'];
 };
 
 export type CreateUserMutationVariables = Exact<{
@@ -516,6 +631,13 @@ export type GetDefaultAccountsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetDefaultAccountsQuery = { __typename?: 'Query', getAllAccounts: Array<{ __typename?: 'Account', id: string, type: PaymentProvider, email: string, cashtag?: string | null, bitcoinAddress?: string | null, ethereumAddress?: string | null }> };
+
+export type SignUpMutationVariables = Exact<{
+  input: SignUpInput;
+}>;
+
+
+export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'SignUpPayload', success: boolean, session: { __typename?: 'SupabaseSessionResponse', provider_token?: string | null, provider_refresh_token?: string | null, access_token: string, refresh_token: string, expires_in: number, expires_at: number, token_type: string }, user: { __typename?: 'UserV2', id: string, email: string, password: string, firstName: string, lastName: string, username: string, role: UserRole } } };
 
 export type PaymentFragmentFragment = { __typename?: 'Payment', id: string, userId: string, amount: number, processed: boolean, emailId: string, provider: PaymentProvider, senderName: string, transactionId?: string | null, paymentType: PaymentType };
 
@@ -990,3 +1112,54 @@ export function useGetDefaultAccountsLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetDefaultAccountsQueryHookResult = ReturnType<typeof useGetDefaultAccountsQuery>;
 export type GetDefaultAccountsLazyQueryHookResult = ReturnType<typeof useGetDefaultAccountsLazyQuery>;
 export type GetDefaultAccountsQueryResult = Apollo.QueryResult<GetDefaultAccountsQuery, GetDefaultAccountsQueryVariables>;
+export const SignUpDocument = gql`
+    mutation SignUp($input: SignUpInput!) {
+  signUp(input: $input) {
+    success
+    session {
+      provider_token
+      provider_refresh_token
+      access_token
+      refresh_token
+      expires_in
+      expires_at
+      token_type
+    }
+    user {
+      id
+      email
+      password
+      firstName
+      lastName
+      username
+      role
+    }
+  }
+}
+    `;
+export type SignUpMutationFn = Apollo.MutationFunction<SignUpMutation, SignUpMutationVariables>;
+
+/**
+ * __useSignUpMutation__
+ *
+ * To run a mutation, you first call `useSignUpMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSignUpMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [signUpMutation, { data, loading, error }] = useSignUpMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useSignUpMutation(baseOptions?: Apollo.MutationHookOptions<SignUpMutation, SignUpMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SignUpMutation, SignUpMutationVariables>(SignUpDocument, options);
+      }
+export type SignUpMutationHookResult = ReturnType<typeof useSignUpMutation>;
+export type SignUpMutationResult = Apollo.MutationResult<SignUpMutation>;
+export type SignUpMutationOptions = Apollo.BaseMutationOptions<SignUpMutation, SignUpMutationVariables>;
