@@ -1,11 +1,24 @@
 import { supabaseClient } from '../supabase';
-import { SignInWithEmailPasswordInput, SignInWithEmailPasswordResponse, SignUpWithEmailPasswordInput, SignUpWithEmailPasswordResponse, UpdateUserInput, UpdateUserResponse } from './types';
+import {
+  SignInWithEmailPasswordInput,
+  SignInWithEmailPasswordResponse,
+  SignUpWithEmailPasswordInput,
+  SignUpWithEmailPasswordResponse,
+  UpdateUserInput,
+  UpdateUserResponse,
+} from './types';
 import { UserNotFoundError, AuthError, UpdateUserError } from './errors';
 
 export default class SupabaseAuth {
-  async signUp(input: SignUpWithEmailPasswordInput): Promise<SignUpWithEmailPasswordResponse> {
+  async signUp(
+    input: SignUpWithEmailPasswordInput
+  ): Promise<SignUpWithEmailPasswordResponse> {
     const { email, password, data: userData } = input;
-    const { data, error } = await supabaseClient.auth.signUp({ email, password, options: { data: { ...userData } } });
+    const { data, error } = await supabaseClient.auth.signUp({
+      email,
+      password,
+      options: { data: { ...userData } },
+    });
 
     if (error) {
       throw new Error(error.message);
@@ -20,9 +33,14 @@ export default class SupabaseAuth {
     };
   }
 
-  async login(input: SignInWithEmailPasswordInput): Promise<SignInWithEmailPasswordResponse> {
+  async login(
+    input: SignInWithEmailPasswordInput
+  ): Promise<SignInWithEmailPasswordResponse> {
     const { email, password } = input;
-    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email,
+      password,
+    });
 
     if (error) {
       return AuthError(error.message);
@@ -38,7 +56,10 @@ export default class SupabaseAuth {
 
   async update(input: UpdateUserInput): Promise<UpdateUserResponse> {
     const { jwt } = input;
-    const { data: { user: requestedUser }, error: getUserError } = await supabaseClient.auth.getUser(jwt);
+    const {
+      data: { user: requestedUser },
+      error: getUserError,
+    } = await supabaseClient.auth.getUser(jwt);
 
     if (!requestedUser) {
       return UserNotFoundError();
@@ -47,7 +68,10 @@ export default class SupabaseAuth {
       return AuthError(getUserError.message);
     }
 
-    const { data: { user: updatedUser }, error: updateUserError } = await supabaseClient.auth.updateUser({ ...requestedUser, ...input });
+    const {
+      data: { user: updatedUser },
+      error: updateUserError,
+    } = await supabaseClient.auth.updateUser({ ...requestedUser, ...input });
 
     if (!updateUserError) {
       return UpdateUserError();
@@ -58,9 +82,13 @@ export default class SupabaseAuth {
     if (!updatedUser) {
       return UserNotFoundError();
     }
-  
+
     return {
       user: updatedUser,
     };
+  }
+
+  async delete(id: string): Promise<void> {
+    // TODO: implement
   }
 }
