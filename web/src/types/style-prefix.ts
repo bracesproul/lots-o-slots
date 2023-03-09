@@ -31,4 +31,5 @@ export enum StylePrefix {
   FAQ_SECTION = 'faq-section',
   LOGIN_PAGE = 'login-page',
   SIGN_UP_PAGE = 'sign-up-page',
+  USER_PAGE = 'user-page',
 }

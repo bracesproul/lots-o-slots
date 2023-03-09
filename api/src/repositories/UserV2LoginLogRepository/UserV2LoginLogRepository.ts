@@ -11,7 +11,7 @@ export default class UserV2LoginLogRepository extends AbstractRepository<UserV2L
 
     const previousEntry = await this.repository.createQueryBuilder('userLog')
       .where('userLog.userId = :userId', { userId })
-      .orderBy('entity.loginDate', 'DESC')
+      .orderBy('userLog.loginDate', 'DESC')
       .getOne();
   
     if (!previousEntry) {

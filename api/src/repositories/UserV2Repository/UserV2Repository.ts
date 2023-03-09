@@ -4,6 +4,7 @@ import { CreateUserInput, CreateUserResponse, LoginUserInput, LoginUserResponse,
 import { UserInputError } from 'apollo-server-express';
 import { SupabaseAuth } from '@/services/subabase';
 import { UserV2LoginLogRepository } from '../UserV2LoginLogRepository';
+import { UserRole } from '@/entities/UserV2/types';
 
 @EntityRepository(UserV2)
 export default class UserV2Repository extends AbstractRepository<UserV2> {
@@ -45,7 +46,8 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
       firstName,
       lastName,
       username: data.username,
-    }).save()
+      role: data.role,
+    }).save();
 
     await getCustomRepository(UserV2LoginLogRepository).updateLog(user.id);
 
@@ -98,5 +100,10 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
     return {
       user: updatedUser,
     }
+  }
+
+  async delete(id: string): Promise<boolean> {
+    // todo: implement
+    return false;
   }
 }
