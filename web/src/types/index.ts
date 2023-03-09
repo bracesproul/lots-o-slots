@@ -4,3 +4,4 @@ export * from './payment-provider';
 export * from './style-prefix';
 export * from './routes';
 export * from './auth';
+export * from './page-type';
