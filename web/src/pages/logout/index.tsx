@@ -1,6 +1,18 @@
-import { ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
+import { useSupabaseClient } from '@supabase/auth-helpers-react'
+import { useRouter } from "next/router";
 
 export default function Logout(): ReactElement {
-  // just call logout mutation and redirect to login page
-  return <div>Hello world</div>;
+
+  const signOut = async () => {
+    const supabase = useSupabaseClient()
+    await supabase.auth.signOut()
+    useRouter().push('/login')
+  }
+  
+  useEffect(() => {
+    signOut().catch((e) => console.error(e))
+  }, [])
+  
+  return <div></div>;
 }

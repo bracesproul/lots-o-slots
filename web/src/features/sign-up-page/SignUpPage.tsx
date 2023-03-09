@@ -4,6 +4,8 @@ import { AuthStep, LOGIN_PAGE, SignUpError, StylePrefix } from '@/types';
 import { Button, Input } from '@/components';
 import Link from 'next/link';
 import { validatePassword } from './utils';
+import { UserRole, useSignUpMutation } from '@/generated/graphql';
+import { useRouter } from 'next/router';
 
 type SignUpFormData = {
   /** State variable for the username */
@@ -183,6 +185,7 @@ function SignUpPage(props: SignUpPageProps): ReactElement {
 }
 
 export default function SignUpPageContainer(): ReactElement {
+  const router = useRouter();
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
@@ -190,6 +193,7 @@ export default function SignUpPageContainer(): ReactElement {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<SignUpError[] | undefined>(undefined);
   const [hasPasswordFocusExited, setHasPasswordFocusExited] = useState(false);
+  const [signUp, { loading, error }] = useSignUpMutation();
 
   const handlePasswordChange = (password: string) => {
     setPassword(password);
@@ -210,10 +214,28 @@ export default function SignUpPageContainer(): ReactElement {
     }
   }, [hasPasswordFocusExited])
 
-  const isDisabled = false;
+  const isDisabled = loading || error !== undefined;
 
-  const handleSubmit = () => {
-    /** @TODO call api */
+  const handleSubmit = async () => {
+    const { data, errors } = await signUp({
+      variables: {
+        input: {
+          email,
+          password,
+          data: {
+            username,
+            role: UserRole.USER,
+            firstName,
+            lastName,
+          }
+        }
+      },
+    })
+    if (data?.signUp.success) {
+      const accessToken = encodeURIComponent(data?.signUp.session.access_token);
+      const refreshToken = encodeURIComponent(data?.signUp.session.refresh_token);
+      await router.push(`/user?accessToken=${accessToken}&refreshToken=${refreshToken}`);
+    }
   }
 
   return <SignUpPage

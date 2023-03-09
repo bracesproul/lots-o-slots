@@ -15,3 +15,4 @@ export { AppStoreButtonsDialog } from './app-store-buttons-dialog';
 export { HomeV2 } from './home-v2';
 export { LoginPage } from './login-page';
 export { SignUpPage } from './sign-up-page';
+export { UserPage } from './user-page';

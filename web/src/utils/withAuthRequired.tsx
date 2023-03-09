@@ -3,6 +3,7 @@ import { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult
 import { CheckAuthDocument, CheckAuthQuery, useCheckAuthLazyQuery } from '@/generated/graphql';
 import { initializeApollo } from './apollo';
 import { NormalizedCacheObject } from '@apollo/client';
+import { createServerSupabaseClient, User } from '@supabase/auth-helpers-nextjs'
 
 export const STORAGE_KEY = 'lS_lots_o_slots_auth';
 
@@ -12,6 +13,7 @@ type WithAuthRequiredValue = {
 
 type WithAuthResult = GetServerSidePropsResult<{
   initialApolloState: NormalizedCacheObject;
+  user?: User;
 }>;
 
 type IncomingGetServerSideProps = GetServerSideProps<{
@@ -35,6 +37,13 @@ export const withAuthRequired =
     const apolloClient = initializeApollo(incomingApolloState, {
       cookie: context.req.headers.cookie,
     });
+
+    // Create authenticated Supabase Client
+    const supabase = createServerSupabaseClient(context)
+    // Check if we have a session
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
 
     if (password && options?.isAuthPage) {
       const response = await apolloClient
@@ -79,6 +88,7 @@ export const withAuthRequired =
     return {
       props: {
         initialApolloState,
+        user: session?.user,
       },
     };
   };

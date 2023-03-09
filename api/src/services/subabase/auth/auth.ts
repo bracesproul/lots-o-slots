@@ -6,13 +6,14 @@ export default class SupabaseAuth {
   async signUp(input: SignUpWithEmailPasswordInput): Promise<SignUpWithEmailPasswordResponse> {
     const { email, password, data: userData } = input;
     const { data, error } = await supabaseClient.auth.signUp({ email, password, options: { data: { ...userData } } });
+
     if (error) {
       throw new Error(error.message);
     }
     if (!data.session || !data.user) {
       throw new Error('No session and/or user');
     }
-    console.log('data', data);
+
     return {
       user: data.user,
       session: data.session,

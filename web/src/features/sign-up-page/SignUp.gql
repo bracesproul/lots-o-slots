@@ -1,0 +1,23 @@
+mutation SignUp($input: SignUpInput!) {
+  signUp(input: $input) {
+    success
+    session {
+      provider_token
+      provider_refresh_token
+      access_token
+      refresh_token
+      expires_in
+      expires_at
+      token_type
+    }
+    user {
+      id
+      email
+      password
+      firstName
+      lastName
+      username
+      role
+    }
+  }
+}
