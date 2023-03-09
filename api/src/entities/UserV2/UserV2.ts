@@ -41,6 +41,11 @@ export default class UserV2 extends MainEntity {
   @Field(() => UserRole, {
     nullable: false,
   })
-  @Column({ type: 'enum', nullable: false, enum: UserRole, default: UserRole.USER })
+  @Column({
+    type: 'enum',
+    nullable: false,
+    enum: UserRole,
+    default: UserRole.USER,
+  })
   role?: UserRole;
 }

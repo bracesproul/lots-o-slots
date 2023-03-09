@@ -1,56 +1,60 @@
-import { UserV2 } from "@/entities";
-import { UserRole } from "@/entities/UserV2/types";
-import { Field, ID, InputType, ObjectType } from "type-graphql";
+import { UserV2 } from '@/entities';
+import { UserRole } from '@/entities/UserV2/types';
+import { Field, ID, InputType, ObjectType } from 'type-graphql';
 
 @ObjectType({
-  description: "Response type for creating a new user with Supabase",
+  description: 'Response type for creating a new user with Supabase',
 })
 class SupabaseSessionResponse {
   @Field(() => String, {
     nullable: true,
-    description: 'The oauth provider token. If present, this can be used to make external API requests to the oauth provider used.'
+    description:
+      'The oauth provider token. If present, this can be used to make external API requests to the oauth provider used.',
   })
-  provider_token?: string | null
+  provider_token?: string | null;
 
   @Field(() => String, {
     nullable: true,
-    description: `The oauth provider refresh token. If present, this can be used to refresh the provider_token via the oauth provider's API. Not all oauth providers return a provider refresh token. If the provider_refresh_token is missing, please refer to the oauth provider's documentation for information on how to obtain the provider refresh token.`
+    description: `The oauth provider refresh token. If present, this can be used to refresh the provider_token via the oauth provider's API. Not all oauth providers return a provider refresh token. If the provider_refresh_token is missing, please refer to the oauth provider's documentation for information on how to obtain the provider refresh token.`,
   })
-  provider_refresh_token?: string | null
+  provider_refresh_token?: string | null;
 
   @Field(() => String, {
     nullable: false,
-    description: 'The access token jwt. It is recommended to set the JWT_EXPIRY to a shorter expiry value.'
+    description:
+      'The access token jwt. It is recommended to set the JWT_EXPIRY to a shorter expiry value.',
   })
-  access_token!: string
+  access_token!: string;
 
   @Field(() => String, {
     nullable: false,
-    description: 'A one-time used refresh token that never expires.'
+    description: 'A one-time used refresh token that never expires.',
   })
-  refresh_token!: string
+  refresh_token!: string;
 
   @Field(() => Number, {
     nullable: false,
-    description: 'The number of seconds until the token expires (since it was issued). Returned when a login is confirmed.'
+    description:
+      'The number of seconds until the token expires (since it was issued). Returned when a login is confirmed.',
   })
-  expires_in!: number
+  expires_in!: number;
 
   @Field(() => Number, {
     nullable: false,
-    description: 'A timestamp of when the token will expire. Returned when a login is confirmed.'
+    description:
+      'A timestamp of when the token will expire. Returned when a login is confirmed.',
   })
-  expires_at?: number
+  expires_at?: number;
 
   @Field(() => String, {
     nullable: false,
-    description: 'The type of token. Returned when a login is confirmed.'
+    description: 'The type of token. Returned when a login is confirmed.',
   })
-  token_type!: string
+  token_type!: string;
 }
 
 @ObjectType({
-  description: "Response type for creating a new user",
+  description: 'Response type for creating a new user',
 })
 export class SignUpPayload {
   @Field(() => Boolean)
@@ -87,7 +91,7 @@ export class UserData {
 }
 
 @InputType({
-  description: "Input type for creating a new user",
+  description: 'Input type for creating a new user',
 })
 export class SignUpInput {
   @Field(() => String)
@@ -101,7 +105,7 @@ export class SignUpInput {
 }
 
 @InputType({
-  description: 'Input type for logging in a user'
+  description: 'Input type for logging in a user',
 })
 export class LoginInput {
   @Field(() => String)
@@ -112,7 +116,7 @@ export class LoginInput {
 }
 
 @ObjectType({
-  description: 'Response type for logging in a user'
+  description: 'Response type for logging in a user',
 })
 export class LoginPayload {
   @Field(() => Boolean)
@@ -130,7 +134,7 @@ export class LoginPayload {
 }
 
 @InputType({
-  description: "Input type for updating a new user",
+  description: 'Input type for updating a new user',
 })
 export class UpdateInput {
   @Field(() => ID)
@@ -156,7 +160,7 @@ export class UpdateInput {
 }
 
 @ObjectType({
-  description: 'Input type for updating a user'
+  description: 'Input type for updating a user',
 })
 export class UpdatePayload {
   @Field(() => Boolean)
@@ -165,5 +169,5 @@ export class UpdatePayload {
   @Field(() => UserV2, {
     nullable: false,
   })
-  user!: UserV2
+  user!: UserV2;
 }
