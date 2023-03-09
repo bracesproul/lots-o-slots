@@ -12,12 +12,6 @@ const PREFIX = StylePrefix.USER_PAGE;
 
 function UserPage(props: UserPageProps): ReactElement {
   const p = { ...props };
-  const user = useUser();
-
-  React.useEffect(() => {
-    if (!user) return;
-    console.log('user', user);
-  }, [user])
 
   return (
     <div
