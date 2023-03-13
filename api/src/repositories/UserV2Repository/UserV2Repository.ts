@@ -59,6 +59,7 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
         lastName,
         username: data.username,
         role: data.role,
+        supabaseId: supabaseUser.user.id,
       })
       .save();
 
