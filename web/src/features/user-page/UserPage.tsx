@@ -145,6 +145,7 @@ function UserPage(props: UserPageProps): ReactElement {
 export default function UserPageContainer(): ReactElement {
   const user = useUser();
   const router = useRouter();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
