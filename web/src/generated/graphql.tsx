@@ -63,6 +63,14 @@ export type AuthorizeAdminUserPayload = {
   success: Scalars['Boolean'];
 };
 
+/** Response type for checking a user session */
+export type CheckSessionPayload = {
+  __typename?: 'CheckSessionPayload';
+  refreshToken: Scalars['String'];
+  success: Scalars['Boolean'];
+  user: UserV2;
+};
+
 /** Input type for creating an email log. */
 export type CreateEmailLogInput = {
   /** The email ID provided by gmail. */
@@ -233,6 +241,12 @@ export type LoginPayload = {
   user: UserV2;
 };
 
+/** Response type for logging out a user */
+export type LogoutPayload = {
+  __typename?: 'LogoutPayload';
+  success: Scalars['Boolean'];
+};
+
 /** An object with standard fields for created and updated data */
 export type MainEntity = {
   createdAt: Scalars['DateTime'];
@@ -281,6 +295,7 @@ export type Mutation = {
   createUser: User;
   createUserPayment: UserPayment;
   login: LoginPayload;
+  logout: LogoutPayload;
   markPaymentAsProcessed: MarkPaymentAsProcessedResponse;
   markUserPaymentAsProcessed: MarkUserPaymentAsProcessedResult;
   signUp: SignUpPayload;
@@ -381,6 +396,7 @@ export enum PaymentType {
 export type Query = {
   __typename?: 'Query';
   checkAdminPagePassword: AuthorizeAdminUserPayload;
+  checkSession: CheckSessionPayload;
   getAllAccounts: Array<Account>;
   getAllPayments: Array<Payment>;
   getAllUsers: Array<UserV2>;
@@ -546,10 +562,12 @@ export type UserV2 = MainEntity & Node & {
   firstName: Scalars['String'];
   id: Scalars['ID'];
   lastName: Scalars['String'];
-  password: Scalars['String'];
+  password?: Maybe<Scalars['String']>;
+  refreshToken?: Maybe<Scalars['String']>;
   role: UserRole;
+  supabaseId: Scalars['String'];
   updatedAt?: Maybe<Scalars['DateTime']>;
-  username: Scalars['String'];
+  username?: Maybe<Scalars['String']>;
 };
 
 export type CreateUserMutationVariables = Exact<{
@@ -625,7 +643,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginPayload', success: boolean, session: { __typename?: 'SupabaseSessionResponse', provider_token?: string | null, provider_refresh_token?: string | null, access_token: string, refresh_token: string, expires_in: number, expires_at: number, token_type: string }, user: { __typename?: 'UserV2', id: string, email: string, password: string, firstName: string, lastName: string, username: string, role: UserRole } } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginPayload', success: boolean, session: { __typename?: 'SupabaseSessionResponse', provider_token?: string | null, provider_refresh_token?: string | null, access_token: string, refresh_token: string, expires_in: number, expires_at: number, token_type: string }, user: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password?: string | null, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string } } };
 
 export type CreateUserPaymentMutationVariables = Exact<{
   input: CreateUserPaymentInput;
@@ -644,9 +662,35 @@ export type SignUpMutationVariables = Exact<{
 }>;
 
 
-export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'SignUpPayload', success: boolean, session: { __typename?: 'SupabaseSessionResponse', provider_token?: string | null, provider_refresh_token?: string | null, access_token: string, refresh_token: string, expires_in: number, expires_at: number, token_type: string }, user: { __typename?: 'UserV2', id: string, email: string, password: string, firstName: string, lastName: string, username: string, role: UserRole } } };
+export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'SignUpPayload', success: boolean, session: { __typename?: 'SupabaseSessionResponse', provider_token?: string | null, provider_refresh_token?: string | null, access_token: string, refresh_token: string, expires_in: number, expires_at: number, token_type: string }, user: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password?: string | null, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string } } };
+
+export type GetUserDataQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetUserDataQuery = { __typename?: 'Query', getUserById: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password?: string | null, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string } };
 
 export type PaymentFragmentFragment = { __typename?: 'Payment', id: string, userId: string, amount: number, processed: boolean, emailId: string, provider: PaymentProvider, senderName: string, transactionId?: string | null, paymentType: PaymentType };
+
+export type UserFragment = { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password?: string | null, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string };
+
+export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type LogoutMutation = { __typename?: 'Mutation', logout: { __typename?: 'LogoutPayload', success: boolean } };
+
+export type CheckUserSessionQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CheckUserSessionQuery = { __typename?: 'Query', checkSession: { __typename?: 'CheckSessionPayload', success: boolean, refreshToken: string, user: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password?: string | null, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string } } };
+
+export type GetUserByIdQueryVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type GetUserByIdQuery = { __typename?: 'Query', getUserById: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password?: string | null, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string } };
 
 export const PaymentFragmentFragmentDoc = gql`
     fragment PaymentFragment on Payment {
@@ -659,6 +703,19 @@ export const PaymentFragmentFragmentDoc = gql`
   senderName
   transactionId
   paymentType
+}
+    `;
+export const UserFragmentDoc = gql`
+    fragment User on UserV2 {
+  id
+  firstName
+  lastName
+  email
+  password
+  username
+  role
+  refreshToken
+  supabaseId
 }
     `;
 export const CreateUserDocument = gql`
@@ -1061,17 +1118,11 @@ export const LoginDocument = gql`
       token_type
     }
     user {
-      id
-      email
-      password
-      firstName
-      lastName
-      username
-      role
+      ...User
     }
   }
 }
-    `;
+    ${UserFragmentDoc}`;
 export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
 
 /**
@@ -1184,17 +1235,11 @@ export const SignUpDocument = gql`
       token_type
     }
     user {
-      id
-      email
-      password
-      firstName
-      lastName
-      username
-      role
+      ...User
     }
   }
 }
-    `;
+    ${UserFragmentDoc}`;
 export type SignUpMutationFn = Apollo.MutationFunction<SignUpMutation, SignUpMutationVariables>;
 
 /**
@@ -1221,3 +1266,143 @@ export function useSignUpMutation(baseOptions?: Apollo.MutationHookOptions<SignU
 export type SignUpMutationHookResult = ReturnType<typeof useSignUpMutation>;
 export type SignUpMutationResult = Apollo.MutationResult<SignUpMutation>;
 export type SignUpMutationOptions = Apollo.BaseMutationOptions<SignUpMutation, SignUpMutationVariables>;
+export const GetUserDataDocument = gql`
+    query GetUserData($id: String!) {
+  getUserById(id: $id) {
+    ...User
+  }
+}
+    ${UserFragmentDoc}`;
+
+/**
+ * __useGetUserDataQuery__
+ *
+ * To run a query within a React component, call `useGetUserDataQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserDataQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserDataQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetUserDataQuery(baseOptions: Apollo.QueryHookOptions<GetUserDataQuery, GetUserDataQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserDataQuery, GetUserDataQueryVariables>(GetUserDataDocument, options);
+      }
+export function useGetUserDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserDataQuery, GetUserDataQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserDataQuery, GetUserDataQueryVariables>(GetUserDataDocument, options);
+        }
+export type GetUserDataQueryHookResult = ReturnType<typeof useGetUserDataQuery>;
+export type GetUserDataLazyQueryHookResult = ReturnType<typeof useGetUserDataLazyQuery>;
+export type GetUserDataQueryResult = Apollo.QueryResult<GetUserDataQuery, GetUserDataQueryVariables>;
+export const LogoutDocument = gql`
+    mutation Logout {
+  logout {
+    success
+  }
+}
+    `;
+export type LogoutMutationFn = Apollo.MutationFunction<LogoutMutation, LogoutMutationVariables>;
+
+/**
+ * __useLogoutMutation__
+ *
+ * To run a mutation, you first call `useLogoutMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLogoutMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [logoutMutation, { data, loading, error }] = useLogoutMutation({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useLogoutMutation(baseOptions?: Apollo.MutationHookOptions<LogoutMutation, LogoutMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument, options);
+      }
+export type LogoutMutationHookResult = ReturnType<typeof useLogoutMutation>;
+export type LogoutMutationResult = Apollo.MutationResult<LogoutMutation>;
+export type LogoutMutationOptions = Apollo.BaseMutationOptions<LogoutMutation, LogoutMutationVariables>;
+export const CheckUserSessionDocument = gql`
+    query CheckUserSession {
+  checkSession {
+    success
+    refreshToken
+    user {
+      ...User
+    }
+  }
+}
+    ${UserFragmentDoc}`;
+
+/**
+ * __useCheckUserSessionQuery__
+ *
+ * To run a query within a React component, call `useCheckUserSessionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCheckUserSessionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCheckUserSessionQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useCheckUserSessionQuery(baseOptions?: Apollo.QueryHookOptions<CheckUserSessionQuery, CheckUserSessionQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<CheckUserSessionQuery, CheckUserSessionQueryVariables>(CheckUserSessionDocument, options);
+      }
+export function useCheckUserSessionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CheckUserSessionQuery, CheckUserSessionQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<CheckUserSessionQuery, CheckUserSessionQueryVariables>(CheckUserSessionDocument, options);
+        }
+export type CheckUserSessionQueryHookResult = ReturnType<typeof useCheckUserSessionQuery>;
+export type CheckUserSessionLazyQueryHookResult = ReturnType<typeof useCheckUserSessionLazyQuery>;
+export type CheckUserSessionQueryResult = Apollo.QueryResult<CheckUserSessionQuery, CheckUserSessionQueryVariables>;
+export const GetUserByIdDocument = gql`
+    query GetUserById($id: String!) {
+  getUserById(id: $id) {
+    ...User
+  }
+}
+    ${UserFragmentDoc}`;
+
+/**
+ * __useGetUserByIdQuery__
+ *
+ * To run a query within a React component, call `useGetUserByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserByIdQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetUserByIdQuery(baseOptions: Apollo.QueryHookOptions<GetUserByIdQuery, GetUserByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserByIdQuery, GetUserByIdQueryVariables>(GetUserByIdDocument, options);
+      }
+export function useGetUserByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserByIdQuery, GetUserByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserByIdQuery, GetUserByIdQueryVariables>(GetUserByIdDocument, options);
+        }
+export type GetUserByIdQueryHookResult = ReturnType<typeof useGetUserByIdQuery>;
+export type GetUserByIdLazyQueryHookResult = ReturnType<typeof useGetUserByIdLazyQuery>;
+export type GetUserByIdQueryResult = Apollo.QueryResult<GetUserByIdQuery, GetUserByIdQueryVariables>;

@@ -55,4 +55,10 @@ export default class UserV2 extends MainEntity {
   @Column({ type: 'varchar', nullable: false })
   @Unique(['supabaseId'])
   supabaseId!: string;
+
+  @Field(() => String, {
+    nullable: true,
+  })
+  @Column({ type: 'varchar', nullable: true })
+  refreshToken?: string;
 }

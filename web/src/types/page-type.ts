@@ -4,4 +4,5 @@ export enum PageType {
   LOGIN = 'LOGIN',
   SIGNUP = 'SIGNUP',
   ADMIN = 'ADMIN',
+  LOGOUT = 'LOGOUT',
 }

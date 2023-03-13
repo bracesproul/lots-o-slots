@@ -1,0 +1,9 @@
+query CheckUserSession {
+  checkSession {
+    success
+    refreshToken
+    user {
+      ...User
+    }
+  }
+}
