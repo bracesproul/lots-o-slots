@@ -13,21 +13,61 @@ export enum HttpErrorCodes {
 registerEnumType(HttpErrorCodes, { name: 'HttpErrorCodes' });
 
 export const UserAlreadyExistsError = () => {
-  throw new GraphQLError('User already exists', undefined, undefined, undefined, undefined, undefined, { code: HttpErrorCodes.Conflict });
-}
+  throw new GraphQLError(
+    'User already exists',
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    { code: HttpErrorCodes.Conflict }
+  );
+};
 
 export const InvalidCredentialsError = () => {
-  throw new GraphQLError('Invalid username and/or password.', undefined, undefined, undefined, undefined, undefined, { code: HttpErrorCodes.Unauthorized });
-}
+  throw new GraphQLError(
+    'Invalid username and/or password.',
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    { code: HttpErrorCodes.Unauthorized }
+  );
+};
 
 export const AuthError = (message: string) => {
-  throw new GraphQLError(message, undefined, undefined, undefined, undefined, undefined, { code: HttpErrorCodes.BadRequest });
-}
+  throw new GraphQLError(
+    message,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    { code: HttpErrorCodes.BadRequest }
+  );
+};
 
 export const UserNotFoundError = () => {
-  throw new GraphQLError('No user found.', undefined, undefined, undefined, undefined, undefined, { code: HttpErrorCodes.Unauthorized });
-}
+  throw new GraphQLError(
+    'No user found.',
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    { code: HttpErrorCodes.Unauthorized }
+  );
+};
 
 export const UpdateUserError = () => {
-  throw new GraphQLError('Error updating user.', undefined, undefined, undefined, undefined, undefined, { code: HttpErrorCodes.BadRequest });
-}
+  throw new GraphQLError(
+    'Error updating user.',
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    { code: HttpErrorCodes.BadRequest }
+  );
+};

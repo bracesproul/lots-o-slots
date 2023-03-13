@@ -3,6 +3,8 @@ import clsx from 'clsx';
 import { AuthStep, LoginError, SIGN_UP_PAGE, StylePrefix } from '@/types';
 import { Button, Input } from '@/components';
 import Link from 'next/link';
+import { useLoginMutation } from '@/generated/graphql';
+import { useRouter } from 'next/router';
 
 type LoginFormData = {
   /** State variable for the username */
@@ -13,7 +15,7 @@ type LoginFormData = {
   password: string;
   /** State setter for controlling the password */
   setPassword: (password: string) => void;
-}
+};
 
 export type LoginPageProps = {
   /** Optional style prop for overriding the default styles. */
@@ -32,27 +34,18 @@ const PREFIX = StylePrefix.LOGIN_PAGE;
 
 function LoginPage2(props: LoginPageProps): ReactElement {
   const p = { ...props };
-  const {
-    username,
-    setUsername,
-    password,
-    setPassword,
-  } = p.formData;
+  const { username, setUsername, password, setPassword } = p.formData;
   const isSubmitDisabled = p.isDisabled || !username || !password;
 
-  const [step, setStep] = useState(AuthStep.ENTER_INFO)
+  const [step, setStep] = useState(AuthStep.ENTER_INFO);
 
   const handleSubmit = () => {
-    setStep(AuthStep.PROCESSING)
+    setStep(AuthStep.PROCESSING);
     p.handleSubmit();
-  }
+  };
 
   return (
-    <div
-      className={clsx(
-        `${PREFIX}`,
-      )}
-    >
+    <div className={clsx(`${PREFIX}`)}>
       <div className={`${PREFIX}-content`}>
         <div className={`${PREFIX}-body`}>
           {step === AuthStep.ENTER_INFO && (
@@ -84,7 +77,11 @@ function LoginPage2(props: LoginPageProps): ReactElement {
                     labelClassName={`${PREFIX}-input-label`}
                     showTogglePasswordIcon
                   />
-                  <p className={`${PREFIX}-login`}><Link href={SIGN_UP_PAGE}>Don't have an account? Sign up now</Link></p>
+                  <p className={`${PREFIX}-login`}>
+                    <Link href={SIGN_UP_PAGE}>
+                      Don&apos;t have an account? Sign up now
+                    </Link>
+                  </p>
                   <div>
                     <Button
                       type="submit"
@@ -95,7 +92,11 @@ function LoginPage2(props: LoginPageProps): ReactElement {
                       Submit
                     </Button>
                   </div>
-                  {p.errorMessage && <p className={`${PREFIX}-error-message`}>{p.errorMessage}</p>}
+                  {p.errorMessage && (
+                    <p className={`${PREFIX}-error-message`}>
+                      {p.errorMessage}
+                    </p>
+                  )}
                 </div>
               </form>
             </div>
@@ -108,29 +109,47 @@ function LoginPage2(props: LoginPageProps): ReactElement {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default function LoginPageContainer(): ReactElement {
+  const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<LoginError | undefined>(undefined);
+  const [login, { error: loginError, loading }] = useLoginMutation({});
 
-  const isDisabled = false;
+  const isDisabled = loading || !!error || loginError !== undefined;
 
-  const handleSubmit = () => {
-    /** @TODO call api */
-  }
+  const handleSubmit = async () => {
+    const { data } = await login({
+      variables: {
+        input: {
+          email: username,
+          password,
+        },
+      },
+    });
+    if (data?.login.success) {
+      const accessToken = encodeURIComponent(data.login.session.access_token);
+      const refreshToken = encodeURIComponent(data.login.session.refresh_token);
+      await router.push(
+        `/user?accessToken=${accessToken}&refreshToken=${refreshToken}`
+      );
+    }
+  };
 
-  return <LoginPage2
-    formData={{
-      username,
-      setUsername,
-      password,
-      setPassword,
-    }}
-    isDisabled={isDisabled}
-    handleSubmit={handleSubmit}
-    errorMessage={error}
-  />;
+  return (
+    <LoginPage2
+      formData={{
+        username,
+        setUsername,
+        password,
+        setPassword,
+      }}
+      isDisabled={isDisabled}
+      handleSubmit={handleSubmit}
+      errorMessage={error}
+    />
+  );
 }

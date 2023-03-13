@@ -1,4 +1,4 @@
-import { supabaseClient } from '../supabase';
+import { supabaseAdminClient, supabaseClient } from '../supabase';
 import {
   SignInWithEmailPasswordInput,
   SignInWithEmailPasswordResponse,
@@ -21,10 +21,10 @@ export default class SupabaseAuth {
     });
 
     if (error) {
-      throw new Error(error.message);
+      return AuthError('Error creating user in Supabase.');
     }
     if (!data.session || !data.user) {
-      throw new Error('No session and/or user');
+      return AuthError('No user or session returned from Supabase.');
     }
 
     return {
@@ -89,6 +89,25 @@ export default class SupabaseAuth {
   }
 
   async delete(id: string): Promise<void> {
-    // TODO: implement
+    const { data, error } = await supabaseAdminClient.auth.admin.deleteUser(id);
+    if (error) {
+      return AuthError('Error deleting user in Supabase.');
+    }
+  }
+
+  async resetPassword(email: string): Promise<void> {
+    const PASSWORD_REDIRECT_URL =
+      process.env.NODE_ENV === 'development'
+        ? 'http://localhost:3000/user/resetPassword'
+        : process.env.PASSWORD_REDIRECT_URL;
+    if (!PASSWORD_REDIRECT_URL) {
+      throw new Error('PASSWORD_REDIRECT_URL not set');
+    }
+    const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+      redirectTo: PASSWORD_REDIRECT_URL,
+    });
+    if (error) {
+      AuthError('Error sending password reset email');
+    }
   }
 }

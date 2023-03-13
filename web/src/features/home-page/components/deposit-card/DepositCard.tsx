@@ -93,10 +93,16 @@ function DepositCard(props: DepositCardProps): ReactElement {
         </div>
         <div className={`${PREFIX}-submit-wrapper`}>
           <Mobile>
-            <Button onPress={() => p.setStepTwoOpen(true)} variant="primary">Deposit</Button>
+            <Button onPress={() => p.setStepTwoOpen(true)} variant="primary">
+              Deposit
+            </Button>
           </Mobile>
           <TabletAndAbove>
-            <Button onPress={() => p.setStepTwoOpen(true)} size="xlarge" variant="primary">
+            <Button
+              onPress={() => p.setStepTwoOpen(true)}
+              size="xlarge"
+              variant="primary"
+            >
               Deposit
             </Button>
           </TabletAndAbove>

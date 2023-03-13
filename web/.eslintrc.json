@@ -1,5 +1,22 @@
 {
-  "extends": "next/core-web-vitals",
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["react", "import"],
+  "env": {
+    "es2021": true,
+    "commonjs": true,
+    "es6": true,
+    "node": true,
+    "browser": true
+  },
+  "globals": {
+    "window": true,
+    "process": true
+  },
+  "extends": [
+    "plugin:react-hooks/recommended",
+    "plugin:react/recommended",
+    "plugin:react/jsx-runtime"
+  ],
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
@@ -8,8 +25,6 @@
     "sourceType": "module"
   },
   "rules": {
-    "no-unused-vars": 0,
-    "@typescript-eslint/no-unused-vars": ["error"],
-    "import/no-anonymous-default-export": "off"
+    "import/no-extraneous-dependencies": "error"
   }
 }

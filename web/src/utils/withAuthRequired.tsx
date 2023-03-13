@@ -1,7 +1,15 @@
-import { GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from 'next';
+import {
+  GetServerSideProps,
+  GetServerSidePropsContext,
+  GetServerSidePropsResult,
+} from 'next';
 import { initializeApollo } from './apollo';
 import { NormalizedCacheObject } from '@apollo/client';
-import { createServerSupabaseClient, Session, User } from '@supabase/auth-helpers-nextjs'
+import {
+  createServerSupabaseClient,
+  Session,
+  User,
+} from '@supabase/auth-helpers-nextjs';
 import { PageType } from '@/types';
 
 type WithAuthResult = GetServerSidePropsResult<{
@@ -22,8 +30,8 @@ export const withAuthRequired =
     }
   ) =>
   async (context: GetServerSidePropsContext): Promise<WithAuthResult> => {
-    let incomingApolloState: NormalizedCacheObject | null = null;
-  
+    const incomingApolloState: NormalizedCacheObject | null = null;
+
     const apolloClient = initializeApollo(incomingApolloState, {
       cookie: context.req.headers.cookie,
     });
@@ -31,38 +39,43 @@ export const withAuthRequired =
     const initialApolloState = apolloClient.cache.extract();
 
     // Create authenticated Supabase Client
-    const supabase = createServerSupabaseClient(context)
+    const supabase = createServerSupabaseClient(context);
 
     let session: Session | null = null;
 
-    // Set session from query params
-    if (context.query?.accessToken && context.query?.refreshToken) {
-      const access_token = decodeURIComponent(context.query.accessToken as string);
-      const refresh_token = decodeURIComponent(context.query.refreshToken as string);
-      const {
-        data: { session: supabaseSession },
-      } = await supabase.auth.setSession({
-        access_token,
-        refresh_token,
-      });
+    const {
+      data: { session: supabaseSession },
+    } = await supabase.auth.getSession();
 
-      session = supabaseSession;
-    } else {
-      // Check if we have a session
-      const {
-        data: { session: supabaseSession },
-      } = await supabase.auth.getSession();
+    session = supabaseSession;
 
-      session = supabaseSession;
+    if (!session) {
+      if (context.query?.accessToken && context.query?.refreshToken) {
+        // No session but tokens are in URL. Occurs after a user signs up/logs in.
+        const access_token = decodeURIComponent(
+          context.query.accessToken as string
+        );
+        const refresh_token = decodeURIComponent(
+          context.query.refreshToken as string
+        );
+        const {
+          data: { session: supabaseSession },
+        } = await supabase.auth.setSession({
+          access_token,
+          refresh_token,
+        });
 
-      if (!session) {
-        if (!options?.redirect) {
+        session = supabaseSession;
+      } else {
+        if (options?.redirect === false) {
+          // No session and no tokens in URL. Redirects to login page or no redirect if the option is set.
           return {
             props: {
               initialApolloState,
             },
-          }
+          };
         }
+
         return {
           redirect: {
             destination: '/login',
@@ -74,11 +87,14 @@ export const withAuthRequired =
           },
         };
       }
-
+    } else {
+      // Session is true
       if (pageType === PageType.LOGIN || pageType === PageType.SIGNUP) {
+        // Prevent logged in users from accessing login/signup pages
         return {
           redirect: {
-            destination: '/user',
+            destination:
+              session.user.user_metadata.role === 'USER' ? '/user' : '/admin',
             permanent: false,
           },
           props: {
@@ -87,28 +103,7 @@ export const withAuthRequired =
           },
         };
       }
-  
-      if (session.user.user_metadata.role === 'ADMIN') {
-        if (pageType === PageType.ADMIN) {
-          return {
-            props: {
-              initialApolloState,
-              supabaseSession: session,
-            },
-          }
-        }
-        return {
-          redirect: {
-            destination: '/admin',
-            permanent: false,
-          },
-          props: {
-            initialApolloState,
-            supabaseSession: session,
-          },
-        };
-      }
-  
+
       if (session.user.user_metadata.role === 'USER') {
         if (pageType === PageType.USER) {
           return {
@@ -116,11 +111,33 @@ export const withAuthRequired =
               initialApolloState,
               supabaseSession: session,
             },
-          }
+          };
         }
         return {
           redirect: {
             destination: '/user',
+            permanent: false,
+          },
+          props: {
+            initialApolloState,
+            supabaseSession: session,
+          },
+        };
+      }
+
+      if (session.user.user_metadata.role === 'ADMIN') {
+        // If admin is already logged in, redirect to /admin
+        if (pageType === PageType.ADMIN) {
+          return {
+            props: {
+              initialApolloState,
+              supabaseSession: session,
+            },
+          };
+        }
+        return {
+          redirect: {
+            destination: '/admin',
             permanent: false,
           },
           props: {
@@ -136,5 +153,5 @@ export const withAuthRequired =
         initialApolloState,
         supabaseSession: session,
       },
-    }
+    };
   };

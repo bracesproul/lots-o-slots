@@ -1,6 +1,17 @@
-import { AbstractRepository, EntityRepository, getCustomRepository } from 'typeorm';
+import {
+  AbstractRepository,
+  EntityRepository,
+  getCustomRepository,
+} from 'typeorm';
 import { UserV2 } from '@/entities';
-import { CreateUserInput, CreateUserResponse, LoginUserInput, LoginUserResponse, UpdateUserInput, UpdateUserResponse } from './types';
+import {
+  CreateUserInput,
+  CreateUserResponse,
+  LoginUserInput,
+  LoginUserResponse,
+  UpdateUserInput,
+  UpdateUserResponse,
+} from './types';
 import { UserInputError } from 'apollo-server-express';
 import { SupabaseAuth } from '@/services/subabase';
 import { UserV2LoginLogRepository } from '../UserV2LoginLogRepository';
@@ -18,16 +29,16 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
 
   async getById(id: string): Promise<UserV2> {
     return this.repository.findOneOrFail({
-      where: { id }
+      where: { id },
     });
   }
 
   async signUp(input: CreateUserInput): Promise<CreateUserResponse> {
     const { email, password, data } = input;
     const { firstName, lastName } = data;
-  
+
     const checkIfUserExists = await this.repository.findOne({
-      where: { email }
+      where: { email },
     });
 
     if (checkIfUserExists) {
@@ -40,27 +51,30 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
       data,
     });
 
-    const user = await this.repository.create({
-      email,
-      password,
-      firstName,
-      lastName,
-      username: data.username,
-      role: data.role,
-    }).save();
+    const user = await this.repository
+      .create({
+        email,
+        password,
+        firstName,
+        lastName,
+        username: data.username,
+        role: data.role,
+        supabaseId: supabaseUser.user.id,
+      })
+      .save();
 
     await getCustomRepository(UserV2LoginLogRepository).updateLog(user.id);
 
     return {
       supabaseUserResponse: supabaseUser,
       user,
-    }
+    };
   }
 
   async login(input: LoginUserInput): Promise<LoginUserResponse> {
     const { email, password } = input;
     const user = await this.repository.findOne({
-      where: { email }
+      where: [{ email }, { username: email }],
     });
 
     if (!user) {
@@ -68,7 +82,7 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
     }
 
     const supabaseUserResponse = await new SupabaseAuth().login({
-      email,
+      email: user.email,
       password,
     });
 
@@ -76,14 +90,14 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
 
     return {
       supabaseUserResponse,
-      user: user,
-    }
+      user,
+    };
   }
 
   async update(input: UpdateUserInput): Promise<UpdateUserResponse> {
     const { id } = input;
     const checkIfUserExists = await this.repository.findOne({
-      where: { id }
+      where: { id },
     });
 
     if (!checkIfUserExists) {
@@ -92,14 +106,16 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
 
     await new SupabaseAuth().update(input);
 
-    const updatedUser = await this.repository.create({
-      ...checkIfUserExists,
-      ...input,
-    }).save()
+    const updatedUser = await this.repository
+      .create({
+        ...checkIfUserExists,
+        ...input,
+      })
+      .save();
 
     return {
       user: updatedUser,
-    }
+    };
   }
 
   async delete(id: string): Promise<boolean> {

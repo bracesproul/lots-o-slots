@@ -620,6 +620,13 @@ export type MarkUserPaymentAsProcessedMutationVariables = Exact<{
 
 export type MarkUserPaymentAsProcessedMutation = { __typename?: 'Mutation', markUserPaymentAsProcessed: { __typename?: 'MarkUserPaymentAsProcessedResult', success: boolean, userPayment: { __typename?: 'UserPayment', id: string, createdAt: string, paymentIdentifier: string, paymentProvider: PaymentProvider, amount: number, gameType: GameType } } };
 
+export type LoginMutationVariables = Exact<{
+  input: LoginInput;
+}>;
+
+
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginPayload', success: boolean, session: { __typename?: 'SupabaseSessionResponse', provider_token?: string | null, provider_refresh_token?: string | null, access_token: string, refresh_token: string, expires_in: number, expires_at: number, token_type: string }, user: { __typename?: 'UserV2', id: string, email: string, password: string, firstName: string, lastName: string, username: string, role: UserRole } } };
+
 export type CreateUserPaymentMutationVariables = Exact<{
   input: CreateUserPaymentInput;
 }>;
@@ -1040,6 +1047,57 @@ export function useMarkUserPaymentAsProcessedMutation(baseOptions?: Apollo.Mutat
 export type MarkUserPaymentAsProcessedMutationHookResult = ReturnType<typeof useMarkUserPaymentAsProcessedMutation>;
 export type MarkUserPaymentAsProcessedMutationResult = Apollo.MutationResult<MarkUserPaymentAsProcessedMutation>;
 export type MarkUserPaymentAsProcessedMutationOptions = Apollo.BaseMutationOptions<MarkUserPaymentAsProcessedMutation, MarkUserPaymentAsProcessedMutationVariables>;
+export const LoginDocument = gql`
+    mutation Login($input: LoginInput!) {
+  login(input: $input) {
+    success
+    session {
+      provider_token
+      provider_refresh_token
+      access_token
+      refresh_token
+      expires_in
+      expires_at
+      token_type
+    }
+    user {
+      id
+      email
+      password
+      firstName
+      lastName
+      username
+      role
+    }
+  }
+}
+    `;
+export type LoginMutationFn = Apollo.MutationFunction<LoginMutation, LoginMutationVariables>;
+
+/**
+ * __useLoginMutation__
+ *
+ * To run a mutation, you first call `useLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [loginMutation, { data, loading, error }] = useLoginMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useLoginMutation(baseOptions?: Apollo.MutationHookOptions<LoginMutation, LoginMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument, options);
+      }
+export type LoginMutationHookResult = ReturnType<typeof useLoginMutation>;
+export type LoginMutationResult = Apollo.MutationResult<LoginMutation>;
+export type LoginMutationOptions = Apollo.BaseMutationOptions<LoginMutation, LoginMutationVariables>;
 export const CreateUserPaymentDocument = gql`
     mutation CreateUserPayment($input: CreateUserPaymentInput!) {
   createUserPayment(input: $input) {

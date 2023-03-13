@@ -6,27 +6,32 @@ import { isSameDay } from 'date-fns';
 export default class UserV2LoginLogRepository extends AbstractRepository<UserV2LoginLog> {
   async updateLog(userId: string): Promise<UserV2LoginLog> {
     const user = await getRepository(UserV2).findOneOrFail({
-      where: { id: userId }
-    })
+      where: { id: userId },
+    });
 
-    const previousEntry = await this.repository.createQueryBuilder('userLog')
+    const previousEntry = await this.repository
+      .createQueryBuilder('userLog')
       .where('userLog.userId = :userId', { userId })
       .orderBy('userLog.loginDate', 'DESC')
       .getOne();
-  
+
     if (!previousEntry) {
-      return this.repository.create({
-        loginDate: new Date(),
-        user,
-      }).save()
+      return this.repository
+        .create({
+          loginDate: new Date(),
+          user,
+        })
+        .save();
     }
     const recentLogin = new Date(previousEntry.loginDate);
     if (isSameDay(recentLogin, new Date())) {
       return previousEntry;
     }
-    return this.repository.create({
-      loginDate: new Date(),
-      user,
-    }).save();
+    return this.repository
+      .create({
+        loginDate: new Date(),
+        user,
+      })
+      .save();
   }
 }
