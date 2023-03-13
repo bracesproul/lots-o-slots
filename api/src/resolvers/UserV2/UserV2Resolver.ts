@@ -28,7 +28,6 @@ export class UserV2Resolver {
     @Ctx() { user }: ContextType,
     @Arg('id', { nullable: false }) id: string
   ): Promise<UserV2> {
-    console.log('user', user);
     return getCustomRepository(UserV2Repository).getById(id);
   }
 
@@ -79,10 +78,7 @@ export class UserV2Resolver {
   ): Promise<LoginPayload> {
     const { user: loggedInUser, supabaseUserResponse } =
       await getCustomRepository(UserV2Repository).login(input, res);
-    console.log(
-      '__REFRESH TOKEN FROM SERVER__',
-      supabaseUserResponse.session.refresh_token
-    );
+
     return {
       session: supabaseUserResponse.session,
       success: true,

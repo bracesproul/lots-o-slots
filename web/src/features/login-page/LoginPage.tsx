@@ -148,7 +148,6 @@ export default function LoginPageContainer(): ReactElement {
         SUPABASE_REFRESH_TOKEN_COOKIE_KEY,
         data?.login.session.refresh_token
       );
-      console.log('REFRESH TOKEN', data?.login.session.refresh_token);
       await router.push(`/user`);
     }
   };

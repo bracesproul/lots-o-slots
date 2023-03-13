@@ -27,7 +27,6 @@ export const getUserFromContext = async (
   const supabaseRefreshTokenCookie = cookies[SUPABASE_REFRESH_TOKEN_COOKIE_KEY];
 
   if (!supabaseUserCookie || !supabaseRefreshTokenCookie) {
-    console.log(cookies);
     return {
       user: null,
       supabaseId: null,
