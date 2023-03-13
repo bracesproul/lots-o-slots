@@ -87,4 +87,8 @@ export default class SupabaseAuth {
       user: updatedUser,
     };
   }
+
+  async delete(id: string): Promise<void> {
+    // TODO: implement
+  }
 }
