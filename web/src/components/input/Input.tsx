@@ -45,6 +45,10 @@ export type InputProps = {
    * @default false
    * */
   showTogglePasswordIcon?: boolean;
+  /**
+   * What the input should auto complete for
+   */
+  autoComplete?: string;
 };
 
 const PREFIX = StylePrefix.INPUT_COMPONENT;
@@ -136,6 +140,7 @@ export default function Input(props: InputProps): ReactElement {
         type={passwordInputType}
         required={p.required}
         onBlur={handleBlur}
+        autoComplete={p.autoComplete}
       />
       <span>
         {p.hasError && <p className={`${PREFIX}-error`}>{p.error}</p>}
