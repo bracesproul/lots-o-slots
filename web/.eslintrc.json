@@ -1,6 +1,6 @@
 {
   "parser": "@typescript-eslint/parser",
-  "plugins": ["react"],
+  "plugins": ["react", "import"],
   "env": {
     "es2021": true,
     "commonjs": true,
@@ -23,5 +23,8 @@
     },
     "ecmaVersion": 12,
     "sourceType": "module"
+  },
+  "rules": {
+    "import/no-extraneous-dependencies": "error"
   }
 }

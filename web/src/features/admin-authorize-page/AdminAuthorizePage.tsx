@@ -95,8 +95,8 @@ export default function AdminAuthorizePageContainer(): ReactElement {
         const { data } = await checkAuth({
           variables: {
             password,
-          }
-        })
+          },
+        });
         if (data?.checkAdminPagePassword.success) {
           const cookieStorage = new CookieStorage();
           cookieStorage.setItem('lots_o_slots_auth', password);

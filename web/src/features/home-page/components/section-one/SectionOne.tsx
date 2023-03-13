@@ -2,14 +2,14 @@ import { ReactElement, useState } from 'react';
 import clsx from 'clsx';
 import { StylePrefix } from '@/types/style-prefix';
 import { GameButton, Button, GenerateAccountDialog } from '@/components';
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
 import BigSlotsSvg from '@/assets/svgs/BigSlotsSvg';
 
 type ActionsBoxContainerProps = {
   handlePressPlayOnWeb: () => void;
   handlePressInstallMobileApp: () => void;
   handlePressCreateAccount: () => void;
-}
+};
 
 export type SectionOneProps = ActionsBoxContainerProps & {
   /** Optional prop for overriding styles */
@@ -107,19 +107,21 @@ function SectionOne(props: SectionOneProps): ReactElement {
   );
 }
 
-export default function SectionOneContainer(props: Pick<SectionOneProps, 'slotsSectionRef'>): ReactElement {
+export default function SectionOneContainer(
+  props: Pick<SectionOneProps, 'slotsSectionRef'>
+): ReactElement {
   const router = useRouter();
   const [createAccountDialogOpen, setCreateAccountDialogOpen] = useState(false);
 
   const handlePressPlayOnWeb = () => {
     router.push('http://h5.firekirin.xyz/firekirin/hall/index.html');
-  }
+  };
   const handlePressInstallMobileApp = () => {
     router.push('http://firekirin.xyz:8580/index.html');
-  }
+  };
   const handlePressCreateAccount = () => {
-    setCreateAccountDialogOpen(true)
-  }
+    setCreateAccountDialogOpen(true);
+  };
 
   return (
     <SectionOne
@@ -130,5 +132,5 @@ export default function SectionOneContainer(props: Pick<SectionOneProps, 'slotsS
       createAccountDialogOpen={createAccountDialogOpen}
       setCreateAccountDialogOpen={setCreateAccountDialogOpen}
     />
-    );
+  );
 }

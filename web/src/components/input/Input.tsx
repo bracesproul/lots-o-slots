@@ -35,7 +35,7 @@ export type InputProps = {
    * */
   hasError?: boolean;
   /**
-   * Handler for the onBlur prop 
+   * Handler for the onBlur prop
    * Use this to trigger validation, onBlur is triggered
    * when the input loses focus.
    * */
@@ -50,53 +50,83 @@ export type InputProps = {
 const PREFIX = StylePrefix.INPUT_COMPONENT;
 
 const DEFAULT_PROPS = {
-  handleOnBlur: () => { },
   showTogglePasswordIcon: false,
   type: 'text',
-}
+};
 
 export default function Input(props: InputProps): ReactElement {
   const p = { ...DEFAULT_PROPS, ...props };
   const [passwordInputType, setPasswordInputType] = useState<string>(p.type);
 
   const handleBlur = (event: React.FocusEvent<HTMLElement>) => {
-    p.handleOnBlur(event);
+    p.handleOnBlur?.(event);
   };
 
   const handleTogglePassword = () => {
-    setPasswordInputType(passwordInputType === 'password' ? 'text' : 'password');
+    setPasswordInputType(
+      passwordInputType === 'password' ? 'text' : 'password'
+    );
   };
 
-  const eyeIcon = passwordInputType === 'password' ? <ShowEyeSvg /> : <HideEyeSvg />;
+  const eyeIcon =
+    passwordInputType === 'password' ? <ShowEyeSvg /> : <HideEyeSvg />;
 
   return (
-    <div className={clsx([`${PREFIX}`, {
-      'has-label': !!p.label,
-      'has-error': p.error,
-    }])}>
+    <div
+      className={clsx([
+        `${PREFIX}`,
+        {
+          'has-label': !!p.label,
+          'has-error': p.error,
+        },
+      ])}
+    >
       <span className={`${PREFIX}-label-container`}>
         <span className={`${PREFIX}-label-content`}>
-          {p.label && <p className={clsx([`${PREFIX}-label`, p.labelClassName, {
-            'has-error': p.error,
-          }])}>{p.label}</p>}
-          {p.required && <p className={clsx([`${PREFIX}-required`, {
-            'has-label': !!p.label,
-          }])}>*</p>}
+          {p.label && (
+            <p
+              className={clsx([
+                `${PREFIX}-label`,
+                p.labelClassName,
+                {
+                  'has-error': p.error,
+                },
+              ])}
+            >
+              {p.label}
+            </p>
+          )}
+          {p.required && (
+            <p
+              className={clsx([
+                `${PREFIX}-required`,
+                {
+                  'has-label': !!p.label,
+                },
+              ])}
+            >
+              *
+            </p>
+          )}
         </span>
-        {p.showTogglePasswordIcon &&
+        {p.showTogglePasswordIcon && (
           <InteractableComponent
             onPress={handleTogglePassword}
             className={`${PREFIX}-eye-icon`}
           >
             <Icon content={eyeIcon} />
           </InteractableComponent>
-        }
+        )}
       </span>
       <input
-        className={clsx([`${PREFIX}-input`, p.className, {
-          'has-error': p.error,
-          'has-icon': p.showTogglePasswordIcon,
-        }])}
+        className={clsx([
+          `${PREFIX}-input`,
+          p.className,
+          {
+            'has-error': p.error,
+            'has-icon': p.showTogglePasswordIcon,
+          },
+        ])}
         disabled={p.isDisabled}
         name={p.name}
         id={p.id}
@@ -111,6 +141,5 @@ export default function Input(props: InputProps): ReactElement {
         {p.hasError && <p className={`${PREFIX}-error`}>{p.error}</p>}
       </span>
     </div>
-
   );
 }

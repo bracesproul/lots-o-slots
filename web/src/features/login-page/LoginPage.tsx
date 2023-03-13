@@ -79,7 +79,7 @@ function LoginPage2(props: LoginPageProps): ReactElement {
                   />
                   <p className={`${PREFIX}-login`}>
                     <Link href={SIGN_UP_PAGE}>
-                      Don't have an account? Sign up now
+                      Don&apos;t have an account? Sign up now
                     </Link>
                   </p>
                   <div>

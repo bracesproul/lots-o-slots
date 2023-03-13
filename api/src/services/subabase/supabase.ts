@@ -21,3 +21,9 @@ export const storageClient = new StorageClient(STORAGE_URL, {
 });
 
 export const supabaseClient = createClient(PROJECT_URL, ANNON_KEY);
+export const supabaseAdminClient = createClient(PROJECT_URL, SERVICE_KEY, {
+  auth: {
+    autoRefreshToken: false,
+    persistSession: false,
+  },
+});

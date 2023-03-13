@@ -139,7 +139,7 @@ module.exports = {
     600: 'rgb(82 82 82)',
     700: 'rgb(64 64 64)',
     800: 'rgb(38 38 38)',
-    900: 'rgb(23 23 23)'
+    900: 'rgb(23 23 23)',
   },
   transparent: '#ffffff00',
   black: '#000000',

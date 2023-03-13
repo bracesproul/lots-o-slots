@@ -13,15 +13,10 @@ function UserPage(props: UserPageProps): ReactElement {
   const p = { ...props };
 
   return (
-    <div
-      className={clsx(
-        `${PREFIX}`,
-        p.className,
-      )}
-    >
+    <div className={clsx(`${PREFIX}`, p.className)}>
       Hello world from UserPage
     </div>
-  )
+  );
 }
 
 export default function UserPageContainer(): ReactElement {

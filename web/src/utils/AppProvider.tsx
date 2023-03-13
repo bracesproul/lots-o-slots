@@ -20,7 +20,7 @@ const AppProvider = ({
   initialSession,
 }: AppProviderProps): ReactElement => {
   const client = useApollo(initialApolloState);
-  const [supabaseClient] = useState(() => createBrowserSupabaseClient())
+  const [supabaseClient] = useState(() => createBrowserSupabaseClient());
 
   // Below code is inspired from
   // https://maximzubarev.com/wrap-providers-using-withprovider-hoc
@@ -29,7 +29,10 @@ const AppProvider = ({
     ComponentProvider,
     [SSRProvider, { isMobile: ssrIsMobile }],
     [ApolloProvider, { client }],
-    [SessionContextProvider, { supabaseClient, initialSession: initialSession }]
+    [
+      SessionContextProvider,
+      { supabaseClient, initialSession: initialSession },
+    ],
   ];
 
   return withProviders(children, providers);
