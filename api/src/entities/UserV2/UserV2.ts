@@ -1,5 +1,5 @@
 import { Field, ObjectType } from 'type-graphql';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, Unique } from 'typeorm';
 import { MainEntity } from '@/entities';
 import { UserRole } from './types';
 
@@ -33,14 +33,26 @@ export default class UserV2 extends MainEntity {
   lastName!: string;
 
   @Field(() => String, {
-    nullable: false,
+    nullable: true,
   })
-  @Column({ type: 'varchar', nullable: false })
+  @Column({ type: 'varchar', nullable: true })
   username?: string;
 
   @Field(() => UserRole, {
     nullable: false,
   })
-  @Column({ type: 'enum', nullable: false, enum: UserRole, default: UserRole.USER })
-  role?: UserRole;
+  @Column({
+    type: 'enum',
+    nullable: false,
+    enum: UserRole,
+    default: UserRole.USER,
+  })
+  role!: UserRole;
+
+  @Field(() => String, {
+    nullable: false,
+  })
+  @Column({ type: 'varchar', nullable: false })
+  @Unique(['supabaseId'])
+  supabaseId!: string;
 }
