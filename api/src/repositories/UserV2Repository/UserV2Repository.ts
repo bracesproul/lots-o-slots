@@ -54,7 +54,6 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
     const user = await this.repository
       .create({
         email,
-        password,
         firstName,
         lastName,
         username: data.username,
