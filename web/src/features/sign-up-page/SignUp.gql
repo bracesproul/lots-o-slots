@@ -11,13 +11,7 @@ mutation SignUp($input: SignUpInput!) {
       token_type
     }
     user {
-      id
-      email
-      password
-      firstName
-      lastName
-      username
-      role
+      ...User
     }
   }
 }

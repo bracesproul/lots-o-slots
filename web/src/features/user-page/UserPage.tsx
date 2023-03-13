@@ -1,9 +1,11 @@
-import React, { ReactElement, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 import clsx from 'clsx';
 import { StylePrefix, UserInfoFormData } from '@/types';
 import { Button, Input } from '@/components';
 import { useRouter } from 'next/router';
 import { useValidatePassword } from '@/hooks';
+import { useGetUserDataQuery } from '@/generated/graphql';
+import { useUser } from '@supabase/auth-helpers-react';
 
 export type InitialFormValues = Pick<
   UserInfoFormData,
@@ -141,6 +143,9 @@ function UserPage(props: UserPageProps): ReactElement {
 }
 
 export default function UserPageContainer(): ReactElement {
+  const user = useUser();
+  const router = useRouter();
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
@@ -149,6 +154,12 @@ export default function UserPageContainer(): ReactElement {
   const { setFocusExit, invalidPasswordMessage } = useValidatePassword({
     password,
   });
+
+  useEffect(() => {
+    if (router.isReady) {
+      router.replace('/user', undefined, { shallow: true });
+    }
+  }, [router]);
 
   const handleSubmit = () => {
     // @todo: implement

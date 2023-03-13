@@ -1,14 +1,42 @@
 import {
   ApolloClient,
+  ApolloLink,
   InMemoryCache,
   NormalizedCacheObject,
+  createHttpLink,
 } from '@apollo/client';
 import { merge } from 'lodash';
 import { useMemo } from 'react';
 import { isServer } from '../';
+import { setContext } from '@apollo/client/link/context';
+import { getAuthHeaders } from '../auth';
+import { createUploadLink } from 'apollo-upload-client';
+
+const authLink = setContext(async (_, { headers }) => {
+  return {
+    headers: {
+      ...headers,
+      ...getAuthHeaders(),
+    },
+  };
+});
 
 let apolloClient: ApolloClient<NormalizedCacheObject> | undefined;
 export function createApolloClient(headers?: Record<string, unknown>) {
+  const link = ApolloLink.from([
+    authLink,
+    createUploadLink({
+      uri:
+        process.env.NODE_ENV === 'production'
+          ? `${process.env.NEXT_PUBLIC_API_URL}/graphql`
+          : 'http://localhost:8000/graphql',
+      credentials: 'include',
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore - this has the wrong type
+      headers,
+    }),
+  ]);
+
   const client = new ApolloClient({
     uri:
       process.env.NODE_ENV === 'production'
@@ -17,6 +45,7 @@ export function createApolloClient(headers?: Record<string, unknown>) {
     cache: new InMemoryCache(),
     ssrMode: isServer(),
     connectToDevTools: !isServer(),
+    link,
   });
   return client;
 }

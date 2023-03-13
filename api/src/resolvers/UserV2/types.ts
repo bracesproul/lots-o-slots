@@ -171,3 +171,29 @@ export class UpdatePayload {
   })
   user!: UserV2;
 }
+
+@ObjectType({
+  description: 'Response type for checking a user session',
+})
+export class CheckSessionPayload {
+  @Field(() => Boolean)
+  success!: boolean;
+
+  @Field(() => UserV2, {
+    nullable: false,
+  })
+  user!: UserV2;
+
+  @Field(() => String, {
+    nullable: false,
+  })
+  refreshToken!: string;
+}
+
+@ObjectType({
+  description: 'Response type for logging out a user',
+})
+export class LogoutPayload {
+  @Field(() => Boolean)
+  success!: boolean;
+}

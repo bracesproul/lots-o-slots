@@ -110,4 +110,14 @@ export default class SupabaseAuth {
       AuthError('Error sending password reset email');
     }
   }
+
+  async refreshSession(refreshToken: string) {
+    const { data, error } = await supabaseClient.auth.refreshSession({
+      refresh_token: refreshToken,
+    });
+    if (error || !data.session || !data.user) {
+      return AuthError('Error refreshing session');
+    }
+    return data;
+  }
 }

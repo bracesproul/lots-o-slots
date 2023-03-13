@@ -1,10 +1,18 @@
 import { ReactElement, useState } from 'react';
 import clsx from 'clsx';
-import { AuthStep, LoginError, SIGN_UP_PAGE, StylePrefix } from '@/types';
+import {
+  AuthStep,
+  LoginError,
+  SIGN_UP_PAGE,
+  StylePrefix,
+  SUPABASE_REFRESH_TOKEN_COOKIE_KEY,
+  SUPABASE_USER_ID_COOKIE_KEY,
+} from '@/types';
 import { Button, Input } from '@/components';
 import Link from 'next/link';
 import { useLoginMutation } from '@/generated/graphql';
 import { useRouter } from 'next/router';
+import { CookieStorage } from 'local-storage-fallback';
 
 type LoginFormData = {
   /** State variable for the username */
@@ -131,11 +139,16 @@ export default function LoginPageContainer(): ReactElement {
       },
     });
     if (data?.login.success) {
-      const accessToken = encodeURIComponent(data.login.session.access_token);
-      const refreshToken = encodeURIComponent(data.login.session.refresh_token);
-      await router.push(
-        `/user?accessToken=${accessToken}&refreshToken=${refreshToken}`
+      const cookieStorage = new CookieStorage();
+      cookieStorage.setItem(
+        SUPABASE_USER_ID_COOKIE_KEY,
+        data?.login.user.supabaseId
       );
+      cookieStorage.setItem(
+        SUPABASE_REFRESH_TOKEN_COOKIE_KEY,
+        data?.login.session.refresh_token
+      );
+      await router.push(`/user`);
     }
   };
 

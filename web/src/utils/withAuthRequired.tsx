@@ -6,20 +6,37 @@ import {
 import { initializeApollo } from './apollo';
 import { NormalizedCacheObject } from '@apollo/client';
 import {
-  createServerSupabaseClient,
-  Session,
-  User,
-} from '@supabase/auth-helpers-nextjs';
-import { PageType } from '@/types';
+  PageType,
+  SUPABASE_REFRESH_TOKEN_COOKIE_KEY,
+  SUPABASE_REFRESH_TOKEN_COOKIE_KEY_WITH_lS,
+} from '@/types';
+import {
+  CheckUserSessionDocument,
+  CheckUserSessionQuery,
+  LogoutDocument,
+  LogoutMutation,
+  UserRole,
+  UserV2,
+} from '@/generated/graphql';
+import { serialize } from 'cookie';
 
 type WithAuthResult = GetServerSidePropsResult<{
   initialApolloState: NormalizedCacheObject;
-  supabaseSession?: Session | null;
+  user?: Partial<UserV2> | null;
 }>;
 
 type IncomingGetServerSideProps = GetServerSideProps<{
   initialApolloState?: NormalizedCacheObject;
 }>;
+/**
+ * Check for user id in cookies and refresh token
+ * If no user id or refresh token, redirect to login page
+ *
+ * If user id and refresh token, hit server to get new refresh token
+ *
+ * Server should check for user id and refresh token in db
+ * Then on response the server should also set cookies with the new refresh token
+ */
 
 export const withAuthRequired =
   (
@@ -31,127 +48,158 @@ export const withAuthRequired =
   ) =>
   async (context: GetServerSidePropsContext): Promise<WithAuthResult> => {
     const incomingApolloState: NormalizedCacheObject | null = null;
-
     const apolloClient = initializeApollo(incomingApolloState, {
       cookie: context.req.headers.cookie,
     });
-
     const initialApolloState = apolloClient.cache.extract();
 
-    // Create authenticated Supabase Client
-    const supabase = createServerSupabaseClient(context);
+    const checkSessionResponse = await apolloClient
+      .query<CheckUserSessionQuery>({
+        query: CheckUserSessionDocument,
+      })
+      .catch(() => {
+        // no op
+      });
+    const user = checkSessionResponse?.data?.checkSession.user;
 
-    let session: Session | null = null;
-
-    const {
-      data: { session: supabaseSession },
-    } = await supabase.auth.getSession();
-
-    session = supabaseSession;
-
-    if (!session) {
-      if (context.query?.accessToken && context.query?.refreshToken) {
-        // No session but tokens are in URL. Occurs after a user signs up/logs in.
-        const access_token = decodeURIComponent(
-          context.query.accessToken as string
-        );
-        const refresh_token = decodeURIComponent(
-          context.query.refreshToken as string
-        );
-        const {
-          data: { session: supabaseSession },
-        } = await supabase.auth.setSession({
-          access_token,
-          refresh_token,
-        });
-
-        session = supabaseSession;
-      } else {
-        if (options?.redirect === false) {
-          // No session and no tokens in URL. Redirects to login page or no redirect if the option is set.
-          return {
-            props: {
-              initialApolloState,
-            },
-          };
-        }
-
+    if (
+      !user ||
+      (checkSessionResponse?.errors && checkSessionResponse?.errors.length > 0)
+    ) {
+      // No session and no redirect.
+      if (options?.redirect === false) {
         return {
-          redirect: {
-            destination: '/login',
-            permanent: false,
-          },
           props: {
             initialApolloState,
-            supabaseSession: session,
           },
         };
       }
-    } else {
-      // Session is true
-      if (pageType === PageType.LOGIN || pageType === PageType.SIGNUP) {
-        // Prevent logged in users from accessing login/signup pages
-        return {
-          redirect: {
-            destination:
-              session.user.user_metadata.role === 'USER' ? '/user' : '/admin',
-            permanent: false,
-          },
-          props: {
-            initialApolloState,
-            supabaseSession: session,
-          },
-        };
-      }
-
-      if (session.user.user_metadata.role === 'USER') {
-        if (pageType === PageType.USER) {
-          return {
-            props: {
-              initialApolloState,
-              supabaseSession: session,
-            },
-          };
-        }
-        return {
-          redirect: {
-            destination: '/user',
-            permanent: false,
-          },
-          props: {
-            initialApolloState,
-            supabaseSession: session,
-          },
-        };
-      }
-
-      if (session.user.user_metadata.role === 'ADMIN') {
-        // If admin is already logged in, redirect to /admin
-        if (pageType === PageType.ADMIN) {
-          return {
-            props: {
-              initialApolloState,
-              supabaseSession: session,
-            },
-          };
-        }
-        return {
-          redirect: {
-            destination: '/admin',
-            permanent: false,
-          },
-          props: {
-            initialApolloState,
-            supabaseSession: session,
-          },
-        };
-      }
+      // Redirect to login page
+      return {
+        redirect: {
+          destination: '/login',
+          permanent: false,
+        },
+        props: {
+          initialApolloState,
+          user: null,
+        },
+      };
     }
 
+    const refreshToken = checkSessionResponse?.data?.checkSession.refreshToken;
+    context.res.setHeader(
+      'Set-Cookie',
+      serialize(SUPABASE_REFRESH_TOKEN_COOKIE_KEY_WITH_lS, refreshToken, {
+        path: '/',
+        sameSite: 'strict',
+      })
+    );
+
+    // Prevent logged in users from accessing login/signup pages
+    if (pageType === PageType.LOGIN || pageType === PageType.SIGNUP) {
+      return {
+        redirect: {
+          destination: user.role === UserRole.USER ? '/user' : '/admin',
+          permanent: false,
+        },
+        props: {
+          initialApolloState,
+          user,
+        },
+      };
+    }
+
+    // If user is logged in, redirect to user page
+    if (user.role === UserRole.USER) {
+      if (pageType === PageType.USER) {
+        return {
+          props: {
+            initialApolloState,
+            user,
+          },
+        };
+      }
+      return {
+        redirect: {
+          destination: '/user',
+          permanent: false,
+        },
+        props: {
+          initialApolloState,
+          user,
+        },
+      };
+    }
+
+    // If admin is already logged in, redirect to /admin
+    if (user.role === UserRole.ADMIN) {
+      if (pageType === PageType.ADMIN) {
+        return {
+          props: {
+            initialApolloState,
+            user,
+          },
+        };
+      }
+      return {
+        redirect: {
+          destination: '/admin',
+          permanent: false,
+        },
+        props: {
+          initialApolloState,
+          user,
+        },
+      };
+    }
     return {
       props: {
         initialApolloState,
-        supabaseSession: session,
+        user,
+      },
+    };
+  };
+export const withLogout =
+  (
+    incomingGetServerSideProps: IncomingGetServerSideProps | null = null,
+    pageType: PageType,
+    options?: {
+      redirect?: boolean;
+    }
+  ) =>
+  async (context: GetServerSidePropsContext): Promise<WithAuthResult> => {
+    const incomingApolloState: NormalizedCacheObject | null = null;
+    const apolloClient = initializeApollo(incomingApolloState, {
+      cookie: context.req.headers.cookie,
+    });
+    const initialApolloState = apolloClient.cache.extract();
+
+    await apolloClient
+      .mutate<LogoutMutation>({
+        mutation: LogoutDocument,
+      })
+      .catch(() => {
+        // no op
+      });
+
+    context.res.setHeader(
+      'Set-Cookie',
+      serialize(SUPABASE_REFRESH_TOKEN_COOKIE_KEY_WITH_lS, '', {
+        path: '/',
+        sameSite: 'strict',
+        maxAge: -1,
+      })
+    );
+
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+      props: {
+        initialApolloState,
+        user: null,
       },
     };
   };

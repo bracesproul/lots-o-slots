@@ -5,6 +5,8 @@ import {
   LOGIN_PAGE,
   SignUpError,
   StylePrefix,
+  SUPABASE_REFRESH_TOKEN_COOKIE_KEY,
+  SUPABASE_USER_ID_COOKIE_KEY,
   UserInfoFormData,
 } from '@/types';
 import { Button, Input } from '@/components';
@@ -12,6 +14,7 @@ import Link from 'next/link';
 import { useValidatePassword } from '@/hooks';
 import { UserRole, useSignUpMutation } from '@/generated/graphql';
 import { useRouter } from 'next/router';
+import { CookieStorage } from 'local-storage-fallback';
 
 export type SignUpPageProps = {
   /** Optional style prop for overriding the default styles. */
@@ -221,19 +224,16 @@ export default function SignUpPageContainer(): ReactElement {
       },
     });
     if (data?.signUp.success) {
-      const accessToken = encodeURIComponent(data?.signUp.session.access_token);
-      const refreshToken = encodeURIComponent(
+      const cookieStorage = new CookieStorage();
+      cookieStorage.setItem(
+        SUPABASE_USER_ID_COOKIE_KEY,
+        data?.signUp.user.supabaseId
+      );
+      cookieStorage.setItem(
+        SUPABASE_REFRESH_TOKEN_COOKIE_KEY,
         data?.signUp.session.refresh_token
       );
-      console.log({
-        accessToken,
-        refreshToken,
-      });
-      await router.push(
-        `/user?accessToken=${accessToken}&refreshToken=${refreshToken}`,
-        undefined,
-        { shallow: true }
-      );
+      await router.push(`/user`);
     } else console.log('signup failed', errors);
   };
 
