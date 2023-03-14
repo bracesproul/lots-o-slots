@@ -5,11 +5,7 @@ import {
 } from 'next';
 import { initializeApollo } from './apollo';
 import { NormalizedCacheObject } from '@apollo/client';
-import {
-  PageType,
-  SUPABASE_REFRESH_TOKEN_COOKIE_KEY,
-  SUPABASE_REFRESH_TOKEN_COOKIE_KEY_WITH_lS,
-} from '@/types';
+import { PageType, SUPABASE_REFRESH_TOKEN_COOKIE_KEY_WITH_lS } from '@/types';
 import {
   CheckUserSessionDocument,
   CheckUserSessionQuery,
@@ -169,13 +165,14 @@ export const withLogout =
     }
   ) =>
   async (context: GetServerSidePropsContext): Promise<WithAuthResult> => {
+    console.log('starting with logout');
     const incomingApolloState: NormalizedCacheObject | null = null;
     const apolloClient = initializeApollo(incomingApolloState, {
       cookie: context.req.headers.cookie,
     });
     const initialApolloState = apolloClient.cache.extract();
 
-    await apolloClient
+    const logoutRes = await apolloClient
       .mutate<LogoutMutation>({
         mutation: LogoutDocument,
       })
@@ -188,13 +185,12 @@ export const withLogout =
       serialize(SUPABASE_REFRESH_TOKEN_COOKIE_KEY_WITH_lS, '', {
         path: '/',
         sameSite: 'strict',
-        maxAge: -1,
       })
     );
 
     return {
       redirect: {
-        destination: '/',
+        destination: '/login',
         permanent: false,
       },
       props: {

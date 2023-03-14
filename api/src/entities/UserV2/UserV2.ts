@@ -15,10 +15,10 @@ export default class UserV2 extends MainEntity {
   email!: string;
 
   @Field(() => String, {
-    nullable: true,
+    nullable: false,
   })
-  @Column({ type: 'varchar', nullable: true })
-  password?: string;
+  @Column({ type: 'varchar', nullable: false })
+  password!: string;
 
   @Field(() => String, {
     nullable: false,

@@ -5,7 +5,6 @@ import { Button, Input } from '@/components';
 import { useRouter } from 'next/router';
 import { useValidatePassword } from '@/hooks';
 import { useGetUserDataQuery } from '@/generated/graphql';
-import { useUser } from '@supabase/auth-helpers-react';
 
 export type InitialFormValues = Pick<
   UserInfoFormData,
@@ -25,7 +24,6 @@ export type UserPageProps = {
   setFocusExit: (e: boolean) => void;
   /** Message to display when a password is invalid */
   invalidPasswordMessage?: string;
-  /** The initial values to populate the form with */
   initialFormValues: InitialFormValues;
 };
 
@@ -51,8 +49,8 @@ function UserPage(props: UserPageProps): ReactElement {
     // @todo: implement
   };
 
-  const handleLogout = () => {
-    router.push('/logout');
+  const handleLogout = async () => {
+    await router.push('/logout');
   };
 
   return (
@@ -71,35 +69,44 @@ function UserPage(props: UserPageProps): ReactElement {
             <div className={`${PREFIX}-fields`}>
               <Input
                 type="text"
-                value={firstName}
+                value={
+                  firstName === '' ? p.initialFormValues?.firstName : firstName
+                }
                 onChange={setFirstName}
                 label="First Name"
                 isDisabled={p.isDisabled}
                 className={`${PREFIX}-normal-input`}
                 labelClassName={`${PREFIX}-input-label`}
+                autoComplete="off"
               />
               <Input
                 type="text"
-                value={lastName}
+                value={
+                  lastName === '' ? p.initialFormValues?.lastName : lastName
+                }
                 onChange={setLastName}
                 label="Last Name"
                 isDisabled={p.isDisabled}
                 className={`${PREFIX}-normal-input`}
                 labelClassName={`${PREFIX}-input-label`}
+                autoComplete="off"
               />
               <Input
                 type="text"
-                value={username}
-                onChange={setUsername}
-                label="Poker/Slots Username"
-                isDisabled={p.isDisabled}
+                value={email === '' ? p.initialFormValues?.email : email}
+                onChange={setEmail}
+                label="Email"
                 className={`${PREFIX}-normal-input`}
                 labelClassName={`${PREFIX}-input-label`}
+                required
+                autoComplete="off"
               />
               <Input
                 type="password"
                 required
-                value={password}
+                value={
+                  password === '' ? p.initialFormValues?.password : password
+                }
                 onChange={setPassword}
                 label="Password"
                 className={`${PREFIX}-normal-input`}
@@ -109,20 +116,25 @@ function UserPage(props: UserPageProps): ReactElement {
                   p.setFocusExit(true);
                 }}
                 showTogglePasswordIcon
+                autoComplete="new-password"
               />
               {p.invalidPasswordMessage && (
                 <p className={`${PREFIX}-error-message`}>
                   {p.invalidPasswordMessage}
                 </p>
               )}
+
               <Input
                 type="text"
-                value={email}
-                onChange={setEmail}
-                label="Email"
+                value={
+                  username === '' ? p.initialFormValues?.username : username
+                }
+                onChange={setUsername}
+                label="Poker/Slots Username"
+                isDisabled={p.isDisabled}
                 className={`${PREFIX}-normal-input`}
                 labelClassName={`${PREFIX}-input-label`}
-                required
+                autoComplete="off"
               />
               <div>
                 <Button
@@ -143,40 +155,28 @@ function UserPage(props: UserPageProps): ReactElement {
 }
 
 export default function UserPageContainer(): ReactElement {
-  const user = useUser();
-  const router = useRouter();
-
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [email, setEmail] = useState('');
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const { data, error } = useGetUserDataQuery();
+  const userData = data?.getUserBySupabaseId;
+  const initialFormValues = {
+    username: userData?.username || '',
+    password: userData?.password || '',
+    email: userData?.email || '',
+    firstName: userData?.firstName || '',
+    lastName: userData?.lastName || '',
+  };
+  const [username, setUsername] = useState(initialFormValues.username || '');
+  const [password, setPassword] = useState(initialFormValues.password || '');
+  const [email, setEmail] = useState(initialFormValues.email || '');
+  const [firstName, setFirstName] = useState(initialFormValues.firstName || '');
+  const [lastName, setLastName] = useState(initialFormValues.lastName || '');
   const { setFocusExit, invalidPasswordMessage } = useValidatePassword({
     password,
   });
 
-  useEffect(() => {
-    if (router.isReady) {
-      router.replace('/user', undefined, { shallow: true });
-    }
-  }, [router]);
+  console.log(userData?.password);
 
   const handleSubmit = () => {
     // @todo: implement
-  };
-
-  const initialUsername = 'my_username';
-  const initialPassword = 'my_password';
-  const initialEmail = 'my_email';
-  const initialFirstName = 'my_first_name';
-  const initialLastName = 'my_last_name';
-
-  const initialFormValues = {
-    username: initialUsername,
-    password: initialPassword,
-    email: initialEmail,
-    firstName: initialFirstName,
-    lastName: initialLastName,
   };
 
   return (

@@ -14,7 +14,6 @@ import {
 } from './types';
 import { ContextType } from '@/types';
 import { GraphQLError } from 'graphql';
-import { Session } from '@supabase/supabase-js';
 
 @Resolver()
 export class UserV2Resolver {
@@ -29,6 +28,16 @@ export class UserV2Resolver {
     @Arg('id', { nullable: false }) id: string
   ): Promise<UserV2> {
     return getCustomRepository(UserV2Repository).getById(id);
+  }
+
+  @Query(() => UserV2, { nullable: false })
+  async getUserBySupabaseId(@Ctx() { user }: ContextType): Promise<UserV2> {
+    if (!user) {
+      throw new GraphQLError('User not found');
+    }
+    return getCustomRepository(UserV2Repository).getBySupabaseId(
+      user.supabaseId
+    );
   }
 
   @Query(() => CheckSessionPayload, { nullable: false })

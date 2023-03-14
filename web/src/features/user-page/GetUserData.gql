@@ -1,5 +1,5 @@
-query GetUserData($id: String!) {
-  getUserById(id: $id) {
+query GetUserData {
+  getUserBySupabaseId {
     ...User
   }
 }
