@@ -1,0 +1,84 @@
+@use '../../utils/shared';
+
+// config
+
+$ROOT: shared.makeRoot('Checkbox');
+@function el($name) {
+  @return shared.makeSubElementName($ROOT, $name);
+}
+
+#{$ROOT} {
+  @apply cursor-pointer w-[16px] h-[16px] border border-gray-300 rounded-[2px];
+  @apply flex items-center justify-center transition flex-shrink-0;
+  @apply bg-white;
+
+  &.has-label {
+    @apply mt-[2px];
+  }
+
+  // focus
+
+  @apply focus:outline-none;
+
+  &.is-focus-visible {
+    @apply ring-2 ring-blue-300 ring-offset-2;
+  }
+
+  // disabled
+  &.is-disabled {
+    @apply cursor-not-allowed bg-gray-300;
+  }
+
+  // variants
+
+  &[data-state='checked'] {
+    @apply bg-brand-500 border-brand-500;
+
+    &.is-hovered {
+      @apply bg-brand-600 border-brand-600;
+    }
+
+    &.is-disabled {
+      @apply bg-brand-300 border-brand-300;
+    }
+
+    &.is-indeterminate {
+      @apply flex justify-center items-center;
+    }
+  }
+
+  &:not([data-state='checked']) {
+    @apply bg-white;
+
+    &.is-hovered {
+      @apply border-brand-100;
+    }
+
+    &.is-disabled {
+      @apply bg-gray-300;
+    }
+  }
+}
+
+// indicators
+
+#{el('indicator')} {
+  @apply text-white w-[0.825em] h-[0.825em];
+}
+
+#{el('indicator-indeterminate')} {
+  @apply block w-[0.5em] h-[0.5em];
+}
+
+// label
+
+#{el('label-wrapper')} {
+  @apply flex gap-x-[0.75rem];
+  @apply cursor-pointer select-none;
+}
+
+#{el('label-text')} {
+  &.variant-light {
+    @apply text-white;
+  }
+}

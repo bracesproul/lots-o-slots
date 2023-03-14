@@ -1,0 +1,131 @@
+@use '../../utils/shared';
+
+// config
+
+$ROOT: shared.makeRoot('DataTable');
+@function el($name) {
+  @return shared.makeSubElementName($ROOT, $name);
+}
+
+#{$ROOT} {
+  @apply flex flex-col gap-[12px] w-full;
+}
+
+#{el('hide-scrollbar')} {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+#{el('first-cell')} {
+  #{$ROOT}.is-left-most-column-sticky & {
+    @apply sticky left-0 z-10;
+  }
+
+  #{$ROOT}.is-left-most-column-sticky:not(.is-intersecting-left) &::before {
+    content: '';
+    @apply right-0 top-0 bottom-0 absolute;
+    @apply border-r border-gray-200;
+  }
+}
+
+#{el('last-cell')} {
+  #{$ROOT}.is-right-most-column-sticky & {
+    @apply sticky right-0 z-10;
+  }
+
+  #{$ROOT}.is-right-most-column-sticky:not(.is-intersecting-right) &::before {
+    content: '';
+    @apply left-0 top-0 bottom-0 absolute;
+    @apply border-l border-gray-200;
+  }
+}
+
+#{el('container')} {
+  @apply relative;
+  @apply rounded-lg border border-gray-200 overflow-auto;
+  max-height: calc(100vh - 300px);
+
+  @extend #{el('hide-scrollbar')};
+}
+
+#{el('table-with-left-ref')} {
+  @apply flex overflow-x-scroll;
+
+  @extend #{el('hide-scrollbar')};
+}
+
+#{el('table')} {
+  @apply w-full rounded-lg bg-white;
+}
+
+#{el('header-row')} {
+  @apply border-b border-gray-200;
+
+  th {
+    @apply p-[16px] text-left text-gray-500 text-body-sm-heavy;
+  }
+}
+
+#{el('header-cell')} {
+  @apply bg-gray-50 min-w-[16px] whitespace-nowrap;
+
+  &:first-of-type {
+    @extend #{el('first-cell')};
+  }
+
+  &:last-of-type {
+    @extend #{el('last-cell')};
+  }
+}
+
+#{el('body-row')} {
+  @apply border-b border-gray-100;
+
+  &:last-of-type {
+    @apply border-0;
+  }
+
+  &:hover {
+    @apply bg-light-gray-100;
+  }
+}
+
+#{el('cell')} {
+  @apply min-w-[16px] break-words align-middle;
+  @apply text-left p-[16px] text-body-sm;
+
+  &:first-of-type {
+    @extend #{el('first-cell')};
+  }
+
+  &:last-of-type {
+    @apply p-[0px];
+    @extend #{el('last-cell')};
+  }
+}
+
+#{el('label')} {
+  @apply text-gray-700 text-body-sm leading-5;
+}
+
+#{el('gray-label')} {
+  @apply text-gray-500 text-body-xs leading-4;
+}
+
+#{el('document')} {
+  @apply flex flex-col w-[120px] gap-[4px] text-gray-500 text-body-xs leading-4;
+}
+
+#{el('pagination')} {
+  @apply flex items-center gap-[10px] ml-auto;
+}
+
+#{el('pagination-button')} {
+  @apply border;
+}
+
+#{el('pageSize-selector')} {
+  @apply min-w-[80px];
+}

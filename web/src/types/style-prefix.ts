@@ -32,4 +32,7 @@ export enum StylePrefix {
   LOGIN_PAGE = 'login-page',
   SIGN_UP_PAGE = 'sign-up-page',
   USER_PAGE = 'user-page',
+  DATA_TABLE = 'data-table',
+  TEXT_BASE = 'text-base',
+  CHECKBOX = 'checkbox',
 }
