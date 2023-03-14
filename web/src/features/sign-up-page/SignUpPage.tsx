@@ -51,8 +51,7 @@ function SignUpPage(props: SignUpPageProps): ReactElement {
   } = p.formData;
 
   const [step, setStep] = useState(AuthStep.ENTER_INFO);
-  const isSubmitDisabled =
-    p.isDisabled || !username || !password || !firstName || !lastName;
+  const isSubmitDisabled = p.isDisabled || !password || !firstName || !lastName;
 
   const handleSubmit = () => {
     setStep(AuthStep.PROCESSING);

@@ -5,3 +5,4 @@ export { default as handleSetUserCookie } from './handleSetUserCookie';
 export { default as findUserId } from './findUserId';
 export * from './getPaymentProviderFromString';
 export * from './responsive';
+export * from './auth';

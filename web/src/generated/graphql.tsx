@@ -404,6 +404,7 @@ export type Query = {
   getRecentUpdate: GetRecentEmailLogUpdate;
   getSupabaseSignedUrl: GetSupabaseSignedUrlPayload;
   getUserById: UserV2;
+  getUserBySupabaseId: UserV2;
   getUserPayments: Array<UserPayment>;
   seedData: Scalars['Boolean'];
 };
@@ -664,12 +665,10 @@ export type SignUpMutationVariables = Exact<{
 
 export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'SignUpPayload', success: boolean, session: { __typename?: 'SupabaseSessionResponse', provider_token?: string | null, provider_refresh_token?: string | null, access_token: string, refresh_token: string, expires_in: number, expires_at: number, token_type: string }, user: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password?: string | null, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string } } };
 
-export type GetUserDataQueryVariables = Exact<{
-  id: Scalars['String'];
-}>;
+export type GetUserDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUserDataQuery = { __typename?: 'Query', getUserById: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password?: string | null, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string } };
+export type GetUserDataQuery = { __typename?: 'Query', getUserBySupabaseId: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password?: string | null, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string } };
 
 export type PaymentFragmentFragment = { __typename?: 'Payment', id: string, userId: string, amount: number, processed: boolean, emailId: string, provider: PaymentProvider, senderName: string, transactionId?: string | null, paymentType: PaymentType };
 
@@ -1267,8 +1266,8 @@ export type SignUpMutationHookResult = ReturnType<typeof useSignUpMutation>;
 export type SignUpMutationResult = Apollo.MutationResult<SignUpMutation>;
 export type SignUpMutationOptions = Apollo.BaseMutationOptions<SignUpMutation, SignUpMutationVariables>;
 export const GetUserDataDocument = gql`
-    query GetUserData($id: String!) {
-  getUserById(id: $id) {
+    query GetUserData {
+  getUserBySupabaseId {
     ...User
   }
 }
@@ -1286,11 +1285,10 @@ export const GetUserDataDocument = gql`
  * @example
  * const { data, loading, error } = useGetUserDataQuery({
  *   variables: {
- *      id: // value for 'id'
  *   },
  * });
  */
-export function useGetUserDataQuery(baseOptions: Apollo.QueryHookOptions<GetUserDataQuery, GetUserDataQueryVariables>) {
+export function useGetUserDataQuery(baseOptions?: Apollo.QueryHookOptions<GetUserDataQuery, GetUserDataQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetUserDataQuery, GetUserDataQueryVariables>(GetUserDataDocument, options);
       }
