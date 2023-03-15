@@ -55,13 +55,15 @@ export default class SupabaseAuth {
   }
 
   async update(input: UpdateUserInput): Promise<UpdateUserResponse> {
-    const { jwt } = input;
+    const { supabaseId } = input;
+
     const {
       data: { user: requestedUser },
       error: getUserError,
-    } = await supabaseClient.auth.getUser(jwt);
+    } = await supabaseAdminClient.auth.admin.getUserById(supabaseId);
 
     if (!requestedUser) {
+      console.log('getUserError', getUserError);
       return UserNotFoundError();
     }
     if (requestedUser && getUserError) {
@@ -71,13 +73,14 @@ export default class SupabaseAuth {
     const {
       data: { user: updatedUser },
       error: updateUserError,
-    } = await supabaseClient.auth.updateUser({ ...requestedUser, ...input });
+    } = await supabaseAdminClient.auth.admin.updateUserById(supabaseId, {
+      ...requestedUser,
+      ...input,
+    });
 
-    if (!updateUserError) {
+    if (updateUserError) {
+      console.log('updateUserError', updateUserError);
       return UpdateUserError();
-    }
-    if (updatedUser && updateUserError) {
-      return AuthError(updateUserError.message);
     }
     if (!updatedUser) {
       return UserNotFoundError();

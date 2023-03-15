@@ -97,12 +97,18 @@ export class UserV2Resolver {
 
   @Mutation(() => UpdatePayload, { nullable: false })
   async updateUser(
+    @Ctx() { user }: ContextType,
     @Arg('input', { nullable: false }) input: UpdateInput
   ): Promise<UpdatePayload> {
-    const { user } = await getCustomRepository(UserV2Repository).update(input);
+    if (!user) {
+      throw new GraphQLError('User not found');
+    }
+    const { user: updatedUser } = await getCustomRepository(
+      UserV2Repository
+    ).update(input, user);
 
     return {
-      user,
+      user: updatedUser,
       success: true,
     };
   }
