@@ -501,9 +501,8 @@ export type SwitchDefaultAccountInput = {
 export type UpdateInput = {
   data?: InputMaybe<UserData>;
   email?: InputMaybe<Scalars['String']>;
-  id: Scalars['ID'];
-  jwt: Scalars['String'];
   password?: InputMaybe<Scalars['String']>;
+  supabaseId: Scalars['String'];
 };
 
 /** Input type for updating a user */
@@ -563,7 +562,7 @@ export type UserV2 = MainEntity & Node & {
   firstName: Scalars['String'];
   id: Scalars['ID'];
   lastName: Scalars['String'];
-  password?: Maybe<Scalars['String']>;
+  password: Scalars['String'];
   refreshToken?: Maybe<Scalars['String']>;
   role: UserRole;
   supabaseId: Scalars['String'];
@@ -644,7 +643,7 @@ export type LoginMutationVariables = Exact<{
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginPayload', success: boolean, session: { __typename?: 'SupabaseSessionResponse', provider_token?: string | null, provider_refresh_token?: string | null, access_token: string, refresh_token: string, expires_in: number, expires_at: number, token_type: string }, user: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password?: string | null, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string } } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'LoginPayload', success: boolean, session: { __typename?: 'SupabaseSessionResponse', provider_token?: string | null, provider_refresh_token?: string | null, access_token: string, refresh_token: string, expires_in: number, expires_at: number, token_type: string }, user: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password: string, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string } } };
 
 export type CreateUserPaymentMutationVariables = Exact<{
   input: CreateUserPaymentInput;
@@ -663,16 +662,23 @@ export type SignUpMutationVariables = Exact<{
 }>;
 
 
-export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'SignUpPayload', success: boolean, session: { __typename?: 'SupabaseSessionResponse', provider_token?: string | null, provider_refresh_token?: string | null, access_token: string, refresh_token: string, expires_in: number, expires_at: number, token_type: string }, user: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password?: string | null, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string } } };
+export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'SignUpPayload', success: boolean, session: { __typename?: 'SupabaseSessionResponse', provider_token?: string | null, provider_refresh_token?: string | null, access_token: string, refresh_token: string, expires_in: number, expires_at: number, token_type: string }, user: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password: string, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string } } };
 
 export type GetUserDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetUserDataQuery = { __typename?: 'Query', getUserBySupabaseId: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password?: string | null, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string } };
+export type GetUserDataQuery = { __typename?: 'Query', getUserBySupabaseId: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password: string, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string } };
+
+export type UpdateUserDataMutationVariables = Exact<{
+  input: UpdateInput;
+}>;
+
+
+export type UpdateUserDataMutation = { __typename?: 'Mutation', updateUser: { __typename?: 'UpdatePayload', success: boolean, user: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password: string, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string } } };
 
 export type PaymentFragmentFragment = { __typename?: 'Payment', id: string, userId: string, amount: number, processed: boolean, emailId: string, provider: PaymentProvider, senderName: string, transactionId?: string | null, paymentType: PaymentType };
 
-export type UserFragment = { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password?: string | null, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string };
+export type UserFragment = { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password: string, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -682,14 +688,14 @@ export type LogoutMutation = { __typename?: 'Mutation', logout: { __typename?: '
 export type CheckUserSessionQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CheckUserSessionQuery = { __typename?: 'Query', checkSession: { __typename?: 'CheckSessionPayload', success: boolean, refreshToken: string, user: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password?: string | null, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string } } };
+export type CheckUserSessionQuery = { __typename?: 'Query', checkSession: { __typename?: 'CheckSessionPayload', success: boolean, refreshToken: string, user: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password: string, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string } } };
 
 export type GetUserByIdQueryVariables = Exact<{
   id: Scalars['String'];
 }>;
 
 
-export type GetUserByIdQuery = { __typename?: 'Query', getUserById: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password?: string | null, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string } };
+export type GetUserByIdQuery = { __typename?: 'Query', getUserById: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password: string, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string } };
 
 export const PaymentFragmentFragmentDoc = gql`
     fragment PaymentFragment on Payment {
@@ -1299,6 +1305,42 @@ export function useGetUserDataLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetUserDataQueryHookResult = ReturnType<typeof useGetUserDataQuery>;
 export type GetUserDataLazyQueryHookResult = ReturnType<typeof useGetUserDataLazyQuery>;
 export type GetUserDataQueryResult = Apollo.QueryResult<GetUserDataQuery, GetUserDataQueryVariables>;
+export const UpdateUserDataDocument = gql`
+    mutation UpdateUserData($input: UpdateInput!) {
+  updateUser(input: $input) {
+    success
+    user {
+      ...User
+    }
+  }
+}
+    ${UserFragmentDoc}`;
+export type UpdateUserDataMutationFn = Apollo.MutationFunction<UpdateUserDataMutation, UpdateUserDataMutationVariables>;
+
+/**
+ * __useUpdateUserDataMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserDataMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserDataMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserDataMutation, { data, loading, error }] = useUpdateUserDataMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateUserDataMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUserDataMutation, UpdateUserDataMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateUserDataMutation, UpdateUserDataMutationVariables>(UpdateUserDataDocument, options);
+      }
+export type UpdateUserDataMutationHookResult = ReturnType<typeof useUpdateUserDataMutation>;
+export type UpdateUserDataMutationResult = Apollo.MutationResult<UpdateUserDataMutation>;
+export type UpdateUserDataMutationOptions = Apollo.BaseMutationOptions<UpdateUserDataMutation, UpdateUserDataMutationVariables>;
 export const LogoutDocument = gql`
     mutation Logout {
   logout {

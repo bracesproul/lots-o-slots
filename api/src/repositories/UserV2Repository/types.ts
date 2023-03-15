@@ -34,9 +34,8 @@ export type LoginUserResponse = {
 };
 
 export type UpdateUserInput = {
-  /** The users ID, pulled from the user_v2 table. */
-  id: string;
-  jwt: string;
+  /** The users supabase ID */
+  supabaseId: string;
   email?: string;
   password?: string;
   data?: UserData;
