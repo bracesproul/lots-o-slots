@@ -31,6 +31,8 @@ export type Account = {
 export type AccountCardProps = Account & {
   /** Optional className to override default styles. */
   className?: string;
+  /** Handle edit */
+  onEdit: (accountId: string) => void;
 };
 
 const DEFAULT_PROPS = {
@@ -48,7 +50,7 @@ export default function AccountCard(props: AccountCardProps): ReactElement {
           <p className={`${PREFIX}-subtitle`}>{p.identifier}</p>
         </div>
         <div className={`${PREFIX}-header-actions`}>
-          <InteractableComponent onPress={() => console.log('edit')}>
+          <InteractableComponent onPress={() => p.onEdit(p.id)}>
             <EditSvg />
           </InteractableComponent>
           <InteractableComponent onPress={() => console.log('delete')}>

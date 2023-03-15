@@ -2,6 +2,7 @@ import { AbstractRepository, EntityRepository } from 'typeorm';
 import { Account } from '@/entities';
 import { ApolloError } from 'apollo-server-express';
 import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
+import { GraphQLError } from 'graphql';
 
 @EntityRepository(Account)
 export default class AccountRepository extends AbstractRepository<Account> {
@@ -97,6 +98,10 @@ export default class AccountRepository extends AbstractRepository<Account> {
     return this.repository.findOne({ where: { email } });
   }
 
+  async findById(id: string): Promise<Account> {
+    return this.repository.findOneOrFail({ where: { id } });
+  }
+
   async makeAccountActive({
     id,
     isCashapp,
@@ -180,5 +185,106 @@ export default class AccountRepository extends AbstractRepository<Account> {
     });
     await this.repository.save(otherAccounts);
     return newDefaultAccount;
+  }
+
+  async update({
+    id,
+    name,
+    identifier,
+    balance,
+    type,
+  }: {
+    id: string;
+    name?: string;
+    identifier?: string;
+    balance?: number;
+    type: PaymentProvider;
+  }): Promise<Account> {
+    const account = await this.findById(id);
+    if (!account) {
+      throw new ApolloError('Account not found');
+    }
+    const updateEmail =
+      type !==
+      (PaymentProvider.CASHAPP ||
+        PaymentProvider.BITCOIN ||
+        PaymentProvider.ETHEREUM);
+    const updateBtcAddress = type === PaymentProvider.BITCOIN;
+    const updateEthAddress = type === PaymentProvider.ETHEREUM;
+    const updateCashtag = type === PaymentProvider.CASHAPP;
+
+    await this.repository.update(id, {
+      name,
+      balance: balance ? balance : account.balance,
+      email: updateEmail ? identifier : account.email,
+      cashtag: updateCashtag ? identifier : account.cashtag,
+      bitcoinAddress: updateBtcAddress ? identifier : account.bitcoinAddress,
+      ethereumAddress: updateEthAddress ? identifier : account.ethereumAddress,
+      type: type ? type : account.type,
+    });
+
+    await account.reload();
+    return account;
+  }
+
+  async create({
+    name,
+    identifier,
+    balance,
+    type,
+  }: {
+    name: string;
+    identifier: string;
+    balance: number;
+    type: PaymentProvider;
+  }): Promise<Account> {
+    const updateEmail =
+      type !==
+      (PaymentProvider.CASHAPP ||
+        PaymentProvider.BITCOIN ||
+        PaymentProvider.ETHEREUM);
+    const updateBtcAddress = type === PaymentProvider.BITCOIN;
+    const updateEthAddress = type === PaymentProvider.ETHEREUM;
+    const updateCashtag = type === PaymentProvider.CASHAPP;
+
+    if (updateEmail) {
+      const account = await this.repository.findOne({
+        where: { email: identifier, type },
+      });
+      if (account) {
+        throw new GraphQLError(
+          'Account with this email and payment type already exists.'
+        );
+      }
+    }
+
+    if (updateBtcAddress || updateEthAddress || updateCashtag) {
+      const account = await this.repository.findOne({
+        where: [
+          { bitcoinAddress: identifier },
+          { ethereumAddress: identifier },
+          { cashtag: identifier },
+        ],
+      });
+      if (account) {
+        throw new GraphQLError('Account already exists with this identifier.');
+      }
+    }
+
+    return this.repository
+      .create({
+        name,
+        balance,
+        type,
+        email: updateEmail ? identifier : 'placeholder',
+        cashtag: updateCashtag ? identifier : undefined,
+        bitcoinAddress: updateBtcAddress ? identifier : undefined,
+        ethereumAddress: updateEthAddress ? identifier : undefined,
+        dailyWithdrawals: 0,
+        weeklyWithdrawals: 0,
+        canWithdrawal: true,
+        canAcceptDeposits: true,
+      })
+      .save();
   }
 }

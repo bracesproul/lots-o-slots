@@ -4,6 +4,13 @@ import clsx from 'clsx';
 import React from 'react';
 import { FormEvent, ReactElement, useState } from 'react';
 import { PAYMENT_OPTIONS, getPaymentProviderFromString } from './utils';
+import useEditAccountQueryParams from '../../useEditAccountQueryParams';
+import {
+  useGetAccountQuery,
+  useCreateAccountMutation,
+  useUpdateAccountMutation,
+} from '@/generated/graphql';
+import { getAccountFromBasicAccountFragment } from '../../getAccountFromBasicAccountFragment';
 
 const PREFIX = StylePrefix.ACCOUNT_FORM;
 
@@ -38,6 +45,8 @@ export type AccountFormProps = {
   isDisabled: boolean;
   /** Whether or not the submit button should be disabled */
   isSubmitDisabled: boolean;
+  /** Handler for clearing the form and query params */
+  handleClearForm: () => void;
 };
 
 const DEFAULT_PROPS = {
@@ -92,7 +101,7 @@ function AccountForm(props: AccountFormProps): ReactElement {
             type="number"
             value={balance === 0 ? p.initialFormValues.balance : balance}
             onChange={(value) => setBalance(Number(value))}
-            label="Email"
+            label="Balance"
             className={`${PREFIX}-normal-input`}
             labelClassName={`${PREFIX}-input-label`}
             isDisabled={p.isDisabled}
@@ -113,12 +122,22 @@ function AccountForm(props: AccountFormProps): ReactElement {
             }}
             className={'bg-white text-black w-[350px]'}
           />
-          <div>
+          <div className="flex flex-row gap-[8px]">
+            <Button
+              type="button"
+              isDisabled={p.isSubmitDisabled}
+              variant="secondary"
+              className={`${PREFIX}-submit-button text-black`}
+              onPress={p.handleClearForm}
+            >
+              Clear form
+            </Button>
             <Button
               type="submit"
               isDisabled={p.isSubmitDisabled}
               variant="primary"
               className={`${PREFIX}-submit-button`}
+              onPress={() => console.log('save pressed')}
             >
               Save
             </Button>
@@ -137,23 +156,78 @@ type AccountFormContainerProps = {
 export default function AccountFormContainer(
   props: AccountFormContainerProps
 ): ReactElement {
+  const { accountId, removeAccountId } = useEditAccountQueryParams();
+  const [createAccount] = useCreateAccountMutation();
+  const [updateAccount] = useUpdateAccountMutation();
+  const { data, loading, error } = useGetAccountQuery({
+    variables: { input: { id: accountId ?? '' } },
+    skip: !accountId,
+  });
+  const account = data?.getAccountById
+    ? getAccountFromBasicAccountFragment(data?.getAccountById)
+    : undefined;
   const [name, setName] = useState('');
   const [identifier, setIdentifier] = useState('');
   const [balance, setBalance] = useState(0);
   const [paymentProvider, setPaymentProvider] = useState<PaymentProvider>();
 
   const initialFormValues = {
-    name: '',
-    identifier: '',
-    balance: 0,
-    paymentProvider: PaymentProvider.PAYPAL,
+    name: account?.name ?? '',
+    identifier: account?.identifier ?? '',
+    balance: account?.balance ?? 0,
+    paymentProvider: account?.paymentProvider,
   };
 
-  const isDisabled = false;
-  const isSubmitDisabled = false;
+  const isDisabled = loading || !!error;
+  const isSubmitDisabled = loading || !!error;
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    // todo: hookup to api
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (accountId && (paymentProvider || initialFormValues.paymentProvider)) {
+      await updateAccount({
+        variables: {
+          input: {
+            id: accountId,
+            name,
+            identifier,
+            balance,
+            // Type checking thinks type can be undefined,
+            // but this is not the case since we check that either
+            // the initial value or state value is defined above.
+            // @typescript-eslint/ban-ts-comment
+            // eslint-disable-next-line
+            // @ts-ignore
+            type: paymentProvider ?? initialFormValues.paymentProvider,
+          },
+        },
+        refetchQueries: ['GetAllAccounts'],
+      });
+    } else if (paymentProvider) {
+      await createAccount({
+        variables: {
+          input: {
+            name,
+            identifier,
+            balance,
+            type: paymentProvider,
+          },
+        },
+        refetchQueries: ['GetAllAccounts'],
+      });
+    }
+    handleClearForm();
+  };
+
+  const handleClearForm = () => {
+    setName('');
+    setIdentifier('');
+    setBalance(0);
+    setPaymentProvider(undefined);
+    initialFormValues.name = '';
+    initialFormValues.identifier = '';
+    initialFormValues.balance = 0;
+    initialFormValues.paymentProvider = undefined;
+    removeAccountId();
   };
 
   return (
@@ -172,6 +246,7 @@ export default function AccountFormContainer(
       handleSubmit={handleSubmit}
       isDisabled={isDisabled}
       isSubmitDisabled={isSubmitDisabled}
+      handleClearForm={handleClearForm}
     />
   );
 }

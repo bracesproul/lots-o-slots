@@ -1,13 +1,16 @@
+import { queryTypes, useQueryStates } from 'next-usequerystate';
+
 type UseEditAccountQueryParamsOptions = {
   // add options
 };
 
 type UseEditAccountQueryParamsAction = {
-  // add actions
+  updateAccountId: (accountId: string) => void;
+  removeAccountId: () => void;
 };
 
 type UseEditAccountQueryParamsState = {
-  // add state
+  accountId: string | null;
 };
 
 type UseEditAccountQueryParamsValue = UseEditAccountQueryParamsState &
@@ -16,7 +19,26 @@ type UseEditAccountQueryParamsValue = UseEditAccountQueryParamsState &
 const useEditAccountQueryParams = (
   props?: UseEditAccountQueryParamsOptions
 ): UseEditAccountQueryParamsValue => {
-  return {};
+  const possibleParams = {
+    accountId: queryTypes.string,
+  };
+  const [dropdownParams, setDropdownParams] = useQueryStates(possibleParams);
+
+  const updateAccountId = (accountId: string) => {
+    setDropdownParams({ accountId });
+  };
+
+  const removeAccountId = () => {
+    setDropdownParams({ accountId: null });
+  };
+
+  const accountId = dropdownParams.accountId;
+
+  return {
+    accountId,
+    updateAccountId,
+    removeAccountId,
+  };
 };
 
 export default useEditAccountQueryParams;
