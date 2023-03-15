@@ -164,16 +164,14 @@ export default function UserPageContainer(): ReactElement {
     firstName: userData?.firstName || '',
     lastName: userData?.lastName || '',
   };
-  const [username, setUsername] = useState(initialFormValues.username || '');
-  const [password, setPassword] = useState(initialFormValues.password || '');
-  const [email, setEmail] = useState(initialFormValues.email || '');
-  const [firstName, setFirstName] = useState(initialFormValues.firstName || '');
-  const [lastName, setLastName] = useState(initialFormValues.lastName || '');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const { setFocusExit, invalidPasswordMessage } = useValidatePassword({
     password,
   });
-
-  console.log(userData?.password);
 
   const handleSubmit = () => {
     // @todo: implement

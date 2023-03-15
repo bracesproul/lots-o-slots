@@ -34,6 +34,7 @@ export type TextProps = {
   /** The text to display. */
   children:
     | string
+    | number
     | ReactElement
     | string[]
     | ReactElement[]

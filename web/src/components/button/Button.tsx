@@ -48,6 +48,7 @@ export default function Button(props: ButtonProps): ReactElement {
         {
           'is-hovered': isHovered,
           'is-pressed': isPressed,
+          'is-disabled': p.isDisabled,
           'is-secondary': p.variant === 'secondary',
           'is-primary': p.variant === 'primary',
           'size-xsmall': p.size === 'xsmall',

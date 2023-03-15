@@ -1,13 +1,4 @@
-@use '../../utils/shared';
-
-// config
-
-$ROOT: shared.makeRoot('Checkbox');
-@function el($name) {
-  @return shared.makeSubElementName($ROOT, $name);
-}
-
-#{$ROOT} {
+.checkbox {
   @apply cursor-pointer w-[16px] h-[16px] border border-gray-300 rounded-[2px];
   @apply flex items-center justify-center transition flex-shrink-0;
   @apply bg-white;
@@ -32,14 +23,14 @@ $ROOT: shared.makeRoot('Checkbox');
   // variants
 
   &[data-state='checked'] {
-    @apply bg-brand-500 border-brand-500;
+    @apply bg-red-500 border-red-500;
 
     &.is-hovered {
-      @apply bg-brand-600 border-brand-600;
+      @apply bg-red-600 border-red-600;
     }
 
     &.is-disabled {
-      @apply bg-brand-300 border-brand-300;
+      @apply bg-red-300 border-red-300;
     }
 
     &.is-indeterminate {
@@ -51,7 +42,7 @@ $ROOT: shared.makeRoot('Checkbox');
     @apply bg-white;
 
     &.is-hovered {
-      @apply border-brand-100;
+      @apply border-red-100;
     }
 
     &.is-disabled {
@@ -62,22 +53,22 @@ $ROOT: shared.makeRoot('Checkbox');
 
 // indicators
 
-#{el('indicator')} {
+.checkbox-indicator {
   @apply text-white w-[0.825em] h-[0.825em];
 }
 
-#{el('indicator-indeterminate')} {
+.checkbox-indicator-indeterminate {
   @apply block w-[0.5em] h-[0.5em];
 }
 
 // label
 
-#{el('label-wrapper')} {
+.checkbox-label-wrapper {
   @apply flex gap-x-[0.75rem];
   @apply cursor-pointer select-none;
 }
 
-#{el('label-text')} {
+.checkbox-label-text {
   &.variant-light {
     @apply text-white;
   }
