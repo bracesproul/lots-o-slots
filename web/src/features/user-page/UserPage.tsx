@@ -1,6 +1,6 @@
 import React, { FormEvent, ReactElement, useState } from 'react';
 import clsx from 'clsx';
-import { StylePrefix, UserInfoFormData } from '@/types';
+import { InitialFormValues, StylePrefix, UserInfoFormData } from '@/types';
 import { Button, Input } from '@/components';
 import { useRouter } from 'next/router';
 import { useValidatePassword } from '@/hooks';
@@ -9,11 +9,6 @@ import {
   UserRole,
   useUpdateUserDataMutation,
 } from '@/generated/graphql';
-
-export type InitialFormValues = Pick<
-  UserInfoFormData,
-  'firstName' | 'lastName' | 'username' | 'email' | 'password'
->;
 
 export type UserPageProps = {
   /** Optional style prop for overriding the default styles. */

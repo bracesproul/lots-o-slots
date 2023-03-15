@@ -20,3 +20,8 @@ export type UserInfoFormData = {
   /** State setter for controlling the users last name */
   setLastName: (lastName: string) => void;
 };
+
+export type InitialFormValues = Pick<
+  UserInfoFormData,
+  'firstName' | 'lastName' | 'username' | 'email' | 'password'
+>;

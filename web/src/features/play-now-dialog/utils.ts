@@ -18,9 +18,9 @@ export const findStringFromGameType = (
 ): string | undefined => {
   switch (gameType) {
     case GameType.POKER:
-      return 'POKER';
+      return 'Poker';
     case GameType.SLOTS:
-      return 'SLOTS';
+      return 'Slots';
     default:
       return undefined;
   }

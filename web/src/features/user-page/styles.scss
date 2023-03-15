@@ -1,8 +1,3 @@
-.user-page-login {
-  @apply text-blue-400 text-[8px] underline underline-offset-1 cursor-pointer;
-  @apply tablet:text-[10px];
-}
-
 .user-page-side-by-side-fields {
   @apply flex flex-row gap-[8px];
 }
