@@ -1,5 +1,4 @@
 export { HomePage } from './home-page';
-export { Header } from './header';
 export { PlayNowDialog } from './play-now-dialog-depd';
 export { AppStoreButtonsDialog } from './app-store-buttons-dialog';
 export { LoginPage } from './login-page';
