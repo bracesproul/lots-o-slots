@@ -5,7 +5,7 @@ export { LoginPage } from './login-page';
 export { SignUpPage } from './sign-up-page';
 export { UserPage } from './user-page';
 export { AdminPage } from './admin-page';
-export { AdminPageHeader } from './admin-page-header';
+export { DashboardPageHeader } from './dashboard-page-header';
 export { AdminUsersPage } from './admin-users-page';
 export { AdminAccountsPage } from './admin-accounts-page';
 export { AdminPaymentsPage } from './admin-payments-page';

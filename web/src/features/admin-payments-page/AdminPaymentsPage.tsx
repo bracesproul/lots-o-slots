@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import { StylePrefix } from '@/types/style-prefix';
-import { AdminPageHeader } from '../admin-page-header';
+import { AdminPageHeader } from '../dashboard-page-header';
 import { PageType, PaymentProvider } from '@/types';
 import { GameType } from '@/generated/graphql';
 import { DataTable, Text, Badge } from '@/components';
