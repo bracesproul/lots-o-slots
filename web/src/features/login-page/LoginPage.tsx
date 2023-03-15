@@ -142,11 +142,11 @@ export default function LoginPageContainer(): ReactElement {
       const cookieStorage = new CookieStorage();
       cookieStorage.setItem(
         SUPABASE_USER_ID_COOKIE_KEY,
-        data?.login.user.supabaseId
+        data.login.user.supabaseId
       );
       cookieStorage.setItem(
         SUPABASE_REFRESH_TOKEN_COOKIE_KEY,
-        data?.login.session.refresh_token
+        data.login.session.refresh_token
       );
       await router.push(`/user`);
     }
