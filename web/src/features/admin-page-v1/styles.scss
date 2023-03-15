@@ -1,0 +1,30 @@
+@use './components/styles.scss' as componentStyles;
+
+.admin-page {
+  @apply m-[22px] flex flex-col gap-[24px];
+  font-family: 'Inter', sans-serif;
+}
+
+.admin-page-header-container {
+  @apply flex flex-row justify-between items-center;
+  @apply my-[24px];
+}
+
+.admin-page-header {
+  @apply text-white flex mr-auto ml-[10%] text-[48px];
+  font-family: 'SEQUEL100-96', sans-serif;
+  @apply mr-auto
+}
+
+.admin-page-button {
+  @apply ml-auto mr-[10%];
+}
+
+.admin-page-table-container {
+  @apply flex flex-row gap-[24px];
+  @apply items-center justify-center;
+}
+
+.admin-page-second-level {
+  @apply flex flex-row m-auto gap-[24px];
+}

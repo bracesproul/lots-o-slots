@@ -1,0 +1,42 @@
+.admin-page-header-header-container {
+  @apply flex flex-row justify-between items-center;
+  @apply m-[24px];
+  font-family: 'Inter', sans-serif;
+}
+
+.admin-page-header-header {
+  @apply text-white flex text-[18px];
+  @apply tablet:text-[36px];
+  font-family: 'SEQUEL100-96', sans-serif;
+}
+
+.admin-page-header-header-actions-wrapper {
+  @apply flex flex-col gap-[12px];
+  @apply tablet:flex-row;
+}
+
+.admin-page-header-nav {
+  @apply flex flex-col gap-[12px];
+  @apply text-gray-200;
+  @apply tablet:flex-row;
+
+  &.is-selected {
+    @apply text-white font-semibold;
+  }
+}
+
+.admin-page-header-nav-item {
+  @apply transition-all;
+
+  &.is-selected {
+    @apply text-white font-semibold underline underline-offset-2;
+  }
+
+  &:hover {
+    @apply text-gray-100 underline underline-offset-2;
+    
+    &.is-selected {
+      @apply text-white font-semibold underline underline-offset-2;
+    }
+  }
+}

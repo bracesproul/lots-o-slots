@@ -1,4 +1,4 @@
-import { PaymentTableData } from '@/features/admin-page/components/payments-table/PaymentsTable';
+import { PaymentTableData } from '@/features/admin-page-v1/components/payments-table/PaymentsTable';
 import { PaymentProvider } from '@/generated/graphql';
 
 export const dummyPaymentInfo: PaymentTableData[] = [

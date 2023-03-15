@@ -1,6 +1,6 @@
 @use './components/styles.scss' as componentStyles;
 
-.admin-page-v2 {
+.admin-users-page {
   @apply flex flex-col gap-[24px];
   font-family: 'Inter', sans-serif;
 }
