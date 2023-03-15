@@ -10,3 +10,4 @@ export { AdminUsersPage } from './admin-users-page';
 export { AdminAccountsPage } from './admin-accounts-page';
 export { AdminPaymentsPage } from './admin-payments-page';
 export { ProfileCard } from './profile-card';
+export { ConfirmDeleteDialog } from './confirm-delete-dialog';
