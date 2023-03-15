@@ -137,11 +137,8 @@ export class LoginPayload {
   description: 'Input type for updating a new user',
 })
 export class UpdateInput {
-  @Field(() => ID)
-  id!: string;
-
   @Field(() => String)
-  jwt!: string;
+  supabaseId!: string;
 
   @Field(() => String, {
     nullable: true,

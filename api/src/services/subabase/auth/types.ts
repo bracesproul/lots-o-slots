@@ -28,7 +28,7 @@ export type SignInWithEmailPasswordResponse = {
 };
 
 export type UpdateUserInput = {
-  jwt: string;
+  supabaseId: string;
   email?: string;
   password?: string;
   data?: UserData;

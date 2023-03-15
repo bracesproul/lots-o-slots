@@ -1,10 +1,14 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { FormEvent, ReactElement, useState } from 'react';
 import clsx from 'clsx';
 import { StylePrefix, UserInfoFormData } from '@/types';
 import { Button, Input } from '@/components';
 import { useRouter } from 'next/router';
 import { useValidatePassword } from '@/hooks';
-import { useGetUserDataQuery } from '@/generated/graphql';
+import {
+  useGetUserDataQuery,
+  UserRole,
+  useUpdateUserDataMutation,
+} from '@/generated/graphql';
 
 export type InitialFormValues = Pick<
   UserInfoFormData,
@@ -19,12 +23,15 @@ export type UserPageProps = {
   /** State variables and setter function for controlling inputs */
   formData: UserInfoFormData;
   /** Submit handler for creating an account */
-  handleSubmit: () => void;
+  handleSubmit: (e: FormEvent<HTMLFormElement>) => void;
   /** Event handler for checking if a user has focused and exited an input */
   setFocusExit: (e: boolean) => void;
   /** Message to display when a password is invalid */
   invalidPasswordMessage?: string;
+  /** The initial values to populate the form with */
   initialFormValues: InitialFormValues;
+  /** Whether or not the save button is disabled. */
+  isSaveDisabled: boolean;
 };
 
 const PREFIX = StylePrefix.USER_PAGE;
@@ -45,10 +52,6 @@ function UserPage(props: UserPageProps): ReactElement {
     setLastName,
   } = p.formData;
 
-  const handleSubmit = () => {
-    // @todo: implement
-  };
-
   const handleLogout = async () => {
     await router.push('/logout');
   };
@@ -62,7 +65,10 @@ function UserPage(props: UserPageProps): ReactElement {
       </div>
       <div className={`${PREFIX}-content`}>
         <div className={`${PREFIX}-card`}>
-          <form onSubmit={handleSubmit} className={`${PREFIX}-link-form`}>
+          <form
+            onSubmit={(e) => p.handleSubmit(e)}
+            className={`${PREFIX}-link-form`}
+          >
             <div className={`${PREFIX}-instructions`}>
               <h1 className={`${PREFIX}-heading`}>Account</h1>
             </div>
@@ -98,6 +104,7 @@ function UserPage(props: UserPageProps): ReactElement {
                 label="Email"
                 className={`${PREFIX}-normal-input`}
                 labelClassName={`${PREFIX}-input-label`}
+                isDisabled={p.isDisabled}
                 required
                 autoComplete="off"
               />
@@ -112,6 +119,7 @@ function UserPage(props: UserPageProps): ReactElement {
                 className={`${PREFIX}-normal-input`}
                 labelClassName={`${PREFIX}-input-label`}
                 error={p.invalidPasswordMessage}
+                isDisabled={p.isDisabled}
                 handleOnBlur={() => {
                   p.setFocusExit(true);
                 }}
@@ -123,7 +131,6 @@ function UserPage(props: UserPageProps): ReactElement {
                   {p.invalidPasswordMessage}
                 </p>
               )}
-
               <Input
                 type="text"
                 value={
@@ -139,7 +146,7 @@ function UserPage(props: UserPageProps): ReactElement {
               <div>
                 <Button
                   type="submit"
-                  isDisabled={p.isDisabled}
+                  isDisabled={p.isSaveDisabled}
                   variant="primary"
                   className={`${PREFIX}-submit-button`}
                 >
@@ -164,20 +171,62 @@ export default function UserPageContainer(): ReactElement {
     firstName: userData?.firstName || '',
     lastName: userData?.lastName || '',
   };
-  const [username, setUsername] = useState(initialFormValues.username || '');
-  const [password, setPassword] = useState(initialFormValues.password || '');
-  const [email, setEmail] = useState(initialFormValues.email || '');
-  const [firstName, setFirstName] = useState(initialFormValues.firstName || '');
-  const [lastName, setLastName] = useState(initialFormValues.lastName || '');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const { setFocusExit, invalidPasswordMessage } = useValidatePassword({
     password,
   });
+  const [updateUserData] = useUpdateUserDataMutation();
 
-  console.log(userData?.password);
-
-  const handleSubmit = () => {
-    // @todo: implement
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await updateUserData({
+      variables: {
+        input: {
+          supabaseId: userData?.supabaseId || '',
+          password: password === '' ? initialFormValues.password : password,
+          email: email === '' ? initialFormValues.email : email,
+          data: {
+            username: username === '' ? initialFormValues.username : username,
+            firstName:
+              firstName === '' ? initialFormValues.firstName : firstName,
+            lastName: lastName === '' ? initialFormValues.lastName : lastName,
+            role: UserRole.USER,
+          },
+        },
+      },
+      optimisticResponse: {
+        __typename: 'Mutation',
+        updateUser: {
+          __typename: 'UpdatePayload',
+          success: true,
+          user: {
+            __typename: 'UserV2',
+            id: 'string',
+            firstName,
+            lastName,
+            email,
+            password,
+            username,
+            role: UserRole.USER,
+            refreshToken: 'string',
+            supabaseId: userData?.supabaseId || '',
+          },
+        },
+      },
+    });
   };
+
+  const isSaveDisabled =
+    (!password && !email && !firstName && !lastName) ||
+    (initialFormValues.username === username &&
+      initialFormValues.password === password &&
+      initialFormValues.email === email &&
+      initialFormValues.firstName === firstName &&
+      initialFormValues.lastName === lastName);
 
   return (
     <UserPage
@@ -197,6 +246,7 @@ export default function UserPageContainer(): ReactElement {
       handleSubmit={handleSubmit}
       invalidPasswordMessage={invalidPasswordMessage}
       initialFormValues={initialFormValues}
+      isSaveDisabled={isSaveDisabled}
     />
   );
 }

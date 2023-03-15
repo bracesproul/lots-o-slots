@@ -150,27 +150,24 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
     };
   }
 
-  async update(input: UpdateUserInput): Promise<UpdateUserResponse> {
-    const { id } = input;
-    const checkIfUserExists = await this.repository.findOne({
-      where: { id },
-    });
-
-    if (!checkIfUserExists) {
-      throw new UserInputError('User not found.');
-    }
-
+  async update(
+    input: UpdateUserInput,
+    user: UserV2
+  ): Promise<UpdateUserResponse> {
     await new SupabaseAuth().update(input);
-
-    const updatedUser = await this.repository
-      .create({
-        ...checkIfUserExists,
-        ...input,
-      })
-      .save();
+    const updatedUser = await this.repository.update(user.id, {
+      firstName: input.data?.firstName,
+      lastName: input.data?.lastName,
+      username: input.data?.username,
+      role: input.data?.role,
+      email: input.email,
+      password: input.password,
+    });
+    await user.reload();
+    console.log('updatedUser', updatedUser);
 
     return {
-      user: updatedUser,
+      user,
     };
   }
 
