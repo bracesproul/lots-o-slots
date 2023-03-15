@@ -49,7 +49,6 @@ function CheckboxComponent(
   ref: ForwardedRef<HTMLButtonElement>
 ): ReactElement {
   const p = { ...DEFAULT_PROPS, ...props };
-  const domRef = useRef(ref);
 
   // handle indeterminate state
   // ---------------------------
@@ -96,7 +95,6 @@ function CheckboxComponent(
         {...behaviorProps}
         {...restProps}
         {...indeterminateProps}
-        ref={domRef}
         disabled={p.disabled}
         className={clsx(
           `${PREFIX} variant-${p.variant}`,

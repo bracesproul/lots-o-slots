@@ -18,13 +18,13 @@ export type SelectComponentProps = Omit<SelectProps, 'value'> & {
   isDisabled?: boolean;
   label?: string;
   placeholder: string;
-  value: string | number;
+  value?: string | number;
   onChange?: (value: string | number) => void;
 };
 
 export type OptionProps = {
   option: SelectOptionType;
-  value: string | number;
+  value?: string | number;
 };
 
 const Option = (props: OptionProps) => {
