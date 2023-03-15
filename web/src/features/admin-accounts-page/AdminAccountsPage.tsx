@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import { StylePrefix } from '@/types/style-prefix';
-import { AdminPageHeader } from '../dashboard-page-header';
+import { DashboardPageHeader } from '@/features';
 import { PageType } from '@/types';
 
 export type AdminAccountsPageProps = {
@@ -14,7 +14,7 @@ export default function AdminAccountsPage(
 ): ReactElement {
   return (
     <div className={`${PREFIX}`}>
-      <AdminPageHeader page={PageType.ADMIN_ACCOUNTS} />
+      <DashboardPageHeader includePageNav page={PageType.ADMIN_ACCOUNTS} />
     </div>
   );
 }
