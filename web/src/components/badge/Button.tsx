@@ -85,7 +85,18 @@ export default function Badge(props: BadgeProps): ReactElement {
       ])}
       {...mergedProps}
     >
-      {p.title ? <p className={`${PREFIX}-title`}>{p.title}</p> : p.children}
+      {p.title ? (
+        <p
+          className={clsx(`${PREFIX}-title`, {
+            'is-small': p.size === 'small',
+            'is-large': p.size === 'large',
+          })}
+        >
+          {p.title}
+        </p>
+      ) : (
+        p.children
+      )}
     </div>
   );
 }

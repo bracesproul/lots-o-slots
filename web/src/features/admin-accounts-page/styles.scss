@@ -4,3 +4,8 @@
   @apply flex flex-col gap-[24px];
   font-family: 'Inter', sans-serif;
 }
+
+.admin-accounts-page-account-cards-wrapper {
+  @apply flex flex-wrap gap-[16px] ml-[36px];
+  @apply w-[60%];
+}
