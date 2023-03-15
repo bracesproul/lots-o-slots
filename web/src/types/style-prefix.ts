@@ -43,4 +43,5 @@ export enum StylePrefix {
   PROFILE_CARD = 'profile-card',
   ACCOUNT_CARD = 'account-card',
   ACCOUNT_FORM = 'account-form',
+  CONFIRM_DELETE_DIALOG = 'confirm-delete-dialog',
 }

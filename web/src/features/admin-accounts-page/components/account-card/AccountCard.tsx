@@ -6,7 +6,8 @@ import {
 } from '@/features/play-now-dialog-depd/utils';
 import { StylePrefix, PaymentProvider } from '@/types';
 import clsx from 'clsx';
-import { ReactElement } from 'react';
+import { ReactElement, useState } from 'react';
+import { ConfirmDeleteDialog } from './components';
 
 const PREFIX = StylePrefix.ACCOUNT_CARD;
 
@@ -41,6 +42,7 @@ const DEFAULT_PROPS = {
 
 export default function AccountCard(props: AccountCardProps): ReactElement {
   const p = { ...DEFAULT_PROPS, ...props };
+  const [open, setOpen] = useState(false);
 
   return (
     <div className={clsx(PREFIX, p.className)}>
@@ -53,7 +55,7 @@ export default function AccountCard(props: AccountCardProps): ReactElement {
           <InteractableComponent onPress={() => p.onEdit(p.id)}>
             <EditSvg />
           </InteractableComponent>
-          <InteractableComponent onPress={() => console.log('delete')}>
+          <InteractableComponent onPress={() => setOpen(true)}>
             <TrashCanSvg />
           </InteractableComponent>
         </div>
@@ -83,6 +85,7 @@ export default function AccountCard(props: AccountCardProps): ReactElement {
           </div>
         )}
       </div>
+      <ConfirmDeleteDialog open={open} setOpen={setOpen} accountId={p.id} />
     </div>
   );
 }

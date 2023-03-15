@@ -147,6 +147,12 @@ export type CreatedPaymentResponse = {
   success: Scalars['Boolean'];
 };
 
+/** Payload type for deleting an account. */
+export type DeleteAccountPayload = {
+  __typename?: 'DeleteAccountPayload';
+  success: Scalars['Boolean'];
+};
+
 export type EmailLog = MainEntity & Node & {
   __typename?: 'EmailLog';
   createdAt: Scalars['DateTime'];
@@ -310,6 +316,7 @@ export type Mutation = {
   createPayment: CreatedPaymentResponse;
   createUser: User;
   createUserPayment: UserPayment;
+  deleteAccount: DeleteAccountPayload;
   login: LoginPayload;
   logout: LogoutPayload;
   markPaymentAsProcessed: MarkPaymentAsProcessedResponse;
@@ -348,6 +355,11 @@ export type MutationCreateUserArgs = {
 
 export type MutationCreateUserPaymentArgs = {
   input: CreateUserPaymentInput;
+};
+
+
+export type MutationDeleteAccountArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -626,6 +638,13 @@ export type GetAllAccountsQueryVariables = Exact<{
 
 export type GetAllAccountsQuery = { __typename?: 'Query', getAllAccounts: Array<{ __typename?: 'Account', id: string, email: string, balance: number, type: PaymentProvider, defaultAccount?: boolean | null, cashtag?: string | null, bitcoinAddress?: string | null, ethereumAddress?: string | null, name?: string | null }> };
 
+export type DeleteAccountMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteAccountMutation = { __typename?: 'Mutation', deleteAccount: { __typename?: 'DeleteAccountPayload', success: boolean } };
+
 export type CreateAccountMutationVariables = Exact<{
   input: CreateAccountInput;
 }>;
@@ -821,6 +840,39 @@ export function useGetAllAccountsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetAllAccountsQueryHookResult = ReturnType<typeof useGetAllAccountsQuery>;
 export type GetAllAccountsLazyQueryHookResult = ReturnType<typeof useGetAllAccountsLazyQuery>;
 export type GetAllAccountsQueryResult = Apollo.QueryResult<GetAllAccountsQuery, GetAllAccountsQueryVariables>;
+export const DeleteAccountDocument = gql`
+    mutation DeleteAccount($id: String!) {
+  deleteAccount(id: $id) {
+    success
+  }
+}
+    `;
+export type DeleteAccountMutationFn = Apollo.MutationFunction<DeleteAccountMutation, DeleteAccountMutationVariables>;
+
+/**
+ * __useDeleteAccountMutation__
+ *
+ * To run a mutation, you first call `useDeleteAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteAccountMutation, { data, loading, error }] = useDeleteAccountMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteAccountMutation(baseOptions?: Apollo.MutationHookOptions<DeleteAccountMutation, DeleteAccountMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteAccountMutation, DeleteAccountMutationVariables>(DeleteAccountDocument, options);
+      }
+export type DeleteAccountMutationHookResult = ReturnType<typeof useDeleteAccountMutation>;
+export type DeleteAccountMutationResult = Apollo.MutationResult<DeleteAccountMutation>;
+export type DeleteAccountMutationOptions = Apollo.BaseMutationOptions<DeleteAccountMutation, DeleteAccountMutationVariables>;
 export const CreateAccountDocument = gql`
     mutation CreateAccount($input: CreateAccountInput!) {
   createAccount(input: $input) {

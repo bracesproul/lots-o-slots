@@ -287,4 +287,13 @@ export default class AccountRepository extends AbstractRepository<Account> {
       })
       .save();
   }
+
+  async delete(id: string): Promise<boolean> {
+    const account = await this.repository.findOne({ where: { id } });
+    if (!account) {
+      throw new GraphQLError('Account not found');
+    }
+    await this.repository.softDelete(id);
+    return true;
+  }
 }

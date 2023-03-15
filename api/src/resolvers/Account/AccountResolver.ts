@@ -5,6 +5,7 @@ import { getCustomRepository } from 'typeorm';
 import {
   AddAccountInput,
   CreateAccountInput,
+  DeleteAccountPayload,
   GetAccountByIdInput,
   GetAllAccountsInput,
   SwitchDefaultAccountInput,
@@ -59,5 +60,14 @@ export class AccountResolver {
     @Arg('input', { nullable: false }) input: CreateAccountInput
   ): Promise<Account> {
     return getCustomRepository(AccountRepository).create(input);
+  }
+
+  @Mutation(() => DeleteAccountPayload, { nullable: false })
+  async deleteAccount(
+    @Arg('id', { nullable: false }) id: string
+  ): Promise<DeleteAccountPayload> {
+    return {
+      success: await getCustomRepository(AccountRepository).delete(id),
+    };
   }
 }

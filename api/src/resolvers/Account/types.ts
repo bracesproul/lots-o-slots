@@ -156,3 +156,11 @@ export class CreateAccountInput {
   @Field(() => PaymentProvider)
   type!: PaymentProvider;
 }
+
+@ObjectType({
+  description: 'Payload type for deleting an account.',
+})
+export class DeleteAccountPayload {
+  @Field(() => Boolean)
+  success!: boolean;
+}

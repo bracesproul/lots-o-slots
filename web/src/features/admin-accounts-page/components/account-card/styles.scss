@@ -1,3 +1,5 @@
+@use './components/styles.scss' as account-card-components-styles;
+
 .account-card {
   @apply flex flex-col gap-[16px];
   @apply bg-gray-700 border-[1px] border-gray-800 rounded-md;
