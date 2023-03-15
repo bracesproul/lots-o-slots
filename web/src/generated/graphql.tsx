@@ -30,6 +30,7 @@ export type Account = MainEntity & Node & {
   email: Scalars['String'];
   ethereumAddress?: Maybe<Scalars['String']>;
   id: Scalars['ID'];
+  name?: Maybe<Scalars['String']>;
   type: PaymentProvider;
   updatedAt?: Maybe<Scalars['DateTime']>;
   weeklyWithdrawals: Scalars['Float'];
@@ -69,6 +70,14 @@ export type CheckSessionPayload = {
   refreshToken: Scalars['String'];
   success: Scalars['Boolean'];
   user: UserV2;
+};
+
+/** Input type for creating an account. */
+export type CreateAccountInput = {
+  balance: Scalars['Float'];
+  identifier: Scalars['String'];
+  name: Scalars['String'];
+  type: PaymentProvider;
 };
 
 /** Input type for creating an email log. */
@@ -138,6 +147,12 @@ export type CreatedPaymentResponse = {
   success: Scalars['Boolean'];
 };
 
+/** Payload type for deleting an account. */
+export type DeleteAccountPayload = {
+  __typename?: 'DeleteAccountPayload';
+  success: Scalars['Boolean'];
+};
+
 export type EmailLog = MainEntity & Node & {
   __typename?: 'EmailLog';
   createdAt: Scalars['DateTime'];
@@ -162,6 +177,11 @@ export enum GameType {
   POKER = 'POKER',
   SLOTS = 'SLOTS'
 }
+
+/** Input type for getting an account by its id. */
+export type GetAccountByIdInput = {
+  id: Scalars['ID'];
+};
 
 /** Input type for getting accounts. */
 export type GetAllAccountsInput = {
@@ -289,23 +309,32 @@ export type MarkUserPaymentAsProcessedResult = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  /** @deprecated Use createAccount instead */
   addAccount: Account;
+  createAccount: Account;
   createEmailLog: EmailLog;
   createPayment: CreatedPaymentResponse;
   createUser: User;
   createUserPayment: UserPayment;
+  deleteAccount: DeleteAccountPayload;
   login: LoginPayload;
   logout: LogoutPayload;
   markPaymentAsProcessed: MarkPaymentAsProcessedResponse;
   markUserPaymentAsProcessed: MarkUserPaymentAsProcessedResult;
   signUp: SignUpPayload;
   switchDefaultAccount: Account;
+  updateAccount: Account;
   updateUser: UpdatePayload;
 };
 
 
 export type MutationAddAccountArgs = {
   input: AddAccountInput;
+};
+
+
+export type MutationCreateAccountArgs = {
+  input: CreateAccountInput;
 };
 
 
@@ -326,6 +355,11 @@ export type MutationCreateUserArgs = {
 
 export type MutationCreateUserPaymentArgs = {
   input: CreateUserPaymentInput;
+};
+
+
+export type MutationDeleteAccountArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -351,6 +385,11 @@ export type MutationSignUpArgs = {
 
 export type MutationSwitchDefaultAccountArgs = {
   input: SwitchDefaultAccountInput;
+};
+
+
+export type MutationUpdateAccountArgs = {
+  input: UpdateAccountInput;
 };
 
 
@@ -397,6 +436,7 @@ export type Query = {
   __typename?: 'Query';
   checkAdminPagePassword: AuthorizeAdminUserPayload;
   checkSession: CheckSessionPayload;
+  getAccountById: Account;
   getAllAccounts: Array<Account>;
   getAllPayments: Array<Payment>;
   getAllUsers: Array<UserV2>;
@@ -412,6 +452,11 @@ export type Query = {
 
 export type QueryCheckAdminPagePasswordArgs = {
   password: Scalars['String'];
+};
+
+
+export type QueryGetAccountByIdArgs = {
+  input: GetAccountByIdInput;
 };
 
 
@@ -497,6 +542,15 @@ export type SwitchDefaultAccountInput = {
   type: PaymentProvider;
 };
 
+/** Input type for updating an account. */
+export type UpdateAccountInput = {
+  balance?: InputMaybe<Scalars['Float']>;
+  id: Scalars['ID'];
+  identifier?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+  type: PaymentProvider;
+};
+
 /** Input type for updating a new user */
 export type UpdateInput = {
   data?: InputMaybe<UserData>;
@@ -577,66 +631,40 @@ export type CreateUserMutationVariables = Exact<{
 
 export type CreateUserMutation = { __typename?: 'Mutation', createUser: { __typename?: 'User', id: string, email?: string | null, password?: string | null } };
 
-export type CheckAuthQueryVariables = Exact<{
-  password: Scalars['String'];
-}>;
-
-
-export type CheckAuthQuery = { __typename?: 'Query', checkAdminPagePassword: { __typename?: 'AuthorizeAdminUserPayload', success: boolean } };
-
-export type GetAllAccountsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type GetAllAccountsQuery = { __typename?: 'Query', getAllAccounts: Array<{ __typename?: 'Account', id: string, updatedAt?: string | null, email: string, balance: number, canWithdrawal: boolean, canAcceptDeposits: boolean, dailyWithdrawals: number, weeklyWithdrawals: number, cashtag?: string | null, bitcoinAddress?: string | null, ethereumAddress?: string | null, type: PaymentProvider }> };
-
-export type GetAccountsQueryVariables = Exact<{
+export type GetAllAccountsQueryVariables = Exact<{
   input?: InputMaybe<GetAllAccountsInput>;
 }>;
 
 
-export type GetAccountsQuery = { __typename?: 'Query', getAllAccounts: Array<{ __typename?: 'Account', id: string, updatedAt?: string | null, email: string, balance: number, canWithdrawal: boolean, canAcceptDeposits: boolean, dailyWithdrawals: number, weeklyWithdrawals: number, cashtag?: string | null }> };
+export type GetAllAccountsQuery = { __typename?: 'Query', getAllAccounts: Array<{ __typename?: 'Account', id: string, email: string, balance: number, type: PaymentProvider, defaultAccount?: boolean | null, cashtag?: string | null, bitcoinAddress?: string | null, ethereumAddress?: string | null, name?: string | null }> };
 
-export type AddCashappAccountMutationVariables = Exact<{
-  input: AddAccountInput;
+export type DeleteAccountMutationVariables = Exact<{
+  id: Scalars['String'];
 }>;
 
 
-export type AddCashappAccountMutation = { __typename?: 'Mutation', addAccount: { __typename?: 'Account', id: string, cashtag?: string | null, email: string } };
+export type DeleteAccountMutation = { __typename?: 'Mutation', deleteAccount: { __typename?: 'DeleteAccountPayload', success: boolean } };
 
-export type SwitchDefaultAccountMutationVariables = Exact<{
-  input: SwitchDefaultAccountInput;
+export type CreateAccountMutationVariables = Exact<{
+  input: CreateAccountInput;
 }>;
 
 
-export type SwitchDefaultAccountMutation = { __typename?: 'Mutation', switchDefaultAccount: { __typename?: 'Account', id: string, type: PaymentProvider, email: string } };
+export type CreateAccountMutation = { __typename?: 'Mutation', createAccount: { __typename?: 'Account', id: string, email: string, balance: number, type: PaymentProvider, defaultAccount?: boolean | null, cashtag?: string | null, bitcoinAddress?: string | null, ethereumAddress?: string | null, name?: string | null } };
 
-export type GetAllPaymentsQueryVariables = Exact<{
-  input?: InputMaybe<GetPaymentsInput>;
+export type GetAccountQueryVariables = Exact<{
+  input: GetAccountByIdInput;
 }>;
 
 
-export type GetAllPaymentsQuery = { __typename?: 'Query', getAllPayments: Array<{ __typename?: 'Payment', id: string, userId: string, senderName: string, amount: number, processed: boolean, provider: PaymentProvider, paymentType: PaymentType }> };
+export type GetAccountQuery = { __typename?: 'Query', getAccountById: { __typename?: 'Account', id: string, email: string, balance: number, type: PaymentProvider, defaultAccount?: boolean | null, cashtag?: string | null, bitcoinAddress?: string | null, ethereumAddress?: string | null, name?: string | null } };
 
-export type MarkPaymentAsProcessedMutationVariables = Exact<{
-  input: MarkPaymentAsProcessedInput;
+export type UpdateAccountMutationVariables = Exact<{
+  input: UpdateAccountInput;
 }>;
 
 
-export type MarkPaymentAsProcessedMutation = { __typename?: 'Mutation', markPaymentAsProcessed: { __typename?: 'MarkPaymentAsProcessedResponse', success: boolean, payment: { __typename?: 'Payment', id: string, userId: string, amount: number, processed: boolean, emailId: string, provider: PaymentProvider, senderName: string, transactionId?: string | null, paymentType: PaymentType } } };
-
-export type GetUserPaymentsQueryVariables = Exact<{
-  input?: InputMaybe<GetUserPaymentsInput>;
-}>;
-
-
-export type GetUserPaymentsQuery = { __typename?: 'Query', getUserPayments: Array<{ __typename?: 'UserPayment', id: string, createdAt: string, paymentIdentifier: string, paymentProvider: PaymentProvider, amount: number, gameType: GameType }> };
-
-export type MarkUserPaymentAsProcessedMutationVariables = Exact<{
-  input: MarkUserPaymentAsProcessedInput;
-}>;
-
-
-export type MarkUserPaymentAsProcessedMutation = { __typename?: 'Mutation', markUserPaymentAsProcessed: { __typename?: 'MarkUserPaymentAsProcessedResult', success: boolean, userPayment: { __typename?: 'UserPayment', id: string, createdAt: string, paymentIdentifier: string, paymentProvider: PaymentProvider, amount: number, gameType: GameType } } };
+export type UpdateAccountMutation = { __typename?: 'Mutation', updateAccount: { __typename?: 'Account', id: string, email: string, balance: number, type: PaymentProvider, defaultAccount?: boolean | null, cashtag?: string | null, bitcoinAddress?: string | null, ethereumAddress?: string | null, name?: string | null } };
 
 export type LoginMutationVariables = Exact<{
   input: LoginInput;
@@ -676,6 +704,8 @@ export type SignUpMutationVariables = Exact<{
 
 export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'SignUpPayload', success: boolean, session: { __typename?: 'SupabaseSessionResponse', refresh_token: string }, user: { __typename?: 'UserV2', supabaseId: string } } };
 
+export type BasicAccountFragment = { __typename?: 'Account', id: string, email: string, balance: number, type: PaymentProvider, defaultAccount?: boolean | null, cashtag?: string | null, bitcoinAddress?: string | null, ethereumAddress?: string | null, name?: string | null };
+
 export type BasicUserFragment = { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, username?: string | null };
 
 export type PaymentFragmentFragment = { __typename?: 'Payment', id: string, userId: string, amount: number, processed: boolean, emailId: string, provider: PaymentProvider, senderName: string, transactionId?: string | null, paymentType: PaymentType };
@@ -692,6 +722,19 @@ export type CheckUserSessionQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type CheckUserSessionQuery = { __typename?: 'Query', checkSession: { __typename?: 'CheckSessionPayload', success: boolean, refreshToken: string, user: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password: string, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string } } };
 
+export const BasicAccountFragmentDoc = gql`
+    fragment BasicAccount on Account {
+  id
+  email
+  balance
+  type
+  defaultAccount
+  cashtag
+  bitcoinAddress
+  ethereumAddress
+  name
+}
+    `;
 export const BasicUserFragmentDoc = gql`
     fragment BasicUser on UserV2 {
   id
@@ -762,59 +805,13 @@ export function useCreateUserMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutation>;
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
-export const CheckAuthDocument = gql`
-    query CheckAuth($password: String!) {
-  checkAdminPagePassword(password: $password) {
-    success
-  }
-}
-    `;
-
-/**
- * __useCheckAuthQuery__
- *
- * To run a query within a React component, call `useCheckAuthQuery` and pass it any options that fit your needs.
- * When your component renders, `useCheckAuthQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCheckAuthQuery({
- *   variables: {
- *      password: // value for 'password'
- *   },
- * });
- */
-export function useCheckAuthQuery(baseOptions: Apollo.QueryHookOptions<CheckAuthQuery, CheckAuthQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<CheckAuthQuery, CheckAuthQueryVariables>(CheckAuthDocument, options);
-      }
-export function useCheckAuthLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CheckAuthQuery, CheckAuthQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<CheckAuthQuery, CheckAuthQueryVariables>(CheckAuthDocument, options);
-        }
-export type CheckAuthQueryHookResult = ReturnType<typeof useCheckAuthQuery>;
-export type CheckAuthLazyQueryHookResult = ReturnType<typeof useCheckAuthLazyQuery>;
-export type CheckAuthQueryResult = Apollo.QueryResult<CheckAuthQuery, CheckAuthQueryVariables>;
 export const GetAllAccountsDocument = gql`
-    query GetAllAccounts {
-  getAllAccounts {
-    id
-    updatedAt
-    email
-    balance
-    canWithdrawal
-    canAcceptDeposits
-    dailyWithdrawals
-    weeklyWithdrawals
-    cashtag
-    bitcoinAddress
-    ethereumAddress
-    type
+    query GetAllAccounts($input: GetAllAccountsInput) {
+  getAllAccounts(input: $input) {
+    ...BasicAccount
   }
 }
-    `;
+    ${BasicAccountFragmentDoc}`;
 
 /**
  * __useGetAllAccountsQuery__
@@ -828,6 +825,7 @@ export const GetAllAccountsDocument = gql`
  * @example
  * const { data, loading, error } = useGetAllAccountsQuery({
  *   variables: {
+ *      input: // value for 'input'
  *   },
  * });
  */
@@ -842,277 +840,140 @@ export function useGetAllAccountsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetAllAccountsQueryHookResult = ReturnType<typeof useGetAllAccountsQuery>;
 export type GetAllAccountsLazyQueryHookResult = ReturnType<typeof useGetAllAccountsLazyQuery>;
 export type GetAllAccountsQueryResult = Apollo.QueryResult<GetAllAccountsQuery, GetAllAccountsQueryVariables>;
-export const GetAccountsDocument = gql`
-    query GetAccounts($input: GetAllAccountsInput) {
-  getAllAccounts(input: $input) {
-    id
-    updatedAt
-    email
-    balance
-    canWithdrawal
-    canAcceptDeposits
-    dailyWithdrawals
-    weeklyWithdrawals
-    cashtag
-  }
-}
-    `;
-
-/**
- * __useGetAccountsQuery__
- *
- * To run a query within a React component, call `useGetAccountsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAccountsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAccountsQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useGetAccountsQuery(baseOptions?: Apollo.QueryHookOptions<GetAccountsQuery, GetAccountsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAccountsQuery, GetAccountsQueryVariables>(GetAccountsDocument, options);
-      }
-export function useGetAccountsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAccountsQuery, GetAccountsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAccountsQuery, GetAccountsQueryVariables>(GetAccountsDocument, options);
-        }
-export type GetAccountsQueryHookResult = ReturnType<typeof useGetAccountsQuery>;
-export type GetAccountsLazyQueryHookResult = ReturnType<typeof useGetAccountsLazyQuery>;
-export type GetAccountsQueryResult = Apollo.QueryResult<GetAccountsQuery, GetAccountsQueryVariables>;
-export const AddCashappAccountDocument = gql`
-    mutation AddCashappAccount($input: AddAccountInput!) {
-  addAccount(input: $input) {
-    id
-    cashtag
-    email
-  }
-}
-    `;
-export type AddCashappAccountMutationFn = Apollo.MutationFunction<AddCashappAccountMutation, AddCashappAccountMutationVariables>;
-
-/**
- * __useAddCashappAccountMutation__
- *
- * To run a mutation, you first call `useAddCashappAccountMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAddCashappAccountMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [addCashappAccountMutation, { data, loading, error }] = useAddCashappAccountMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useAddCashappAccountMutation(baseOptions?: Apollo.MutationHookOptions<AddCashappAccountMutation, AddCashappAccountMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AddCashappAccountMutation, AddCashappAccountMutationVariables>(AddCashappAccountDocument, options);
-      }
-export type AddCashappAccountMutationHookResult = ReturnType<typeof useAddCashappAccountMutation>;
-export type AddCashappAccountMutationResult = Apollo.MutationResult<AddCashappAccountMutation>;
-export type AddCashappAccountMutationOptions = Apollo.BaseMutationOptions<AddCashappAccountMutation, AddCashappAccountMutationVariables>;
-export const SwitchDefaultAccountDocument = gql`
-    mutation SwitchDefaultAccount($input: SwitchDefaultAccountInput!) {
-  switchDefaultAccount(input: $input) {
-    id
-    type
-    email
-  }
-}
-    `;
-export type SwitchDefaultAccountMutationFn = Apollo.MutationFunction<SwitchDefaultAccountMutation, SwitchDefaultAccountMutationVariables>;
-
-/**
- * __useSwitchDefaultAccountMutation__
- *
- * To run a mutation, you first call `useSwitchDefaultAccountMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useSwitchDefaultAccountMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [switchDefaultAccountMutation, { data, loading, error }] = useSwitchDefaultAccountMutation({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useSwitchDefaultAccountMutation(baseOptions?: Apollo.MutationHookOptions<SwitchDefaultAccountMutation, SwitchDefaultAccountMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<SwitchDefaultAccountMutation, SwitchDefaultAccountMutationVariables>(SwitchDefaultAccountDocument, options);
-      }
-export type SwitchDefaultAccountMutationHookResult = ReturnType<typeof useSwitchDefaultAccountMutation>;
-export type SwitchDefaultAccountMutationResult = Apollo.MutationResult<SwitchDefaultAccountMutation>;
-export type SwitchDefaultAccountMutationOptions = Apollo.BaseMutationOptions<SwitchDefaultAccountMutation, SwitchDefaultAccountMutationVariables>;
-export const GetAllPaymentsDocument = gql`
-    query GetAllPayments($input: GetPaymentsInput) {
-  getAllPayments(input: $input) {
-    id
-    userId
-    senderName
-    amount
-    processed
-    provider
-    paymentType
-  }
-}
-    `;
-
-/**
- * __useGetAllPaymentsQuery__
- *
- * To run a query within a React component, call `useGetAllPaymentsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetAllPaymentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetAllPaymentsQuery({
- *   variables: {
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useGetAllPaymentsQuery(baseOptions?: Apollo.QueryHookOptions<GetAllPaymentsQuery, GetAllPaymentsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetAllPaymentsQuery, GetAllPaymentsQueryVariables>(GetAllPaymentsDocument, options);
-      }
-export function useGetAllPaymentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAllPaymentsQuery, GetAllPaymentsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetAllPaymentsQuery, GetAllPaymentsQueryVariables>(GetAllPaymentsDocument, options);
-        }
-export type GetAllPaymentsQueryHookResult = ReturnType<typeof useGetAllPaymentsQuery>;
-export type GetAllPaymentsLazyQueryHookResult = ReturnType<typeof useGetAllPaymentsLazyQuery>;
-export type GetAllPaymentsQueryResult = Apollo.QueryResult<GetAllPaymentsQuery, GetAllPaymentsQueryVariables>;
-export const MarkPaymentAsProcessedDocument = gql`
-    mutation MarkPaymentAsProcessed($input: MarkPaymentAsProcessedInput!) {
-  markPaymentAsProcessed(input: $input) {
+export const DeleteAccountDocument = gql`
+    mutation DeleteAccount($id: String!) {
+  deleteAccount(id: $id) {
     success
-    payment {
-      ...PaymentFragment
-    }
   }
 }
-    ${PaymentFragmentFragmentDoc}`;
-export type MarkPaymentAsProcessedMutationFn = Apollo.MutationFunction<MarkPaymentAsProcessedMutation, MarkPaymentAsProcessedMutationVariables>;
+    `;
+export type DeleteAccountMutationFn = Apollo.MutationFunction<DeleteAccountMutation, DeleteAccountMutationVariables>;
 
 /**
- * __useMarkPaymentAsProcessedMutation__
+ * __useDeleteAccountMutation__
  *
- * To run a mutation, you first call `useMarkPaymentAsProcessedMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useMarkPaymentAsProcessedMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useDeleteAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteAccountMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [markPaymentAsProcessedMutation, { data, loading, error }] = useMarkPaymentAsProcessedMutation({
+ * const [deleteAccountMutation, { data, loading, error }] = useDeleteAccountMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteAccountMutation(baseOptions?: Apollo.MutationHookOptions<DeleteAccountMutation, DeleteAccountMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteAccountMutation, DeleteAccountMutationVariables>(DeleteAccountDocument, options);
+      }
+export type DeleteAccountMutationHookResult = ReturnType<typeof useDeleteAccountMutation>;
+export type DeleteAccountMutationResult = Apollo.MutationResult<DeleteAccountMutation>;
+export type DeleteAccountMutationOptions = Apollo.BaseMutationOptions<DeleteAccountMutation, DeleteAccountMutationVariables>;
+export const CreateAccountDocument = gql`
+    mutation CreateAccount($input: CreateAccountInput!) {
+  createAccount(input: $input) {
+    ...BasicAccount
+  }
+}
+    ${BasicAccountFragmentDoc}`;
+export type CreateAccountMutationFn = Apollo.MutationFunction<CreateAccountMutation, CreateAccountMutationVariables>;
+
+/**
+ * __useCreateAccountMutation__
+ *
+ * To run a mutation, you first call `useCreateAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAccountMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createAccountMutation, { data, loading, error }] = useCreateAccountMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useMarkPaymentAsProcessedMutation(baseOptions?: Apollo.MutationHookOptions<MarkPaymentAsProcessedMutation, MarkPaymentAsProcessedMutationVariables>) {
+export function useCreateAccountMutation(baseOptions?: Apollo.MutationHookOptions<CreateAccountMutation, CreateAccountMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<MarkPaymentAsProcessedMutation, MarkPaymentAsProcessedMutationVariables>(MarkPaymentAsProcessedDocument, options);
+        return Apollo.useMutation<CreateAccountMutation, CreateAccountMutationVariables>(CreateAccountDocument, options);
       }
-export type MarkPaymentAsProcessedMutationHookResult = ReturnType<typeof useMarkPaymentAsProcessedMutation>;
-export type MarkPaymentAsProcessedMutationResult = Apollo.MutationResult<MarkPaymentAsProcessedMutation>;
-export type MarkPaymentAsProcessedMutationOptions = Apollo.BaseMutationOptions<MarkPaymentAsProcessedMutation, MarkPaymentAsProcessedMutationVariables>;
-export const GetUserPaymentsDocument = gql`
-    query GetUserPayments($input: GetUserPaymentsInput) {
-  getUserPayments(input: $input) {
-    id
-    createdAt
-    paymentIdentifier
-    paymentProvider
-    amount
-    gameType
+export type CreateAccountMutationHookResult = ReturnType<typeof useCreateAccountMutation>;
+export type CreateAccountMutationResult = Apollo.MutationResult<CreateAccountMutation>;
+export type CreateAccountMutationOptions = Apollo.BaseMutationOptions<CreateAccountMutation, CreateAccountMutationVariables>;
+export const GetAccountDocument = gql`
+    query GetAccount($input: GetAccountByIdInput!) {
+  getAccountById(input: $input) {
+    ...BasicAccount
   }
 }
-    `;
+    ${BasicAccountFragmentDoc}`;
 
 /**
- * __useGetUserPaymentsQuery__
+ * __useGetAccountQuery__
  *
- * To run a query within a React component, call `useGetUserPaymentsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetUserPaymentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetAccountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAccountQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetUserPaymentsQuery({
+ * const { data, loading, error } = useGetAccountQuery({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useGetUserPaymentsQuery(baseOptions?: Apollo.QueryHookOptions<GetUserPaymentsQuery, GetUserPaymentsQueryVariables>) {
+export function useGetAccountQuery(baseOptions: Apollo.QueryHookOptions<GetAccountQuery, GetAccountQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetUserPaymentsQuery, GetUserPaymentsQueryVariables>(GetUserPaymentsDocument, options);
+        return Apollo.useQuery<GetAccountQuery, GetAccountQueryVariables>(GetAccountDocument, options);
       }
-export function useGetUserPaymentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserPaymentsQuery, GetUserPaymentsQueryVariables>) {
+export function useGetAccountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAccountQuery, GetAccountQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetUserPaymentsQuery, GetUserPaymentsQueryVariables>(GetUserPaymentsDocument, options);
+          return Apollo.useLazyQuery<GetAccountQuery, GetAccountQueryVariables>(GetAccountDocument, options);
         }
-export type GetUserPaymentsQueryHookResult = ReturnType<typeof useGetUserPaymentsQuery>;
-export type GetUserPaymentsLazyQueryHookResult = ReturnType<typeof useGetUserPaymentsLazyQuery>;
-export type GetUserPaymentsQueryResult = Apollo.QueryResult<GetUserPaymentsQuery, GetUserPaymentsQueryVariables>;
-export const MarkUserPaymentAsProcessedDocument = gql`
-    mutation MarkUserPaymentAsProcessed($input: MarkUserPaymentAsProcessedInput!) {
-  markUserPaymentAsProcessed(input: $input) {
-    success
-    userPayment {
-      id
-      createdAt
-      paymentIdentifier
-      paymentProvider
-      amount
-      gameType
-    }
+export type GetAccountQueryHookResult = ReturnType<typeof useGetAccountQuery>;
+export type GetAccountLazyQueryHookResult = ReturnType<typeof useGetAccountLazyQuery>;
+export type GetAccountQueryResult = Apollo.QueryResult<GetAccountQuery, GetAccountQueryVariables>;
+export const UpdateAccountDocument = gql`
+    mutation UpdateAccount($input: UpdateAccountInput!) {
+  updateAccount(input: $input) {
+    ...BasicAccount
   }
 }
-    `;
-export type MarkUserPaymentAsProcessedMutationFn = Apollo.MutationFunction<MarkUserPaymentAsProcessedMutation, MarkUserPaymentAsProcessedMutationVariables>;
+    ${BasicAccountFragmentDoc}`;
+export type UpdateAccountMutationFn = Apollo.MutationFunction<UpdateAccountMutation, UpdateAccountMutationVariables>;
 
 /**
- * __useMarkUserPaymentAsProcessedMutation__
+ * __useUpdateAccountMutation__
  *
- * To run a mutation, you first call `useMarkUserPaymentAsProcessedMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useMarkUserPaymentAsProcessedMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useUpdateAccountMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAccountMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [markUserPaymentAsProcessedMutation, { data, loading, error }] = useMarkUserPaymentAsProcessedMutation({
+ * const [updateAccountMutation, { data, loading, error }] = useUpdateAccountMutation({
  *   variables: {
  *      input: // value for 'input'
  *   },
  * });
  */
-export function useMarkUserPaymentAsProcessedMutation(baseOptions?: Apollo.MutationHookOptions<MarkUserPaymentAsProcessedMutation, MarkUserPaymentAsProcessedMutationVariables>) {
+export function useUpdateAccountMutation(baseOptions?: Apollo.MutationHookOptions<UpdateAccountMutation, UpdateAccountMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<MarkUserPaymentAsProcessedMutation, MarkUserPaymentAsProcessedMutationVariables>(MarkUserPaymentAsProcessedDocument, options);
+        return Apollo.useMutation<UpdateAccountMutation, UpdateAccountMutationVariables>(UpdateAccountDocument, options);
       }
-export type MarkUserPaymentAsProcessedMutationHookResult = ReturnType<typeof useMarkUserPaymentAsProcessedMutation>;
-export type MarkUserPaymentAsProcessedMutationResult = Apollo.MutationResult<MarkUserPaymentAsProcessedMutation>;
-export type MarkUserPaymentAsProcessedMutationOptions = Apollo.BaseMutationOptions<MarkUserPaymentAsProcessedMutation, MarkUserPaymentAsProcessedMutationVariables>;
+export type UpdateAccountMutationHookResult = ReturnType<typeof useUpdateAccountMutation>;
+export type UpdateAccountMutationResult = Apollo.MutationResult<UpdateAccountMutation>;
+export type UpdateAccountMutationOptions = Apollo.BaseMutationOptions<UpdateAccountMutation, UpdateAccountMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($input: LoginInput!) {
   login(input: $input) {

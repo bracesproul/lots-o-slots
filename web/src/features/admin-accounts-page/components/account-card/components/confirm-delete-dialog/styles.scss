@@ -1,0 +1,7 @@
+.confirm-delete-dialog-form {
+  @apply flex flex-col items-center justify-center gap-[16px];
+
+  .confirm-delete-dialog-form-label {
+    @apply text-white mt-[16px] font-light;
+  }
+}

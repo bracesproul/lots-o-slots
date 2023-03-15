@@ -73,4 +73,10 @@ export default class Account extends MainEntity {
   })
   @Column({ type: 'varchar', nullable: true })
   ethereumAddress?: string;
+
+  @Field(() => String, {
+    nullable: true,
+  })
+  @Column({ type: 'varchar', nullable: true })
+  name?: string;
 }

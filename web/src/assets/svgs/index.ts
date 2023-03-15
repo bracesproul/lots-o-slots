@@ -22,3 +22,5 @@ export { default as RightArrowButton } from './RightArrowButton';
 export { default as CloseIcon } from './CloseIcon';
 export { default as ShowEyeSvg } from './ShowEyeSvg';
 export { default as HideEyeSvg } from './HideEyeSvg';
+export { default as EditSvg } from './EditSvg';
+export { default as TrashCanSvg } from './TrashCanSvg';

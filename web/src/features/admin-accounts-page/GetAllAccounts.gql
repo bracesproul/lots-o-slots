@@ -1,0 +1,5 @@
+query GetAllAccounts($input: GetAllAccountsInput) {
+  getAllAccounts(input: $input) {
+    ...BasicAccount
+  }
+}

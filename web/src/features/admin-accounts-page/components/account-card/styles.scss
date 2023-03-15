@@ -1,0 +1,47 @@
+@use './components/styles.scss' as account-card-components-styles;
+
+.account-card {
+  @apply flex flex-col gap-[16px];
+  @apply bg-gray-700 border-[1px] border-gray-800 rounded-md;
+  @apply p-[12px] w-[300px] h-[200px];
+}
+
+.account-card-header {
+  @apply flex flex-row justify-between items-center;
+  @apply pb-[12px];
+  @apply border-b-[1px] border-gray-500;
+}
+
+.account-card-header-content {
+  @apply flex flex-col gap-[8px] max-w-[50%];
+
+  .account-card-name {
+    @apply text-lg font-bold text-gray-100;
+  }
+
+  .account-card-subtitle {
+    @apply font-semibold text-gray-200 truncate;
+  }
+}
+
+.account-card-header-actions {
+  @apply flex flex-row gap-[4px];
+}
+
+.account-card-content {
+  @apply flex flex-col;
+  @apply gap-[10px];
+}
+
+.account-card-content-row {
+  @apply flex flex-row;
+  @apply text-gray-100 gap-[4px];
+
+  .account-card-label {
+    @apply font-semibold;
+  }
+
+  .account-card-value {
+    @apply text-white;
+  }
+}
