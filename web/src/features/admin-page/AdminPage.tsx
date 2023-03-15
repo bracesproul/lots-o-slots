@@ -1,5 +1,4 @@
 import { FormEvent, ReactElement, useState } from 'react';
-import { PageChangeType, TableType } from '@/types/page-change';
 import { StylePrefix } from '@/types/style-prefix';
 import { AdminPageHeader } from '../admin-page-header';
 import { InitialFormValues, PageType, UserInfoFormData } from '@/types';
@@ -30,7 +29,7 @@ export type AdminPageProps = {
 
 const PREFIX = StylePrefix.ADMIN_PAGE_V2;
 
-export default function AdminPage(props: AdminPageProps): ReactElement {
+function AdminPage(props: AdminPageProps): ReactElement {
   const p = { ...props };
 
   const {
@@ -49,96 +48,105 @@ export default function AdminPage(props: AdminPageProps): ReactElement {
   return (
     <div className={`${PREFIX}`}>
       <AdminPageHeader page={PageType.ADMIN} />
-      <div className={`${PREFIX}-card`}>
-        <form
-          onSubmit={(e) => p.handleSubmit(e)}
-          className={`${PREFIX}-link-form`}
-        >
-          <div className={`${PREFIX}-instructions`}>
-            <h1 className={`${PREFIX}-heading`}>Account</h1>
-          </div>
-          <div className={`${PREFIX}-fields`}>
-            <Input
-              type="text"
-              value={
-                firstName === '' ? p.initialFormValues?.firstName : firstName
-              }
-              onChange={setFirstName}
-              label="First Name"
-              isDisabled={p.isDisabled}
-              className={`${PREFIX}-normal-input`}
-              labelClassName={`${PREFIX}-input-label`}
-              autoComplete="off"
-            />
-            <Input
-              type="text"
-              value={lastName === '' ? p.initialFormValues?.lastName : lastName}
-              onChange={setLastName}
-              label="Last Name"
-              isDisabled={p.isDisabled}
-              className={`${PREFIX}-normal-input`}
-              labelClassName={`${PREFIX}-input-label`}
-              autoComplete="off"
-            />
-            <Input
-              type="text"
-              value={email === '' ? p.initialFormValues?.email : email}
-              onChange={setEmail}
-              label="Email"
-              className={`${PREFIX}-normal-input`}
-              labelClassName={`${PREFIX}-input-label`}
-              required
-              autoComplete="off"
-            />
-            <Input
-              type="password"
-              required
-              value={password === '' ? p.initialFormValues?.password : password}
-              onChange={setPassword}
-              label="Password"
-              className={`${PREFIX}-normal-input`}
-              labelClassName={`${PREFIX}-input-label`}
-              error={p.invalidPasswordMessage}
-              handleOnBlur={() => {
-                p.setFocusExit(true);
-              }}
-              showTogglePasswordIcon
-              autoComplete="new-password"
-            />
-            {p.invalidPasswordMessage && (
-              <p className={`${PREFIX}-error-message`}>
-                {p.invalidPasswordMessage}
-              </p>
-            )}
-
-            <Input
-              type="text"
-              value={username === '' ? p.initialFormValues?.username : username}
-              onChange={setUsername}
-              label="Poker/Slots Username"
-              isDisabled={p.isDisabled}
-              className={`${PREFIX}-normal-input`}
-              labelClassName={`${PREFIX}-input-label`}
-              autoComplete="off"
-            />
-            <div>
-              <Button
-                type="submit"
-                isDisabled={p.isDisabled}
-                variant="primary"
-                className={`${PREFIX}-submit-button`}
-              >
-                Save
-              </Button>
+      <div className={`${PREFIX}-content`}>
+        <div className={`${PREFIX}-card`}>
+          <form
+            onSubmit={(e) => p.handleSubmit(e)}
+            className={`${PREFIX}-link-form`}
+          >
+            <div className={`${PREFIX}-instructions`}>
+              <h1 className={`${PREFIX}-heading`}>Admin Account</h1>
             </div>
-          </div>
-        </form>
+            <div className={`${PREFIX}-fields`}>
+              <Input
+                type="text"
+                value={
+                  firstName === '' ? p.initialFormValues?.firstName : firstName
+                }
+                onChange={setFirstName}
+                label="First Name"
+                isDisabled={p.isDisabled}
+                className={`${PREFIX}-normal-input`}
+                labelClassName={`${PREFIX}-input-label`}
+                autoComplete="off"
+              />
+              <Input
+                type="text"
+                value={
+                  lastName === '' ? p.initialFormValues?.lastName : lastName
+                }
+                onChange={setLastName}
+                label="Last Name"
+                isDisabled={p.isDisabled}
+                className={`${PREFIX}-normal-input`}
+                labelClassName={`${PREFIX}-input-label`}
+                autoComplete="off"
+              />
+              <Input
+                type="text"
+                value={email === '' ? p.initialFormValues?.email : email}
+                onChange={setEmail}
+                label="Email"
+                className={`${PREFIX}-normal-input`}
+                labelClassName={`${PREFIX}-input-label`}
+                isDisabled={p.isDisabled}
+                required
+                autoComplete="off"
+              />
+              <Input
+                type="password"
+                required
+                value={
+                  password === '' ? p.initialFormValues?.password : password
+                }
+                onChange={setPassword}
+                label="Password"
+                className={`${PREFIX}-normal-input`}
+                labelClassName={`${PREFIX}-input-label`}
+                error={p.invalidPasswordMessage}
+                isDisabled={p.isDisabled}
+                handleOnBlur={() => {
+                  p.setFocusExit(true);
+                }}
+                showTogglePasswordIcon
+                autoComplete="new-password"
+              />
+              {p.invalidPasswordMessage && (
+                <p className={`${PREFIX}-error-message`}>
+                  {p.invalidPasswordMessage}
+                </p>
+              )}
+              <Input
+                type="text"
+                value={
+                  username === '' ? p.initialFormValues?.username : username
+                }
+                onChange={setUsername}
+                label="Poker/Slots Username"
+                isDisabled={p.isDisabled}
+                className={`${PREFIX}-normal-input`}
+                labelClassName={`${PREFIX}-input-label`}
+                autoComplete="off"
+              />
+              <div>
+                <Button
+                  type="submit"
+                  isDisabled={p.isSaveDisabled}
+                  variant="primary"
+                  className={`${PREFIX}-submit-button`}
+                >
+                  Save
+                </Button>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
 }
 
-function AdminPageContainer(): ReactElement {
+export default function AdminPageContainer(): ReactElement {
   const { data, error } = useGetUserDataQuery();
   const userData = data?.getUserBySupabaseId;
   const initialFormValues = {

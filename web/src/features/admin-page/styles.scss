@@ -2,5 +2,100 @@
 
 .admin-page-v2 {
   @apply flex flex-col gap-[24px];
+  @apply h-full w-full;
   font-family: 'Inter', sans-serif;
 }
+
+.admin-page-v2-side-by-side-fields {
+  @apply flex flex-row gap-[8px];
+}
+
+.admin-page-v2-small-input {
+  @apply w-[125px] border-b-[1px] border-gray-500 rounded-none;
+}
+
+.admin-page-v2-normal-input {
+  @apply w-[250px];
+  @apply tablet:w-[400px] desktop:w-[600px] border-b-[1px] border-gray-500 rounded-none;
+}
+
+.admin-page-v2 {
+  @apply h-screen w-full;
+
+  @apply text-light-gray-500 bg-black;
+
+  @apply flex flex-col;
+
+  .admin-page-v2-content {
+    @apply h-full;
+    @apply flex flex-col;
+    @apply max-w-screen-desktop tablet:mx-[96px] desktop:mx-auto mx-[24px];
+    @apply text-body-md tablet:text-body-lg;
+    @apply tablet:items-center tablet:justify-center;
+  }
+}
+
+.admin-page-v2-header {
+  @apply h-[148px];
+  @apply flex items-center justify-center;
+}
+
+.admin-page-v2-body {
+  @apply tablet:mt-[25%] desktop:w-[1000px]  tablet:my-auto;
+  @apply text-center;
+  @apply tablet:items-center tablet:justify-center;
+}
+
+.admin-page-v2-card {
+  @apply mobile:mt-[30%] tablet:mt-[0];
+  @apply tablet:p-[40px] mx-auto max-w-[1000px] rounded-xl p-[24px];
+  @apply bg-white text-gray-900;
+}
+
+.admin-page-v2-instructions {
+  @apply flex flex-col gap-[32px] mb-[18px];
+
+  .admin-page-v2-heading {
+    @apply text-h2 tablet:text-h1;
+  }
+
+  .admin-page-v2-description {
+    @apply mt-[12px] text-gray-600;
+  }
+}
+
+.admin-page-v2-fields {
+  @apply flex flex-col gap-[16px] items-center justify-center;
+}
+
+.admin-page-v2-submit-button {
+  @apply w-full;
+}
+
+.admin-page-v2-input-label {
+  @apply text-gray-800;
+}
+
+.admin-page-v2-processing-body {
+  @apply text-white;
+  @apply text-h4 tablet:text-h2;
+}
+
+.admin-page-v2-error-message {
+  @apply text-red-400 text-[8px];
+  @apply tablet:text-[10px];
+
+  &.is-link {
+   @apply underline underline-offset-1 cursor-pointer; 
+  }
+}
+
+.admin-page-v2-actions-header {
+  @apply flex flex-row items-center justify-end m-[25px];
+  @apply mb-[-50px] tablet:mb-auto;
+}
+
+.admin-page-v2-logout-button {
+  @apply w-[100px] tablet:w-[200px];
+}
+
