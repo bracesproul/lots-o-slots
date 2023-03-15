@@ -1,7 +1,4 @@
 export { HomePage } from './home-page';
-export { PlayCreateBox } from './play-create-box';
-export { HowToJoinTop } from './how-to-join-top';
-export { HowToJoinLower } from './how-to-join-lower';
 export { Header } from './header';
 export { PlayNowDialog } from './play-now-dialog-depd';
 export { AppStoreButtonsDialog } from './app-store-buttons-dialog';
