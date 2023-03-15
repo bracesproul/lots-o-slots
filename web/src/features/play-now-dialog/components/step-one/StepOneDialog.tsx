@@ -13,7 +13,7 @@ const GAME_OPTIONS = [
   { name: 'Poker', value: 'poker' },
 ];
 
-const PAYMENT_OPTIONS = [
+export const PAYMENT_OPTIONS = [
   { name: 'PayPal', value: PaymentProvider.PAYPAL },
   { name: 'CashApp', value: PaymentProvider.CASHAPP },
   { name: 'Zelle', value: PaymentProvider.ZELLE },

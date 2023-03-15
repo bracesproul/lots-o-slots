@@ -1,0 +1,29 @@
+.account-form {
+  @apply flex flex-col w-[80%] bg-white rounded-lg text-black;
+  @apply p-[16px]
+}
+
+.account-form-instructions {
+  @apply flex flex-col gap-[32px] mb-[18px];
+
+  .account-form-heading {
+    @apply text-center font-bold tablet:text-lg;
+  }
+}
+
+.account-form-fields {
+  @apply flex flex-col gap-[16px] items-center justify-center;
+}
+
+.account-form-submit-button {
+  @apply w-full;
+}
+
+.account-form-input-label {
+  @apply text-gray-800 text-[12px] font-semibold;
+}
+
+.account-form-normal-input {
+  @apply w-[350px];
+  @apply border-b-[1px] border-gray-500 rounded-none;
+}

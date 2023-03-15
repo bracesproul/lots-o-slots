@@ -9,7 +9,7 @@ export type InputProps = {
   className?: string;
   /** Custom className to override the label styling */
   labelClassName?: string;
-  value: string;
+  value: string | number;
   onChange: (value: string) => void;
   placeholder?: string;
   /**

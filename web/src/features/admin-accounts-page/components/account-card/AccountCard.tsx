@@ -10,9 +10,7 @@ import { ReactElement } from 'react';
 
 const PREFIX = StylePrefix.ACCOUNT_CARD;
 
-export type AccountCardProps = {
-  /** Optional className to override default styles. */
-  className?: string;
+export type Account = {
   /** The accounts ID */
   id: string;
   /** The account's name */
@@ -28,6 +26,11 @@ export type AccountCardProps = {
    * @default false
    */
   isDefault?: boolean;
+};
+
+export type AccountCardProps = Account & {
+  /** Optional className to override default styles. */
+  className?: string;
 };
 
 const DEFAULT_PROPS = {

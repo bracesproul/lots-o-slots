@@ -1,78 +1,36 @@
 import { ReactElement } from 'react';
 import { StylePrefix } from '@/types/style-prefix';
 import { DashboardPageHeader } from '@/features';
-import { PageType, PaymentProvider } from '@/types';
-import { AccountCard } from './components';
-import clsx from 'clsx';
+import { PageType } from '@/types';
+import { AccountCard, AccountForm } from './components';
+import { dummyAccounts } from '@/dummy/accounts';
+import { Account } from './components/account-card/AccountCard';
 
 export type AdminAccountsPageProps = {
-  // Add props
+  /** The list of accounts to show */
+  accounts: Account[];
 };
 
 const PREFIX = StylePrefix.ADMIN_ACCOUNTS_PAGE;
 
-export default function AdminAccountsPage(
-  props: AdminAccountsPageProps
-): ReactElement {
+function AdminAccountsPage(props: AdminAccountsPageProps): ReactElement {
   return (
     <div className={`${PREFIX}`}>
       <DashboardPageHeader includePageNav page={PageType.ADMIN_ACCOUNTS} />
-      <div className={`${PREFIX}-account-cards-wrapper`}>
-        {dummyAccounts.map((account, i) => (
-          <AccountCard {...account} key={i} />
-        ))}
+      <div className={'flex flex-row justify-between'}>
+        <div className={`${PREFIX}-account-cards-wrapper`}>
+          {props.accounts.map((account, i) => (
+            <AccountCard {...account} key={i} />
+          ))}
+        </div>
+        <div className={`${PREFIX}-account-form-wrapper`}>
+          <AccountForm isEditMode={false} />
+        </div>
       </div>
     </div>
   );
 }
 
-const PREFIX_FORM = StylePrefix.ACCOUNT_FORM;
-
-export type AccountFormProps = {
-  /** Optional className to override default styles. */
-  className?: string;
-};
-
-const DEFAULT_PROPS = {
-  // add default props
-};
-
-function AccountForm(props: AccountFormProps): ReactElement {
-  const p = { ...DEFAULT_PROPS, ...props };
-  return <div className={clsx(PREFIX_FORM, p.className)}></div>;
+export default function AdminAccountsPageContainer(): ReactElement {
+  return <AdminAccountsPage accounts={dummyAccounts} />;
 }
-
-const dummyAccounts = [
-  {
-    id: '1',
-    name: 'CA Acc one',
-    identifier: '$cashtag',
-    balance: 1000,
-    paymentProvider: PaymentProvider.CASHAPP,
-    isDefault: true,
-  },
-  {
-    id: '2',
-    name: 'CA Acc two',
-    identifier: '$cashtag_two',
-    balance: 10222,
-    paymentProvider: PaymentProvider.CASHAPP,
-    isDefault: false,
-  },
-  {
-    id: '3',
-    name: 'CA Acc three',
-    identifier: '$cashtag_three',
-    balance: 872,
-    paymentProvider: PaymentProvider.CASHAPP,
-    isDefault: false,
-  },
-  {
-    id: '4',
-    name: 'CA Acc four',
-    identifier: '$cashtag_four',
-    balance: 552,
-    paymentProvider: PaymentProvider.CASHAPP,
-    isDefault: false,
-  },
-];
