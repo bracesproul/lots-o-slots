@@ -1,1 +1,1 @@
-export { dummyCashappAccounts } from './cashapp-accounts';
+export {};
