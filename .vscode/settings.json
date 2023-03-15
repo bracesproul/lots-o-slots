@@ -13,6 +13,7 @@
     "Supabase",
     "typeorm",
     "xlarge",
+    "xsmall",
     "Zelle"
   ],
   "scss.lint.unknownAtRules": "ignore"
