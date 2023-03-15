@@ -1,0 +1,7 @@
+fragment BasicUser on UserV2 {
+  id
+  firstName
+  lastName
+  email
+  username
+}

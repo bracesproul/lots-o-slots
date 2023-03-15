@@ -40,4 +40,5 @@ export enum StylePrefix {
   ADMIN_USERS_PAGE = 'admin-users-page',
   ADMIN_ACCOUNTS_PAGE = 'admin-accounts-page',
   ADMIN_PAYMENTS_PAGE = 'admin-payments-page',
+  PROFILE_CARD = 'profile-card',
 }

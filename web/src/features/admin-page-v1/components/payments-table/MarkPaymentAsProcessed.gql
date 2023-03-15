@@ -1,8 +1,0 @@
-mutation MarkPaymentAsProcessed($input: MarkPaymentAsProcessedInput!) {
-  markPaymentAsProcessed(input: $input) {
-    success
-    payment {
-      ...PaymentFragment
-    }
-  }
-}
