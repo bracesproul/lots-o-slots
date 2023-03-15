@@ -33,6 +33,13 @@
     @apply bg-gray-300;
   }
 
+  &.size-xsmall {
+    @apply h-[35px] px-[25px] text-[12px];
+    @apply tablet:h-[45px]
+    tablet:px-[45px]
+    tablet:text-[18px];
+  }
+
   &.size-xlarge {
     @apply h-[60px]
     px-[80px]

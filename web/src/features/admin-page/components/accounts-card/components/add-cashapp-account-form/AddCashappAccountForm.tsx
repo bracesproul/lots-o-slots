@@ -16,6 +16,7 @@ import {
   BitcoinForm,
 } from './components';
 import { StylePrefix } from '@/types/style-prefix';
+import { getStringFromPaymentProvider } from '@/utils';
 
 export type CashAppFormProps = {
   balance: number;
@@ -117,7 +118,9 @@ function AddCashappAccountForm(
     >
       <form className={`${PREFIX}-dialog-form`} onSubmit={p.onSubmit}>
         <Select
-          value={p.accountType}
+          value={getStringFromPaymentProvider(
+            p.accountType || PaymentProvider.PAYPAL
+          )}
           onValueChange={(e) => {
             p.resetForm();
             p.setAccountType(getPaymentProviderFromString(e));

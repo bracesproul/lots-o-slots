@@ -15,3 +15,6 @@ export { PlayNowDialog } from '../features/play-now-dialog-depd';
 export { Badge } from './badge';
 export type { BadgeVariant } from './badge';
 export { Divider } from './divider';
+export { Text } from './text';
+export { DataTable } from './data-table';
+export { Checkbox } from './checkbox';
