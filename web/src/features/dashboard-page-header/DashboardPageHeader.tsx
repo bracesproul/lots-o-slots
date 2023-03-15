@@ -6,7 +6,13 @@ import { useRouter } from 'next/router';
 import { ReactElement } from 'react';
 
 export type AdminPageHeaderProps = {
+  /** The type of page this header is for */
   page: PageType;
+  /**
+   * Whether or not to include the page nav
+   * @default false
+   * */
+  includePageNav?: boolean;
 };
 
 const PREFIX = StylePrefix.ADMIN_PAGE_HEADER;
@@ -26,14 +32,21 @@ const pageName = (page: PageType) => {
       return 'Payments';
     case PageType.ADMIN_ACCOUNTS:
       return 'Accounts';
+    case PageType.USER:
+      return 'User';
     default:
       'Admin';
   }
 };
 
-export default function AdminPageHeader(
+const DEFAULT_PROPS = {
+  includePageNav: false,
+};
+
+export default function DashboardPageHeader(
   props: AdminPageHeaderProps
 ): ReactElement {
+  const p = { ...DEFAULT_PROPS, ...props };
   const router = useRouter();
 
   return (
@@ -42,40 +55,43 @@ export default function AdminPageHeader(
         <span className={'red-span-text'}>{pageName(props.page)}</span>
         <span className={'ml-[16px]'}>Page</span>
       </h1>
-      <div className={`${PREFIX}-nav`}>
-        <Link
-          className={clsx(`${PREFIX}-nav-item`, {
-            'is-selected': router.pathname === ADMIN_PAGE,
-          })}
-          href={ADMIN_PAGE}
-        >
-          /
-        </Link>
-        <Link
-          className={clsx(`${PREFIX}-nav-item`, {
-            'is-selected': router.pathname === ADMIN_USERS_PAGE,
-          })}
-          href={ADMIN_USERS_PAGE}
-        >
-          /users
-        </Link>
-        <Link
-          className={clsx(`${PREFIX}-nav-item`, {
-            'is-selected': router.pathname === ADMIN_ACCOUNTS_PAGE,
-          })}
-          href={ADMIN_ACCOUNTS_PAGE}
-        >
-          /accounts
-        </Link>
-        <Link
-          className={clsx(`${PREFIX}-nav-item`, {
-            'is-selected': router.pathname === ADMIN_PAYMENTS_PAGE,
-          })}
-          href={ADMIN_PAYMENTS_PAGE}
-        >
-          /payments
-        </Link>
-      </div>
+      {p.includePageNav && (
+        <div className={`${PREFIX}-nav`}>
+          <Link
+            className={clsx(`${PREFIX}-nav-item`, {
+              'is-selected': router.pathname === ADMIN_PAGE,
+            })}
+            href={ADMIN_PAGE}
+          >
+            /
+          </Link>
+          <Link
+            className={clsx(`${PREFIX}-nav-item`, {
+              'is-selected': router.pathname === ADMIN_USERS_PAGE,
+            })}
+            href={ADMIN_USERS_PAGE}
+          >
+            /users
+          </Link>
+          <Link
+            className={clsx(`${PREFIX}-nav-item`, {
+              'is-selected': router.pathname === ADMIN_ACCOUNTS_PAGE,
+            })}
+            href={ADMIN_ACCOUNTS_PAGE}
+          >
+            /accounts
+          </Link>
+          <Link
+            className={clsx(`${PREFIX}-nav-item`, {
+              'is-selected': router.pathname === ADMIN_PAYMENTS_PAGE,
+            })}
+            href={ADMIN_PAYMENTS_PAGE}
+          >
+            /payments
+          </Link>
+        </div>
+      )}
+
       <div className={`${PREFIX}-header-actions-wrapper`}>
         <Button
           onPress={async () => await router.push('/')}

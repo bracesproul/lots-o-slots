@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import { StylePrefix } from '@/types/style-prefix';
-import { AdminPageHeader } from '../admin-page-header';
+import { DashboardPageHeader } from '@/features';
 import { PageType, PaymentProvider } from '@/types';
 import { GameType } from '@/generated/graphql';
 import { DataTable, Text, Badge } from '@/components';
@@ -19,7 +19,7 @@ export default function AdminPaymentsPage(
 ): ReactElement {
   return (
     <div className={`${PREFIX}`}>
-      <AdminPageHeader page={PageType.ADMIN_PAYMENTS} />
+      <DashboardPageHeader includePageNav page={PageType.ADMIN_PAYMENTS} />
       <PaymentTable />
     </div>
   );
