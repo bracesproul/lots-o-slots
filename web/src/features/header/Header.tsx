@@ -1,8 +1,8 @@
 import { ReactElement, useState } from 'react';
-import { Button, GenerateAccountDialog, PlayNowDialog } from '@/components';
+import { Button, GenerateAccountDialog } from '@/components';
 import { DialogStage, GameType } from '../play-now-dialog-depd/types';
 import { PaymentProvider } from '@/generated/graphql';
-import { AppStoreButtonsDialog } from '..';
+import { AppStoreButtonsDialog, PlayNowDialog } from '../';
 
 export type HeaderProps = {
   slotsSectionRef: React.RefObject<HTMLDivElement>;

@@ -1,7 +1,6 @@
 import {
   GameSelectionContainer,
   Footer,
-  FaqSection,
   HowToJoinTop,
   HowToJoinLower,
   Header,
@@ -29,9 +28,7 @@ export default function HomePage(): ReactElement {
       <div className="section-three">
         <HowToJoinLower pokerSectionRef={pokerSectionRef} />
       </div>
-      <div className="section-four">
-        <FaqSection />
-      </div>
+      <div className="section-four"></div>
       <div className="">
         <Footer />
       </div>

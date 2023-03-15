@@ -1,11 +1,12 @@
 import { StylePrefix } from '@/types/style-prefix';
 import clsx from 'clsx';
 import { ReactElement, useState } from 'react';
-import { Button, ButtonCard, PlayNowDialog } from '@/components';
+import { Button, ButtonCard } from '@/components';
 import { GameType, PaymentProvider } from '@/generated/graphql';
 import { Mobile, Tablet, Desktop } from '@/utils';
 import { RadioButtons } from '@/features/game-selection/components';
 import { DialogStage } from '@/features/play-now-dialog-depd/types';
+import { PlayNowDialog } from '@/features';
 
 export type DepositBoxV2Props = {
   /** Optional class name for applying styles */

@@ -1,4 +1,4 @@
-import { Button, ButtonCard, CircleButton, PlayNowDialog } from '@/components';
+import { Button, ButtonCard, CircleButton } from '@/components';
 import { GameType, PaymentProvider } from '@/types';
 import { StylePrefix } from '@/types/style-prefix';
 import { ReactElement, useState } from 'react';
@@ -12,6 +12,7 @@ import {
 } from './components';
 import { Mobile, TabletAndAbove } from '@/utils/responsive';
 import { DialogStage } from '@/features/play-now-dialog-depd/types';
+import { PlayNowDialog } from '@/features';
 
 type PaymentOptionsType = {
   icon: JSX.Element;
