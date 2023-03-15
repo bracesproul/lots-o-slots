@@ -35,4 +35,9 @@ export enum StylePrefix {
   DATA_TABLE = 'data-table',
   TEXT_BASE = 'text-base',
   CHECKBOX = 'checkbox',
+  ADMIN_PAGE_V2 = 'admin-page-v2',
+  ADMIN_PAGE_HEADER = 'admin-page-header',
+  ADMIN_USERS_PAGE = 'admin-users-page',
+  ADMIN_ACCOUNTS_PAGE = 'admin-accounts-page',
+  ADMIN_PAYMENTS_PAGE = 'admin-payments-page',
 }

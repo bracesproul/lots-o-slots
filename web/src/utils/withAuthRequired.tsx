@@ -34,6 +34,13 @@ type IncomingGetServerSideProps = GetServerSideProps<{
  * Then on response the server should also set cookies with the new refresh token
  */
 
+const ADMIN_PAGES = [
+  PageType.ADMIN,
+  PageType.ADMIN_USERS,
+  PageType.ADMIN_PAYMENTS,
+  PageType.ADMIN_ACCOUNTS,
+];
+
 export const withAuthRequired =
   (
     incomingGetServerSideProps: IncomingGetServerSideProps | null = null,
@@ -130,7 +137,7 @@ export const withAuthRequired =
 
     // If admin is already logged in, redirect to /admin
     if (user.role === UserRole.ADMIN) {
-      if (pageType === PageType.ADMIN) {
+      if (ADMIN_PAGES.includes(pageType)) {
         return {
           props: {
             initialApolloState,
