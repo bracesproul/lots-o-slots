@@ -1,13 +1,23 @@
 import { ReactElement } from 'react';
 import { SvgContentProps } from '../types';
+
+type EditSvgProps = SvgContentProps & {
+  /**
+   * Fill color of the svg
+   * @default #FFFFFF
+   */
+  fill?: string;
+};
+
 // https://www.svgrepo.com/svg/36160/edit-button?edit=true
-export default function EditSvg(props: SvgContentProps): ReactElement {
+
+export default function EditSvg(props: EditSvgProps): ReactElement {
   let { height, width } = props;
   if (!height) height = 20;
   if (!width) width = 20;
   return (
     <svg
-      fill="#FFFFFF"
+      fill={props.fill || '#FFFFFF'}
       version="1.1"
       id="Capa_1"
       xmlns="http://www.w3.org/2000/svg"

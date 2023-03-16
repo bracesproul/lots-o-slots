@@ -1,0 +1,10 @@
+mutation UpdateUserAsAdmin($input: UpdateUserAsAdminInput!) {
+  updateUserAsAdmin(input: $input) {
+    user {
+      ...BasicUser
+      role
+      createdAt
+      password
+    }
+  }
+}

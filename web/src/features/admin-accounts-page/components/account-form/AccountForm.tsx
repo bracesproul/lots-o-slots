@@ -188,9 +188,10 @@ export default function AccountFormContainer(
         variables: {
           input: {
             id: accountId,
-            name,
-            identifier,
-            balance,
+            name: name === '' ? initialFormValues.name : name,
+            identifier:
+              identifier === '' ? initialFormValues.identifier : identifier,
+            balance: balance === 0 ? initialFormValues.balance : balance,
             // Type checking thinks type can be undefined,
             // but this is not the case since we check that either
             // the initial value or state value is defined above.

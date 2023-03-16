@@ -7,7 +7,8 @@ import {
 import { StylePrefix, PaymentProvider } from '@/types';
 import clsx from 'clsx';
 import { ReactElement, useState } from 'react';
-import { ConfirmDeleteDialog } from './components';
+import { ConfirmDeleteDialog } from '@/features';
+import { useDeleteAccountMutation } from '@/generated/graphql';
 
 const PREFIX = StylePrefix.ACCOUNT_CARD;
 
@@ -43,6 +44,7 @@ const DEFAULT_PROPS = {
 export default function AccountCard(props: AccountCardProps): ReactElement {
   const p = { ...DEFAULT_PROPS, ...props };
   const [open, setOpen] = useState(false);
+  const [deleteAccount] = useDeleteAccountMutation();
 
   return (
     <div className={clsx(PREFIX, p.className)}>
@@ -85,7 +87,21 @@ export default function AccountCard(props: AccountCardProps): ReactElement {
           </div>
         )}
       </div>
-      <ConfirmDeleteDialog open={open} setOpen={setOpen} accountId={p.id} />
+      <ConfirmDeleteDialog
+        open={open}
+        setOpen={setOpen}
+        name="account"
+        onSubmit={async (e) => {
+          e.preventDefault();
+          await deleteAccount({
+            variables: {
+              id: p.id,
+            },
+            refetchQueries: ['GetAllAccounts'],
+          });
+          setOpen(false);
+        }}
+      />
     </div>
   );
 }

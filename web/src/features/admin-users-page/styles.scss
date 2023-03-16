@@ -4,3 +4,21 @@
   @apply flex flex-col gap-[24px];
   font-family: 'Inter', sans-serif;
 }
+
+
+
+.admin-users-page-content {
+  @apply flex flex-row justify-between;
+
+  .admin-users-page-table-wrapper {
+    @apply flex items-start justify-start ml-[36px] w-[60%];
+  }
+
+  .admin-users-page-table-actions-wrapper {
+    @apply flex items-center justify-center;
+  }
+
+  .admin-users-page-form-wrapper {
+    @apply flex items-center justify-end mr-[36px] w-[40%];
+  }
+}

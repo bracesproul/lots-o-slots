@@ -156,6 +156,27 @@ export class UpdateInput {
   data?: UserData;
 }
 
+@InputType({
+  description: 'Input type for updating a new user as admin',
+})
+export class UpdateUserAsAdminInput {
+  @Field(() => ID)
+  id!: string;
+
+  @Field(() => String, {
+    nullable: true,
+  })
+  email?: string;
+
+  @Field(() => String, {
+    nullable: true,
+  })
+  password?: string;
+
+  @Field(() => UserData)
+  data!: UserData;
+}
+
 @ObjectType({
   description: 'Input type for updating a user',
 })
@@ -191,6 +212,39 @@ export class CheckSessionPayload {
   description: 'Response type for logging out a user',
 })
 export class LogoutPayload {
+  @Field(() => Boolean)
+  success!: boolean;
+}
+
+@InputType({
+  description: 'Input type for creating a user',
+})
+export class CreateUserInput {
+  @Field(() => String)
+  email!: string;
+
+  @Field(() => String)
+  password!: string;
+
+  @Field(() => String)
+  firstName!: string;
+
+  @Field(() => String)
+  lastName!: string;
+
+  @Field(() => UserRole)
+  role!: UserRole;
+
+  @Field(() => String, {
+    nullable: true,
+  })
+  username?: string;
+}
+
+@ObjectType({
+  description: 'Response type for deleting a user',
+})
+export class DeleteUserPayload {
   @Field(() => Boolean)
   success!: boolean;
 }
