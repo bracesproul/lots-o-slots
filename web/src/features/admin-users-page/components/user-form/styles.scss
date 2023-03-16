@@ -1,0 +1,49 @@
+.user-form {
+  @apply flex flex-col w-[80%] bg-white rounded-lg text-black;
+  @apply p-[16px] h-[450px];
+}
+
+.user-form-instructions {
+  @apply flex flex-col gap-[32px] mb-[18px];
+
+  .user-form-heading {
+    @apply text-center font-bold tablet:text-lg;
+  }
+}
+
+.user-form-fields {
+  @apply flex flex-col gap-[16px] items-center justify-center;
+}
+
+.user-form-submit-button {
+  @apply w-full;
+}
+
+.user-form-input-label {
+  @apply text-gray-800 text-[12px] font-semibold;
+}
+
+.user-form-normal-input {
+  @apply w-[350px];
+  @apply border-b-[1px] border-gray-500 rounded-none;
+}
+
+.user-form-account-created {
+  @apply flex flex-col gap-[16px] items-center justify-center;
+}
+
+.user-form-account-created-heading {
+  @apply text-center font-bold tablet:text-lg;
+}
+
+.user-form-account-info {
+  @apply flex flex-row gap-[4px];
+
+  .user-form-account-info-label {
+    @apply text-gray-800 text-[16px] font-semibold;
+  }
+
+  .user-form-account-info-value {
+    @apply text-gray-800 text-[16px];
+  }
+}

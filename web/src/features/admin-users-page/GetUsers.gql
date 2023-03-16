@@ -1,0 +1,7 @@
+query GetUsers {
+  getAllUsers {
+    ...BasicUser
+    role
+    createdAt
+  }
+}

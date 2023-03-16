@@ -23,6 +23,7 @@ import {
   SUPABASE_REFRESH_TOKEN_COOKIE_KEY_NO_LS,
   SUPABASE_USER_ID_COOKIE_KEY,
 } from '@/config/auth';
+import { UserRole } from '@/entities/UserV2/types';
 
 @EntityRepository(UserV2)
 export default class UserV2Repository extends AbstractRepository<UserV2> {
@@ -48,7 +49,8 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
 
   async signUp(
     input: CreateUserInput,
-    res: Response
+    res: Response,
+    isAdminCreating?: boolean
   ): Promise<CreateUserResponse> {
     const { email, password, data } = input;
     const { firstName, lastName } = data;
@@ -79,7 +81,9 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
       })
       .save();
 
-    await getCustomRepository(UserV2LoginLogRepository).updateLog(user.id);
+    if (!isAdminCreating) {
+      await getCustomRepository(UserV2LoginLogRepository).updateLog(user.id);
+    }
 
     // Update refresh token in DB
     await this.repository
@@ -89,18 +93,20 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
       })
       .save();
 
-    // Set refresh token in cookie
-    res.setHeader(
-      'Set-Cookie',
-      cookie.serialize(
-        SUPABASE_REFRESH_TOKEN_COOKIE_KEY_NO_LS,
-        supabaseUser.session.refresh_token,
-        {
-          path: '/',
-          sameSite: 'strict',
-        }
-      )
-    );
+    if (!isAdminCreating) {
+      // Set refresh token in cookie
+      res.setHeader(
+        'Set-Cookie',
+        cookie.serialize(
+          SUPABASE_REFRESH_TOKEN_COOKIE_KEY_NO_LS,
+          supabaseUser.session.refresh_token,
+          {
+            path: '/',
+            sameSite: 'strict',
+          }
+        )
+      );
+    }
 
     await user.reload();
 
@@ -155,7 +161,7 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
     user: UserV2
   ): Promise<UpdateUserResponse> {
     await new SupabaseAuth().update(input);
-    const updatedUser = await this.repository.update(user.id, {
+    await this.repository.update(user.id, {
       firstName: input.data?.firstName,
       lastName: input.data?.lastName,
       username: input.data?.username,
@@ -164,8 +170,6 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
       password: input.password,
     });
     await user.reload();
-    console.log('updatedUser', updatedUser);
-
     return {
       user,
     };

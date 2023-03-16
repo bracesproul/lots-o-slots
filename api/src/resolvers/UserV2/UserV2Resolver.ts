@@ -11,6 +11,8 @@ import {
   UpdatePayload,
   CheckSessionPayload,
   LogoutPayload,
+  CreateUserInput,
+  UpdateUserAsAdminInput,
 } from './types';
 import { ContextType } from '@/types';
 import { GraphQLError } from 'graphql';
@@ -24,7 +26,6 @@ export class UserV2Resolver {
 
   @Query(() => UserV2, { nullable: false })
   async getUserById(
-    @Ctx() { user }: ContextType,
     @Arg('id', { nullable: false }) id: string
   ): Promise<UserV2> {
     return getCustomRepository(UserV2Repository).getById(id);
@@ -121,6 +122,57 @@ export class UserV2Resolver {
     await getCustomRepository(UserV2Repository).logout(user, res);
 
     return {
+      success: true,
+    };
+  }
+
+  @Mutation(() => UserV2, { nullable: false })
+  async createUser(
+    @Ctx() { res }: ContextType,
+    @Arg('input', { nullable: false }) input: CreateUserInput
+  ): Promise<UserV2> {
+    const { user } = await getCustomRepository(UserV2Repository).signUp(
+      {
+        email: input.email,
+        password: input.password,
+        data: {
+          firstName: input.firstName,
+          lastName: input.lastName,
+          username: input.username,
+          role: input.role,
+        },
+      },
+      res,
+      true
+    );
+
+    return user;
+  }
+
+  @Mutation(() => UpdatePayload, { nullable: false })
+  async updateUserAsAdmin(
+    @Arg('input', { nullable: false }) input: UpdateUserAsAdminInput
+  ): Promise<UpdatePayload> {
+    const user = await getCustomRepository(UserV2Repository).getById(input.id);
+    const { user: updatedUser } = await getCustomRepository(
+      UserV2Repository
+    ).update(
+      {
+        supabaseId: user.supabaseId,
+        email: input.email,
+        password: input.password,
+        data: {
+          firstName: input.data.firstName,
+          lastName: input.data.lastName,
+          username: input.data.username,
+          role: input.data.role,
+        },
+      },
+      user
+    );
+
+    return {
+      user: updatedUser,
       success: true,
     };
   }
