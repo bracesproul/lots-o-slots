@@ -63,7 +63,6 @@ export default class SupabaseAuth {
     } = await supabaseAdminClient.auth.admin.getUserById(supabaseId);
 
     if (!requestedUser) {
-      console.log('getUserError', getUserError);
       return UserNotFoundError();
     }
     if (requestedUser && getUserError) {
@@ -76,6 +75,7 @@ export default class SupabaseAuth {
     } = await supabaseAdminClient.auth.admin.updateUserById(supabaseId, {
       ...requestedUser,
       ...input,
+      email_confirm: true,
     });
 
     if (updateUserError) {
@@ -94,6 +94,7 @@ export default class SupabaseAuth {
   async delete(id: string): Promise<void> {
     const { data, error } = await supabaseAdminClient.auth.admin.deleteUser(id);
     if (error) {
+      console.log('error', error);
       return AuthError('Error deleting user in Supabase.');
     }
   }

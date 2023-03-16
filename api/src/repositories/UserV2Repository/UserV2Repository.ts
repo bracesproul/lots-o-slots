@@ -176,8 +176,10 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
   }
 
   async delete(id: string): Promise<boolean> {
-    // todo: implement
-    return false;
+    const user = await this.getById(id);
+    await new SupabaseAuth().delete(user.supabaseId);
+    await this.repository.delete(id);
+    return true;
   }
 
   async refreshSession(

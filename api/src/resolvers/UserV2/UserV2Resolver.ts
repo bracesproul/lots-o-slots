@@ -13,6 +13,7 @@ import {
   LogoutPayload,
   CreateUserInput,
   UpdateUserAsAdminInput,
+  DeleteUserPayload,
 } from './types';
 import { ContextType } from '@/types';
 import { GraphQLError } from 'graphql';
@@ -173,6 +174,16 @@ export class UserV2Resolver {
 
     return {
       user: updatedUser,
+      success: true,
+    };
+  }
+
+  @Mutation(() => DeleteUserPayload, { nullable: false })
+  async deleteUser(
+    @Arg('id', { nullable: false }) id: string
+  ): Promise<DeleteUserPayload> {
+    await getCustomRepository(UserV2Repository).delete(id);
+    return {
       success: true,
     };
   }

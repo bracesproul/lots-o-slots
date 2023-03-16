@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react';
+import { FormEvent, ReactElement, useState } from 'react';
 import { StylePrefix } from '@/types/style-prefix';
 import { DashboardPageHeader, ConfirmDeleteDialog } from '@/features';
 import { PageType } from '@/types';
@@ -7,7 +7,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { UserRole } from '@/generated/graphql';
 import { format } from 'date-fns';
 import { EditSvg, TrashCanSvg } from '@/assets/svgs';
-import { useGetUsersQuery } from '@/generated/graphql';
+import { useGetUsersQuery, useDeleteUserMutation } from '@/generated/graphql';
 import { getUserFromUserQuery } from './utils';
 import { UserForm } from './components';
 import useEditUserQueryParams from './useEditUserQueryParams';
@@ -22,7 +22,7 @@ export type AdminUsersPageProps = {
   /** Handler for setting the confirm delete modal to open */
   setOpen: (open: boolean) => void;
   /** Event handler for deleting the users account */
-  handleDeleteAccount: () => void;
+  handleDeleteAccount: (e: FormEvent<HTMLFormElement>) => void;
 };
 
 const PREFIX = StylePrefix.ADMIN_USERS_PAGE;
@@ -91,8 +91,9 @@ export default function AdminUsersPageContainer(): ReactElement {
   const { data, loading } = useGetUsersQuery();
   const users =
     data?.getAllUsers.map((user) => getUserFromUserQuery(user)) ?? [];
-  const { updateUserId } = useEditUserQueryParams();
+  const { updateUserId, removeUserId, userId } = useEditUserQueryParams();
   const [open, setOpen] = useState(false);
+  const [deleteUser] = useDeleteUserMutation();
 
   const columns: ColumnDef<User>[] = [
     {
@@ -171,7 +172,12 @@ export default function AdminUsersPageContainer(): ReactElement {
             >
               <EditSvg fill="#000000" />
             </InteractableComponent>
-            <InteractableComponent onPress={() => setOpen(true)}>
+            <InteractableComponent
+              onPress={() => {
+                setOpen(true);
+                updateUserId(row.original.id);
+              }}
+            >
               <TrashCanSvg />
             </InteractableComponent>
           </div>
@@ -180,8 +186,19 @@ export default function AdminUsersPageContainer(): ReactElement {
     },
   ];
 
-  const handleDeleteAccount = () => {
-    // todo hookup
+  const handleDeleteAccount = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!userId) {
+      setOpen(false);
+      return;
+    }
+    await deleteUser({
+      variables: {
+        id: userId,
+      },
+    });
+    setOpen(false);
+    removeUserId();
   };
 
   return (

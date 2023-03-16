@@ -240,3 +240,11 @@ export class CreateUserInput {
   })
   username?: string;
 }
+
+@ObjectType({
+  description: 'Response type for deleting a user',
+})
+export class DeleteUserPayload {
+  @Field(() => Boolean)
+  success!: boolean;
+}

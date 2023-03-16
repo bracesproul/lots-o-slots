@@ -25,7 +25,7 @@ export default function ConfirmDeleteDialog(
 ): ReactElement {
   const p = props;
   const [deleteMessage, setDeleteMessage] = useState('');
-  const isSubmitDisabled = deleteMessage !== 'delete account';
+  const isSubmitDisabled = deleteMessage !== `delete ${p.name}`;
 
   return (
     <Dialog
