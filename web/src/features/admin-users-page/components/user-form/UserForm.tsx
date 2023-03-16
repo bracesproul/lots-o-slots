@@ -129,7 +129,7 @@ function UserForm(props: UserFormProps): ReactElement {
               }
               onCheckedChange={(e: any) => {
                 if (typeof e === 'boolean') {
-                  setIsAdmin(e);
+                  setIsAdmin(!isAdmin);
                 }
               }}
               className={`${PREFIX}-checkbox`}
@@ -233,13 +233,16 @@ export default function UserFormContainer(
         variables: {
           input: {
             id: userId,
-            email,
+            email: email === '' ? initialFormValues?.email : email,
             password: generatedPassword,
             data: {
               role: isAdmin ? UserRole.ADMIN : UserRole.USER,
-              firstName,
-              lastName,
-              username,
+              firstName:
+                firstName === '' ? initialFormValues?.firstName : firstName,
+              lastName:
+                lastName === '' ? initialFormValues?.lastName : lastName,
+              username:
+                username === '' ? initialFormValues?.username : username,
             },
           },
         },
