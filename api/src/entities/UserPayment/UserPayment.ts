@@ -1,6 +1,6 @@
 import { Field, ObjectType } from 'type-graphql';
-import { Column, Entity, ManyToOne } from 'typeorm';
-import { MainEntity, User } from '@/entities';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { MainEntity, User, UserV2 } from '@/entities';
 import { GameType, PaymentProvider } from '../Payment/Payment';
 
 @Entity({ name: 'user_payment' })
@@ -48,4 +48,16 @@ export default class UserPayment extends MainEntity {
   })
   @Column({ type: 'enum', nullable: false, enum: GameType })
   gameType!: GameType;
+
+  @ManyToOne(() => UserV2, {
+    nullable: true,
+  })
+  @JoinColumn({ name: 'userV2Id' })
+  userV2?: UserV2;
+
+  @Field(() => String, {
+    nullable: true,
+  })
+  @Column({ type: 'uuid', nullable: true })
+  userV2Id?: string;
 }

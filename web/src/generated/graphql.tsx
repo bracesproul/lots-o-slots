@@ -130,6 +130,22 @@ export type CreateUserPaymentInput = {
   userId?: InputMaybe<Scalars['String']>;
 };
 
+/** Input type for creating a new withdrawal request */
+export type CreateWithdrawalRequestInput = {
+  amount: Scalars['Float'];
+  payoutAddress: Scalars['String'];
+  payoutMethod: PaymentProvider;
+  status?: InputMaybe<WithdrawalRequestStatus>;
+  userId: Scalars['ID'];
+};
+
+/** Response type for creating a new withdrawal request */
+export type CreateWithdrawalRequestPayload = {
+  __typename?: 'CreateWithdrawalRequestPayload';
+  success: Scalars['Boolean'];
+  withdrawalRequest: WithdrawalRequest;
+};
+
 /** The created payment object. */
 export type CreatedPaymentResponse = {
   __typename?: 'CreatedPaymentResponse';
@@ -148,6 +164,12 @@ export type DeleteAccountPayload = {
 /** Response type for deleting a user */
 export type DeleteUserPayload = {
   __typename?: 'DeleteUserPayload';
+  success: Scalars['Boolean'];
+};
+
+/** Response type for deleting a withdrawal request */
+export type DeleteWithdrawalRequestPayload = {
+  __typename?: 'DeleteWithdrawalRequestPayload';
   success: Scalars['Boolean'];
 };
 
@@ -314,8 +336,10 @@ export type Mutation = {
   createPayment: CreatedPaymentResponse;
   createUser: UserV2;
   createUserPayment: UserPayment;
+  createWithdrawalRequest: CreateWithdrawalRequestPayload;
   deleteAccount: DeleteAccountPayload;
   deleteUser: DeleteUserPayload;
+  deleteWithdrawalRequest: DeleteWithdrawalRequestPayload;
   login: LoginPayload;
   logout: LogoutPayload;
   markPaymentAsProcessed: MarkPaymentAsProcessedResponse;
@@ -323,8 +347,11 @@ export type Mutation = {
   signUp: SignUpPayload;
   switchDefaultAccount: Account;
   updateAccount: Account;
+  updatePaymentStatus: UpdatePaymentStatusPayload;
   updateUser: UpdatePayload;
   updateUserAsAdmin: UpdatePayload;
+  updateUserPaymentStatus: UpdateUserPaymentStatusPayload;
+  updateWithdrawalRequestStatus: UpdateWithdrawalRequestStatusPayload;
 };
 
 
@@ -358,12 +385,22 @@ export type MutationCreateUserPaymentArgs = {
 };
 
 
+export type MutationCreateWithdrawalRequestArgs = {
+  input: CreateWithdrawalRequestInput;
+};
+
+
 export type MutationDeleteAccountArgs = {
   id: Scalars['String'];
 };
 
 
 export type MutationDeleteUserArgs = {
+  id: Scalars['String'];
+};
+
+
+export type MutationDeleteWithdrawalRequestArgs = {
   id: Scalars['String'];
 };
 
@@ -398,6 +435,11 @@ export type MutationUpdateAccountArgs = {
 };
 
 
+export type MutationUpdatePaymentStatusArgs = {
+  input: UpdatePaymentStatusInput;
+};
+
+
 export type MutationUpdateUserArgs = {
   input: UpdateInput;
 };
@@ -405,6 +447,16 @@ export type MutationUpdateUserArgs = {
 
 export type MutationUpdateUserAsAdminArgs = {
   input: UpdateUserAsAdminInput;
+};
+
+
+export type MutationUpdateUserPaymentStatusArgs = {
+  input: UpdateUserPaymentStatusInput;
+};
+
+
+export type MutationUpdateWithdrawalRequestStatusArgs = {
+  input: UpdateWithdrawalRequestStatusInput;
 };
 
 /** ID */
@@ -450,6 +502,7 @@ export type Query = {
   getAllAccounts: Array<Account>;
   getAllPayments: Array<Payment>;
   getAllUsers: Array<UserV2>;
+  getAllWithdrawalRequests: Array<WithdrawalRequest>;
   getEmailById: GetEmailByIdPayload;
   getRecentUpdate: GetRecentEmailLogUpdate;
   getSupabaseSignedUrl: GetSupabaseSignedUrlPayload;
@@ -576,12 +629,51 @@ export type UpdatePayload = {
   user: UserV2;
 };
 
+/** Input type for updating a user payment status. */
+export type UpdatePaymentStatusInput = {
+  id: Scalars['ID'];
+  processed: Scalars['Boolean'];
+};
+
+/** Payload type for updating a user payment status. */
+export type UpdatePaymentStatusPayload = {
+  __typename?: 'UpdatePaymentStatusPayload';
+  payment: Payment;
+  success: Scalars['Boolean'];
+};
+
 /** Input type for updating a new user as admin */
 export type UpdateUserAsAdminInput = {
   data: UserData;
   email?: InputMaybe<Scalars['String']>;
   id: Scalars['ID'];
   password?: InputMaybe<Scalars['String']>;
+};
+
+/** Input type for updating a user payment status. */
+export type UpdateUserPaymentStatusInput = {
+  id: Scalars['ID'];
+  processed: Scalars['Boolean'];
+};
+
+/** Payload type for updating a user payment status. */
+export type UpdateUserPaymentStatusPayload = {
+  __typename?: 'UpdateUserPaymentStatusPayload';
+  success: Scalars['Boolean'];
+  userPayment: UserPayment;
+};
+
+/** Input type for updating a withdrawal requests status */
+export type UpdateWithdrawalRequestStatusInput = {
+  id: Scalars['ID'];
+  status: WithdrawalRequestStatus;
+};
+
+/** Response type for creating a new user */
+export type UpdateWithdrawalRequestStatusPayload = {
+  __typename?: 'UpdateWithdrawalRequestStatusPayload';
+  success: Scalars['Boolean'];
+  withdrawalRequest: WithdrawalRequest;
 };
 
 /** Additional user data */
@@ -603,7 +695,9 @@ export type UserPayment = MainEntity & Node & {
   paymentProvider: PaymentProvider;
   processed: Scalars['Boolean'];
   updatedAt?: Maybe<Scalars['DateTime']>;
+  user?: Maybe<UserV2>;
   userId?: Maybe<Scalars['String']>;
+  userV2Id?: Maybe<Scalars['String']>;
 };
 
 export enum UserRole {
@@ -624,8 +718,37 @@ export type UserV2 = MainEntity & Node & {
   role: UserRole;
   supabaseId: Scalars['String'];
   updatedAt?: Maybe<Scalars['DateTime']>;
+  userLogins?: Maybe<Array<UserV2LoginLog>>;
   username?: Maybe<Scalars['String']>;
 };
+
+export type UserV2LoginLog = MainEntity & Node & {
+  __typename?: 'UserV2LoginLog';
+  createdAt: Scalars['DateTime'];
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  id: Scalars['ID'];
+  loginDate: Scalars['DateTime'];
+  updatedAt?: Maybe<Scalars['DateTime']>;
+};
+
+export type WithdrawalRequest = MainEntity & Node & {
+  __typename?: 'WithdrawalRequest';
+  amount: Scalars['Float'];
+  createdAt: Scalars['DateTime'];
+  deletedAt?: Maybe<Scalars['DateTime']>;
+  id: Scalars['ID'];
+  payoutAddress: Scalars['String'];
+  payoutMethod: PaymentProvider;
+  status: WithdrawalRequestStatus;
+  updatedAt?: Maybe<Scalars['DateTime']>;
+  userId: Scalars['ID'];
+};
+
+export enum WithdrawalRequestStatus {
+  APPROVED = 'APPROVED',
+  PENDING = 'PENDING',
+  REJECTED = 'REJECTED'
+}
 
 export type CreateUserMutationVariables = Exact<{
   input: CreateUserInput;
@@ -661,6 +784,34 @@ export type UpdateAccountMutationVariables = Exact<{
 
 
 export type UpdateAccountMutation = { __typename?: 'Mutation', updateAccount: { __typename?: 'Account', id: string, email: string, balance: number, type: PaymentProvider, defaultAccount?: boolean | null, cashtag?: string | null, bitcoinAddress?: string | null, ethereumAddress?: string | null, name?: string | null } };
+
+export type GetProcessedPaymentsQueryVariables = Exact<{
+  input?: InputMaybe<GetPaymentsInput>;
+}>;
+
+
+export type GetProcessedPaymentsQuery = { __typename?: 'Query', getAllPayments: Array<{ __typename?: 'Payment', createdAt: string, id: string, userId: string, amount: number, processed: boolean, emailId: string, provider: PaymentProvider, senderName: string, transactionId?: string | null, paymentType: PaymentType }> };
+
+export type GetPendingPaymentsQueryVariables = Exact<{
+  input?: InputMaybe<GetPaymentsInput>;
+}>;
+
+
+export type GetPendingPaymentsQuery = { __typename?: 'Query', getAllPayments: Array<{ __typename?: 'Payment', createdAt: string, id: string, userId: string, amount: number, processed: boolean, emailId: string, provider: PaymentProvider, senderName: string, transactionId?: string | null, paymentType: PaymentType }> };
+
+export type GetProcessedUserPaymentsQueryVariables = Exact<{
+  input?: InputMaybe<GetUserPaymentsInput>;
+}>;
+
+
+export type GetProcessedUserPaymentsQuery = { __typename?: 'Query', getUserPayments: Array<{ __typename?: 'UserPayment', createdAt: string, id: string, paymentIdentifier: string, paymentProvider: PaymentProvider, amount: number, processed: boolean, gameType: GameType, user?: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, username?: string | null } | null }> };
+
+export type GetPendingUserPaymentsQueryVariables = Exact<{
+  input?: InputMaybe<GetUserPaymentsInput>;
+}>;
+
+
+export type GetPendingUserPaymentsQuery = { __typename?: 'Query', getUserPayments: Array<{ __typename?: 'UserPayment', createdAt: string, id: string, paymentIdentifier: string, paymentProvider: PaymentProvider, amount: number, processed: boolean, gameType: GameType, user?: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, username?: string | null } | null }> };
 
 export type DeleteUserMutationVariables = Exact<{
   id: Scalars['String'];
@@ -748,6 +899,8 @@ export type PaymentFragmentFragment = { __typename?: 'Payment', id: string, user
 
 export type UserFragment = { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password: string, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string };
 
+export type UserPaymentFragmentFragment = { __typename?: 'UserPayment', id: string, paymentIdentifier: string, paymentProvider: PaymentProvider, amount: number, processed: boolean, gameType: GameType, user?: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, username?: string | null } | null };
+
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -804,6 +957,22 @@ export const UserFragmentDoc = gql`
   role
   refreshToken
   supabaseId
+}
+    `;
+export const UserPaymentFragmentFragmentDoc = gql`
+    fragment UserPaymentFragment on UserPayment {
+  id
+  paymentIdentifier
+  paymentProvider
+  amount
+  processed
+  gameType
+  user {
+    id
+    firstName
+    lastName
+    username
+  }
 }
     `;
 export const CreateUserDocument = gql`
@@ -977,6 +1146,150 @@ export function useUpdateAccountMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateAccountMutationHookResult = ReturnType<typeof useUpdateAccountMutation>;
 export type UpdateAccountMutationResult = Apollo.MutationResult<UpdateAccountMutation>;
 export type UpdateAccountMutationOptions = Apollo.BaseMutationOptions<UpdateAccountMutation, UpdateAccountMutationVariables>;
+export const GetProcessedPaymentsDocument = gql`
+    query GetProcessedPayments($input: GetPaymentsInput = {processed: true}) {
+  getAllPayments(input: $input) {
+    ...PaymentFragment
+    createdAt
+  }
+}
+    ${PaymentFragmentFragmentDoc}`;
+
+/**
+ * __useGetProcessedPaymentsQuery__
+ *
+ * To run a query within a React component, call `useGetProcessedPaymentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProcessedPaymentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProcessedPaymentsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetProcessedPaymentsQuery(baseOptions?: Apollo.QueryHookOptions<GetProcessedPaymentsQuery, GetProcessedPaymentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProcessedPaymentsQuery, GetProcessedPaymentsQueryVariables>(GetProcessedPaymentsDocument, options);
+      }
+export function useGetProcessedPaymentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProcessedPaymentsQuery, GetProcessedPaymentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProcessedPaymentsQuery, GetProcessedPaymentsQueryVariables>(GetProcessedPaymentsDocument, options);
+        }
+export type GetProcessedPaymentsQueryHookResult = ReturnType<typeof useGetProcessedPaymentsQuery>;
+export type GetProcessedPaymentsLazyQueryHookResult = ReturnType<typeof useGetProcessedPaymentsLazyQuery>;
+export type GetProcessedPaymentsQueryResult = Apollo.QueryResult<GetProcessedPaymentsQuery, GetProcessedPaymentsQueryVariables>;
+export const GetPendingPaymentsDocument = gql`
+    query GetPendingPayments($input: GetPaymentsInput = {processed: false}) {
+  getAllPayments(input: $input) {
+    ...PaymentFragment
+    createdAt
+  }
+}
+    ${PaymentFragmentFragmentDoc}`;
+
+/**
+ * __useGetPendingPaymentsQuery__
+ *
+ * To run a query within a React component, call `useGetPendingPaymentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPendingPaymentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPendingPaymentsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetPendingPaymentsQuery(baseOptions?: Apollo.QueryHookOptions<GetPendingPaymentsQuery, GetPendingPaymentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPendingPaymentsQuery, GetPendingPaymentsQueryVariables>(GetPendingPaymentsDocument, options);
+      }
+export function useGetPendingPaymentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPendingPaymentsQuery, GetPendingPaymentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPendingPaymentsQuery, GetPendingPaymentsQueryVariables>(GetPendingPaymentsDocument, options);
+        }
+export type GetPendingPaymentsQueryHookResult = ReturnType<typeof useGetPendingPaymentsQuery>;
+export type GetPendingPaymentsLazyQueryHookResult = ReturnType<typeof useGetPendingPaymentsLazyQuery>;
+export type GetPendingPaymentsQueryResult = Apollo.QueryResult<GetPendingPaymentsQuery, GetPendingPaymentsQueryVariables>;
+export const GetProcessedUserPaymentsDocument = gql`
+    query GetProcessedUserPayments($input: GetUserPaymentsInput = {processed: true}) {
+  getUserPayments(input: $input) {
+    ...UserPaymentFragment
+    createdAt
+  }
+}
+    ${UserPaymentFragmentFragmentDoc}`;
+
+/**
+ * __useGetProcessedUserPaymentsQuery__
+ *
+ * To run a query within a React component, call `useGetProcessedUserPaymentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProcessedUserPaymentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProcessedUserPaymentsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetProcessedUserPaymentsQuery(baseOptions?: Apollo.QueryHookOptions<GetProcessedUserPaymentsQuery, GetProcessedUserPaymentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProcessedUserPaymentsQuery, GetProcessedUserPaymentsQueryVariables>(GetProcessedUserPaymentsDocument, options);
+      }
+export function useGetProcessedUserPaymentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProcessedUserPaymentsQuery, GetProcessedUserPaymentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProcessedUserPaymentsQuery, GetProcessedUserPaymentsQueryVariables>(GetProcessedUserPaymentsDocument, options);
+        }
+export type GetProcessedUserPaymentsQueryHookResult = ReturnType<typeof useGetProcessedUserPaymentsQuery>;
+export type GetProcessedUserPaymentsLazyQueryHookResult = ReturnType<typeof useGetProcessedUserPaymentsLazyQuery>;
+export type GetProcessedUserPaymentsQueryResult = Apollo.QueryResult<GetProcessedUserPaymentsQuery, GetProcessedUserPaymentsQueryVariables>;
+export const GetPendingUserPaymentsDocument = gql`
+    query GetPendingUserPayments($input: GetUserPaymentsInput = {processed: false}) {
+  getUserPayments(input: $input) {
+    ...UserPaymentFragment
+    createdAt
+  }
+}
+    ${UserPaymentFragmentFragmentDoc}`;
+
+/**
+ * __useGetPendingUserPaymentsQuery__
+ *
+ * To run a query within a React component, call `useGetPendingUserPaymentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPendingUserPaymentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPendingUserPaymentsQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetPendingUserPaymentsQuery(baseOptions?: Apollo.QueryHookOptions<GetPendingUserPaymentsQuery, GetPendingUserPaymentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPendingUserPaymentsQuery, GetPendingUserPaymentsQueryVariables>(GetPendingUserPaymentsDocument, options);
+      }
+export function useGetPendingUserPaymentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPendingUserPaymentsQuery, GetPendingUserPaymentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPendingUserPaymentsQuery, GetPendingUserPaymentsQueryVariables>(GetPendingUserPaymentsDocument, options);
+        }
+export type GetPendingUserPaymentsQueryHookResult = ReturnType<typeof useGetPendingUserPaymentsQuery>;
+export type GetPendingUserPaymentsLazyQueryHookResult = ReturnType<typeof useGetPendingUserPaymentsLazyQuery>;
+export type GetPendingUserPaymentsQueryResult = Apollo.QueryResult<GetPendingUserPaymentsQuery, GetPendingUserPaymentsQueryVariables>;
 export const DeleteUserDocument = gql`
     mutation DeleteUser($id: String!) {
   deleteUser(id: $id) {

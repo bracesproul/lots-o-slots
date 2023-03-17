@@ -19,6 +19,10 @@ export default class UserPaymentRepository extends AbstractRepository<UserPaymen
     return query.addOrderBy('"updatedAt"', 'DESC').getMany();
   }
 
+  async findById(id: string): Promise<UserPayment> {
+    return this.repository.findOneOrFail(id);
+  }
+
   async create({
     paymentIdentifier,
     paymentProvider,
@@ -49,6 +53,12 @@ export default class UserPaymentRepository extends AbstractRepository<UserPaymen
       return undefined;
     }
     userPayment.processed = true;
+    return this.repository.save(userPayment);
+  }
+
+  async updateStatus({ id, processed }: { id: string; processed: boolean }) {
+    const userPayment = await this.findById(id);
+    userPayment.processed = processed;
     return this.repository.save(userPayment);
   }
 }
