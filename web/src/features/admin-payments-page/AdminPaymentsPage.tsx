@@ -1,6 +1,6 @@
-import { ReactElement } from 'react';
+import { FormEvent, ReactElement, useState } from 'react';
 import { StylePrefix } from '@/types/style-prefix';
-import { DashboardPageHeader } from '@/features';
+import { ConfirmDeleteDialog, DashboardPageHeader } from '@/features';
 import { PageType, PaymentProvider } from '@/types';
 import { GameType } from '@/generated/graphql';
 import { DataTable, Badge, InteractableComponent, Text } from '@/components';
@@ -13,21 +13,68 @@ import {
   useGetPendingPaymentsQuery,
   useGetProcessedUserPaymentsQuery,
   useGetPendingUserPaymentsQuery,
+  useUpdatePaymentStatusMutation,
+  useUpdateUserPaymentStatusMutation,
+  useDeletePaymentMutation,
+  useDeleteUserPaymentMutation,
 } from '@/generated/graphql';
 
 export type AdminPaymentsPageProps = {
-  // Add props
+  /** The data table columns */
+  columns: ColumnDef<Payment>[];
+  /** The data to display in the pending payments table */
+  pendingPaymentsData: Payment[];
+  /** The data to display in the processed payments table */
+  processedPaymentsData: Payment[];
+  /** Whether or not the pending payments table data is loading */
+  isPendingTableLoading: boolean;
+  /** Whether or not the processed payments table data is loading */
+  isProcessedTableLoading: boolean;
+  /** Whether or not the delete payment modal is open */
+  open: boolean;
+  /** Handler for setting the delete payment modal to open */
+  setOpen: (open: boolean) => void;
+  /** Event handler for deleting the payment */
+  handleDeleteAccount: (e: FormEvent<HTMLFormElement>) => void;
 };
 
 const PREFIX = StylePrefix.ADMIN_PAYMENTS_PAGE;
 
-export default function AdminPaymentsPage(
-  props: AdminPaymentsPageProps
-): ReactElement {
+function AdminPaymentsPage(props: AdminPaymentsPageProps): ReactElement {
+  const p = props;
   return (
     <div className={`${PREFIX}`}>
       <DashboardPageHeader includePageNav page={PageType.ADMIN_PAYMENTS} />
-      <PaymentTable />
+      <div className="flex flex-col gap-[24px] justify-center mx-[20%]">
+        <Text className="text-white" type="h2">
+          Pending Payments
+        </Text>
+        <DataTable
+          isLoading={p.isPendingTableLoading}
+          data={p.pendingPaymentsData}
+          columns={p.columns}
+          isLeftMostColumnSticky
+          isRightMostColumnSticky
+          onRowPress={console.log}
+        />
+        <Text className="text-white" type="h2">
+          Processed Payments
+        </Text>
+        <DataTable
+          isLoading={p.isProcessedTableLoading}
+          data={p.processedPaymentsData}
+          columns={p.columns}
+          isLeftMostColumnSticky
+          isRightMostColumnSticky
+          onRowPress={console.log}
+        />
+      </div>
+      <ConfirmDeleteDialog
+        name="payment"
+        open={p.open}
+        setOpen={p.setOpen}
+        onSubmit={p.handleDeleteAccount}
+      />
     </div>
   );
 }
@@ -57,72 +104,7 @@ export type Payment = {
   userIdentifier: string;
 };
 
-const dummyUnprocessedPaymentData: Payment[] = [
-  {
-    id: '1',
-    amount: 100,
-    date: new Date('2021-01-01'),
-    processed: false,
-    game: GameType.POKER,
-    paymentMethod: PaymentProvider.PAYPAL,
-    userIdentifier: 'test one',
-    type: PaymentType.USER_SUBMITTED,
-  },
-  {
-    id: '2',
-    amount: 100,
-    date: new Date('2021-01-01'),
-    processed: false,
-    game: GameType.POKER,
-    paymentMethod: PaymentProvider.ZELLE,
-    userIdentifier: 'test two',
-    type: PaymentType.USER_SUBMITTED,
-  },
-  {
-    id: '3',
-    amount: 100,
-    date: new Date('2021-01-01'),
-    processed: false,
-    game: GameType.POKER,
-    paymentMethod: PaymentProvider.CASHAPP,
-    userIdentifier: 'test three',
-    type: PaymentType.SCRAPED,
-  },
-];
-const dummyProcessedPaymentData: Payment[] = [
-  {
-    id: '1',
-    amount: 100,
-    date: new Date('2021-01-01'),
-    processed: true,
-    game: GameType.POKER,
-    paymentMethod: PaymentProvider.PAYPAL,
-    userIdentifier: 'test one',
-    type: PaymentType.USER_SUBMITTED,
-  },
-  {
-    id: '2',
-    amount: 100,
-    date: new Date('2021-01-01'),
-    processed: true,
-    game: GameType.POKER,
-    paymentMethod: PaymentProvider.ZELLE,
-    userIdentifier: 'test two',
-    type: PaymentType.USER_SUBMITTED,
-  },
-  {
-    id: '3',
-    amount: 100,
-    date: new Date('2021-01-01'),
-    processed: true,
-    game: GameType.POKER,
-    paymentMethod: PaymentProvider.CASHAPP,
-    userIdentifier: 'test three',
-    type: PaymentType.SCRAPED,
-  },
-];
-
-function PaymentTable(): ReactElement {
+export default function AdminPaymentsPageContainer(): ReactElement {
   const { data: processedPaymentsData, loading: processedPaymentsLoading } =
     useGetProcessedPaymentsQuery();
   const { data: pendingPaymentsData, loading: pendingPaymentsLoading } =
@@ -133,6 +115,13 @@ function PaymentTable(): ReactElement {
   } = useGetProcessedUserPaymentsQuery();
   const { data: pendingUserPaymentsData, loading: pendingUserPaymentsLoading } =
     useGetPendingUserPaymentsQuery();
+  const [updatePaymentStatus] = useUpdatePaymentStatusMutation();
+  const [updateUserPaymentStatus] = useUpdateUserPaymentStatusMutation();
+  const [deletePayment] = useDeletePaymentMutation();
+  const [deleteUserPayment] = useDeleteUserPaymentMutation();
+  const [open, setOpen] = useState(false);
+  const [paymentIdToDelete, setPaymentIdToDelete] = useState('');
+  const [paymentTypeToDelete, setPaymentTypeToDelete] = useState<PaymentType>();
 
   const processedPayments: Payment[] =
     processedPaymentsData?.getAllPayments.map((payment) => ({
@@ -306,16 +295,12 @@ function PaymentTable(): ReactElement {
       id: 'actions',
       header: 'Actions',
       cell: ({ row }) => {
-        const { processed } = row.original;
+        const { processed, id, type } = row.original;
         return (
           <div className={`${PREFIX}-table-actions-wrapper`}>
             <InteractableComponent
               onPress={() => {
-                if (processed) {
-                  console.log('undo processed');
-                } else {
-                  console.log('mark as processed');
-                }
+                onUpdatePaymentStatus(id, !processed, type);
               }}
             >
               {processed ? (
@@ -326,8 +311,9 @@ function PaymentTable(): ReactElement {
             </InteractableComponent>
             <InteractableComponent
               onPress={() => {
-                console.log('delete payment');
-                // updateUserId(row.original.id);
+                setOpen(true);
+                setPaymentTypeToDelete(type);
+                setPaymentIdToDelete(id);
               }}
             >
               <TrashCanSvg />
@@ -343,30 +329,89 @@ function PaymentTable(): ReactElement {
   const isProcessedTableLoading =
     processedPaymentsLoading || processedUserPaymentsLoading;
 
+  const onDeletePayment = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log('paymentIdToDelete', paymentIdToDelete);
+    console.log('paymentTypeToDelete', paymentTypeToDelete);
+    if (paymentTypeToDelete === PaymentType.USER_SUBMITTED) {
+      await deleteUserPayment({
+        variables: {
+          id: paymentIdToDelete,
+        },
+        refetchQueries: [
+          'GetProcessedPayments',
+          'GetPendingPayments',
+          'GetProcessedUserPayments',
+          'GetPendingUserPayments',
+        ],
+      });
+    } else {
+      const { data, errors } = await deletePayment({
+        variables: {
+          id: paymentIdToDelete,
+        },
+        refetchQueries: [
+          'GetProcessedPayments',
+          'GetPendingPayments',
+          'GetProcessedUserPayments',
+          'GetPendingUserPayments',
+        ],
+      });
+      console.log('errors', errors);
+    }
+    setPaymentIdToDelete('');
+    setPaymentTypeToDelete(undefined);
+    setOpen(false);
+  };
+
+  const onUpdatePaymentStatus = async (
+    id: string,
+    processed: boolean,
+    type: PaymentType
+  ) => {
+    if (type === PaymentType.USER_SUBMITTED) {
+      await updateUserPaymentStatus({
+        variables: {
+          input: {
+            id,
+            processed,
+          },
+        },
+        refetchQueries: [
+          'GetProcessedPayments',
+          'GetPendingPayments',
+          'GetProcessedUserPayments',
+          'GetPendingUserPayments',
+        ],
+      });
+    } else {
+      await updatePaymentStatus({
+        variables: {
+          input: {
+            id,
+            processed,
+          },
+        },
+        refetchQueries: [
+          'GetProcessedPayments',
+          'GetPendingPayments',
+          'GetProcessedUserPayments',
+          'GetPendingUserPayments',
+        ],
+      });
+    }
+  };
+
   return (
-    <div className="flex flex-col gap-[24px] justify-center mx-[20%]">
-      <Text className="text-white" type="h2">
-        Pending Payments
-      </Text>
-      <DataTable
-        isLoading={isPendingTableLoading}
-        data={allPendingPayments}
-        columns={columns}
-        isLeftMostColumnSticky
-        isRightMostColumnSticky
-        onRowPress={console.log}
-      />
-      <Text className="text-white" type="h2">
-        Processed Payments
-      </Text>
-      <DataTable
-        isLoading={isProcessedTableLoading}
-        data={allProcessedPayments}
-        columns={columns}
-        isLeftMostColumnSticky
-        isRightMostColumnSticky
-        onRowPress={console.log}
-      />
-    </div>
+    <AdminPaymentsPage
+      columns={columns}
+      pendingPaymentsData={allPendingPayments}
+      processedPaymentsData={allProcessedPayments}
+      isPendingTableLoading={isPendingTableLoading}
+      isProcessedTableLoading={isProcessedTableLoading}
+      handleDeleteAccount={onDeletePayment}
+      open={open}
+      setOpen={setOpen}
+    />
   );
 }

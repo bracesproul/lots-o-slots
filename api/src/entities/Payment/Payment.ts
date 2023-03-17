@@ -22,7 +22,9 @@ export enum GameType {
 }
 
 registerEnumType(PaymentProvider, { name: 'PaymentProvider' });
+
 registerEnumType(PaymentType, { name: 'PaymentType' });
+
 registerEnumType(GameType, { name: 'GameType' });
 
 @Entity({ name: 'payment' })

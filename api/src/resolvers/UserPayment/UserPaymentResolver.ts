@@ -16,6 +16,7 @@ import {
   MarkUserPaymentAsProcessedResult,
   UpdateUserPaymentStatusInput,
   UpdateUserPaymentStatusPayload,
+  DeleteUserPaymentPayload,
 } from './types';
 import { ApolloError } from 'apollo-server-express';
 import { DiscordLog } from '@/services';
@@ -76,6 +77,17 @@ export class UserPaymentResolver {
     return {
       success: true,
       userPayment,
+    };
+  }
+
+  @Mutation(() => DeleteUserPaymentPayload, { nullable: false })
+  async deleteUserPayment(
+    @Arg('id', { nullable: false }) id: string
+  ): Promise<DeleteUserPaymentPayload> {
+    const payment = await getCustomRepository(UserPaymentRepository).delete(id);
+
+    return {
+      success: true,
     };
   }
 

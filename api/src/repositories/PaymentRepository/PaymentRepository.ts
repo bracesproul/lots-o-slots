@@ -16,7 +16,8 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
   async getAll(input: GetPaymentsInput): Promise<Payment[]> {
     let query = this.repository
       .createQueryBuilder('payment')
-      .addSelect('"payment"."updatedAt"', 'updatedAt');
+      .addSelect('"payment"."updatedAt"', 'updatedAt')
+      .andWhere('"payment"."deletedAt" IS NULL');
 
     if (input.paymentProvider) {
       query = query.andWhere('"provider" = :provider', {
@@ -234,5 +235,10 @@ export default class PaymentRepository extends AbstractRepository<Payment> {
     const userPayment = await this.findById(id);
     userPayment.processed = processed;
     return this.repository.save(userPayment);
+  }
+
+  async delete(id: string) {
+    const userPayment = await this.findById(id);
+    return this.repository.remove(userPayment);
   }
 }

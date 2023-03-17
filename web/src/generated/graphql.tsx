@@ -161,9 +161,21 @@ export type DeleteAccountPayload = {
   success: Scalars['Boolean'];
 };
 
+/** Payload type for deleting a user payment. */
+export type DeletePaymentPayload = {
+  __typename?: 'DeletePaymentPayload';
+  success: Scalars['Boolean'];
+};
+
 /** Response type for deleting a user */
 export type DeleteUserPayload = {
   __typename?: 'DeleteUserPayload';
+  success: Scalars['Boolean'];
+};
+
+/** Payload type for deleting a user payment. */
+export type DeleteUserPaymentPayload = {
+  __typename?: 'DeleteUserPaymentPayload';
   success: Scalars['Boolean'];
 };
 
@@ -338,7 +350,9 @@ export type Mutation = {
   createUserPayment: UserPayment;
   createWithdrawalRequest: CreateWithdrawalRequestPayload;
   deleteAccount: DeleteAccountPayload;
+  deletePayment: DeletePaymentPayload;
   deleteUser: DeleteUserPayload;
+  deleteUserPayment: DeleteUserPaymentPayload;
   deleteWithdrawalRequest: DeleteWithdrawalRequestPayload;
   login: LoginPayload;
   logout: LogoutPayload;
@@ -395,7 +409,17 @@ export type MutationDeleteAccountArgs = {
 };
 
 
+export type MutationDeletePaymentArgs = {
+  id: Scalars['String'];
+};
+
+
 export type MutationDeleteUserArgs = {
+  id: Scalars['String'];
+};
+
+
+export type MutationDeleteUserPaymentArgs = {
   id: Scalars['String'];
 };
 
@@ -785,6 +809,20 @@ export type UpdateAccountMutationVariables = Exact<{
 
 export type UpdateAccountMutation = { __typename?: 'Mutation', updateAccount: { __typename?: 'Account', id: string, email: string, balance: number, type: PaymentProvider, defaultAccount?: boolean | null, cashtag?: string | null, bitcoinAddress?: string | null, ethereumAddress?: string | null, name?: string | null } };
 
+export type DeletePaymentMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeletePaymentMutation = { __typename?: 'Mutation', deletePayment: { __typename?: 'DeletePaymentPayload', success: boolean } };
+
+export type DeleteUserPaymentMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type DeleteUserPaymentMutation = { __typename?: 'Mutation', deleteUserPayment: { __typename?: 'DeleteUserPaymentPayload', success: boolean } };
+
 export type GetProcessedPaymentsQueryVariables = Exact<{
   input?: InputMaybe<GetPaymentsInput>;
 }>;
@@ -812,6 +850,20 @@ export type GetPendingUserPaymentsQueryVariables = Exact<{
 
 
 export type GetPendingUserPaymentsQuery = { __typename?: 'Query', getUserPayments: Array<{ __typename?: 'UserPayment', createdAt: string, id: string, paymentIdentifier: string, paymentProvider: PaymentProvider, amount: number, processed: boolean, gameType: GameType, user?: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, username?: string | null } | null }> };
+
+export type UpdatePaymentStatusMutationVariables = Exact<{
+  input: UpdatePaymentStatusInput;
+}>;
+
+
+export type UpdatePaymentStatusMutation = { __typename?: 'Mutation', updatePaymentStatus: { __typename?: 'UpdatePaymentStatusPayload', success: boolean, payment: { __typename?: 'Payment', createdAt: string, id: string, userId: string, amount: number, processed: boolean, emailId: string, provider: PaymentProvider, senderName: string, transactionId?: string | null, paymentType: PaymentType } } };
+
+export type UpdateUserPaymentStatusMutationVariables = Exact<{
+  input: UpdateUserPaymentStatusInput;
+}>;
+
+
+export type UpdateUserPaymentStatusMutation = { __typename?: 'Mutation', updateUserPaymentStatus: { __typename?: 'UpdateUserPaymentStatusPayload', success: boolean, userPayment: { __typename?: 'UserPayment', createdAt: string, id: string, paymentIdentifier: string, paymentProvider: PaymentProvider, amount: number, processed: boolean, gameType: GameType, user?: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, username?: string | null } | null } } };
 
 export type DeleteUserMutationVariables = Exact<{
   id: Scalars['String'];
@@ -1146,6 +1198,72 @@ export function useUpdateAccountMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateAccountMutationHookResult = ReturnType<typeof useUpdateAccountMutation>;
 export type UpdateAccountMutationResult = Apollo.MutationResult<UpdateAccountMutation>;
 export type UpdateAccountMutationOptions = Apollo.BaseMutationOptions<UpdateAccountMutation, UpdateAccountMutationVariables>;
+export const DeletePaymentDocument = gql`
+    mutation DeletePayment($id: String!) {
+  deletePayment(id: $id) {
+    success
+  }
+}
+    `;
+export type DeletePaymentMutationFn = Apollo.MutationFunction<DeletePaymentMutation, DeletePaymentMutationVariables>;
+
+/**
+ * __useDeletePaymentMutation__
+ *
+ * To run a mutation, you first call `useDeletePaymentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeletePaymentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deletePaymentMutation, { data, loading, error }] = useDeletePaymentMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeletePaymentMutation(baseOptions?: Apollo.MutationHookOptions<DeletePaymentMutation, DeletePaymentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeletePaymentMutation, DeletePaymentMutationVariables>(DeletePaymentDocument, options);
+      }
+export type DeletePaymentMutationHookResult = ReturnType<typeof useDeletePaymentMutation>;
+export type DeletePaymentMutationResult = Apollo.MutationResult<DeletePaymentMutation>;
+export type DeletePaymentMutationOptions = Apollo.BaseMutationOptions<DeletePaymentMutation, DeletePaymentMutationVariables>;
+export const DeleteUserPaymentDocument = gql`
+    mutation DeleteUserPayment($id: String!) {
+  deleteUserPayment(id: $id) {
+    success
+  }
+}
+    `;
+export type DeleteUserPaymentMutationFn = Apollo.MutationFunction<DeleteUserPaymentMutation, DeleteUserPaymentMutationVariables>;
+
+/**
+ * __useDeleteUserPaymentMutation__
+ *
+ * To run a mutation, you first call `useDeleteUserPaymentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteUserPaymentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteUserPaymentMutation, { data, loading, error }] = useDeleteUserPaymentMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteUserPaymentMutation(baseOptions?: Apollo.MutationHookOptions<DeleteUserPaymentMutation, DeleteUserPaymentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteUserPaymentMutation, DeleteUserPaymentMutationVariables>(DeleteUserPaymentDocument, options);
+      }
+export type DeleteUserPaymentMutationHookResult = ReturnType<typeof useDeleteUserPaymentMutation>;
+export type DeleteUserPaymentMutationResult = Apollo.MutationResult<DeleteUserPaymentMutation>;
+export type DeleteUserPaymentMutationOptions = Apollo.BaseMutationOptions<DeleteUserPaymentMutation, DeleteUserPaymentMutationVariables>;
 export const GetProcessedPaymentsDocument = gql`
     query GetProcessedPayments($input: GetPaymentsInput = {processed: true}) {
   getAllPayments(input: $input) {
@@ -1290,6 +1408,80 @@ export function useGetPendingUserPaymentsLazyQuery(baseOptions?: Apollo.LazyQuer
 export type GetPendingUserPaymentsQueryHookResult = ReturnType<typeof useGetPendingUserPaymentsQuery>;
 export type GetPendingUserPaymentsLazyQueryHookResult = ReturnType<typeof useGetPendingUserPaymentsLazyQuery>;
 export type GetPendingUserPaymentsQueryResult = Apollo.QueryResult<GetPendingUserPaymentsQuery, GetPendingUserPaymentsQueryVariables>;
+export const UpdatePaymentStatusDocument = gql`
+    mutation UpdatePaymentStatus($input: UpdatePaymentStatusInput!) {
+  updatePaymentStatus(input: $input) {
+    success
+    payment {
+      ...PaymentFragment
+      createdAt
+    }
+  }
+}
+    ${PaymentFragmentFragmentDoc}`;
+export type UpdatePaymentStatusMutationFn = Apollo.MutationFunction<UpdatePaymentStatusMutation, UpdatePaymentStatusMutationVariables>;
+
+/**
+ * __useUpdatePaymentStatusMutation__
+ *
+ * To run a mutation, you first call `useUpdatePaymentStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePaymentStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePaymentStatusMutation, { data, loading, error }] = useUpdatePaymentStatusMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdatePaymentStatusMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePaymentStatusMutation, UpdatePaymentStatusMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePaymentStatusMutation, UpdatePaymentStatusMutationVariables>(UpdatePaymentStatusDocument, options);
+      }
+export type UpdatePaymentStatusMutationHookResult = ReturnType<typeof useUpdatePaymentStatusMutation>;
+export type UpdatePaymentStatusMutationResult = Apollo.MutationResult<UpdatePaymentStatusMutation>;
+export type UpdatePaymentStatusMutationOptions = Apollo.BaseMutationOptions<UpdatePaymentStatusMutation, UpdatePaymentStatusMutationVariables>;
+export const UpdateUserPaymentStatusDocument = gql`
+    mutation UpdateUserPaymentStatus($input: UpdateUserPaymentStatusInput!) {
+  updateUserPaymentStatus(input: $input) {
+    success
+    userPayment {
+      ...UserPaymentFragment
+      createdAt
+    }
+  }
+}
+    ${UserPaymentFragmentFragmentDoc}`;
+export type UpdateUserPaymentStatusMutationFn = Apollo.MutationFunction<UpdateUserPaymentStatusMutation, UpdateUserPaymentStatusMutationVariables>;
+
+/**
+ * __useUpdateUserPaymentStatusMutation__
+ *
+ * To run a mutation, you first call `useUpdateUserPaymentStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateUserPaymentStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateUserPaymentStatusMutation, { data, loading, error }] = useUpdateUserPaymentStatusMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateUserPaymentStatusMutation(baseOptions?: Apollo.MutationHookOptions<UpdateUserPaymentStatusMutation, UpdateUserPaymentStatusMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateUserPaymentStatusMutation, UpdateUserPaymentStatusMutationVariables>(UpdateUserPaymentStatusDocument, options);
+      }
+export type UpdateUserPaymentStatusMutationHookResult = ReturnType<typeof useUpdateUserPaymentStatusMutation>;
+export type UpdateUserPaymentStatusMutationResult = Apollo.MutationResult<UpdateUserPaymentStatusMutation>;
+export type UpdateUserPaymentStatusMutationOptions = Apollo.BaseMutationOptions<UpdateUserPaymentStatusMutation, UpdateUserPaymentStatusMutationVariables>;
 export const DeleteUserDocument = gql`
     mutation DeleteUser($id: String!) {
   deleteUser(id: $id) {

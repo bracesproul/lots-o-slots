@@ -22,7 +22,7 @@ export async function seedDatabase() {
 
   const users = await seedFakeUsers();
   await seedFakePayments(users);
-  await seedFakeAccounts();
+  // await seedFakeAccounts();
   console.info('✅ Database seeded!');
 }
 

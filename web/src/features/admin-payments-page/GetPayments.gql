@@ -11,3 +11,17 @@ query GetPendingPayments($input: GetPaymentsInput = { processed: false }) {
     createdAt
   }
 }
+
+query GetProcessedUserPayments($input: GetUserPaymentsInput = { processed: true }) {
+  getUserPayments(input: $input) {
+    ...UserPaymentFragment
+    createdAt
+  }
+}
+
+query GetPendingUserPayments($input: GetUserPaymentsInput = { processed: false }) {
+  getUserPayments(input: $input) {
+    ...UserPaymentFragment
+    createdAt
+  }
+}

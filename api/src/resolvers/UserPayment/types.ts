@@ -97,3 +97,11 @@ export class UpdateUserPaymentStatusPayload {
   @Field(() => UserPayment)
   userPayment!: UserPayment;
 }
+
+@ObjectType({
+  description: 'Payload type for deleting a user payment.',
+})
+export class DeleteUserPaymentPayload {
+  @Field(() => Boolean)
+  success!: boolean;
+}

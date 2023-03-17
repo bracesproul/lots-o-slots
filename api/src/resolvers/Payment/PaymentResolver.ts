@@ -10,6 +10,7 @@ import {
   GetPaymentsInput,
   UpdatePaymentStatusPayload,
   UpdatePaymentStatusInput,
+  DeletePaymentPayload,
 } from './types';
 import { ApolloError } from 'apollo-server-express';
 
@@ -74,6 +75,17 @@ export class PaymentResolver {
     return {
       success: true,
       payment,
+    };
+  }
+
+  @Mutation(() => DeletePaymentPayload, { nullable: false })
+  async deletePayment(
+    @Arg('id', { nullable: false }) id: string
+  ): Promise<DeletePaymentPayload> {
+    const payment = await getCustomRepository(PaymentRepository).delete(id);
+
+    return {
+      success: true,
     };
   }
 }
