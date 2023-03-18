@@ -1,0 +1,11 @@
+mutation DeletePayment($id: String!) {
+  deletePayment(id: $id) {
+    success
+  }
+}
+
+mutation DeleteUserPayment($id: String!) {
+  deleteUserPayment(id: $id) {
+    success
+  }
+}

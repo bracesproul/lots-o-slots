@@ -1,4 +1,4 @@
-import { Field, InputType, ObjectType } from 'type-graphql';
+import { Field, ID, InputType, ObjectType } from 'type-graphql';
 import { GameType, PaymentProvider } from '@/entities/Payment/Payment';
 import { UserPayment } from '@/entities';
 
@@ -74,4 +74,34 @@ export class MarkUserPaymentAsProcessedResult {
     description: 'The user payment marked as processed.',
   })
   userPayment!: UserPayment;
+}
+
+@InputType({
+  description: 'Input type for updating a user payment status.',
+})
+export class UpdateUserPaymentStatusInput {
+  @Field(() => ID)
+  id!: string;
+
+  @Field(() => Boolean)
+  processed!: boolean;
+}
+
+@ObjectType({
+  description: 'Payload type for updating a user payment status.',
+})
+export class UpdateUserPaymentStatusPayload {
+  @Field(() => Boolean)
+  success!: boolean;
+
+  @Field(() => UserPayment)
+  userPayment!: UserPayment;
+}
+
+@ObjectType({
+  description: 'Payload type for deleting a user payment.',
+})
+export class DeleteUserPaymentPayload {
+  @Field(() => Boolean)
+  success!: boolean;
 }

@@ -6,3 +6,4 @@ export { SeedResolver } from './Seed';
 export { UserPaymentResolver } from './UserPayment';
 export { AuthResolver } from './Auth';
 export { UserV2Resolver } from './UserV2';
+export { WithdrawalRequestResolver } from './WithdrawalRequest';

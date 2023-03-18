@@ -1,0 +1,27 @@
+query GetProcessedPayments($input: GetPaymentsInput = { processed: true }) {
+  getAllPayments(input: $input) {
+    ...PaymentFragment
+    createdAt
+  }
+}
+
+query GetPendingPayments($input: GetPaymentsInput = { processed: false }) {
+  getAllPayments(input: $input) {
+    ...PaymentFragment
+    createdAt
+  }
+}
+
+query GetProcessedUserPayments($input: GetUserPaymentsInput = { processed: true }) {
+  getUserPayments(input: $input) {
+    ...UserPaymentFragment
+    createdAt
+  }
+}
+
+query GetPendingUserPayments($input: GetUserPaymentsInput = { processed: false }) {
+  getUserPayments(input: $input) {
+    ...UserPaymentFragment
+    createdAt
+  }
+}

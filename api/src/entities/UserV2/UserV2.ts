@@ -1,7 +1,8 @@
 import { Field, ObjectType } from 'type-graphql';
-import { Column, Entity, Unique } from 'typeorm';
+import { Column, Entity, OneToMany, Unique } from 'typeorm';
 import { MainEntity } from '@/entities';
 import { UserRole } from './types';
+import WithdrawalRequest from '../WithdrawalRequest/WithdrawalRequest';
 
 @Entity({ name: 'user_v2' })
 @ObjectType({
@@ -61,4 +62,10 @@ export default class UserV2 extends MainEntity {
   })
   @Column({ type: 'varchar', nullable: true })
   refreshToken?: string;
+
+  @OneToMany(
+    () => WithdrawalRequest,
+    (withdrawalRequest) => withdrawalRequest.user
+  )
+  withdrawalRequests!: WithdrawalRequest[];
 }
