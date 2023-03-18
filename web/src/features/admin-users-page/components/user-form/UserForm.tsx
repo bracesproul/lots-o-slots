@@ -132,7 +132,6 @@ function UserForm(props: UserFormProps): ReactElement {
               checked={isAdminChecked()}
               onCheckedChange={(e: any) => {
                 if (typeof e === 'boolean') {
-                  console.log('updating checked', e);
                   setIsAdmin(e);
                 }
               }}
