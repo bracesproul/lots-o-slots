@@ -1,0 +1,14 @@
+fragment UserPaymentFragment on UserPayment {
+  id
+  paymentIdentifier
+  paymentProvider
+  amount 
+  processed
+  gameType
+  user {
+    id
+    firstName
+    lastName
+    username
+  }
+}

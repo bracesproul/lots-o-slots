@@ -1,5 +1,13 @@
 import { Button } from '@/components';
-import { PageType, StylePrefix } from '@/types';
+import {
+  ADMIN_ACCOUNTS_PAGE,
+  ADMIN_PAGE,
+  ADMIN_PAYMENTS_PAGE,
+  ADMIN_USERS_PAGE,
+  ADMIN_WITHDRAWALS_PAGE,
+  PageType,
+  StylePrefix,
+} from '@/types';
 import clsx from 'clsx';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -17,11 +25,6 @@ export type AdminPageHeaderProps = {
 
 const PREFIX = StylePrefix.ADMIN_PAGE_HEADER;
 
-const ADMIN_USERS_PAGE = '/admin/users';
-const ADMIN_PAYMENTS_PAGE = '/admin/payments';
-const ADMIN_ACCOUNTS_PAGE = '/admin/accounts';
-const ADMIN_PAGE = '/admin';
-
 const pageName = (page: PageType) => {
   switch (page) {
     case PageType.ADMIN:
@@ -32,6 +35,8 @@ const pageName = (page: PageType) => {
       return 'Payments';
     case PageType.ADMIN_ACCOUNTS:
       return 'Accounts';
+    case PageType.ADMIN_WITHDRAWALS:
+      return 'Withdrawals';
     case PageType.USER:
       return 'User';
     default:
@@ -88,6 +93,14 @@ export default function DashboardPageHeader(
             href={ADMIN_PAYMENTS_PAGE}
           >
             /payments
+          </Link>
+          <Link
+            className={clsx(`${PREFIX}-nav-item`, {
+              'is-selected': router.pathname === ADMIN_WITHDRAWALS_PAGE,
+            })}
+            href={ADMIN_WITHDRAWALS_PAGE}
+          >
+            /withdrawals
           </Link>
         </div>
       )}

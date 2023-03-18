@@ -1,6 +1,10 @@
 @use './components/styles.scss' as componentStyles;
 
-.admin-accounts-page {
+.admin-payments-page {
   @apply flex flex-col gap-[24px];
   font-family: 'Inter', sans-serif;
+}
+
+.admin-payments-page-table-actions-wrapper {
+  @apply flex items-center justify-center;
 }

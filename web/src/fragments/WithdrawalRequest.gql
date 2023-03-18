@@ -1,0 +1,7 @@
+fragment WithdrawalRequestFragment on WithdrawalRequest {
+  id
+  amount
+  status
+  payoutMethod
+  payoutAddress
+}

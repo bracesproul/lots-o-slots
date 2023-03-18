@@ -5,7 +5,11 @@ import {
 } from 'next';
 import { initializeApollo } from './apollo';
 import { NormalizedCacheObject } from '@apollo/client';
-import { PageType, SUPABASE_REFRESH_TOKEN_COOKIE_KEY_WITH_lS } from '@/types';
+import {
+  ADMIN_PAGES,
+  PageType,
+  SUPABASE_REFRESH_TOKEN_COOKIE_KEY_WITH_lS,
+} from '@/types';
 import {
   CheckUserSessionDocument,
   CheckUserSessionQuery,
@@ -33,13 +37,6 @@ type IncomingGetServerSideProps = GetServerSideProps<{
  * Server should check for user id and refresh token in db
  * Then on response the server should also set cookies with the new refresh token
  */
-
-const ADMIN_PAGES = [
-  PageType.ADMIN,
-  PageType.ADMIN_USERS,
-  PageType.ADMIN_PAYMENTS,
-  PageType.ADMIN_ACCOUNTS,
-];
 
 export const withAuthRequired =
   (
