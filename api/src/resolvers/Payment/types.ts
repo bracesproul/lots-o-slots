@@ -1,4 +1,4 @@
-import { Field, InputType, ObjectType } from 'type-graphql';
+import { Field, ID, InputType, ObjectType } from 'type-graphql';
 import createConnectionType from '../shared/createConnectionType';
 import { Payment } from '@/entities';
 import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
@@ -134,4 +134,34 @@ export class GetPaymentsInput {
     description: 'The type of the payment.',
   })
   paymentType?: PaymentType;
+}
+
+@InputType({
+  description: 'Input type for updating a user payment status.',
+})
+export class UpdatePaymentStatusInput {
+  @Field(() => ID)
+  id!: string;
+
+  @Field(() => Boolean)
+  processed!: boolean;
+}
+
+@ObjectType({
+  description: 'Payload type for updating a user payment status.',
+})
+export class UpdatePaymentStatusPayload {
+  @Field(() => Boolean)
+  success!: boolean;
+
+  @Field(() => Payment)
+  payment!: Payment;
+}
+
+@ObjectType({
+  description: 'Payload type for deleting a user payment.',
+})
+export class DeletePaymentPayload {
+  @Field(() => Boolean)
+  success!: boolean;
 }

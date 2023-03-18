@@ -8,3 +8,4 @@ export { GcpCredentialsRepository } from './GcpCredentialsRepository';
 export { GcpServiceAccountRepository } from './GcpServiceAccountRepository';
 export { UserV2Repository } from './UserV2Repository';
 export { UserV2LoginLogRepository } from './UserV2LoginLogRepository';
+export { WithdrawalRequestRepository } from './WithdrawalRequestRepository';

@@ -5,7 +5,7 @@ import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
 
 export async function seedFakePayments(users: User[]): Promise<Payment[]> {
   const payments: Payment[] = [];
-  for (let i = 0; i < 25; i++) {
+  for (let i = 0; i < 100; i++) {
     payments.push(
       Payment.create({
         userId: faker.random.arrayElement(users).id,

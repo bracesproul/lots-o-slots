@@ -1,7 +1,15 @@
 import { UserV2Repository } from '@/repositories';
-import { UserV2 } from '@/entities';
-import { Arg, Query, Mutation, Resolver, Ctx } from 'type-graphql';
-import { getCustomRepository } from 'typeorm';
+import { UserV2, UserV2LoginLog } from '@/entities';
+import {
+  Arg,
+  Query,
+  Mutation,
+  Resolver,
+  Ctx,
+  FieldResolver,
+  Root,
+} from 'type-graphql';
+import { getCustomRepository, getRepository } from 'typeorm';
 import {
   SignUpPayload,
   SignUpInput,
@@ -18,7 +26,7 @@ import {
 import { ContextType } from '@/types';
 import { GraphQLError } from 'graphql';
 
-@Resolver()
+@Resolver(() => UserV2)
 export class UserV2Resolver {
   @Query(() => [UserV2], { nullable: false })
   async getAllUsers(): Promise<UserV2[]> {
@@ -186,5 +194,18 @@ export class UserV2Resolver {
     return {
       success: true,
     };
+  }
+
+  @FieldResolver(() => [UserV2LoginLog], {
+    nullable: true,
+  })
+  async userLogins(@Root() user: UserV2): Promise<UserV2LoginLog[]> {
+    const logs = await getRepository(UserV2LoginLog)
+      .createQueryBuilder('log')
+      .innerJoinAndSelect(UserV2, 'user', 'user.id = log.userId')
+      .where('log.userId = :userId', { userId: user.id })
+      .orderBy('log.loginDate', 'DESC')
+      .getMany();
+    return logs;
   }
 }
