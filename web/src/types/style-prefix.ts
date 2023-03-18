@@ -46,4 +46,6 @@ export enum StylePrefix {
   CONFIRM_DELETE_DIALOG = 'confirm-delete-dialog',
   USER_FORM = 'user-form',
   WITHDRAWAL_REQUEST_CARD = 'withdrawal-request-card',
+  SEARCH_FIELD = 'search-field',
+  ADMIN_WITHDRAWALS_PAGE = 'admin-withdrawals-page',
 }

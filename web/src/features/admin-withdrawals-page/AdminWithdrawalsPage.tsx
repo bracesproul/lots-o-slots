@@ -1,9 +1,16 @@
-import { ReactElement } from 'react';
+import { ReactElement, useMemo } from 'react';
 import { StylePrefix } from '@/types/style-prefix';
 import { DashboardPageHeader } from '@/features';
 import { PageType, PaymentProvider } from '@/types';
 import { GameType, WithdrawalRequestStatus } from '@/generated/graphql';
-import { DataTable, Text, Badge, InteractableComponent } from '@/components';
+import {
+  DataTable,
+  Text,
+  Badge,
+  InteractableComponent,
+  SearchField,
+  Button,
+} from '@/components';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { findBadgeVariantFromPaymentType } from '../play-now-dialog-depd/utils';
@@ -12,6 +19,7 @@ import {
   useGetWithdrawalRequestsQuery,
   useUpdateWithdrawalRequestStatusMutation,
 } from '@/generated/graphql';
+import useSearchQuery, { SearchQueryParam } from '@/hooks/useSearchQuery';
 
 export type AdminWithdrawalsPageProps = {
   /** Columns to display on the data table */
@@ -24,9 +32,11 @@ export type AdminWithdrawalsPageProps = {
   rejectedWithdrawals: Withdrawal[];
   /** Whether or not the data is loading */
   isLoading: boolean;
+  /** Event handler for setting the query params for a search value */
+  setSearchQuery: (search: string, queryParam: SearchQueryParam) => void;
 };
 
-const PREFIX = StylePrefix.ADMIN_PAYMENTS_PAGE;
+const PREFIX = StylePrefix.ADMIN_WITHDRAWALS_PAGE;
 
 function AdminWithdrawalsPage(props: AdminWithdrawalsPageProps): ReactElement {
   const p = { ...props };
@@ -34,38 +44,107 @@ function AdminWithdrawalsPage(props: AdminWithdrawalsPageProps): ReactElement {
     <div className={`${PREFIX}`}>
       <DashboardPageHeader includePageNav page={PageType.ADMIN_WITHDRAWALS} />
       <div className="flex flex-col justify-center mx-[20%] gap-[24px]">
-        <Text className="text-white" type="h2">
-          Pending
-        </Text>
+        <div className={`${PREFIX}-table-header`}>
+          <Text className="text-white" type="h2">
+            Pending
+          </Text>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              // @typescript-eslint/ban-ts-comment
+              // eslint-disable-next-line
+              // @ts-ignore
+              const input = e.target.elements['pendingWithdrawals'];
+              const value = input.value;
+              p.setSearchQuery(value, SearchQueryParam.PENDING_WITHDRAWALS);
+            }}
+            className={`${PREFIX}-search-form`}
+          >
+            <SearchField
+              name="pendingWithdrawals"
+              aria-label="Search Processed Payments"
+              placeholder="Search"
+            />
+            <Button variant="secondary" size="xsmall" type="submit">
+              Submit
+            </Button>
+          </form>
+        </div>
         <DataTable
           isLoading={p.isLoading}
           data={p.pendingWithdrawals}
           columns={p.pendingColumns}
           isLeftMostColumnSticky
           isRightMostColumnSticky
-          onRowPress={console.log}
+          onRowPress={() => undefined}
         />
-        <Text className="text-white" type="h2">
-          Approved
-        </Text>
+        <div className={`${PREFIX}-table-header`}>
+          <Text className="text-white" type="h2">
+            Approved
+          </Text>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              // @typescript-eslint/ban-ts-comment
+              // eslint-disable-next-line
+              // @ts-ignore
+              const input = e.target.elements['approvedWithdrawals'];
+              const value = input.value;
+              p.setSearchQuery(value, SearchQueryParam.APPROVED_WITHDRAWALS);
+            }}
+            className={`${PREFIX}-search-form`}
+          >
+            <SearchField
+              name="approvedWithdrawals"
+              aria-label="Search Processed Payments"
+              placeholder="Search"
+            />
+            <Button variant="secondary" size="xsmall" type="submit">
+              Submit
+            </Button>
+          </form>
+        </div>
         <DataTable
           isLoading={p.isLoading}
           data={p.approvedWithdrawals}
           columns={p.approvedColumns}
           isLeftMostColumnSticky
           isRightMostColumnSticky
-          onRowPress={console.log}
-        />{' '}
-        <Text className="text-white" type="h2">
-          Rejected
-        </Text>
+          onRowPress={() => undefined}
+        />
+        <div className={`${PREFIX}-table-header`}>
+          <Text className="text-white" type="h2">
+            Rejected
+          </Text>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              // @typescript-eslint/ban-ts-comment
+              // eslint-disable-next-line
+              // @ts-ignore
+              const input = e.target.elements['rejectedWithdrawals'];
+              const value = input.value;
+              p.setSearchQuery(value, SearchQueryParam.REJECTED_WITHDRAWALS);
+            }}
+            className={`${PREFIX}-search-form`}
+          >
+            <SearchField
+              name="rejectedWithdrawals"
+              aria-label="Search Processed Payments"
+              placeholder="Search"
+            />
+            <Button variant="secondary" size="xsmall" type="submit">
+              Submit
+            </Button>
+          </form>
+        </div>
         <DataTable
           isLoading={p.isLoading}
           data={p.rejectedWithdrawals}
           columns={p.rejectedColumns}
           isLeftMostColumnSticky
           isRightMostColumnSticky
-          onRowPress={console.log}
+          onRowPress={() => undefined}
         />
       </div>
     </div>
@@ -101,6 +180,17 @@ export default function AdminWithdrawalsPageContainer(): ReactElement {
   const { data, loading } = useGetWithdrawalRequestsQuery();
   const [updateWithdrawalRequestStatus] =
     useUpdateWithdrawalRequestStatusMutation();
+  const { addSearchQueryParam, getQueryParams } = useSearchQuery();
+  const pendingSearchQuery = getQueryParams(
+    SearchQueryParam.PENDING_WITHDRAWALS
+  );
+  const approvedSearchQuery = getQueryParams(
+    SearchQueryParam.APPROVED_WITHDRAWALS
+  );
+  const rejectedSearchQuery = getQueryParams(
+    SearchQueryParam.REJECTED_WITHDRAWALS
+  );
+
   const pendingWithdrawals: Withdrawal[] = [];
   const approvedWithdrawals: Withdrawal[] = [];
   const rejectedWithdrawals: Withdrawal[] = [];
@@ -122,6 +212,48 @@ export default function AdminWithdrawalsPageContainer(): ReactElement {
       rejectedWithdrawals.push(withdrawalData);
     }
   }) ?? [];
+
+  const filteredPendingWithdrawals = useMemo(() => {
+    if (!pendingSearchQuery || pendingWithdrawals.length === 0) {
+      return pendingWithdrawals;
+    }
+    const query = decodeURIComponent(pendingSearchQuery[0]);
+    return pendingWithdrawals.filter((withdrawal) => {
+      return Object.values(withdrawal).some((value) => {
+        return (
+          value && value.toString().toLowerCase().includes(query.toLowerCase())
+        );
+      });
+    });
+  }, [pendingWithdrawals, pendingSearchQuery]);
+
+  const filteredApprovedWithdrawals = useMemo(() => {
+    if (!approvedSearchQuery || approvedWithdrawals.length === 0) {
+      return approvedWithdrawals;
+    }
+    const query = decodeURIComponent(approvedSearchQuery[0]);
+    return approvedWithdrawals.filter((withdrawal) => {
+      return Object.values(withdrawal).some((value) => {
+        return (
+          value && value.toString().toLowerCase().includes(query.toLowerCase())
+        );
+      });
+    });
+  }, [approvedWithdrawals, approvedSearchQuery]);
+
+  const filteredRejectedWithdrawals = useMemo(() => {
+    if (!rejectedSearchQuery || rejectedWithdrawals.length === 0) {
+      return rejectedWithdrawals;
+    }
+    const query = decodeURIComponent(rejectedSearchQuery[0]);
+    return rejectedWithdrawals.filter((withdrawal) => {
+      return Object.values(withdrawal).some((value) => {
+        return (
+          value && value.toString().toLowerCase().includes(query.toLowerCase())
+        );
+      });
+    });
+  }, [rejectedWithdrawals, rejectedSearchQuery]);
 
   const baseColumns: ColumnDef<Withdrawal>[] = [
     {
@@ -320,15 +452,21 @@ export default function AdminWithdrawalsPageContainer(): ReactElement {
     });
   };
 
+  const setSearchQuery = (search: string, queryParam: SearchQueryParam) => {
+    const params = encodeURIComponent(search);
+    addSearchQueryParam([params], queryParam);
+  };
+
   return (
     <AdminWithdrawalsPage
       pendingColumns={pendingColumns}
       approvedColumns={approvedColumns}
       rejectedColumns={rejectedColumns}
-      pendingWithdrawals={pendingWithdrawals}
-      approvedWithdrawals={approvedWithdrawals}
-      rejectedWithdrawals={rejectedWithdrawals}
+      pendingWithdrawals={filteredPendingWithdrawals}
+      approvedWithdrawals={filteredApprovedWithdrawals}
+      rejectedWithdrawals={filteredRejectedWithdrawals}
       isLoading={loading}
+      setSearchQuery={setSearchQuery}
     />
   );
 }

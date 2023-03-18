@@ -8,3 +8,7 @@
 .admin-payments-page-table-actions-wrapper {
   @apply flex items-center justify-center;
 }
+
+.admin-payments-page-table-header {
+  @apply flex gap-[8px] items-center;
+}

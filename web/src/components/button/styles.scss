@@ -34,10 +34,9 @@
   }
 
   &.size-xsmall {
-    @apply h-[35px] px-[25px] text-[12px];
-    @apply tablet:h-[45px]
-    tablet:px-[45px]
-    tablet:text-[18px];
+    @apply h-[25px]
+    px-[15px]
+    text-[12px];
   }
 
   &.size-xlarge {

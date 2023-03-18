@@ -17,3 +17,4 @@ export { Divider } from './divider';
 export { Text } from './text';
 export { DataTable } from './data-table';
 export { Checkbox } from './checkbox';
+export { SearchField } from './search-field';
