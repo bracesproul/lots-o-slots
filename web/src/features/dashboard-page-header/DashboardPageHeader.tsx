@@ -88,7 +88,7 @@ export default function DashboardPageHeader(
           </Link>
           <Link
             className={clsx(`${PREFIX}-nav-item`, {
-              'is-selected': router.pathname === ADMIN_PAYMENTS_PAGE,
+              'is-selected': router.pathname === ADMIN_WITHDRAWALS_PAGE,
             })}
             href={ADMIN_PAYMENTS_PAGE}
           >
