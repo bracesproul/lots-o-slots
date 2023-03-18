@@ -1,5 +1,5 @@
 import { UserV2Repository, WithdrawalRequestRepository } from '@/repositories';
-import { WithdrawalRequest } from '@/entities';
+import { UserV2, WithdrawalRequest } from '@/entities';
 import { Arg, Query, Mutation, Resolver, Ctx } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 import {
@@ -9,6 +9,7 @@ import {
   CreateWithdrawalRequestInput,
   DeleteWithdrawalRequestPayload,
 } from './types';
+import { ContextType } from '@/types';
 
 @Resolver()
 export class WithdrawalRequestResolver {
@@ -19,14 +20,26 @@ export class WithdrawalRequestResolver {
 
   @Mutation(() => CreateWithdrawalRequestPayload, { nullable: false })
   async createWithdrawalRequest(
+    @Ctx() { user }: ContextType,
     @Arg('input', { nullable: false }) input: CreateWithdrawalRequestInput
   ): Promise<CreateWithdrawalRequestPayload> {
-    const user = await getCustomRepository(UserV2Repository).getById(
-      input.userId
-    );
+    let fetchedUser: UserV2;
+    if (!user) {
+      fetchedUser = await getCustomRepository(UserV2Repository).getById(
+        input.userId
+      );
+    } else {
+      fetchedUser = user;
+    }
     const withdrawalRequest = await getCustomRepository(
       WithdrawalRequestRepository
-    ).create(input);
+    ).create({
+      amount: input.amount,
+      userId: fetchedUser.id,
+      payoutMethod: input.payoutMethod,
+      payoutAddress: input.payoutAddress,
+      status: input.status,
+    });
 
     return {
       success: true,

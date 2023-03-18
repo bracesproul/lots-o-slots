@@ -1,0 +1,8 @@
+mutation UpdateWithdrawalRequestStatus($input: UpdateWithdrawalRequestStatusInput!) {
+  updateWithdrawalRequestStatus(input: $input) {
+    success
+    withdrawalRequest {
+      ...WithdrawalRequestFragment
+    }
+  }
+}

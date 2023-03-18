@@ -35,6 +35,8 @@ const pageName = (page: PageType) => {
       return 'Payments';
     case PageType.ADMIN_ACCOUNTS:
       return 'Accounts';
+    case PageType.ADMIN_WITHDRAWALS:
+      return 'Withdrawals';
     case PageType.USER:
       return 'User';
     default:

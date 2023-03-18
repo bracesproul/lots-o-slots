@@ -10,3 +10,11 @@ export enum PageType {
   ADMIN_ACCOUNTS = 'ADMIN_ACCOUNTS',
   ADMIN_WITHDRAWALS = 'ADMIN_WITHDRAWALS',
 }
+
+export const ADMIN_PAGES = [
+  PageType.ADMIN,
+  PageType.ADMIN_USERS,
+  PageType.ADMIN_PAYMENTS,
+  PageType.ADMIN_ACCOUNTS,
+  PageType.ADMIN_WITHDRAWALS,
+];

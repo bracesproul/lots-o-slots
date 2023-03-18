@@ -898,6 +898,18 @@ export type UpdateUserAsAdminMutationVariables = Exact<{
 
 export type UpdateUserAsAdminMutation = { __typename?: 'Mutation', updateUserAsAdmin: { __typename?: 'UpdatePayload', user: { __typename?: 'UserV2', role: UserRole, createdAt: string, password: string, id: string, firstName: string, lastName: string, email: string, username?: string | null } } };
 
+export type GetWithdrawalRequestsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetWithdrawalRequestsQuery = { __typename?: 'Query', getAllWithdrawalRequests: Array<{ __typename?: 'WithdrawalRequest', createdAt: string, id: string, amount: number, status: WithdrawalRequestStatus, payoutMethod: PaymentProvider, payoutAddress: string }> };
+
+export type UpdateWithdrawalRequestStatusMutationVariables = Exact<{
+  input: UpdateWithdrawalRequestStatusInput;
+}>;
+
+
+export type UpdateWithdrawalRequestStatusMutation = { __typename?: 'Mutation', updateWithdrawalRequestStatus: { __typename?: 'UpdateWithdrawalRequestStatusPayload', success: boolean, withdrawalRequest: { __typename?: 'WithdrawalRequest', id: string, amount: number, status: WithdrawalRequestStatus, payoutMethod: PaymentProvider, payoutAddress: string } } };
+
 export type DeleteAccountMutationVariables = Exact<{
   id: Scalars['String'];
 }>;
@@ -943,6 +955,13 @@ export type SignUpMutationVariables = Exact<{
 
 export type SignUpMutation = { __typename?: 'Mutation', signUp: { __typename?: 'SignUpPayload', success: boolean, session: { __typename?: 'SupabaseSessionResponse', refresh_token: string }, user: { __typename?: 'UserV2', supabaseId: string } } };
 
+export type CreateWithdrawalRequestMutationVariables = Exact<{
+  input: CreateWithdrawalRequestInput;
+}>;
+
+
+export type CreateWithdrawalRequestMutation = { __typename?: 'Mutation', createWithdrawalRequest: { __typename?: 'CreateWithdrawalRequestPayload', success: boolean, withdrawalRequest: { __typename?: 'WithdrawalRequest', id: string, amount: number, status: WithdrawalRequestStatus, payoutMethod: PaymentProvider, payoutAddress: string } } };
+
 export type BasicAccountFragment = { __typename?: 'Account', id: string, email: string, balance: number, type: PaymentProvider, defaultAccount?: boolean | null, cashtag?: string | null, bitcoinAddress?: string | null, ethereumAddress?: string | null, name?: string | null };
 
 export type BasicUserFragment = { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, username?: string | null };
@@ -952,6 +971,8 @@ export type PaymentFragmentFragment = { __typename?: 'Payment', id: string, user
 export type UserFragment = { __typename?: 'UserV2', id: string, firstName: string, lastName: string, email: string, password: string, username?: string | null, role: UserRole, refreshToken?: string | null, supabaseId: string };
 
 export type UserPaymentFragmentFragment = { __typename?: 'UserPayment', id: string, paymentIdentifier: string, paymentProvider: PaymentProvider, amount: number, processed: boolean, gameType: GameType, user?: { __typename?: 'UserV2', id: string, firstName: string, lastName: string, username?: string | null } | null };
+
+export type WithdrawalRequestFragmentFragment = { __typename?: 'WithdrawalRequest', id: string, amount: number, status: WithdrawalRequestStatus, payoutMethod: PaymentProvider, payoutAddress: string };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -1025,6 +1046,15 @@ export const UserPaymentFragmentFragmentDoc = gql`
     lastName
     username
   }
+}
+    `;
+export const WithdrawalRequestFragmentFragmentDoc = gql`
+    fragment WithdrawalRequestFragment on WithdrawalRequest {
+  id
+  amount
+  status
+  payoutMethod
+  payoutAddress
 }
     `;
 export const CreateUserDocument = gql`
@@ -1663,6 +1693,77 @@ export function useUpdateUserAsAdminMutation(baseOptions?: Apollo.MutationHookOp
 export type UpdateUserAsAdminMutationHookResult = ReturnType<typeof useUpdateUserAsAdminMutation>;
 export type UpdateUserAsAdminMutationResult = Apollo.MutationResult<UpdateUserAsAdminMutation>;
 export type UpdateUserAsAdminMutationOptions = Apollo.BaseMutationOptions<UpdateUserAsAdminMutation, UpdateUserAsAdminMutationVariables>;
+export const GetWithdrawalRequestsDocument = gql`
+    query GetWithdrawalRequests {
+  getAllWithdrawalRequests {
+    ...WithdrawalRequestFragment
+    createdAt
+  }
+}
+    ${WithdrawalRequestFragmentFragmentDoc}`;
+
+/**
+ * __useGetWithdrawalRequestsQuery__
+ *
+ * To run a query within a React component, call `useGetWithdrawalRequestsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWithdrawalRequestsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetWithdrawalRequestsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetWithdrawalRequestsQuery(baseOptions?: Apollo.QueryHookOptions<GetWithdrawalRequestsQuery, GetWithdrawalRequestsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetWithdrawalRequestsQuery, GetWithdrawalRequestsQueryVariables>(GetWithdrawalRequestsDocument, options);
+      }
+export function useGetWithdrawalRequestsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWithdrawalRequestsQuery, GetWithdrawalRequestsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetWithdrawalRequestsQuery, GetWithdrawalRequestsQueryVariables>(GetWithdrawalRequestsDocument, options);
+        }
+export type GetWithdrawalRequestsQueryHookResult = ReturnType<typeof useGetWithdrawalRequestsQuery>;
+export type GetWithdrawalRequestsLazyQueryHookResult = ReturnType<typeof useGetWithdrawalRequestsLazyQuery>;
+export type GetWithdrawalRequestsQueryResult = Apollo.QueryResult<GetWithdrawalRequestsQuery, GetWithdrawalRequestsQueryVariables>;
+export const UpdateWithdrawalRequestStatusDocument = gql`
+    mutation UpdateWithdrawalRequestStatus($input: UpdateWithdrawalRequestStatusInput!) {
+  updateWithdrawalRequestStatus(input: $input) {
+    success
+    withdrawalRequest {
+      ...WithdrawalRequestFragment
+    }
+  }
+}
+    ${WithdrawalRequestFragmentFragmentDoc}`;
+export type UpdateWithdrawalRequestStatusMutationFn = Apollo.MutationFunction<UpdateWithdrawalRequestStatusMutation, UpdateWithdrawalRequestStatusMutationVariables>;
+
+/**
+ * __useUpdateWithdrawalRequestStatusMutation__
+ *
+ * To run a mutation, you first call `useUpdateWithdrawalRequestStatusMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateWithdrawalRequestStatusMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateWithdrawalRequestStatusMutation, { data, loading, error }] = useUpdateWithdrawalRequestStatusMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateWithdrawalRequestStatusMutation(baseOptions?: Apollo.MutationHookOptions<UpdateWithdrawalRequestStatusMutation, UpdateWithdrawalRequestStatusMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateWithdrawalRequestStatusMutation, UpdateWithdrawalRequestStatusMutationVariables>(UpdateWithdrawalRequestStatusDocument, options);
+      }
+export type UpdateWithdrawalRequestStatusMutationHookResult = ReturnType<typeof useUpdateWithdrawalRequestStatusMutation>;
+export type UpdateWithdrawalRequestStatusMutationResult = Apollo.MutationResult<UpdateWithdrawalRequestStatusMutation>;
+export type UpdateWithdrawalRequestStatusMutationOptions = Apollo.BaseMutationOptions<UpdateWithdrawalRequestStatusMutation, UpdateWithdrawalRequestStatusMutationVariables>;
 export const DeleteAccountDocument = gql`
     mutation DeleteAccount($id: String!) {
   deleteAccount(id: $id) {
@@ -1919,6 +2020,42 @@ export function useSignUpMutation(baseOptions?: Apollo.MutationHookOptions<SignU
 export type SignUpMutationHookResult = ReturnType<typeof useSignUpMutation>;
 export type SignUpMutationResult = Apollo.MutationResult<SignUpMutation>;
 export type SignUpMutationOptions = Apollo.BaseMutationOptions<SignUpMutation, SignUpMutationVariables>;
+export const CreateWithdrawalRequestDocument = gql`
+    mutation CreateWithdrawalRequest($input: CreateWithdrawalRequestInput!) {
+  createWithdrawalRequest(input: $input) {
+    success
+    withdrawalRequest {
+      ...WithdrawalRequestFragment
+    }
+  }
+}
+    ${WithdrawalRequestFragmentFragmentDoc}`;
+export type CreateWithdrawalRequestMutationFn = Apollo.MutationFunction<CreateWithdrawalRequestMutation, CreateWithdrawalRequestMutationVariables>;
+
+/**
+ * __useCreateWithdrawalRequestMutation__
+ *
+ * To run a mutation, you first call `useCreateWithdrawalRequestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateWithdrawalRequestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createWithdrawalRequestMutation, { data, loading, error }] = useCreateWithdrawalRequestMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateWithdrawalRequestMutation(baseOptions?: Apollo.MutationHookOptions<CreateWithdrawalRequestMutation, CreateWithdrawalRequestMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateWithdrawalRequestMutation, CreateWithdrawalRequestMutationVariables>(CreateWithdrawalRequestDocument, options);
+      }
+export type CreateWithdrawalRequestMutationHookResult = ReturnType<typeof useCreateWithdrawalRequestMutation>;
+export type CreateWithdrawalRequestMutationResult = Apollo.MutationResult<CreateWithdrawalRequestMutation>;
+export type CreateWithdrawalRequestMutationOptions = Apollo.BaseMutationOptions<CreateWithdrawalRequestMutation, CreateWithdrawalRequestMutationVariables>;
 export const LogoutDocument = gql`
     mutation Logout {
   logout {

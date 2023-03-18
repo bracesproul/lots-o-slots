@@ -1,5 +1,3 @@
-@use './components/styles.scss' as componentStyles;
-
 .admin-accounts-page {
   @apply flex flex-col gap-[24px];
   font-family: 'Inter', sans-serif;

@@ -26,3 +26,4 @@ export { default as EditSvg } from './EditSvg';
 export { default as TrashCanSvg } from './TrashCanSvg';
 export { default as CircleCheckMarkSvg } from './CircleCheckMarkSvg';
 export { default as ReverseArrowSvg } from './ReverseArrowSvg';
+export { default as CircleXSvg } from './CircleXSvg';
