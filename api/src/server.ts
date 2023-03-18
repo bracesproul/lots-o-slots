@@ -23,7 +23,8 @@ async function serverSetup(): Promise<express.Application> {
         if (
           process.env.NODE_ENV === 'staging' &&
           requestOrigin &&
-          requestOrigin.endsWith('.vercel.app')
+          (requestOrigin.endsWith('.vercel.app') ||
+            requestOrigin.endsWith('.lotsoslots.co'))
         ) {
           return callback(null, true);
         }

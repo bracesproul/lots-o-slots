@@ -87,9 +87,7 @@ function WithdrawalRequestCard(
                   value={paymentProvider}
                   onChange={(e) => {
                     if (typeof e !== 'string') return;
-
                     const newPaymentProvider = getPaymentProviderFromString(e);
-                    console.log('new payment provider', newPaymentProvider);
                     setPaymentProvider(newPaymentProvider);
                   }}
                   className={'bg-white text-black w-[350px]'}

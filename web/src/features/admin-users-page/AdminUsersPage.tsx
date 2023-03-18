@@ -1,8 +1,15 @@
-import { FormEvent, ReactElement, useState } from 'react';
+import { FormEvent, ReactElement, useMemo, useState } from 'react';
 import { StylePrefix } from '@/types/style-prefix';
 import { DashboardPageHeader, ConfirmDeleteDialog } from '@/features';
 import { PageType } from '@/types';
-import { Badge, DataTable, InteractableComponent, Text } from '@/components';
+import {
+  Badge,
+  Button,
+  DataTable,
+  InteractableComponent,
+  SearchField,
+  Text,
+} from '@/components';
 import { ColumnDef } from '@tanstack/react-table';
 import { UserRole } from '@/generated/graphql';
 import { format } from 'date-fns';
@@ -11,6 +18,7 @@ import { useGetUsersQuery, useDeleteUserMutation } from '@/generated/graphql';
 import { getUserFromUserQuery } from './utils';
 import { UserForm } from './components';
 import useEditUserQueryParams from './useEditUserQueryParams';
+import useSearchQuery, { SearchQueryParam } from '@/hooks/useSearchQuery';
 
 export type AdminUsersPageProps = {
   /** The users to display in the table */
@@ -23,6 +31,8 @@ export type AdminUsersPageProps = {
   setOpen: (open: boolean) => void;
   /** Event handler for deleting the users account */
   handleDeleteAccount: (e: FormEvent<HTMLFormElement>) => void;
+  /** Event handler for setting the query params for a search value */
+  setSearchQuery: (search: string, queryParam: SearchQueryParam) => void;
 };
 
 const PREFIX = StylePrefix.ADMIN_USERS_PAGE;
@@ -62,6 +72,27 @@ function AdminUsersPage(props: AdminUsersPageProps): ReactElement {
   return (
     <div className={`${PREFIX}`}>
       <DashboardPageHeader includePageNav page={PageType.ADMIN_USERS} />
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          // @typescript-eslint/ban-ts-comment
+          // eslint-disable-next-line
+              // @ts-ignore
+          const input = e.target.elements['usersSearch']; // get the input element by its name
+          const value = input.value; // get the input value
+          p.setSearchQuery(value, SearchQueryParam.USERS_SEARCH);
+        }}
+        className={`${PREFIX}-search-form`}
+      >
+        <SearchField
+          name="usersSearch"
+          aria-label="Search Users"
+          placeholder="Search"
+        />
+        <Button variant="secondary" size="xsmall" type="submit">
+          Submit
+        </Button>
+      </form>
       <div className={`${PREFIX}-content`}>
         <div className={`${PREFIX}-table-wrapper`}>
           <DataTable
@@ -70,7 +101,7 @@ function AdminUsersPage(props: AdminUsersPageProps): ReactElement {
             columns={p.columns}
             isLeftMostColumnSticky
             isRightMostColumnSticky
-            onRowPress={console.log}
+            onRowPress={() => undefined}
           />
         </div>
         <div className={`${PREFIX}-form-wrapper`}>
@@ -94,6 +125,8 @@ export default function AdminUsersPageContainer(): ReactElement {
   const { updateUserId, removeUserId, userId } = useEditUserQueryParams();
   const [open, setOpen] = useState(false);
   const [deleteUser] = useDeleteUserMutation();
+  const { addSearchQueryParam, getQueryParams } = useSearchQuery();
+  const usersSearchQuery = getQueryParams(SearchQueryParam.USERS_SEARCH);
 
   const columns: ColumnDef<User>[] = [
     {
@@ -201,13 +234,33 @@ export default function AdminUsersPageContainer(): ReactElement {
     removeUserId();
   };
 
+  const setSearchQuery = (search: string, queryParam: SearchQueryParam) => {
+    const params = encodeURIComponent(search);
+    addSearchQueryParam([params], queryParam);
+  };
+
+  const filteredUserData = useMemo(() => {
+    if (!usersSearchQuery) {
+      return users;
+    }
+    const query = decodeURIComponent(usersSearchQuery[0]);
+    return users.filter((user) => {
+      return Object.values(user).some((value) => {
+        return (
+          value && value.toString().toLowerCase().includes(query.toLowerCase())
+        );
+      });
+    });
+  }, [users, usersSearchQuery]);
+
   return (
     <AdminUsersPage
       open={open}
       setOpen={setOpen}
-      users={users}
+      users={filteredUserData}
       columns={columns}
       handleDeleteAccount={handleDeleteAccount}
+      setSearchQuery={setSearchQuery}
     />
   );
 }

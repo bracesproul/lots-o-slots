@@ -14,3 +14,8 @@
   @apply flex mr-[36px];
   @apply w-[40%];
 }
+
+.admin-accounts-page-search-form {
+  @apply flex flex-row gap-[8px] items-center;
+  @apply ml-[36px];
+}

@@ -1,9 +1,16 @@
-import { FormEvent, ReactElement, useState } from 'react';
+import { FormEvent, ReactElement, useMemo, useState } from 'react';
 import { StylePrefix } from '@/types/style-prefix';
 import { ConfirmDeleteDialog, DashboardPageHeader } from '@/features';
 import { PageType, PaymentProvider } from '@/types';
 import { GameType } from '@/generated/graphql';
-import { DataTable, Badge, InteractableComponent, Text } from '@/components';
+import {
+  DataTable,
+  Badge,
+  InteractableComponent,
+  Text,
+  SearchField,
+  Button,
+} from '@/components';
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { findBadgeVariantFromPaymentType } from '../play-now-dialog-depd/utils';
@@ -18,6 +25,7 @@ import {
   useDeletePaymentMutation,
   useDeleteUserPaymentMutation,
 } from '@/generated/graphql';
+import useSearchQuery, { SearchQueryParam } from '@/hooks/useSearchQuery';
 
 export type AdminPaymentsPageProps = {
   /** The data table columns */
@@ -36,37 +44,86 @@ export type AdminPaymentsPageProps = {
   setOpen: (open: boolean) => void;
   /** Event handler for deleting the payment */
   handleDeleteAccount: (e: FormEvent<HTMLFormElement>) => void;
+  /** Event handler for setting the query params for a search value */
+  setSearchQuery: (search: string, queryParam: SearchQueryParam) => void;
 };
 
 const PREFIX = StylePrefix.ADMIN_PAYMENTS_PAGE;
 
 function AdminPaymentsPage(props: AdminPaymentsPageProps): ReactElement {
   const p = props;
+
   return (
     <div className={`${PREFIX}`}>
       <DashboardPageHeader includePageNav page={PageType.ADMIN_PAYMENTS} />
       <div className="flex flex-col gap-[24px] justify-center mx-[20%]">
-        <Text className="text-white" type="h2">
-          Pending Payments
-        </Text>
+        <div className={`${PREFIX}-table-header`}>
+          <Text className="text-white" type="h2">
+            Pending Payments
+          </Text>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              // @typescript-eslint/ban-ts-comment
+              // eslint-disable-next-line
+              // @ts-ignore
+              const input = e.target.elements['pendingSearch']; // get the input element by its name
+              const value = input.value; // get the input value
+              p.setSearchQuery(value, SearchQueryParam.PENDING_PAYMENTS);
+            }}
+            className="flex flex-row gap-[8px] items-center"
+          >
+            <SearchField
+              name="pendingSearch"
+              aria-label="Search Pending Payments"
+              placeholder="Search"
+            />
+            <Button variant="secondary" size="xsmall" type="submit">
+              Submit
+            </Button>
+          </form>
+        </div>
         <DataTable
           isLoading={p.isPendingTableLoading}
           data={p.pendingPaymentsData}
           columns={p.columns}
           isLeftMostColumnSticky
           isRightMostColumnSticky
-          onRowPress={console.log}
+          onRowPress={() => undefined}
         />
-        <Text className="text-white" type="h2">
-          Processed Payments
-        </Text>
+        <div className={`${PREFIX}-table-header`}>
+          <Text className="text-white" type="h2">
+            Processed Payments
+          </Text>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              // @typescript-eslint/ban-ts-comment
+              // eslint-disable-next-line
+              // @ts-ignore
+              const input = e.target.elements['processedSearch']; // get the input element by its name
+              const value = input.value; // get the input value
+              p.setSearchQuery(value, SearchQueryParam.PROCESSED_PAYMENTS);
+            }}
+            className="flex flex-row gap-[8px] items-center"
+          >
+            <SearchField
+              name="processedSearch"
+              aria-label="Search Processed Payments"
+              placeholder="Search"
+            />
+            <Button variant="secondary" size="xsmall" type="submit">
+              Submit
+            </Button>
+          </form>
+        </div>
         <DataTable
           isLoading={p.isProcessedTableLoading}
           data={p.processedPaymentsData}
           columns={p.columns}
           isLeftMostColumnSticky
           isRightMostColumnSticky
-          onRowPress={console.log}
+          onRowPress={() => undefined}
         />
       </div>
       <ConfirmDeleteDialog
@@ -122,6 +179,12 @@ export default function AdminPaymentsPageContainer(): ReactElement {
   const [open, setOpen] = useState(false);
   const [paymentIdToDelete, setPaymentIdToDelete] = useState('');
   const [paymentTypeToDelete, setPaymentTypeToDelete] = useState<PaymentType>();
+
+  const { addSearchQueryParam, getQueryParams } = useSearchQuery();
+  const pendingSearchQuery = getQueryParams(SearchQueryParam.PENDING_PAYMENTS);
+  const processedSearchQuery = getQueryParams(
+    SearchQueryParam.PROCESSED_PAYMENTS
+  );
 
   const processedPayments: Payment[] =
     processedPaymentsData?.getAllPayments.map((payment) => ({
@@ -331,8 +394,6 @@ export default function AdminPaymentsPageContainer(): ReactElement {
 
   const onDeletePayment = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log('paymentIdToDelete', paymentIdToDelete);
-    console.log('paymentTypeToDelete', paymentTypeToDelete);
     if (paymentTypeToDelete === PaymentType.USER_SUBMITTED) {
       await deleteUserPayment({
         variables: {
@@ -357,7 +418,6 @@ export default function AdminPaymentsPageContainer(): ReactElement {
           'GetPendingUserPayments',
         ],
       });
-      console.log('errors', errors);
     }
     setPaymentIdToDelete('');
     setPaymentTypeToDelete(undefined);
@@ -402,16 +462,50 @@ export default function AdminPaymentsPageContainer(): ReactElement {
     }
   };
 
+  const setSearchQuery = (search: string, queryParam: SearchQueryParam) => {
+    const params = encodeURIComponent(search);
+    addSearchQueryParam([params], queryParam);
+  };
+
+  const filteredPendingData = useMemo(() => {
+    if (!pendingSearchQuery) {
+      return allPendingPayments;
+    }
+    const query = decodeURIComponent(pendingSearchQuery[0]);
+    return allPendingPayments.filter((payment) => {
+      return Object.values(payment).some((value) => {
+        return (
+          value && value.toString().toLowerCase().includes(query.toLowerCase())
+        );
+      });
+    });
+  }, [allPendingPayments, pendingSearchQuery]);
+
+  const filteredProcessedData = useMemo(() => {
+    if (!processedSearchQuery) {
+      return allProcessedPayments;
+    }
+    const query = decodeURIComponent(processedSearchQuery[0]);
+    return allProcessedPayments.filter((payment) => {
+      return Object.values(payment).some((value) => {
+        return (
+          value && value.toString().toLowerCase().includes(query.toLowerCase())
+        );
+      });
+    });
+  }, [allProcessedPayments, processedSearchQuery]);
+
   return (
     <AdminPaymentsPage
       columns={columns}
-      pendingPaymentsData={allPendingPayments}
-      processedPaymentsData={allProcessedPayments}
+      pendingPaymentsData={filteredPendingData}
+      processedPaymentsData={filteredProcessedData}
       isPendingTableLoading={isPendingTableLoading}
       isProcessedTableLoading={isProcessedTableLoading}
       handleDeleteAccount={onDeletePayment}
       open={open}
       setOpen={setOpen}
+      setSearchQuery={setSearchQuery}
     />
   );
 }

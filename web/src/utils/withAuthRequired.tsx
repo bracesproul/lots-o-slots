@@ -169,7 +169,6 @@ export const withLogout =
     }
   ) =>
   async (context: GetServerSidePropsContext): Promise<WithAuthResult> => {
-    console.log('starting with logout');
     const incomingApolloState: NormalizedCacheObject | null = null;
     const apolloClient = initializeApollo(incomingApolloState, {
       cookie: context.req.headers.cookie,

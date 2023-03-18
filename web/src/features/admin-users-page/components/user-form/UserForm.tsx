@@ -18,8 +18,8 @@ const PREFIX = StylePrefix.USER_FORM;
 
 type FormData = Omit<UserInfoFormData, 'password' | 'setPassword'> & {
   /** Whether or not the user is an admin. */
-  isAdmin: boolean;
-  setIsAdmin: (isAdmin: boolean) => void;
+  isAdmin: boolean | undefined;
+  setIsAdmin: (isAdmin: boolean | undefined) => void;
 };
 
 type InitialFormData = Omit<InitialFormValues, 'password'> & {
@@ -68,6 +68,13 @@ function UserForm(props: UserFormProps): ReactElement {
     isAdmin,
     setIsAdmin,
   } = p.formData;
+
+  const isAdminChecked = () => {
+    if (isAdmin === undefined && p.initialFormValues?.isAdmin) {
+      return true;
+    }
+    return isAdmin;
+  };
 
   return (
     <div className={clsx(PREFIX, p.className)}>
@@ -122,14 +129,10 @@ function UserForm(props: UserFormProps): ReactElement {
             />
             <Checkbox
               label="Admin"
-              checked={
-                p.initialFormValues?.isAdmin
-                  ? p.initialFormValues.isAdmin
-                  : isAdmin
-              }
+              checked={isAdminChecked()}
               onCheckedChange={(e: any) => {
                 if (typeof e === 'boolean') {
-                  setIsAdmin(!isAdmin);
+                  setIsAdmin(e);
                 }
               }}
               className={`${PREFIX}-checkbox`}
@@ -203,7 +206,7 @@ export default function UserFormContainer(
   const [lastName, setLastName] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState<boolean | undefined>(undefined);
   const [password, setPassword] = useState('');
   const [step, setStep] = useState(CreateUserStep.USER_INFO);
 
@@ -229,12 +232,19 @@ export default function UserFormContainer(
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (userId) {
+      const passwordToUse = () => {
+        const passwordFromQuery = data?.getUserById?.password;
+        if (passwordFromQuery) {
+          return passwordFromQuery;
+        }
+        return generatedPassword;
+      };
       await updateUser({
         variables: {
           input: {
             id: userId,
             email: email === '' ? initialFormValues?.email : email,
-            password: generatedPassword,
+            password: passwordToUse(),
             data: {
               role: isAdmin ? UserRole.ADMIN : UserRole.USER,
               firstName:

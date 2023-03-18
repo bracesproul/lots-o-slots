@@ -117,7 +117,6 @@ function AccountForm(props: AccountFormProps): ReactElement {
               if (typeof e !== 'string') return;
 
               const newPaymentProvider = getPaymentProviderFromString(e);
-              console.log('new payment provider', newPaymentProvider);
               setPaymentProvider(newPaymentProvider);
             }}
             className={'bg-white text-black w-[350px]'}
@@ -137,7 +136,6 @@ function AccountForm(props: AccountFormProps): ReactElement {
               isDisabled={p.isSubmitDisabled}
               variant="primary"
               className={`${PREFIX}-submit-button`}
-              onPress={() => console.log('save pressed')}
             >
               Save
             </Button>
