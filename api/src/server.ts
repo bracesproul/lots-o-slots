@@ -28,12 +28,6 @@ async function serverSetup(): Promise<express.Application> {
         ) {
           return callback(null, true);
         }
-
-        // console.error(
-        //   `Could not accept origin: ${requestOrigin} with ${process.env.CORS_ORIGIN}`
-        // );
-
-        // callback(new Error('Not allowed.'), false);
         return callback(null, true);
       },
       credentials: true,
