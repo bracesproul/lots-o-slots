@@ -27,3 +27,5 @@ export { default as TrashCanSvg } from './TrashCanSvg';
 export { default as CircleCheckMarkSvg } from './CircleCheckMarkSvg';
 export { default as ReverseArrowSvg } from './ReverseArrowSvg';
 export { default as CircleXSvg } from './CircleXSvg';
+export { default as RedoCircleSvg } from './RedoCircleSvg';
+export { default as NotePadPencilSvg } from './NotePadPencilSvg';

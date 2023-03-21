@@ -2,7 +2,7 @@ import { FormEvent, ReactElement, useMemo, useState } from 'react';
 import { StylePrefix } from '@/types/style-prefix';
 import { ConfirmDeleteDialog, DashboardPageHeader } from '@/features';
 import { PageType, PaymentProvider } from '@/types';
-import { GameType } from '@/generated/graphql';
+import { GameType, PaymentStatus } from '@/generated/graphql';
 import {
   DataTable,
   Badge,
@@ -16,13 +16,13 @@ import { format } from 'date-fns';
 import { findBadgeVariantFromPaymentType } from '../play-now-dialog-depd/utils';
 import { CircleCheckMarkSvg, ReverseArrowSvg, TrashCanSvg } from '@/assets';
 import {
-  useGetProcessedPaymentsQuery,
-  useGetPendingPaymentsQuery,
+  useGetProcessedTransactionsQuery,
+  useGetPendingTransactionsQuery,
   useGetProcessedUserPaymentsQuery,
   useGetPendingUserPaymentsQuery,
-  useUpdatePaymentStatusMutation,
+  useUpdateTransactionStatusMutation,
   useUpdateUserPaymentStatusMutation,
-  useDeletePaymentMutation,
+  useDeleteTransactionMutation,
   useDeleteUserPaymentMutation,
 } from '@/generated/graphql';
 import useSearchQuery, { SearchQueryParam } from '@/hooks/useSearchQuery';
@@ -162,19 +162,19 @@ export type Payment = {
 };
 
 export default function AdminPaymentsPageContainer(): ReactElement {
-  const { data: processedPaymentsData, loading: processedPaymentsLoading } =
-    useGetProcessedPaymentsQuery();
-  const { data: pendingPaymentsData, loading: pendingPaymentsLoading } =
-    useGetPendingPaymentsQuery();
+  const { data: processedTransactionsData, loading: processedPaymentsLoading } =
+    useGetProcessedTransactionsQuery();
+  const { data: pendingTransactionsData, loading: pendingPaymentsLoading } =
+    useGetPendingTransactionsQuery();
   const {
     data: processedUserPaymentsData,
     loading: processedUserPaymentsLoading,
   } = useGetProcessedUserPaymentsQuery();
   const { data: pendingUserPaymentsData, loading: pendingUserPaymentsLoading } =
     useGetPendingUserPaymentsQuery();
-  const [updatePaymentStatus] = useUpdatePaymentStatusMutation();
+  const [updateTransactionStatus] = useUpdateTransactionStatusMutation();
   const [updateUserPaymentStatus] = useUpdateUserPaymentStatusMutation();
-  const [deletePayment] = useDeletePaymentMutation();
+  const [deleteTransaction] = useDeleteTransactionMutation();
   const [deleteUserPayment] = useDeleteUserPaymentMutation();
   const [open, setOpen] = useState(false);
   const [paymentIdToDelete, setPaymentIdToDelete] = useState('');
@@ -187,26 +187,26 @@ export default function AdminPaymentsPageContainer(): ReactElement {
   );
 
   const processedPayments: Payment[] =
-    processedPaymentsData?.getAllPayments.map((payment) => ({
-      id: payment.id,
-      amount: payment.amount,
-      date: new Date(payment.createdAt),
-      processed: payment.processed,
+    processedTransactionsData?.getAllTransactions.map((transaction) => ({
+      id: transaction.id,
+      amount: transaction.amount,
+      date: new Date(transaction.createdAt),
+      processed: true,
       game: undefined,
       type: PaymentType.SCRAPED,
-      paymentMethod: payment.provider,
-      userIdentifier: payment.senderName,
+      paymentMethod: transaction.provider,
+      userIdentifier: transaction.senderName,
     })) ?? [];
   const pendingPayments: Payment[] =
-    pendingPaymentsData?.getAllPayments.map((payment) => ({
-      id: payment.id,
-      amount: payment.amount,
-      date: new Date(payment.createdAt),
-      processed: payment.processed,
+    pendingTransactionsData?.getAllTransactions.map((transaction) => ({
+      id: transaction.id,
+      amount: transaction.amount,
+      date: new Date(transaction.createdAt),
+      processed: false,
       game: undefined,
       type: PaymentType.SCRAPED,
-      paymentMethod: payment.provider,
-      userIdentifier: payment.senderName,
+      paymentMethod: transaction.provider,
+      userIdentifier: transaction.senderName,
     })) ?? [];
   const processedUserPayments: Payment[] =
     processedUserPaymentsData?.getUserPayments.map((payment) => {
@@ -392,7 +392,7 @@ export default function AdminPaymentsPageContainer(): ReactElement {
   const isProcessedTableLoading =
     processedPaymentsLoading || processedUserPaymentsLoading;
 
-  const onDeletePayment = async (event: FormEvent<HTMLFormElement>) => {
+  const onDeleteTransaction = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (paymentTypeToDelete === PaymentType.USER_SUBMITTED) {
       await deleteUserPayment({
@@ -400,20 +400,20 @@ export default function AdminPaymentsPageContainer(): ReactElement {
           id: paymentIdToDelete,
         },
         refetchQueries: [
-          'GetProcessedPayments',
-          'GetPendingPayments',
+          'GetProcessedTransactions',
+          'GetPendingTransactions',
           'GetProcessedUserPayments',
           'GetPendingUserPayments',
         ],
       });
     } else {
-      const { data, errors } = await deletePayment({
+      const { data, errors } = await deleteTransaction({
         variables: {
           id: paymentIdToDelete,
         },
         refetchQueries: [
-          'GetProcessedPayments',
-          'GetPendingPayments',
+          'GetProcessedTransactions',
+          'GetPendingTransactions',
           'GetProcessedUserPayments',
           'GetPendingUserPayments',
         ],
@@ -438,23 +438,23 @@ export default function AdminPaymentsPageContainer(): ReactElement {
           },
         },
         refetchQueries: [
-          'GetProcessedPayments',
-          'GetPendingPayments',
+          'GetProcessedTransactions',
+          'GetPendingTransactions',
           'GetProcessedUserPayments',
           'GetPendingUserPayments',
         ],
       });
     } else {
-      await updatePaymentStatus({
+      await updateTransactionStatus({
         variables: {
           input: {
             id,
-            processed,
+            status: processed ? PaymentStatus.COMPLETED : PaymentStatus.PENDING,
           },
         },
         refetchQueries: [
-          'GetProcessedPayments',
-          'GetPendingPayments',
+          'GetProcessedTransactions',
+          'GetPendingTransactions',
           'GetProcessedUserPayments',
           'GetPendingUserPayments',
         ],
@@ -502,7 +502,7 @@ export default function AdminPaymentsPageContainer(): ReactElement {
       processedPaymentsData={filteredProcessedData}
       isPendingTableLoading={isPendingTableLoading}
       isProcessedTableLoading={isProcessedTableLoading}
-      handleDeleteAccount={onDeletePayment}
+      handleDeleteAccount={onDeleteTransaction}
       open={open}
       setOpen={setOpen}
       setSearchQuery={setSearchQuery}

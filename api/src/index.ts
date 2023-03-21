@@ -2,6 +2,7 @@ import postgresConnection from '@/config/typeorm';
 import serverSetup from './server';
 import { startJobs } from './worker';
 import { config as setupEnv } from 'dotenv-flow';
+import { EmailType, execute, imap } from './services/imap';
 
 setupEnv({ silent: true });
 
@@ -12,7 +13,7 @@ async function main() {
     console.info('🤠 Database connected!');
   });
 
-  startJobs();
+  // startJobs();
 
   const app = await serverSetup();
   app.listen(process.env.PORT, () => {

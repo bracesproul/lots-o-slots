@@ -57,8 +57,9 @@ export default class TransactionRepository extends AbstractRepository<Transactio
   }): Promise<Transaction> {
     let emailLog: EmailLogV2 = {} as EmailLogV2;
     if (!emailLogId) {
+      const randomNegativeNumber = Math.floor(Math.random() * -1000);
       emailLog = await getCustomRepository(EmailLogV2Repository).create({
-        emailId: 0,
+        emailId: randomNegativeNumber,
         subject: 'Admin created transaction',
         body: 'Admin created transaction',
         receivedAt: new Date(),

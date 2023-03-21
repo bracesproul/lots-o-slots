@@ -59,7 +59,7 @@ export class TransactionResolver {
   }
 
   @Mutation(() => DeleteTransactionPayload, { nullable: false })
-  async deletePayment(
+  async deleteTransaction(
     @Arg('id', { nullable: false }) id: string
   ): Promise<DeleteTransactionPayload> {
     await getRepository(Transaction).delete(id);

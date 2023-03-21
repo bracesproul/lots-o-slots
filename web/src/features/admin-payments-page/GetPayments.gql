@@ -1,13 +1,13 @@
-query GetProcessedPayments($input: GetPaymentsInput = { processed: true }) {
-  getAllPayments(input: $input) {
-    ...PaymentFragment
+query GetProcessedTransactions($input: GetTransactionsInput = { status: COMPLETED }) {
+  getAllTransactions(input: $input) {
+    ...Transaction
     createdAt
   }
 }
 
-query GetPendingPayments($input: GetPaymentsInput = { processed: false }) {
-  getAllPayments(input: $input) {
-    ...PaymentFragment
+query GetPendingTransactions($input: GetTransactionsInput = { status: PENDING }) {
+  getAllTransactions(input: $input) {
+    ...Transaction
     createdAt
   }
 }

@@ -1,7 +1,7 @@
 import { GraphQLSchema } from 'graphql';
 import { buildSchema } from 'type-graphql';
 import {
-  PaymentResolver,
+  // PaymentResolver,
   UserResolver,
   EmailLogResolver,
   AccountResolver,
@@ -11,12 +11,13 @@ import {
   UserV2Resolver,
   WithdrawalRequestResolver,
   TransactionResolver,
+  EmailLogV2Resolver,
 } from '@/resolvers';
 
 export default (): Promise<GraphQLSchema> =>
   buildSchema({
     resolvers: [
-      PaymentResolver,
+      // PaymentResolver,
       UserResolver,
       EmailLogResolver,
       AccountResolver,
@@ -26,6 +27,7 @@ export default (): Promise<GraphQLSchema> =>
       UserV2Resolver,
       WithdrawalRequestResolver,
       TransactionResolver,
+      EmailLogV2Resolver,
     ],
     // validate: process.env.NODE_ENV === 'production' ? true : false,
     validate: false,

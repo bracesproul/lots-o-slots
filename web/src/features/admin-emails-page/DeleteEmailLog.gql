@@ -1,0 +1,5 @@
+mutation DeleteEmailLog($id: String!) {
+  deleteEmailLog(id: $id) {
+    success
+  }
+}

@@ -1,5 +1,5 @@
-mutation DeletePayment($id: String!) {
-  deletePayment(id: $id) {
+mutation DeleteTransaction($id: String!) {
+  deleteTransaction(id: $id) {
     success
   }
 }

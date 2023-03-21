@@ -1,0 +1,8 @@
+mutation CreateTransaction($input: CreateTransactionInput!) {
+  createTransaction(input: $input) {
+    success
+    transaction {
+      ...Transaction
+    }
+  }
+}

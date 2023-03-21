@@ -1,10 +1,12 @@
 import { Button } from '@/components';
 import {
   ADMIN_ACCOUNTS_PAGE,
+  ADMIN_EMAIL_LIST_PAGE,
   ADMIN_PAGE,
   ADMIN_PAYMENTS_PAGE,
   ADMIN_USERS_PAGE,
   ADMIN_WITHDRAWALS_PAGE,
+  pageName,
   PageType,
   StylePrefix,
 } from '@/types';
@@ -24,25 +26,6 @@ export type AdminPageHeaderProps = {
 };
 
 const PREFIX = StylePrefix.ADMIN_PAGE_HEADER;
-
-const pageName = (page: PageType) => {
-  switch (page) {
-    case PageType.ADMIN:
-      return 'Admin';
-    case PageType.ADMIN_USERS:
-      return 'Users';
-    case PageType.ADMIN_PAYMENTS:
-      return 'Payments';
-    case PageType.ADMIN_ACCOUNTS:
-      return 'Accounts';
-    case PageType.ADMIN_WITHDRAWALS:
-      return 'Withdrawals';
-    case PageType.USER:
-      return 'User';
-    default:
-      'Admin';
-  }
-};
 
 const DEFAULT_PROPS = {
   includePageNav: false,
@@ -101,6 +84,14 @@ export default function DashboardPageHeader(
             href={ADMIN_WITHDRAWALS_PAGE}
           >
             /withdrawals
+          </Link>
+          <Link
+            className={clsx(`${PREFIX}-nav-item`, {
+              'is-selected': router.pathname === ADMIN_EMAIL_LIST_PAGE,
+            })}
+            href={ADMIN_EMAIL_LIST_PAGE}
+          >
+            /emails
           </Link>
         </div>
       )}

@@ -1,17 +1,41 @@
 import { CronJob } from 'cron';
-import { fetchEmails } from './jobs';
+import { fetchBoFAEmails, fetchPayPalEmails, fetchCashAppEmails } from './jobs';
 
 export function startJobs() {
-  const fetchEmailsJob = new CronJob(
+  const fetchBofaJob = new CronJob(
     '* 3 * * * *',
     function () {
       console.log('Starting fetchEmailsJob...');
-      fetchEmails();
+      fetchBoFAEmails();
     },
     null,
     true,
     'America/Los_Angeles'
   );
 
-  fetchEmailsJob.start();
+  const fetchPaypalJob = new CronJob(
+    '* 3 * * * *',
+    function () {
+      console.log('Starting fetchEmailsJob...');
+      fetchPayPalEmails();
+    },
+    null,
+    true,
+    'America/Los_Angeles'
+  );
+
+  const fetchCashappJob = new CronJob(
+    '* 3 * * * *',
+    function () {
+      console.log('Starting fetchEmailsJob...');
+      fetchCashAppEmails();
+    },
+    null,
+    true,
+    'America/Los_Angeles'
+  );
+
+  fetchBofaJob.start();
+  fetchPaypalJob.start();
+  fetchCashappJob.start();
 }
