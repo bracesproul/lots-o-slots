@@ -75,7 +75,7 @@ function AddTransactionForm(props: AddTransactionFormProps): ReactElement {
     <div className={clsx(PREFIX, p.className)}>
       <form onSubmit={(e) => p.handleSubmit(e)}>
         <div className={`${PREFIX}-instructions`}>
-          <h1 className={`${PREFIX}-heading`}>Add/Edit Account</h1>
+          <h1 className={`${PREFIX}-heading`}>Add New Transaction</h1>
         </div>
         <div className={`${PREFIX}-fields`}>
           <Input
