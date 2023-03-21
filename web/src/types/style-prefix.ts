@@ -48,4 +48,6 @@ export enum StylePrefix {
   WITHDRAWAL_REQUEST_CARD = 'withdrawal-request-card',
   SEARCH_FIELD = 'search-field',
   ADMIN_WITHDRAWALS_PAGE = 'admin-withdrawals-page',
+  ADMIN_EMAILS_PAGE = 'admin-emails-page',
+  ADD_TRANSACTION_FORM = 'add-transaction-form',
 }

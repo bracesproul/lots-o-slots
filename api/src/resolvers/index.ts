@@ -8,3 +8,4 @@ export { AuthResolver } from './Auth';
 export { UserV2Resolver } from './UserV2';
 export { WithdrawalRequestResolver } from './WithdrawalRequest';
 export { TransactionResolver } from './Transaction';
+export { EmailLogV2Resolver } from './EmailLogV2';

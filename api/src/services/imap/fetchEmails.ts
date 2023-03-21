@@ -16,6 +16,7 @@ import {
 import { ParsedEmailPayload } from '@/types/parsed-email';
 import { PaymentStatus, PaymentType } from '@/entities/Transaction/types';
 import { PaymentProvider } from '@/entities/Payment/Payment';
+import { EmailLogV2 } from '@/entities';
 
 export enum EmailType {
   PAYPAL = 'PAYPAL',
@@ -23,6 +24,10 @@ export enum EmailType {
   CASHAPP_DEPOSIT = 'CASHAPP_DEPOSIT',
   CASHAPP_WITHDRAWAL = 'CASHAPP_WITHDRAWAL',
 }
+
+const FROM_LIST = [
+  'customerservice@ealerts.bankofamerica.com, service@paypal.com, cash@square.com',
+];
 
 async function getRecentEmail(type: EmailType) {
   const provider =
@@ -34,12 +39,12 @@ async function getRecentEmail(type: EmailType) {
   const emailLog = await getCustomRepository(
     TransactionRepository
   ).getRecentUpdate(provider);
-  return emailLog?.emailLog.emailId ?? 0;
+  return emailLog?.emailLog.emailId ?? 1;
 }
 
 export function execute(from: string, type: EmailType) {
   imap.openBox('INBOX', false, function (err: any, mailBox: any) {
-    console.log('mailBox');
+    console.log('mailBox', mailBox.messages.total);
     if (err) {
       console.error('error opening inbox', err);
       return;
@@ -54,17 +59,14 @@ export function execute(from: string, type: EmailType) {
       // Limit the number of emails fetched to 50
       const fetchOptions = {
         bodies: '',
-        limit: 5,
       };
 
       const recentId = await getRecentEmail(type);
 
+      // const f = imap.fetch(results, fetchOptions);
       const f = imap.fetch(results, fetchOptions);
       f.on('message', (msg: any, seqno: any) => {
-        if (seqno > recentId) {
-          // processMessage(msg, seqno, type);
-          return;
-        }
+        processMessage(msg, seqno, type);
       });
       f.once('error', function (err: any) {
         return Promise.reject(err);
@@ -80,10 +82,12 @@ export function execute(from: string, type: EmailType) {
 function processMessage(msg: any, seqno: any, type: EmailType) {
   let subject = '';
   let to = '';
+  let from = '';
 
   const parser = new MailParser();
   parser.on('headers', (headers: any) => {
     subject = headers.get('subject');
+    from = headers.get('from');
     to = headers.get('to').value[0].address;
   });
 
@@ -94,16 +98,9 @@ function processMessage(msg: any, seqno: any, type: EmailType) {
         EmailLogV2Repository
       ).findByEmailId(emailId);
       if (previousEmailLog) {
-        console.log('Email already processed');
         return;
       }
-
-      const emailLog = await getCustomRepository(EmailLogV2Repository).create({
-        emailId,
-        subject,
-        body: data.text,
-        receivedAt: new Date(),
-      });
+      let emailLog: EmailLogV2 = {} as EmailLogV2;
 
       let payload: ParsedEmailPayload = {
         success: false,
@@ -112,16 +109,34 @@ function processMessage(msg: any, seqno: any, type: EmailType) {
 
       if (type === EmailType.PAYPAL) {
         const payPalPayload = parsePayPalPayment(data.text);
+        emailLog = await getCustomRepository(EmailLogV2Repository).create({
+          emailId,
+          subject,
+          body: data.text,
+          receivedAt: new Date(),
+        });
         if (payPalPayload) {
           payload = payPalPayload;
         }
       } else if (type === EmailType.BOFA) {
         const bofaPayload = parseZellePayment(data.text);
+        emailLog = await getCustomRepository(EmailLogV2Repository).create({
+          emailId,
+          subject,
+          body: data.text,
+          receivedAt: new Date(),
+        });
         if (bofaPayload) {
           payload = bofaPayload;
         }
       } else if (type === EmailType.CASHAPP_DEPOSIT) {
         const cashAppPayload = await parseCashAppPayment(data.text);
+        emailLog = await getCustomRepository(EmailLogV2Repository).create({
+          emailId,
+          subject,
+          body: data.text,
+          receivedAt: new Date(),
+        });
         if (cashAppPayload) {
           payload = cashAppPayload;
         }
@@ -135,8 +150,8 @@ function processMessage(msg: any, seqno: any, type: EmailType) {
         };
 
         const paymentType = () => {
-          if (type === EmailType.CASHAPP_WITHDRAWAL)
-            return PaymentType.WITHDRAWAL;
+          // if (type === EmailType.CASHAPP_WITHDRAWAL)
+          //   return PaymentType.WITHDRAWAL;
           return PaymentType.DEPOSIT;
         };
 
@@ -152,7 +167,7 @@ function processMessage(msg: any, seqno: any, type: EmailType) {
           paymentType: paymentType(),
         });
         if (
-          type === EmailType.CASHAPP_WITHDRAWAL ||
+          // type === EmailType.CASHAPP_WITHDRAWAL ||
           type === EmailType.CASHAPP_DEPOSIT
         ) {
           const cashAppTransaction = await getCustomRepository(

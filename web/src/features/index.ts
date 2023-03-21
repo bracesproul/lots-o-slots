@@ -12,3 +12,4 @@ export { AdminPaymentsPage } from './admin-payments-page';
 export { ProfileCard } from './profile-card';
 export { ConfirmDeleteDialog } from './confirm-delete-dialog';
 export { AdminWithdrawalsPage } from './admin-withdrawals-page';
+export { AdminEmailsPage } from './admin-emails-page';

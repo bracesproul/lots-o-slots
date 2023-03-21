@@ -28,6 +28,7 @@ export enum SearchQueryParam {
   PENDING_WITHDRAWALS = 'pending-withdrawals',
   REJECTED_WITHDRAWALS = 'rejected-withdrawals',
   APPROVED_WITHDRAWALS = 'approved-withdrawals',
+  EMAIL_LIST = 'email-list',
 }
 
 const useSearchQuery = (props?: UseSearchQueryOptions): UseSearchQueryValue => {

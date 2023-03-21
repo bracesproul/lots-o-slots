@@ -1,0 +1,29 @@
+.add-transaction-form {
+  @apply flex flex-col w-fit bg-white rounded-lg text-black;
+  @apply p-[36px] h-fit;
+}
+
+.add-transaction-form-instructions {
+  @apply flex flex-col gap-[32px] mb-[18px];
+
+  .add-transaction-form-heading {
+    @apply text-center font-bold tablet:text-lg;
+  }
+}
+
+.add-transaction-form-fields {
+  @apply flex flex-col gap-[16px] items-center justify-center;
+}
+
+.add-transaction-form-submit-button {
+  @apply w-full;
+}
+
+.add-transaction-form-input-label {
+  @apply text-gray-800 text-[12px] font-semibold;
+}
+
+.add-transaction-form-normal-input {
+  @apply w-[350px];
+  @apply border-b-[1px] border-gray-500 rounded-none;
+}
