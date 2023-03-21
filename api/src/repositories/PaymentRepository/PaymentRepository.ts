@@ -4,12 +4,13 @@ import {
   getCustomRepository,
 } from 'typeorm';
 import { Payment, User } from '@/entities';
-import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
+import { PaymentProvider } from '@/entities/Payment/Payment';
 import { GetPaymentsInput } from '@/resolvers/Payment/types';
 import { PayoutUserReturnType } from './types';
 import { EmailObjectType } from '@/types';
 import { ApolloError } from 'apollo-server-express';
 import { UserRepository } from '../UserRepository';
+import { PaymentType } from '@/entities/Transaction/types';
 
 @EntityRepository(Payment)
 export default class PaymentRepository extends AbstractRepository<Payment> {
