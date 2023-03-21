@@ -1,0 +1,5 @@
+mutation BulkUploadUsers($input: BulkUploadUsersInput!) {
+  bulkUploadUsers(input: $input) {
+    success
+  }
+}

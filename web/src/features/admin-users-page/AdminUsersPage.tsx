@@ -16,7 +16,7 @@ import { format } from 'date-fns';
 import { EditSvg, TrashCanSvg } from '@/assets/svgs';
 import { useGetUsersQuery, useDeleteUserMutation } from '@/generated/graphql';
 import { getUserFromUserQuery } from './utils';
-import { UserForm } from './components';
+import { BulkUploadUsersDialog, UserForm } from './components';
 import useEditUserQueryParams from './useEditUserQueryParams';
 import useSearchQuery, { SearchQueryParam } from '@/hooks/useSearchQuery';
 
@@ -33,6 +33,10 @@ export type AdminUsersPageProps = {
   handleDeleteAccount: (e: FormEvent<HTMLFormElement>) => void;
   /** Event handler for setting the query params for a search value */
   setSearchQuery: (search: string, queryParam: SearchQueryParam) => void;
+  /** Whether or not the confirm delete modal is open */
+  bulkUploadOpen: boolean;
+  /** Handler for setting the confirm delete modal to open */
+  setBulkUploadOpen: (open: boolean) => void;
 };
 
 const PREFIX = StylePrefix.ADMIN_USERS_PAGE;
@@ -103,6 +107,14 @@ function AdminUsersPage(props: AdminUsersPageProps): ReactElement {
             isRightMostColumnSticky
             onRowPress={() => undefined}
           />
+          <Button
+            onPress={() => p.setBulkUploadOpen(true)}
+            variant="secondary"
+            size="small"
+            type="submit"
+          >
+            Bulk Upload
+          </Button>
         </div>
         <div className={`${PREFIX}-form-wrapper`}>
           <UserForm />
@@ -113,6 +125,10 @@ function AdminUsersPage(props: AdminUsersPageProps): ReactElement {
         open={p.open}
         setOpen={p.setOpen}
         onSubmit={p.handleDeleteAccount}
+      />
+      <BulkUploadUsersDialog
+        open={p.bulkUploadOpen}
+        setOpen={p.setBulkUploadOpen}
       />
     </div>
   );
@@ -127,6 +143,7 @@ export default function AdminUsersPageContainer(): ReactElement {
   const [deleteUser] = useDeleteUserMutation();
   const { addSearchQueryParam, getQueryParams } = useSearchQuery();
   const usersSearchQuery = getQueryParams(SearchQueryParam.USERS_SEARCH);
+  const [bulkUploadOpen, setBulkUploadOpen] = useState(false);
 
   const columns: ColumnDef<User>[] = [
     {
@@ -261,6 +278,8 @@ export default function AdminUsersPageContainer(): ReactElement {
       columns={columns}
       handleDeleteAccount={handleDeleteAccount}
       setSearchQuery={setSearchQuery}
+      bulkUploadOpen={bulkUploadOpen}
+      setBulkUploadOpen={setBulkUploadOpen}
     />
   );
 }
