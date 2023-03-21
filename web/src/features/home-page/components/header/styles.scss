@@ -9,6 +9,11 @@
 
 .header-nav-wrapper {
   @apply flex flex-col gap-[12px];
-  @apply tablet:flex-row;
+  @apply items-end;
   font-family: 'SEQUEL100-66', sans-serif;
+}
+
+.header-nav-buttons {
+  @apply flex flex-col gap-[12px];
+  @apply tablet:flex-row
 }
