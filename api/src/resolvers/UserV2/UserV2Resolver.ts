@@ -22,6 +22,8 @@ import {
   CreateUserInput,
   UpdateUserAsAdminInput,
   DeleteUserPayload,
+  BulkUploadUsersInput,
+  BulkUploadUsersPayload,
 } from './types';
 import { ContextType } from '@/types';
 import { GraphQLError } from 'graphql';
@@ -207,5 +209,19 @@ export class UserV2Resolver {
       .orderBy('log.loginDate', 'DESC')
       .getMany();
     return logs;
+  }
+
+  @Mutation(() => BulkUploadUsersPayload, { nullable: false })
+  async bulkUploadUsers(
+    @Arg('input', { nullable: false }) input: BulkUploadUsersInput
+  ): Promise<BulkUploadUsersPayload> {
+    const users = await getCustomRepository(UserV2Repository).bulkSignUp(
+      input.users
+    );
+
+    return {
+      success: true,
+      users,
+    };
   }
 }

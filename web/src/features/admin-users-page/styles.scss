@@ -11,7 +11,7 @@
   @apply flex flex-row justify-between;
 
   .admin-users-page-table-wrapper {
-    @apply flex items-start justify-start ml-[36px] w-[60%];
+    @apply flex flex-col items-start justify-start ml-[36px] w-[60%] gap-[36px];
   }
 
   .admin-users-page-table-actions-wrapper {

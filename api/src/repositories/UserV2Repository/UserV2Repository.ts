@@ -245,4 +245,43 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
       httpOnly: false,
     });
   }
+
+  async bulkSignUp(
+    users: { username: string; password: string }[]
+  ): Promise<UserV2[]> {
+    return await Promise.all(
+      users.map(async (user) => {
+        const { username, password } = user;
+        const checkIfUserExists = await this.repository.findOne({
+          where: { username },
+        });
+        if (checkIfUserExists) {
+          throw new UserInputError('User already exists');
+        }
+        const email = `${username}__los_user@lotsoslots.co`;
+        const supabaseUser = await new SupabaseAuth().signUp({
+          email,
+          password,
+          data: {
+            username,
+            firstName: username,
+            lastName: username,
+            role: UserRole.USER,
+          },
+        });
+
+        return this.repository
+          .create({
+            email,
+            password,
+            firstName: username,
+            lastName: username,
+            username: username,
+            role: UserRole.USER,
+            supabaseId: supabaseUser.user.id,
+          })
+          .save();
+      })
+    );
+  }
 }

@@ -248,3 +248,29 @@ export class DeleteUserPayload {
   @Field(() => Boolean)
   success!: boolean;
 }
+
+@InputType()
+export class BasicUser {
+  @Field(() => String)
+  username!: string;
+
+  @Field(() => String)
+  password!: string;
+}
+
+@InputType({
+  description: 'Input type for bulk uploading users',
+})
+export class BulkUploadUsersInput {
+  @Field(() => [BasicUser])
+  users!: BasicUser[];
+}
+
+@ObjectType()
+export class BulkUploadUsersPayload {
+  @Field(() => Boolean)
+  success!: boolean;
+
+  @Field(() => [UserV2])
+  users!: UserV2[];
+}

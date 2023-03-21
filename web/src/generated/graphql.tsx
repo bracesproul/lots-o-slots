@@ -64,6 +64,22 @@ export type AuthorizeAdminUserPayload = {
   success: Scalars['Boolean'];
 };
 
+export type BasicUser = {
+  password: Scalars['String'];
+  username: Scalars['String'];
+};
+
+/** Input type for bulk uploading users */
+export type BulkUploadUsersInput = {
+  users: Array<BasicUser>;
+};
+
+export type BulkUploadUsersPayload = {
+  __typename?: 'BulkUploadUsersPayload';
+  success: Scalars['Boolean'];
+  users: Array<UserV2>;
+};
+
 /** Response type for checking a user session */
 export type CheckSessionPayload = {
   __typename?: 'CheckSessionPayload';
@@ -333,6 +349,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   /** @deprecated Use createAccount instead */
   addAccount: Account;
+  bulkUploadUsers: BulkUploadUsersPayload;
   createAccount: Account;
   createEmailLog: EmailLog;
   createTransaction: CreatedTransactionResponse;
@@ -361,6 +378,11 @@ export type Mutation = {
 
 export type MutationAddAccountArgs = {
   input: AddAccountInput;
+};
+
+
+export type MutationBulkUploadUsersArgs = {
+  input: BulkUploadUsersInput;
 };
 
 
@@ -904,6 +926,13 @@ export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetUsersQuery = { __typename?: 'Query', getAllUsers: Array<{ __typename?: 'UserV2', role: UserRole, createdAt: string, id: string, firstName: string, lastName: string, email: string, username?: string | null }> };
+
+export type BulkUploadUsersMutationVariables = Exact<{
+  input: BulkUploadUsersInput;
+}>;
+
+
+export type BulkUploadUsersMutation = { __typename?: 'Mutation', bulkUploadUsers: { __typename?: 'BulkUploadUsersPayload', success: boolean } };
 
 export type CreateNewUserMutationVariables = Exact<{
   input: CreateUserInput;
@@ -1720,6 +1749,39 @@ export function useGetUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<G
 export type GetUsersQueryHookResult = ReturnType<typeof useGetUsersQuery>;
 export type GetUsersLazyQueryHookResult = ReturnType<typeof useGetUsersLazyQuery>;
 export type GetUsersQueryResult = Apollo.QueryResult<GetUsersQuery, GetUsersQueryVariables>;
+export const BulkUploadUsersDocument = gql`
+    mutation BulkUploadUsers($input: BulkUploadUsersInput!) {
+  bulkUploadUsers(input: $input) {
+    success
+  }
+}
+    `;
+export type BulkUploadUsersMutationFn = Apollo.MutationFunction<BulkUploadUsersMutation, BulkUploadUsersMutationVariables>;
+
+/**
+ * __useBulkUploadUsersMutation__
+ *
+ * To run a mutation, you first call `useBulkUploadUsersMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useBulkUploadUsersMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [bulkUploadUsersMutation, { data, loading, error }] = useBulkUploadUsersMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useBulkUploadUsersMutation(baseOptions?: Apollo.MutationHookOptions<BulkUploadUsersMutation, BulkUploadUsersMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<BulkUploadUsersMutation, BulkUploadUsersMutationVariables>(BulkUploadUsersDocument, options);
+      }
+export type BulkUploadUsersMutationHookResult = ReturnType<typeof useBulkUploadUsersMutation>;
+export type BulkUploadUsersMutationResult = Apollo.MutationResult<BulkUploadUsersMutation>;
+export type BulkUploadUsersMutationOptions = Apollo.BaseMutationOptions<BulkUploadUsersMutation, BulkUploadUsersMutationVariables>;
 export const CreateNewUserDocument = gql`
     mutation CreateNewUser($input: CreateUserInput!) {
   createUser(input: $input) {
