@@ -1,5 +1,6 @@
 import { Account } from '@/entities';
-import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
+import { PaymentProvider } from '@/entities/Payment/Payment';
+import { PaymentType } from '@/entities/Transaction/types';
 import {
   PaymentRepository,
   AccountRepository,

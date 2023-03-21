@@ -10,6 +10,7 @@ import {
   AuthResolver,
   UserV2Resolver,
   WithdrawalRequestResolver,
+  TransactionResolver,
 } from '@/resolvers';
 
 export default (): Promise<GraphQLSchema> =>
@@ -24,6 +25,7 @@ export default (): Promise<GraphQLSchema> =>
       AuthResolver,
       UserV2Resolver,
       WithdrawalRequestResolver,
+      TransactionResolver,
     ],
     // validate: process.env.NODE_ENV === 'production' ? true : false,
     validate: false,

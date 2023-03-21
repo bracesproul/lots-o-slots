@@ -1,10 +1,11 @@
 import { EmailObjectType, ZelleSnippetData } from '@/types';
 import { getCustomRepository } from 'typeorm';
-import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
+import { PaymentProvider } from '@/entities/Payment/Payment';
 import { PaymentRepository, EmailLogRepository } from '@/repositories';
 import { PaymentInfoType } from '@/types/paymentInfo';
 import { logEmail } from '@/utils';
 import { EmailLogType } from '@/entities/EmailLog/EmailLog';
+import { PaymentType } from '@/entities/Transaction/types';
 
 export async function parseZellePayment(
   email: EmailObjectType,

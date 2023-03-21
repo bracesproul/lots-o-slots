@@ -12,7 +12,6 @@ import {
   UpdatePaymentStatusInput,
   DeletePaymentPayload,
 } from './types';
-import { ApolloError } from 'apollo-server-express';
 
 @Resolver(Payment)
 @Resolver()

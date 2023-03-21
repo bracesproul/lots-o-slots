@@ -1,7 +1,8 @@
 import { Field, ID, InputType, ObjectType } from 'type-graphql';
 import createConnectionType from '../shared/createConnectionType';
 import { Payment } from '@/entities';
-import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
+import { PaymentProvider } from '@/entities/Payment/Payment';
+import { PaymentType } from '@/entities/Transaction/types';
 
 @ObjectType()
 export class PaymentConnection extends createConnectionType(

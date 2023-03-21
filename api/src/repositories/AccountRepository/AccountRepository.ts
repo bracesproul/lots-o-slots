@@ -1,8 +1,9 @@
 import { AbstractRepository, EntityRepository } from 'typeorm';
 import { Account } from '@/entities';
 import { ApolloError } from 'apollo-server-express';
-import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
+import { PaymentProvider } from '@/entities/Payment/Payment';
 import { GraphQLError } from 'graphql';
+import { PaymentType } from '@/entities/Transaction/types';
 
 @EntityRepository(Account)
 export default class AccountRepository extends AbstractRepository<Account> {
