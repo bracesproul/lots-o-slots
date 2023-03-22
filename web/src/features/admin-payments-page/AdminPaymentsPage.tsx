@@ -2,7 +2,13 @@ import { FormEvent, ReactElement, useMemo, useState } from 'react';
 import { StylePrefix } from '@/types/style-prefix';
 import { ConfirmDeleteDialog, DashboardPageHeader } from '@/features';
 import { PageType, PaymentProvider } from '@/types';
-import { GameType, PaymentStatus } from '@/generated/graphql';
+import {
+  GameType,
+  PaymentStatus,
+  useGetWithdrawalRequestsQuery,
+  useUpdateWithdrawalRequestStatusMutation,
+  WithdrawalRequestStatus,
+} from '@/generated/graphql';
 import {
   DataTable,
   Badge,
@@ -14,7 +20,12 @@ import {
 import { ColumnDef } from '@tanstack/react-table';
 import { format } from 'date-fns';
 import { findBadgeVariantFromPaymentType } from '../play-now-dialog-depd/utils';
-import { CircleCheckMarkSvg, ReverseArrowSvg, TrashCanSvg } from '@/assets';
+import {
+  CircleCheckMarkSvg,
+  CircleXSvg,
+  ReverseArrowSvg,
+  TrashCanSvg,
+} from '@/assets';
 import {
   useGetProcessedTransactionsQuery,
   useGetPendingTransactionsQuery,
@@ -46,6 +57,16 @@ export type AdminPaymentsPageProps = {
   handleDeleteAccount: (e: FormEvent<HTMLFormElement>) => void;
   /** Event handler for setting the query params for a search value */
   setSearchQuery: (search: string, queryParam: SearchQueryParam) => void;
+  /** Columns to display on the data table */
+  pendingColumns: ColumnDef<Withdrawal>[];
+  approvedColumns: ColumnDef<Withdrawal>[];
+  rejectedColumns: ColumnDef<Withdrawal>[];
+  /** Data to display on the data table */
+  pendingWithdrawals: Withdrawal[];
+  approvedWithdrawals: Withdrawal[];
+  rejectedWithdrawals: Withdrawal[];
+  /** Whether or not the data is loading */
+  isLoading: boolean;
 };
 
 const PREFIX = StylePrefix.ADMIN_PAYMENTS_PAGE;
@@ -125,6 +146,108 @@ function AdminPaymentsPage(props: AdminPaymentsPageProps): ReactElement {
           isRightMostColumnSticky
           onRowPress={() => undefined}
         />
+        <div className={`${PREFIX}-table-header`}>
+          <Text className="text-white" type="h2">
+            Pending Withdrawals
+          </Text>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              // @typescript-eslint/ban-ts-comment
+              // eslint-disable-next-line
+              // @ts-ignore
+              const input = e.target.elements['pendingWithdrawals'];
+              const value = input.value;
+              p.setSearchQuery(value, SearchQueryParam.PENDING_WITHDRAWALS);
+            }}
+            className={`${PREFIX}-search-form`}
+          >
+            <SearchField
+              name="pendingWithdrawals"
+              aria-label="Search Processed Payments"
+              placeholder="Search"
+            />
+            <Button variant="secondary" size="xsmall" type="submit">
+              Submit
+            </Button>
+          </form>
+        </div>
+        <DataTable
+          isLoading={p.isLoading}
+          data={p.pendingWithdrawals}
+          columns={p.pendingColumns}
+          isLeftMostColumnSticky
+          isRightMostColumnSticky
+          onRowPress={() => undefined}
+        />
+        <div className={`${PREFIX}-table-header`}>
+          <Text className="text-white" type="h2">
+            Approved Withdrawals
+          </Text>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              // @typescript-eslint/ban-ts-comment
+              // eslint-disable-next-line
+              // @ts-ignore
+              const input = e.target.elements['approvedWithdrawals'];
+              const value = input.value;
+              p.setSearchQuery(value, SearchQueryParam.APPROVED_WITHDRAWALS);
+            }}
+            className={`${PREFIX}-search-form`}
+          >
+            <SearchField
+              name="approvedWithdrawals"
+              aria-label="Search Processed Payments"
+              placeholder="Search"
+            />
+            <Button variant="secondary" size="xsmall" type="submit">
+              Submit
+            </Button>
+          </form>
+        </div>
+        <DataTable
+          isLoading={p.isLoading}
+          data={p.approvedWithdrawals}
+          columns={p.approvedColumns}
+          isLeftMostColumnSticky
+          isRightMostColumnSticky
+          onRowPress={() => undefined}
+        />
+        <div className={`${PREFIX}-table-header`}>
+          <Text className="text-white" type="h2">
+            Rejected Withdrawals
+          </Text>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              // @typescript-eslint/ban-ts-comment
+              // eslint-disable-next-line
+              // @ts-ignore
+              const input = e.target.elements['rejectedWithdrawals'];
+              const value = input.value;
+              p.setSearchQuery(value, SearchQueryParam.REJECTED_WITHDRAWALS);
+            }}
+            className={`${PREFIX}-search-form`}
+          >
+            <SearchField
+              name="rejectedWithdrawals"
+              aria-label="Search Processed Payments"
+              placeholder="Search"
+            />
+            <Button variant="secondary" size="xsmall" type="submit">
+              Submit
+            </Button>
+          </form>
+        </div>
+        <DataTable
+          isLoading={p.isLoading}
+          data={p.rejectedWithdrawals}
+          columns={p.rejectedColumns}
+          isLeftMostColumnSticky
+          isRightMostColumnSticky
+          onRowPress={() => undefined}
+        />
       </div>
       <ConfirmDeleteDialog
         name="payment"
@@ -161,6 +284,31 @@ export type Payment = {
   userIdentifier: string;
 };
 
+export type Withdrawal = {
+  id: string;
+  amount: number;
+  date: Date;
+  status: WithdrawalRequestStatus;
+  paymentMethod: PaymentProvider;
+  payoutAddress: string;
+};
+
+const getBadgeVariantForWithdrawalStatus = (
+  status: WithdrawalRequestStatus
+) => {
+  if (!status) return 'warning';
+  switch (status) {
+    case WithdrawalRequestStatus.PENDING:
+      return 'warning';
+    case WithdrawalRequestStatus.APPROVED:
+      return 'success';
+    case WithdrawalRequestStatus.REJECTED:
+      return 'danger';
+    default:
+      throw new Error('Invalid status');
+  }
+};
+
 export default function AdminPaymentsPageContainer(): ReactElement {
   const { data: processedTransactionsData, loading: processedPaymentsLoading } =
     useGetProcessedTransactionsQuery();
@@ -172,6 +320,9 @@ export default function AdminPaymentsPageContainer(): ReactElement {
   } = useGetProcessedUserPaymentsQuery();
   const { data: pendingUserPaymentsData, loading: pendingUserPaymentsLoading } =
     useGetPendingUserPaymentsQuery();
+  const { data: withdrawalsData, loading } = useGetWithdrawalRequestsQuery();
+  const [updateWithdrawalRequestStatus] =
+    useUpdateWithdrawalRequestStatusMutation();
   const [updateTransactionStatus] = useUpdateTransactionStatusMutation();
   const [updateUserPaymentStatus] = useUpdateUserPaymentStatusMutation();
   const [deleteTransaction] = useDeleteTransactionMutation();
@@ -185,6 +336,36 @@ export default function AdminPaymentsPageContainer(): ReactElement {
   const processedSearchQuery = getQueryParams(
     SearchQueryParam.PROCESSED_PAYMENTS
   );
+  const pendingWithdrawalsSearchQuery = getQueryParams(
+    SearchQueryParam.PENDING_WITHDRAWALS
+  );
+  const approvedSearchQuery = getQueryParams(
+    SearchQueryParam.APPROVED_WITHDRAWALS
+  );
+  const rejectedSearchQuery = getQueryParams(
+    SearchQueryParam.REJECTED_WITHDRAWALS
+  );
+  const pendingWithdrawals: Withdrawal[] = [];
+  const approvedWithdrawals: Withdrawal[] = [];
+  const rejectedWithdrawals: Withdrawal[] = [];
+
+  withdrawalsData?.getAllWithdrawalRequests.forEach((withdrawal) => {
+    const withdrawalData = {
+      id: withdrawal.id,
+      amount: withdrawal.amount,
+      date: new Date(withdrawal.createdAt),
+      status: withdrawal.status,
+      paymentMethod: withdrawal.payoutMethod,
+      payoutAddress: withdrawal.payoutAddress,
+    };
+    if (withdrawal.status === WithdrawalRequestStatus.PENDING) {
+      pendingWithdrawals.push(withdrawalData);
+    } else if (withdrawal.status === WithdrawalRequestStatus.APPROVED) {
+      approvedWithdrawals.push(withdrawalData);
+    } else {
+      rejectedWithdrawals.push(withdrawalData);
+    }
+  }) ?? [];
 
   const processedPayments: Payment[] =
     processedTransactionsData?.getAllTransactions.map((transaction) => ({
@@ -252,6 +433,48 @@ export default function AdminPaymentsPageContainer(): ReactElement {
         userIdentifier: userIdentifier(),
       };
     }) ?? [];
+
+  const filteredPendingWithdrawals = useMemo(() => {
+    if (!pendingWithdrawalsSearchQuery || pendingWithdrawals.length === 0) {
+      return pendingWithdrawals;
+    }
+    const query = decodeURIComponent(pendingWithdrawalsSearchQuery[0]);
+    return pendingWithdrawals.filter((withdrawal) => {
+      return Object.values(withdrawal).some((value) => {
+        return (
+          value && value.toString().toLowerCase().includes(query.toLowerCase())
+        );
+      });
+    });
+  }, [pendingWithdrawals, pendingWithdrawalsSearchQuery]);
+
+  const filteredApprovedWithdrawals = useMemo(() => {
+    if (!approvedSearchQuery || approvedWithdrawals.length === 0) {
+      return approvedWithdrawals;
+    }
+    const query = decodeURIComponent(approvedSearchQuery[0]);
+    return approvedWithdrawals.filter((withdrawal) => {
+      return Object.values(withdrawal).some((value) => {
+        return (
+          value && value.toString().toLowerCase().includes(query.toLowerCase())
+        );
+      });
+    });
+  }, [approvedWithdrawals, approvedSearchQuery]);
+
+  const filteredRejectedWithdrawals = useMemo(() => {
+    if (!rejectedSearchQuery || rejectedWithdrawals.length === 0) {
+      return rejectedWithdrawals;
+    }
+    const query = decodeURIComponent(rejectedSearchQuery[0]);
+    return rejectedWithdrawals.filter((withdrawal) => {
+      return Object.values(withdrawal).some((value) => {
+        return (
+          value && value.toString().toLowerCase().includes(query.toLowerCase())
+        );
+      });
+    });
+  }, [rejectedWithdrawals, rejectedSearchQuery]);
 
   const allPendingPayments = [...pendingPayments, ...pendingUserPayments];
   const allProcessedPayments = [...processedPayments, ...processedUserPayments];
@@ -387,6 +610,188 @@ export default function AdminPaymentsPageContainer(): ReactElement {
     },
   ];
 
+  const baseColumns: ColumnDef<Withdrawal>[] = [
+    {
+      header: 'Payout Address',
+      accessorKey: 'payoutAddress',
+      cell: ({ getValue }) => {
+        return (
+          <div>
+            <Text type="body-sm" className={'leading-5'}>
+              {getValue<Withdrawal['payoutAddress']>()}
+            </Text>
+          </div>
+        );
+      },
+    },
+    {
+      header: 'Amount',
+      accessorKey: 'amount',
+      cell: ({ getValue }) => {
+        return (
+          <div>
+            <Text type="body-sm">${`${getValue<Withdrawal['amount']>()}`}</Text>
+          </div>
+        );
+      },
+    },
+    {
+      header: 'Payment Method',
+      accessorKey: 'paymentMethod',
+      cell: ({ getValue }) => {
+        return (
+          <div>
+            <Badge
+              className="text-gray-600"
+              size="small"
+              variant={findBadgeVariantFromPaymentType(
+                getValue<Withdrawal['paymentMethod']>()
+              )}
+            >
+              {getValue<Withdrawal['paymentMethod']>()}
+            </Badge>
+          </div>
+        );
+      },
+    },
+    {
+      header: 'Status',
+      accessorKey: 'status',
+      cell: ({ getValue }) => {
+        const status = getValue<Withdrawal['status']>();
+        return (
+          <div>
+            <Badge
+              className="text-gray-600"
+              size="small"
+              variant={getBadgeVariantForWithdrawalStatus(status)}
+            >
+              {status}
+            </Badge>
+          </div>
+        );
+      },
+    },
+    {
+      header: 'Date',
+      accessorKey: 'date',
+      cell: ({ getValue }) => {
+        return (
+          <div>
+            <Text type="body-sm">
+              {format(getValue<Withdrawal['date']>(), 'MM/dd/yyyy hh:mm')}
+            </Text>
+          </div>
+        );
+      },
+    },
+  ];
+
+  const pendingColumns: ColumnDef<Withdrawal>[] = [
+    ...baseColumns,
+    {
+      id: 'actions',
+      header: 'Actions',
+      cell: ({ row }) => {
+        const id = row.original.id;
+        return (
+          <div className={`${PREFIX}-table-actions-wrapper`}>
+            <InteractableComponent
+              onPress={() => {
+                handleUpdateWithdrawalRequestStatus(
+                  id,
+                  WithdrawalRequestStatus.APPROVED
+                );
+              }}
+            >
+              <CircleCheckMarkSvg width={24} height={24} />
+            </InteractableComponent>
+            <InteractableComponent
+              onPress={() => {
+                handleUpdateWithdrawalRequestStatus(
+                  id,
+                  WithdrawalRequestStatus.REJECTED
+                );
+              }}
+            >
+              <CircleXSvg />
+            </InteractableComponent>
+          </div>
+        );
+      },
+    },
+  ];
+
+  const approvedColumns: ColumnDef<Withdrawal>[] = [
+    ...baseColumns,
+    {
+      id: 'actions',
+      header: 'Actions',
+      cell: ({ row }) => {
+        const id = row.original.id;
+        return (
+          <div className={`${PREFIX}-table-actions-wrapper`}>
+            <InteractableComponent
+              onPress={() => {
+                handleUpdateWithdrawalRequestStatus(
+                  id,
+                  WithdrawalRequestStatus.PENDING
+                );
+              }}
+            >
+              <ReverseArrowSvg />
+            </InteractableComponent>
+            <InteractableComponent
+              onPress={() => {
+                handleUpdateWithdrawalRequestStatus(
+                  id,
+                  WithdrawalRequestStatus.REJECTED
+                );
+              }}
+            >
+              <CircleXSvg />
+            </InteractableComponent>
+          </div>
+        );
+      },
+    },
+  ];
+
+  const rejectedColumns: ColumnDef<Withdrawal>[] = [
+    ...baseColumns,
+    {
+      id: 'actions',
+      header: 'Actions',
+      cell: ({ row }) => {
+        const id = row.original.id;
+        return (
+          <div className={`${PREFIX}-table-actions-wrapper`}>
+            <InteractableComponent
+              onPress={() => {
+                handleUpdateWithdrawalRequestStatus(
+                  id,
+                  WithdrawalRequestStatus.PENDING
+                );
+              }}
+            >
+              <ReverseArrowSvg />
+            </InteractableComponent>
+            <InteractableComponent
+              onPress={() => {
+                handleUpdateWithdrawalRequestStatus(
+                  id,
+                  WithdrawalRequestStatus.APPROVED
+                );
+              }}
+            >
+              <CircleCheckMarkSvg width={24} height={24} />
+            </InteractableComponent>
+          </div>
+        );
+      },
+    },
+  ];
+
   const isPendingTableLoading =
     pendingPaymentsLoading || pendingUserPaymentsLoading;
   const isProcessedTableLoading =
@@ -462,6 +867,21 @@ export default function AdminPaymentsPageContainer(): ReactElement {
     }
   };
 
+  const handleUpdateWithdrawalRequestStatus = async (
+    id: string,
+    status: WithdrawalRequestStatus
+  ) => {
+    await updateWithdrawalRequestStatus({
+      variables: {
+        input: {
+          id,
+          status,
+        },
+      },
+      refetchQueries: ['GetWithdrawalRequests'],
+    });
+  };
+
   const setSearchQuery = (search: string, queryParam: SearchQueryParam) => {
     const params = encodeURIComponent(search);
     addSearchQueryParam([params], queryParam);
@@ -506,6 +926,13 @@ export default function AdminPaymentsPageContainer(): ReactElement {
       open={open}
       setOpen={setOpen}
       setSearchQuery={setSearchQuery}
+      pendingColumns={pendingColumns}
+      approvedColumns={approvedColumns}
+      rejectedColumns={rejectedColumns}
+      pendingWithdrawals={filteredPendingWithdrawals}
+      approvedWithdrawals={filteredApprovedWithdrawals}
+      rejectedWithdrawals={filteredRejectedWithdrawals}
+      isLoading={loading}
     />
   );
 }
