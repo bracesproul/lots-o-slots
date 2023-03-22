@@ -13,7 +13,7 @@ async function main() {
     console.info('🤠 Database connected!');
   });
 
-  startJobs();
+  // startJobs();
 
   const app = await serverSetup();
   app.listen(process.env.PORT, () => {
