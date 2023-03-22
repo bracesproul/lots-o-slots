@@ -118,7 +118,8 @@ export default function AdminAccountsPageContainer(): ReactElement {
 
   const filteredAccounts = useMemo(() => {
     if (!allAccountsSearchQuery) {
-      return accounts;
+      const sorted = accounts.sort(compareProvider);
+      return sorted;
     }
     const query = decodeURIComponent(allAccountsSearchQuery[0]);
     const filtered = accounts.filter((account) => {
@@ -128,7 +129,7 @@ export default function AdminAccountsPageContainer(): ReactElement {
         );
       });
     });
-    const sorted = filtered.sort(compareProvider).reverse();
+    const sorted = filtered.sort(compareProvider);
     return sorted.reverse();
   }, [accounts, allAccountsSearchQuery]);
 
