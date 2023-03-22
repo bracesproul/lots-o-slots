@@ -13,6 +13,8 @@ import {
 import { Mobile, TabletAndAbove } from '@/utils/responsive';
 import { DialogStage } from '@/features/play-now-dialog-depd/types';
 import { PlayNowDialog } from '@/features';
+import { useUser } from '@/hooks';
+import { useRouter } from 'next/router';
 
 type PaymentOptionsType = {
   icon: JSX.Element;
@@ -81,6 +83,8 @@ const GameCards = (
 
 function DepositCard(props: DepositCardProps): ReactElement {
   const p = { ...props };
+  const { userId } = useUser();
+  const router = useRouter();
 
   return (
     <div className={`${PREFIX}-wrapper`}>
@@ -100,7 +104,13 @@ function DepositCard(props: DepositCardProps): ReactElement {
           </Mobile>
           <TabletAndAbove>
             <Button
-              onPress={() => p.setStepTwoOpen(true)}
+              onPress={() => {
+                if (userId) {
+                  p.setStepTwoOpen(true);
+                  return;
+                }
+                router.push('/login');
+              }}
               size="xlarge"
               variant="primary"
             >

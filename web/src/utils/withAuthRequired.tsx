@@ -8,7 +8,10 @@ import { NormalizedCacheObject } from '@apollo/client';
 import {
   ADMIN_PAGES,
   PageType,
+  SUPABASE_REFRESH_TOKEN_COOKIE_KEY,
   SUPABASE_REFRESH_TOKEN_COOKIE_KEY_WITH_lS,
+  SUPABASE_USER_ID_COOKIE_KEY,
+  SUPABASE_USER_ID_COOKIE_KEY_WITH_lS,
 } from '@/types';
 import {
   CheckUserSessionDocument,
@@ -186,6 +189,27 @@ export const withLogout =
     context.res.setHeader(
       'Set-Cookie',
       serialize(SUPABASE_REFRESH_TOKEN_COOKIE_KEY_WITH_lS, '', {
+        path: '/',
+        sameSite: 'strict',
+      })
+    );
+    context.res.setHeader(
+      'Set-Cookie',
+      serialize(SUPABASE_REFRESH_TOKEN_COOKIE_KEY, '', {
+        path: '/',
+        sameSite: 'strict',
+      })
+    );
+    context.res.setHeader(
+      'Set-Cookie',
+      serialize(SUPABASE_USER_ID_COOKIE_KEY, '', {
+        path: '/',
+        sameSite: 'strict',
+      })
+    );
+    context.res.setHeader(
+      'Set-Cookie',
+      serialize(SUPABASE_USER_ID_COOKIE_KEY_WITH_lS, '', {
         path: '/',
         sameSite: 'strict',
       })
