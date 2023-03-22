@@ -80,7 +80,7 @@ function AdminPaymentsPage(props: AdminPaymentsPageProps): ReactElement {
       <div className="flex flex-col gap-[24px] justify-center mx-[20%]">
         <div className={`${PREFIX}-table-header`}>
           <Text className="text-white" type="h2">
-            Pending Payments
+            Pending Deposits
           </Text>
           <form
             onSubmit={(e) => {
@@ -107,40 +107,6 @@ function AdminPaymentsPage(props: AdminPaymentsPageProps): ReactElement {
         <DataTable
           isLoading={p.isPendingTableLoading}
           data={p.pendingPaymentsData}
-          columns={p.columns}
-          isLeftMostColumnSticky
-          isRightMostColumnSticky
-          onRowPress={() => undefined}
-        />
-        <div className={`${PREFIX}-table-header`}>
-          <Text className="text-white" type="h2">
-            Processed Payments
-          </Text>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              // @typescript-eslint/ban-ts-comment
-              // eslint-disable-next-line
-              // @ts-ignore
-              const input = e.target.elements['processedSearch']; // get the input element by its name
-              const value = input.value; // get the input value
-              p.setSearchQuery(value, SearchQueryParam.PROCESSED_PAYMENTS);
-            }}
-            className="flex flex-row gap-[8px] items-center"
-          >
-            <SearchField
-              name="processedSearch"
-              aria-label="Search Processed Payments"
-              placeholder="Search"
-            />
-            <Button variant="secondary" size="xsmall" type="submit">
-              Submit
-            </Button>
-          </form>
-        </div>
-        <DataTable
-          isLoading={p.isProcessedTableLoading}
-          data={p.processedPaymentsData}
           columns={p.columns}
           isLeftMostColumnSticky
           isRightMostColumnSticky
@@ -176,6 +142,40 @@ function AdminPaymentsPage(props: AdminPaymentsPageProps): ReactElement {
           isLoading={p.isLoading}
           data={p.pendingWithdrawals}
           columns={p.pendingColumns}
+          isLeftMostColumnSticky
+          isRightMostColumnSticky
+          onRowPress={() => undefined}
+        />
+        <div className={`${PREFIX}-table-header`}>
+          <Text className="text-white" type="h2">
+            Processed Deposits
+          </Text>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              // @typescript-eslint/ban-ts-comment
+              // eslint-disable-next-line
+              // @ts-ignore
+              const input = e.target.elements['processedSearch']; // get the input element by its name
+              const value = input.value; // get the input value
+              p.setSearchQuery(value, SearchQueryParam.PROCESSED_PAYMENTS);
+            }}
+            className="flex flex-row gap-[8px] items-center"
+          >
+            <SearchField
+              name="processedSearch"
+              aria-label="Search Processed Payments"
+              placeholder="Search"
+            />
+            <Button variant="secondary" size="xsmall" type="submit">
+              Submit
+            </Button>
+          </form>
+        </div>
+        <DataTable
+          isLoading={p.isProcessedTableLoading}
+          data={p.processedPaymentsData}
+          columns={p.columns}
           isLeftMostColumnSticky
           isRightMostColumnSticky
           onRowPress={() => undefined}
@@ -558,7 +558,9 @@ export default function AdminPaymentsPageContainer(): ReactElement {
                 type === PaymentType.USER_SUBMITTED ? 'primary' : 'danger'
               }
             >
-              {type === PaymentType.USER_SUBMITTED ? 'User' : 'Scraped'}
+              {type === PaymentType.USER_SUBMITTED
+                ? 'Deposit Request'
+                : 'Email'}
             </Badge>
           </div>
         );
