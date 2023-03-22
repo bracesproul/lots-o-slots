@@ -2,6 +2,7 @@ import { Button } from '@/components';
 import { StylePrefix } from '@/types/style-prefix';
 import { ReactElement } from 'react';
 import { useRouter } from 'next/router';
+import { useUser } from '@/hooks';
 
 export type HeaderProps = {
   className?: string;
@@ -15,6 +16,7 @@ const PREFIX = StylePrefix.HEADER;
 export default function Header(props: HeaderProps): ReactElement {
   const p = { ...props };
   const router = useRouter();
+  const { userId } = useUser();
   const { slotsSectionRef, pokerSectionRef } = p;
   const handleScrollToSlots = () => {
     slotsSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -34,22 +36,6 @@ export default function Header(props: HeaderProps): ReactElement {
           <Button
             type="button"
             variant="secondary"
-            onPress={async () => await router.push('/login')}
-          >
-            Login
-          </Button>
-          <Button
-            type="button"
-            variant="primary"
-            onPress={async () => await router.push('/signup')}
-          >
-            Sign Up
-          </Button>
-        </div>
-        <div className={`${PREFIX}-nav-buttons`}>
-          <Button
-            type="button"
-            variant="secondary"
             onPress={handleScrollToSlots}
           >
             Play Slots
@@ -57,6 +43,34 @@ export default function Header(props: HeaderProps): ReactElement {
           <Button type="button" variant="primary" onPress={handleScrollToPoker}>
             Play Poker
           </Button>
+        </div>
+        <div className={`${PREFIX}-nav-buttons`}>
+          {userId ? (
+            <Button
+              type="button"
+              variant="secondary"
+              onPress={async () => await router.push('/logout')}
+            >
+              Logout
+            </Button>
+          ) : (
+            <>
+              <Button
+                type="button"
+                variant="secondary"
+                onPress={async () => await router.push('/login')}
+              >
+                Login
+              </Button>
+              <Button
+                type="button"
+                variant="primary"
+                onPress={async () => await router.push('/signup')}
+              >
+                Sign Up
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </div>
