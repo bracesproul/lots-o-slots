@@ -1,0 +1,37 @@
+.generate-account-dialog-form {
+  font-family: 'Inter', sans-serif;
+  @apply flex flex-col m-[22px];
+}
+
+.generate-account-form-label {
+  @apply text-white mb-[5px]
+}
+
+.generate-account-form-input {
+  @apply rounded-lg p-[5px] mb-[5px] bg-neutral-700;
+  @apply text-white;
+}
+
+.generate-account-form-submit {
+  @apply rounded-full mt-[10px]
+}
+
+.generate-account-error {
+  @apply text-center text-[18px] font-semibold text-red-700;
+}
+
+.generate-account-text {
+  @apply text-center text-[18px] text-white pt-[8px] mb-[10px];
+}
+
+.generate-account-label-sub-text {
+  @apply text-gray-300 text-[14px];
+}
+
+.generate-account-content {
+  @apply flex flex-col items-center justify-center;
+}
+
+.generate-account-row {
+  @apply text-white flex flex-row gap-[4px];
+}

@@ -1,9 +1,10 @@
 import { ReactElement, useState } from 'react';
 import clsx from 'clsx';
 import { StylePrefix } from '@/types/style-prefix';
-import { GameButton, Button, GenerateAccountDialog } from '@/components';
+import { GameButton, Button } from '@/components';
 import { useRouter } from 'next/router';
 import BigSlotsSvg from '@/assets/svgs/BigSlotsSvg';
+import { GenerateAccountDialog } from './components';
 
 type ActionsBoxContainerProps = {
   handlePressPlayOnWeb: () => void;
@@ -67,7 +68,7 @@ const ActionsBoxContainer = (props: ActionsBoxContainerProps): ReactElement => (
       onPress={props.handlePressCreateAccount}
       className="m-auto"
     >
-      Create an Account
+      Get Slots Login
     </Button>
   </div>
 );

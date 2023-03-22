@@ -14,7 +14,11 @@ import { ColumnDef } from '@tanstack/react-table';
 import { UserRole } from '@/generated/graphql';
 import { format } from 'date-fns';
 import { EditSvg, TrashCanSvg } from '@/assets/svgs';
-import { useGetUsersQuery, useDeleteUserMutation } from '@/generated/graphql';
+import {
+  useGetUsersQuery,
+  useDeleteUserMutation,
+  useGetGeneratedAccountCountQuery,
+} from '@/generated/graphql';
 import { getUserFromUserQuery } from './utils';
 import { BulkUploadUsersDialog, UserForm } from './components';
 import useEditUserQueryParams from './useEditUserQueryParams';
@@ -37,6 +41,8 @@ export type AdminUsersPageProps = {
   bulkUploadOpen: boolean;
   /** Handler for setting the confirm delete modal to open */
   setBulkUploadOpen: (open: boolean) => void;
+  /** The amount of generated accounts which are still available */
+  generatedAccountCount: number | string;
 };
 
 const PREFIX = StylePrefix.ADMIN_USERS_PAGE;
@@ -107,14 +113,17 @@ function AdminUsersPage(props: AdminUsersPageProps): ReactElement {
             isRightMostColumnSticky
             onRowPress={() => undefined}
           />
-          <Button
-            onPress={() => p.setBulkUploadOpen(true)}
-            variant="secondary"
-            size="small"
-            type="submit"
-          >
-            Bulk Upload
-          </Button>
+          <div className="flex flex-col gap-[12px] items-center justify-center">
+            <Button
+              onPress={() => p.setBulkUploadOpen(true)}
+              variant="secondary"
+              size="small"
+              type="submit"
+            >
+              Bulk Upload
+            </Button>
+            <Badge variant="success">{p.generatedAccountCount}</Badge>
+          </div>
         </div>
         <div className={`${PREFIX}-form-wrapper`}>
           <UserForm />
@@ -144,6 +153,13 @@ export default function AdminUsersPageContainer(): ReactElement {
   const { addSearchQueryParam, getQueryParams } = useSearchQuery();
   const usersSearchQuery = getQueryParams(SearchQueryParam.USERS_SEARCH);
   const [bulkUploadOpen, setBulkUploadOpen] = useState(false);
+  const { data: generatedAccountCountData } =
+    useGetGeneratedAccountCountQuery();
+  let generatedAccountCount: string | number | undefined =
+    generatedAccountCountData?.getGeneratedAccountCount.count;
+  if (generatedAccountCount === 0 || !generatedAccountCount) {
+    generatedAccountCount = 'No Accounts';
+  }
 
   const columns: ColumnDef<User>[] = [
     {
@@ -280,6 +296,7 @@ export default function AdminUsersPageContainer(): ReactElement {
       setSearchQuery={setSearchQuery}
       bulkUploadOpen={bulkUploadOpen}
       setBulkUploadOpen={setBulkUploadOpen}
+      generatedAccountCount={generatedAccountCount}
     />
   );
 }

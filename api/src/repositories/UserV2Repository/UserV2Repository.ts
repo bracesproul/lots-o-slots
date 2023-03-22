@@ -27,12 +27,43 @@ import { UserRole } from '@/entities/UserV2/types';
 
 @EntityRepository(UserV2)
 export default class UserV2Repository extends AbstractRepository<UserV2> {
-  async getAll(): Promise<UserV2[]> {
-    return this.repository
-      .createQueryBuilder('user')
+  async getAll(input?: {
+    isAvailable?: boolean;
+    limit?: number;
+  }): Promise<UserV2[]> {
+    const query = this.repository.createQueryBuilder('user');
+
+    if (input?.isAvailable !== undefined) {
+      query.andWhere('user.isAvailable = :isAvailable', {
+        isAvailable: input?.isAvailable,
+      });
+    }
+
+    if (input?.limit) {
+      query.limit(input.limit);
+    }
+
+    return query
       .addSelect('"user"."createdAt"', 'createdAt')
       .addOrderBy('"createdAt"', 'ASC')
       .getMany();
+  }
+
+  async getGeneratedAccount(): Promise<UserV2> {
+    const account = await this.repository.findOneOrFail({
+      where: { isAvailable: true },
+    });
+
+    account.isAvailable = false;
+    await this.repository.save(account);
+
+    return account;
+  }
+
+  async getGeneratedAccountCount(): Promise<number> {
+    return this.repository.count({
+      where: { isAvailable: true },
+    });
   }
 
   async getById(id: string): Promise<UserV2> {
@@ -279,6 +310,7 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
             username: username,
             role: UserRole.USER,
             supabaseId: supabaseUser.user.id,
+            isAvailable: true,
           })
           .save();
       })

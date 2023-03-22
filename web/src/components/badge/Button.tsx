@@ -19,7 +19,7 @@ export type BadgeProps = AriaButtonProps & {
   className?: string;
 
   /** The badge content */
-  title?: string;
+  title?: string | number;
 
   /**
    * If the badge is rounded full
@@ -37,7 +37,7 @@ export type BadgeProps = AriaButtonProps & {
   variant?: BadgeVariant;
 
   /** The badge content as child */
-  children?: React.ReactElement | string;
+  children?: React.ReactElement | string | number;
 
   /**
    * The badge size

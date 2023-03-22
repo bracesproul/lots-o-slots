@@ -10,3 +10,7 @@
 .admin-withdrawals-page-search-form {
   @apply flex flex-row gap-[8px] items-center;
 }
+
+.admin-withdrawals-page-table-actions-wrapper {
+  @apply flex flex-row gap-[4px] items-center;
+}

@@ -274,3 +274,26 @@ export class BulkUploadUsersPayload {
   @Field(() => [UserV2])
   users!: UserV2[];
 }
+
+@InputType({
+  description: 'Input type for get all users',
+})
+export class GetAllUsersInput {
+  @Field(() => Boolean, {
+    nullable: true,
+  })
+  isAvailable?: boolean;
+
+  @Field(() => Number, {
+    nullable: true,
+  })
+  limit?: number;
+}
+
+@ObjectType({
+  description: 'Total count of all generated accounts',
+})
+export class GetGeneratedAccountCountPayload {
+  @Field(() => Number)
+  count!: number;
+}

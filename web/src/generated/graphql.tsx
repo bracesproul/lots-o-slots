@@ -261,6 +261,18 @@ export type GetAllEmailLogsInput = {
   hasTransactions?: InputMaybe<Scalars['Boolean']>;
 };
 
+/** Input type for get all users */
+export type GetAllUsersInput = {
+  isAvailable?: InputMaybe<Scalars['Boolean']>;
+  limit?: InputMaybe<Scalars['Float']>;
+};
+
+/** Total count of all generated accounts */
+export type GetGeneratedAccountCountPayload = {
+  __typename?: 'GetGeneratedAccountCountPayload';
+  count: Scalars['Float'];
+};
+
 /** The most recent update for the email log. */
 export type GetRecentEmailLogUpdate = {
   __typename?: 'GetRecentEmailLogUpdate';
@@ -531,6 +543,8 @@ export type Query = {
   getAllUsers: Array<UserV2>;
   getAllWithdrawalRequests: Array<WithdrawalRequest>;
   getEmailById: EmailLogV2;
+  getGeneratedAccount: UserV2;
+  getGeneratedAccountCount: GetGeneratedAccountCountPayload;
   getRecentUpdate: GetRecentEmailLogUpdate;
   getSupabaseSignedUrl: GetSupabaseSignedUrlPayload;
   getUserById: UserV2;
@@ -562,6 +576,11 @@ export type QueryGetAllEmailLogsArgs = {
 
 export type QueryGetAllTransactionsArgs = {
   input?: InputMaybe<GetTransactionsInput>;
+};
+
+
+export type QueryGetAllUsersArgs = {
+  input?: InputMaybe<GetAllUsersInput>;
 };
 
 
@@ -765,6 +784,7 @@ export type UserV2 = MainEntity & Node & {
   email: Scalars['String'];
   firstName: Scalars['String'];
   id: Scalars['ID'];
+  isAvailable?: Maybe<Scalars['Boolean']>;
   lastName: Scalars['String'];
   password: Scalars['String'];
   refreshToken?: Maybe<Scalars['String']>;
@@ -927,6 +947,11 @@ export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetUsersQuery = { __typename?: 'Query', getAllUsers: Array<{ __typename?: 'UserV2', role: UserRole, createdAt: string, id: string, firstName: string, lastName: string, email: string, username?: string | null }> };
 
+export type GetGeneratedAccountCountQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetGeneratedAccountCountQuery = { __typename?: 'Query', getGeneratedAccountCount: { __typename?: 'GetGeneratedAccountCountPayload', count: number } };
+
 export type BulkUploadUsersMutationVariables = Exact<{
   input: BulkUploadUsersInput;
 }>;
@@ -973,6 +998,11 @@ export type DeleteAccountMutationVariables = Exact<{
 
 
 export type DeleteAccountMutation = { __typename?: 'Mutation', deleteAccount: { __typename?: 'DeleteAccountPayload', success: boolean } };
+
+export type GetGeneratedAccountQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetGeneratedAccountQuery = { __typename?: 'Query', getGeneratedAccount: { __typename?: 'UserV2', username?: string | null, password: string } };
 
 export type LoginMutationVariables = Exact<{
   input: LoginInput;
@@ -1749,6 +1779,40 @@ export function useGetUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<G
 export type GetUsersQueryHookResult = ReturnType<typeof useGetUsersQuery>;
 export type GetUsersLazyQueryHookResult = ReturnType<typeof useGetUsersLazyQuery>;
 export type GetUsersQueryResult = Apollo.QueryResult<GetUsersQuery, GetUsersQueryVariables>;
+export const GetGeneratedAccountCountDocument = gql`
+    query GetGeneratedAccountCount {
+  getGeneratedAccountCount {
+    count
+  }
+}
+    `;
+
+/**
+ * __useGetGeneratedAccountCountQuery__
+ *
+ * To run a query within a React component, call `useGetGeneratedAccountCountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetGeneratedAccountCountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetGeneratedAccountCountQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetGeneratedAccountCountQuery(baseOptions?: Apollo.QueryHookOptions<GetGeneratedAccountCountQuery, GetGeneratedAccountCountQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetGeneratedAccountCountQuery, GetGeneratedAccountCountQueryVariables>(GetGeneratedAccountCountDocument, options);
+      }
+export function useGetGeneratedAccountCountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetGeneratedAccountCountQuery, GetGeneratedAccountCountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetGeneratedAccountCountQuery, GetGeneratedAccountCountQueryVariables>(GetGeneratedAccountCountDocument, options);
+        }
+export type GetGeneratedAccountCountQueryHookResult = ReturnType<typeof useGetGeneratedAccountCountQuery>;
+export type GetGeneratedAccountCountLazyQueryHookResult = ReturnType<typeof useGetGeneratedAccountCountLazyQuery>;
+export type GetGeneratedAccountCountQueryResult = Apollo.QueryResult<GetGeneratedAccountCountQuery, GetGeneratedAccountCountQueryVariables>;
 export const BulkUploadUsersDocument = gql`
     mutation BulkUploadUsers($input: BulkUploadUsersInput!) {
   bulkUploadUsers(input: $input) {
@@ -1998,6 +2062,41 @@ export function useDeleteAccountMutation(baseOptions?: Apollo.MutationHookOption
 export type DeleteAccountMutationHookResult = ReturnType<typeof useDeleteAccountMutation>;
 export type DeleteAccountMutationResult = Apollo.MutationResult<DeleteAccountMutation>;
 export type DeleteAccountMutationOptions = Apollo.BaseMutationOptions<DeleteAccountMutation, DeleteAccountMutationVariables>;
+export const GetGeneratedAccountDocument = gql`
+    query GetGeneratedAccount {
+  getGeneratedAccount {
+    username
+    password
+  }
+}
+    `;
+
+/**
+ * __useGetGeneratedAccountQuery__
+ *
+ * To run a query within a React component, call `useGetGeneratedAccountQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetGeneratedAccountQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetGeneratedAccountQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetGeneratedAccountQuery(baseOptions?: Apollo.QueryHookOptions<GetGeneratedAccountQuery, GetGeneratedAccountQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetGeneratedAccountQuery, GetGeneratedAccountQueryVariables>(GetGeneratedAccountDocument, options);
+      }
+export function useGetGeneratedAccountLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetGeneratedAccountQuery, GetGeneratedAccountQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetGeneratedAccountQuery, GetGeneratedAccountQueryVariables>(GetGeneratedAccountDocument, options);
+        }
+export type GetGeneratedAccountQueryHookResult = ReturnType<typeof useGetGeneratedAccountQuery>;
+export type GetGeneratedAccountLazyQueryHookResult = ReturnType<typeof useGetGeneratedAccountLazyQuery>;
+export type GetGeneratedAccountQueryResult = Apollo.QueryResult<GetGeneratedAccountQuery, GetGeneratedAccountQueryVariables>;
 export const LoginDocument = gql`
     mutation Login($input: LoginInput!) {
   login(input: $input) {
