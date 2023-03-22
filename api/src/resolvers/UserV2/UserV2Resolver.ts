@@ -24,6 +24,8 @@ import {
   DeleteUserPayload,
   BulkUploadUsersInput,
   BulkUploadUsersPayload,
+  GetAllUsersInput,
+  GetGeneratedAccountCountPayload,
 } from './types';
 import { ContextType } from '@/types';
 import { GraphQLError } from 'graphql';
@@ -31,8 +33,24 @@ import { GraphQLError } from 'graphql';
 @Resolver(() => UserV2)
 export class UserV2Resolver {
   @Query(() => [UserV2], { nullable: false })
-  async getAllUsers(): Promise<UserV2[]> {
-    return getCustomRepository(UserV2Repository).getAll();
+  async getAllUsers(
+    @Arg('input', { nullable: true }) input: GetAllUsersInput
+  ): Promise<UserV2[]> {
+    return getCustomRepository(UserV2Repository).getAll(input);
+  }
+
+  @Query(() => UserV2, { nullable: false })
+  async getGeneratedAccount(): Promise<UserV2> {
+    return getCustomRepository(UserV2Repository).getGeneratedAccount();
+  }
+
+  @Query(() => GetGeneratedAccountCountPayload, { nullable: false })
+  async getGeneratedAccountCount(): Promise<GetGeneratedAccountCountPayload> {
+    const count = await getCustomRepository(
+      UserV2Repository
+    ).getGeneratedAccountCount();
+
+    return { count };
   }
 
   @Query(() => UserV2, { nullable: false })

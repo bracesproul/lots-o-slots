@@ -5,3 +5,9 @@ query GetUsers {
     createdAt
   }
 }
+
+query GetGeneratedAccountCount {
+  getGeneratedAccountCount {
+    count
+  }
+}

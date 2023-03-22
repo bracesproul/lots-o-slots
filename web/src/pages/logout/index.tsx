@@ -5,6 +5,7 @@ import { withLogout } from '@/utils/withAuthRequired';
 
 export default function Logout(): ReactElement {
   useEffect(() => {
+    console.log('use effect did do be ran');
     removeAuthHeaders();
   }, []);
   return <div>logout page</div>;

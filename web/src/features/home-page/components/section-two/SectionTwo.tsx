@@ -1,14 +1,11 @@
-import { ReactElement } from 'react';
+import { ReactElement, useState } from 'react';
 import clsx from 'clsx';
 import { StylePrefix } from '@/types/style-prefix';
 import { GameButton, Button } from '@/components';
-import {
-  UpToDesktop,
-  Desktop,
-  TabletAndAbove,
-  Tablet,
-} from '@/utils/responsive';
+import { UpToDesktop, Desktop } from '@/utils/responsive';
 import BigCardsSvg from '@/assets/svgs/BigCardsSvg';
+import { useRouter } from 'next/router';
+import { AppStoreButtonsDialog } from '@/features';
 
 export type SectionTwoProps = {
   /** Optional prop for overriding styles */
@@ -58,34 +55,44 @@ const SectionTwoHeader = (): ReactElement => (
   </>
 );
 
-const ActionsBoxContainer = (): ReactElement => (
-  <div className={`${PREFIX}-actions-wrapper`}>
-    <GameButton
-      title={'Pokerbros'}
-      leftIconType="redChip"
-      rightIconType="link"
-      rightIconRedBackground
-      onPress={() => console.log('section one handle play on web')}
-      className="m-auto"
-    />
-    <Button
-      type="button"
-      variant="primary"
-      onPress={() => console.log('section one install mobile app')}
-      className="m-auto"
-    >
-      Download the App
-    </Button>
-    <Button
-      type="button"
-      variant="secondary"
-      onPress={() => console.log('section one create account')}
-      className="m-auto"
-    >
-      Join the Club
-    </Button>
-  </div>
-);
+const ActionsBoxContainer = (): ReactElement => {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className={`${PREFIX}-actions-wrapper`}>
+      <GameButton
+        title={'Pokerbros'}
+        leftIconType="redChip"
+        rightIconType="link"
+        rightIconRedBackground
+        onPress={() =>
+          window.open('https://i.pokerbros.net/A1lOFP6HJqb', '_blank')
+        }
+        className="m-auto"
+      />
+      <Button
+        type="button"
+        variant="primary"
+        onPress={() => setOpen(true)}
+        className="m-auto"
+      >
+        Download the App
+      </Button>
+      <Button
+        type="button"
+        variant="secondary"
+        onPress={() =>
+          window.open('https://i.pokerbros.net/A1lOFP6HJqb', '_blank')
+        }
+        className="m-auto"
+      >
+        Join the Club
+      </Button>
+      <AppStoreButtonsDialog open={open} setOpen={setOpen} />
+    </div>
+  );
+};
 
 const FooterTextContainer = (props: { className?: string }): ReactElement => (
   <div className={clsx(`${PREFIX}-footer-text-wrapper`, props.className)}>

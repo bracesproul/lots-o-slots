@@ -18,3 +18,4 @@ export const SUPABASE_USER_ID_COOKIE_KEY = 'supabase_user_id';
 export const SUPABASE_REFRESH_TOKEN_COOKIE_KEY = 'supabase_refresh_token';
 export const SUPABASE_REFRESH_TOKEN_COOKIE_KEY_WITH_lS =
   'lS_supabase_refresh_token';
+export const SUPABASE_USER_ID_COOKIE_KEY_WITH_lS = 'lS_supabase_user_id';

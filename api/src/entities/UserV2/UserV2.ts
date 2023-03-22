@@ -68,4 +68,10 @@ export default class UserV2 extends MainEntity {
     (withdrawalRequest) => withdrawalRequest.user
   )
   withdrawalRequests!: WithdrawalRequest[];
+
+  @Field(() => Boolean, {
+    nullable: true,
+  })
+  @Column({ type: 'bool', nullable: true, default: false })
+  isAvailable!: boolean;
 }

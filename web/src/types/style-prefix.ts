@@ -51,4 +51,5 @@ export enum StylePrefix {
   ADMIN_EMAILS_PAGE = 'admin-emails-page',
   ADD_TRANSACTION_FORM = 'add-transaction-form',
   BULK_USER_UPLOAD_DIALOG = 'bulk-user-upload-dialog',
+  GENERATE_ACCOUNT = 'generate-account',
 }

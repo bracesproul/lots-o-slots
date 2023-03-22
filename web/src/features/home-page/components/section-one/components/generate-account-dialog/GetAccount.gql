@@ -1,0 +1,6 @@
+query GetGeneratedAccount {
+  getGeneratedAccount {
+    username
+    password
+  }
+}
