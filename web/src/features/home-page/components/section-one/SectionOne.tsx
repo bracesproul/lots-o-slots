@@ -115,10 +115,10 @@ export default function SectionOneContainer(
   const [createAccountDialogOpen, setCreateAccountDialogOpen] = useState(false);
 
   const handlePressPlayOnWeb = () => {
-    router.push('http://h5.firekirin.xyz/firekirin/hall/index.html');
+    window.open('http://h5.firekirin.xyz/firekirin/hall/index.html', '_blank')
   };
   const handlePressInstallMobileApp = () => {
-    router.push('http://firekirin.xyz:8580/index.html');
+    window.open('http://firekirin.xyz:8580/index.html', '_blank')
   };
   const handlePressCreateAccount = () => {
     setCreateAccountDialogOpen(true);

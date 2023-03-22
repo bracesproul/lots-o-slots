@@ -129,7 +129,6 @@ export default function AdminAccountsPageContainer(): ReactElement {
       });
     });
     const sorted = filtered.sort(compareProvider).reverse();
-    console.log('sorted', sorted);
     return sorted.reverse();
   }, [accounts, allAccountsSearchQuery]);
 

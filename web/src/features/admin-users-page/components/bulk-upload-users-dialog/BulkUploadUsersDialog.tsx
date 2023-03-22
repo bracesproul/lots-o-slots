@@ -136,7 +136,6 @@ export default function BulkUploadUsersDialogContainer(
   const [step, setStep] = useState(BulkUploadUsersStep.ENTER_USERS);
 
   const handleSubmit = async (users: BulkUser[]) => {
-    console.log(users);
     const { errors } = await bulkUploadUsers({
       variables: {
         input: {
