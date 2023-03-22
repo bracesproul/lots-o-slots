@@ -28,6 +28,8 @@ export type Account = {
    * @default false
    */
   isDefault?: boolean;
+  /** When the account was last updated */
+  updatedAt: string;
 };
 
 export type AccountCardProps = Account & {
@@ -35,6 +37,8 @@ export type AccountCardProps = Account & {
   className?: string;
   /** Handle edit */
   onEdit: (accountId: string) => void;
+  /** Event handler for making account default */
+  makeAccountDefault: (id: string) => void;
 };
 
 const DEFAULT_PROPS = {
@@ -75,7 +79,7 @@ export default function AccountCard(props: AccountCardProps): ReactElement {
             title={findStringFromPaymentType(p.paymentProvider)}
           />
         </div>
-        {p.isDefault && (
+        {p.isDefault ? (
           <div className={`${PREFIX}-content-row`}>
             <Badge
               size="small"
@@ -83,6 +87,15 @@ export default function AccountCard(props: AccountCardProps): ReactElement {
               title={`Default ${findStringFromPaymentType(
                 p.paymentProvider
               )} Account`}
+            />
+          </div>
+        ) : (
+          <div className={`${PREFIX}-content-row`}>
+            <Badge
+              onPress={() => p.makeAccountDefault(p.id)}
+              size="small"
+              variant="danger"
+              title={`Make default`}
             />
           </div>
         )}

@@ -297,4 +297,23 @@ export default class AccountRepository extends AbstractRepository<Account> {
     await this.repository.softDelete(id);
     return true;
   }
+
+  async makeAccountDefault(id: string): Promise<Account> {
+    const accountToMakeDefault = await this.repository.findOneOrFail({
+      where: { id },
+    });
+
+    const otherAccounts = await this.repository.find({
+      where: { type: accountToMakeDefault.type },
+    });
+    otherAccounts.forEach((a) => {
+      if (a.id !== id) {
+        a.defaultAccount = false;
+      }
+    });
+    await this.repository.save(otherAccounts);
+
+    accountToMakeDefault.defaultAccount = true;
+    return this.repository.save(accountToMakeDefault);
+  }
 }

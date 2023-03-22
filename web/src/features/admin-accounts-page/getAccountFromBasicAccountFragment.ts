@@ -12,6 +12,7 @@ type BasicAccountFragment = {
   bitcoinAddress?: string | null;
   ethereumAddress?: string | null;
   name?: string | null;
+  updatedAt?: string | null;
 };
 
 export const getAccountFromBasicAccountFragment = (
@@ -33,5 +34,6 @@ export const getAccountFromBasicAccountFragment = (
     balance: account.balance,
     paymentProvider,
     isDefault: !!account.defaultAccount,
+    updatedAt: account.updatedAt ?? '',
   };
 };

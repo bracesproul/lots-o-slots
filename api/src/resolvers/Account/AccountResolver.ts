@@ -70,4 +70,11 @@ export class AccountResolver {
       success: await getCustomRepository(AccountRepository).delete(id),
     };
   }
+
+  @Mutation(() => Account, { nullable: false })
+  async makeAccountDefault(
+    @Arg('id', { nullable: false }) id: string
+  ): Promise<Account> {
+    return getCustomRepository(AccountRepository).makeAccountDefault(id);
+  }
 }

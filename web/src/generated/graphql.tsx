@@ -376,6 +376,7 @@ export type Mutation = {
   deleteWithdrawalRequest: DeleteWithdrawalRequestPayload;
   login: LoginPayload;
   logout: LogoutPayload;
+  makeAccountDefault: Account;
   markUserPaymentAsProcessed: MarkUserPaymentAsProcessedResult;
   signUp: SignUpPayload;
   switchDefaultAccount: Account;
@@ -460,6 +461,11 @@ export type MutationDeleteWithdrawalRequestArgs = {
 
 export type MutationLoginArgs = {
   input: LoginInput;
+};
+
+
+export type MutationMakeAccountDefaultArgs = {
+  id: Scalars['String'];
 };
 
 
@@ -835,7 +841,14 @@ export type GetAllAccountsQueryVariables = Exact<{
 }>;
 
 
-export type GetAllAccountsQuery = { __typename?: 'Query', getAllAccounts: Array<{ __typename?: 'Account', id: string, email: string, balance: number, type: PaymentProvider, defaultAccount?: boolean | null, cashtag?: string | null, bitcoinAddress?: string | null, ethereumAddress?: string | null, name?: string | null }> };
+export type GetAllAccountsQuery = { __typename?: 'Query', getAllAccounts: Array<{ __typename?: 'Account', updatedAt?: string | null, id: string, email: string, balance: number, type: PaymentProvider, defaultAccount?: boolean | null, cashtag?: string | null, bitcoinAddress?: string | null, ethereumAddress?: string | null, name?: string | null }> };
+
+export type MakeAccountDefaultMutationVariables = Exact<{
+  id: Scalars['String'];
+}>;
+
+
+export type MakeAccountDefaultMutation = { __typename?: 'Mutation', makeAccountDefault: { __typename?: 'Account', id: string } };
 
 export type CreateAccountMutationVariables = Exact<{
   input: CreateAccountInput;
@@ -1190,6 +1203,7 @@ export const GetAllAccountsDocument = gql`
     query GetAllAccounts($input: GetAllAccountsInput) {
   getAllAccounts(input: $input) {
     ...BasicAccount
+    updatedAt
   }
 }
     ${BasicAccountFragmentDoc}`;
@@ -1221,6 +1235,39 @@ export function useGetAllAccountsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetAllAccountsQueryHookResult = ReturnType<typeof useGetAllAccountsQuery>;
 export type GetAllAccountsLazyQueryHookResult = ReturnType<typeof useGetAllAccountsLazyQuery>;
 export type GetAllAccountsQueryResult = Apollo.QueryResult<GetAllAccountsQuery, GetAllAccountsQueryVariables>;
+export const MakeAccountDefaultDocument = gql`
+    mutation MakeAccountDefault($id: String!) {
+  makeAccountDefault(id: $id) {
+    id
+  }
+}
+    `;
+export type MakeAccountDefaultMutationFn = Apollo.MutationFunction<MakeAccountDefaultMutation, MakeAccountDefaultMutationVariables>;
+
+/**
+ * __useMakeAccountDefaultMutation__
+ *
+ * To run a mutation, you first call `useMakeAccountDefaultMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMakeAccountDefaultMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [makeAccountDefaultMutation, { data, loading, error }] = useMakeAccountDefaultMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useMakeAccountDefaultMutation(baseOptions?: Apollo.MutationHookOptions<MakeAccountDefaultMutation, MakeAccountDefaultMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<MakeAccountDefaultMutation, MakeAccountDefaultMutationVariables>(MakeAccountDefaultDocument, options);
+      }
+export type MakeAccountDefaultMutationHookResult = ReturnType<typeof useMakeAccountDefaultMutation>;
+export type MakeAccountDefaultMutationResult = Apollo.MutationResult<MakeAccountDefaultMutation>;
+export type MakeAccountDefaultMutationOptions = Apollo.BaseMutationOptions<MakeAccountDefaultMutation, MakeAccountDefaultMutationVariables>;
 export const CreateAccountDocument = gql`
     mutation CreateAccount($input: CreateAccountInput!) {
   createAccount(input: $input) {

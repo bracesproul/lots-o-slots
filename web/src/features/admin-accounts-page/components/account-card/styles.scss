@@ -14,7 +14,7 @@
   @apply flex flex-col gap-[8px] max-w-[50%];
 
   .account-card-name {
-    @apply text-lg font-bold text-gray-100;
+    @apply text-lg font-bold text-gray-100 truncate;
   }
 
   .account-card-subtitle {
