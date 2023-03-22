@@ -181,7 +181,7 @@ export default function AdminWithdrawalsPageContainer(): ReactElement {
   const [updateWithdrawalRequestStatus] =
     useUpdateWithdrawalRequestStatusMutation();
   const { addSearchQueryParam, getQueryParams } = useSearchQuery();
-  const pendingSearchQuery = getQueryParams(
+  const pendingWithdrawalsSearchQuery = getQueryParams(
     SearchQueryParam.PENDING_WITHDRAWALS
   );
   const approvedSearchQuery = getQueryParams(
@@ -214,10 +214,10 @@ export default function AdminWithdrawalsPageContainer(): ReactElement {
   }) ?? [];
 
   const filteredPendingWithdrawals = useMemo(() => {
-    if (!pendingSearchQuery || pendingWithdrawals.length === 0) {
+    if (!pendingWithdrawalsSearchQuery || pendingWithdrawals.length === 0) {
       return pendingWithdrawals;
     }
-    const query = decodeURIComponent(pendingSearchQuery[0]);
+    const query = decodeURIComponent(pendingWithdrawalsSearchQuery[0]);
     return pendingWithdrawals.filter((withdrawal) => {
       return Object.values(withdrawal).some((value) => {
         return (
@@ -225,7 +225,7 @@ export default function AdminWithdrawalsPageContainer(): ReactElement {
         );
       });
     });
-  }, [pendingWithdrawals, pendingSearchQuery]);
+  }, [pendingWithdrawals, pendingWithdrawalsSearchQuery]);
 
   const filteredApprovedWithdrawals = useMemo(() => {
     if (!approvedSearchQuery || approvedWithdrawals.length === 0) {
