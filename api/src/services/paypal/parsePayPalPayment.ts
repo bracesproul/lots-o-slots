@@ -1,10 +1,11 @@
 import { EmailObjectType, PayPalDecodedData } from '@/types';
 import { PaymentRepository, EmailLogRepository } from '@/repositories';
 import { getCustomRepository } from 'typeorm';
-import { PaymentProvider, PaymentType } from '@/entities/Payment/Payment';
+import { PaymentProvider } from '@/entities/Payment/Payment';
 import { PaymentInfoType } from '@/types/paymentInfo';
 import { EmailLogType } from '@/entities/EmailLog/EmailLog';
 import { logEmail } from '@/utils';
+import { PaymentType } from '@/entities/Transaction/types';
 
 export async function parsePayPalPayment(
   email: EmailObjectType,

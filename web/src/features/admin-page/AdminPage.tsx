@@ -1,48 +1,25 @@
 import { ReactElement } from 'react';
-import { PaymentsTable, AccountsCard, UserPaymentsTable } from './components';
-import { PageChangeType, TableType } from '@/types/page-change';
-import { Button } from '@/components';
-import { useRouter } from 'next/router';
 import { StylePrefix } from '@/types/style-prefix';
+import { DashboardPageHeader } from '../dashboard-page-header';
+import { PageType } from '@/types';
+import { UserRole } from '@/generated/graphql';
+import { ProfileCard } from '@/features';
 
 export type AdminPageProps = {
-  /**
-   * Function to handle marking the payment as processed.
-   */
-  handleMarkProcessed?: (id: string) => void;
-
-  /**
-   * Handle pagination.
-   */
-  handlePageChange: (direction: PageChangeType, table: TableType) => void;
+  // Add props
 };
 
-const PREFIX = StylePrefix.ADMIN_PAGE;
+const PREFIX = StylePrefix.ADMIN_PAGE_V2;
 
-export default function AdminPage(): ReactElement {
-  const router = useRouter();
+function AdminPage(props: AdminPageProps): ReactElement {
   return (
     <div className={`${PREFIX}`}>
-      <div className={`${PREFIX}-header-container`}>
-        <h1 className={`${PREFIX}-header`}>
-          <span className={'red-span-text'}>Admin</span>
-          <span className={'ml-[16px]'}>Page</span>
-        </h1>
-        <Button
-          onPress={() => router.push('/')}
-          className={`${PREFIX}-button`}
-          type="button"
-        >
-          Home
-        </Button>
-      </div>
-      <div className={`${PREFIX}-table-container`}>
-        <UserPaymentsTable />
-        <PaymentsTable />
-      </div>
-      <div className={`${PREFIX}-second-level`}>
-        <AccountsCard />
-      </div>
+      <DashboardPageHeader page={PageType.ADMIN} includePageNav />
+      <ProfileCard role={UserRole.ADMIN} />
     </div>
   );
+}
+
+export default function AdminPageContainer(): ReactElement {
+  return <AdminPage />;
 }

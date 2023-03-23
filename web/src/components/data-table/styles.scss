@@ -1,0 +1,122 @@
+.data-table {
+  @apply flex flex-col gap-[12px] w-full;
+}
+
+.data-table-hide-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.data-table-first-cell {
+  .data-table.is-left-most-column-sticky & {
+    @apply sticky left-0 z-10;
+  }
+
+  .data-table.is-left-most-column-sticky:not(.is-intersecting-left) &::before {
+    content: '';
+    @apply right-0 top-0 bottom-0 absolute;
+    @apply border-r border-gray-200;
+  }
+}
+
+.data-table-last-cell {
+  .data-table.is-right-most-column-sticky & {
+    @apply sticky right-0 z-10;
+  }
+
+  .data-table.is-right-most-column-sticky:not(.is-intersecting-right) &::before {
+    content: '';
+    @apply left-0 top-0 bottom-0 absolute;
+    @apply border-l border-gray-200;
+  }
+}
+
+.data-table-container {
+  @apply relative;
+  @apply rounded-lg border border-gray-200 overflow-auto;
+  max-height: calc(100vh - 300px);
+
+  @extend .data-table-hide-scrollbar;
+}
+
+.data-table-table-with-left-ref {
+  @apply flex overflow-x-scroll;
+
+  @extend .data-table-hide-scrollbar;
+}
+
+.data-table-table {
+  @apply w-full rounded-lg bg-white;
+}
+
+.data-table-header-row {
+  @apply border-b border-gray-200;
+
+  th {
+    @apply p-[16px] text-left text-gray-500 text-[0.75rem] font-semibold;
+  }
+}
+
+.data-table-header-cell {
+  @apply bg-gray-50 min-w-[16px] whitespace-nowrap;
+
+  &:first-of-type {
+    @extend .data-table-first-cell;
+  }
+
+  &:last-of-type {
+    @extend .data-table-last-cell;
+  }
+}
+
+.data-table-body-row {
+  @apply border-b border-gray-100;
+
+  &:last-of-type {
+    @apply border-0;
+  }
+
+  &:hover {
+    @apply bg-light-gray-100;
+  }
+}
+
+.data-table-cell {
+  @apply min-w-[16px] break-words align-middle;
+  @apply text-left p-[16px] text-[.75rem] leading-[150%];
+
+  &:first-of-type {
+    @extend .data-table-first-cell;
+  }
+
+  &:last-of-type {
+    @apply p-[0px];
+    @extend .data-table-last-cell;
+  }
+}
+
+.data-table-label {
+  @apply text-gray-700 text-[.75rem] leading-5;
+}
+
+.data-table-gray-label {
+  @apply text-gray-500 text-[0.75rem] leading-4;
+}
+
+.data-table-document {
+  @apply flex flex-col w-[120px] gap-[4px] text-gray-500 text-[0.75rem] leading-4;
+}
+
+.data-table-pagination {
+  @apply flex items-center gap-[10px] ml-auto;
+}
+
+.data-table-pagination-button {
+  @apply border;
+}
+
+.data-table-pageSize-selector {
+  @apply min-w-[80px];
+}

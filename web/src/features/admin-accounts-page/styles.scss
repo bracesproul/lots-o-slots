@@ -1,0 +1,21 @@
+@use './components/styles.scss' as componentStyles;
+
+.admin-accounts-page {
+  @apply flex flex-col gap-[24px];
+  font-family: 'Inter', sans-serif;
+}
+
+.admin-accounts-page-account-cards-wrapper {
+  @apply flex flex-wrap gap-[16px] ml-[36px];
+  @apply w-[60%];
+}
+
+.admin-accounts-page-account-form-wrapper {
+  @apply flex mr-[36px];
+  @apply w-[40%];
+}
+
+.admin-accounts-page-search-form {
+  @apply flex flex-row gap-[8px] items-center;
+  @apply ml-[36px];
+}

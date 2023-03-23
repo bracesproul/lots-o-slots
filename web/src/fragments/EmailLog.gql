@@ -1,0 +1,6 @@
+fragment EmailLog on EmailLogV2 {
+  id
+  subject
+  body
+  receivedAt
+}

@@ -1,0 +1,11 @@
+fragment User on UserV2 {
+  id
+  firstName
+  lastName
+  email
+  password
+  username
+  role
+  refreshToken
+  supabaseId
+}

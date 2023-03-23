@@ -1,7 +1,5 @@
 import { Arg, Query, Resolver } from 'type-graphql';
-import {
-  AuthorizeAdminUserPayload
-} from './types';
+import { AuthorizeAdminUserPayload } from './types';
 import { AuthenticationError } from 'apollo-server-express';
 
 @Resolver()

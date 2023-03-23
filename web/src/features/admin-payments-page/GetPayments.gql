@@ -1,0 +1,27 @@
+query GetProcessedTransactions($input: GetTransactionsInput = { status: COMPLETED }) {
+  getAllTransactions(input: $input) {
+    ...Transaction
+    createdAt
+  }
+}
+
+query GetPendingTransactions($input: GetTransactionsInput = { status: PENDING }) {
+  getAllTransactions(input: $input) {
+    ...Transaction
+    createdAt
+  }
+}
+
+query GetProcessedUserPayments($input: GetUserPaymentsInput = { processed: true }) {
+  getUserPayments(input: $input) {
+    ...UserPaymentFragment
+    createdAt
+  }
+}
+
+query GetPendingUserPayments($input: GetUserPaymentsInput = { processed: false }) {
+  getUserPayments(input: $input) {
+    ...UserPaymentFragment
+    createdAt
+  }
+}

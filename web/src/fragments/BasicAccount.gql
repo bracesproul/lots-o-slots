@@ -1,0 +1,11 @@
+fragment BasicAccount on Account {
+  id
+  email
+  balance
+  type
+  defaultAccount
+  cashtag
+  bitcoinAddress
+  ethereumAddress
+  name
+}

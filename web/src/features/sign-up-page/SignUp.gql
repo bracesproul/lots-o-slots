@@ -1,0 +1,11 @@
+mutation SignUp($input: SignUpInput!) {
+  signUp(input: $input) {
+    success
+    session {
+      refresh_token
+    }
+    user {
+      supabaseId
+    }
+  }
+}

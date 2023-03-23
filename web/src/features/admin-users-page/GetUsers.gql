@@ -1,0 +1,13 @@
+query GetUsers {
+  getAllUsers {
+    ...BasicUser
+    role
+    createdAt
+  }
+}
+
+query GetGeneratedAccountCount {
+  getGeneratedAccountCount {
+    count
+  }
+}

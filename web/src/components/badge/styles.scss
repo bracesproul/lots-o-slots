@@ -1,7 +1,7 @@
 .badge {
   @apply rounded-xl bg-[#C5002C] bg-opacity-40 border-[1.5px] border-[#C5002C] text-white;
-  @apply px-[20px] py-[2px] max-w-fit;
-  @apply text-center items-center justify-center m-auto;
+  @apply max-w-fit;
+  @apply flex text-center items-center justify-center;
 
   &.is-info {
     @apply bg-[#1E88E5] bg-opacity-40 border-[2.5px] border-[#1E88E5];
@@ -41,7 +41,7 @@
   }
 
   &.is-small {
-    @apply text-[12px] border-[1px] px-[10px] py-[1px];
+    @apply text-[10px] border-[1px] px-[6px] py-[1px];
   }
 
   &.is-large {
@@ -51,4 +51,8 @@
 
 .badge-title {
   @apply text-[16px];
+
+  &.is-small {
+    @apply text-[10px] text-center flex items-center justify-center;
+  }
 }

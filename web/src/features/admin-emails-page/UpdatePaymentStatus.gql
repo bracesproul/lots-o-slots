@@ -1,0 +1,20 @@
+mutation UpdateTransactionStatus($input: UpdateTransactionStatusInput!) {
+  updateTransactionStatus(input: $input) {
+    success
+    transaction {
+      ...Transaction
+      createdAt
+    }
+  }
+}
+
+mutation UpdateUserPaymentStatus($input: UpdateUserPaymentStatusInput!) {
+  updateUserPaymentStatus(input: $input) {
+    success
+    userPayment {
+      ...UserPaymentFragment
+      createdAt
+    }
+  }
+}
+

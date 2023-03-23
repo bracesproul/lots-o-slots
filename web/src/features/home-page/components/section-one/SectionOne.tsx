@@ -1,15 +1,16 @@
 import { ReactElement, useState } from 'react';
 import clsx from 'clsx';
 import { StylePrefix } from '@/types/style-prefix';
-import { GameButton, Button, GenerateAccountDialog } from '@/components';
-import { useRouter } from 'next/router'
+import { GameButton, Button } from '@/components';
+import { useRouter } from 'next/router';
 import BigSlotsSvg from '@/assets/svgs/BigSlotsSvg';
+import { GenerateAccountDialog } from './components';
 
 type ActionsBoxContainerProps = {
   handlePressPlayOnWeb: () => void;
   handlePressInstallMobileApp: () => void;
   handlePressCreateAccount: () => void;
-}
+};
 
 export type SectionOneProps = ActionsBoxContainerProps & {
   /** Optional prop for overriding styles */
@@ -67,7 +68,7 @@ const ActionsBoxContainer = (props: ActionsBoxContainerProps): ReactElement => (
       onPress={props.handlePressCreateAccount}
       className="m-auto"
     >
-      Create an Account
+      Get Slots Login
     </Button>
   </div>
 );
@@ -107,19 +108,21 @@ function SectionOne(props: SectionOneProps): ReactElement {
   );
 }
 
-export default function SectionOneContainer(props: Pick<SectionOneProps, 'slotsSectionRef'>): ReactElement {
+export default function SectionOneContainer(
+  props: Pick<SectionOneProps, 'slotsSectionRef'>
+): ReactElement {
   const router = useRouter();
   const [createAccountDialogOpen, setCreateAccountDialogOpen] = useState(false);
 
   const handlePressPlayOnWeb = () => {
-    router.push('http://h5.firekirin.xyz/firekirin/hall/index.html');
-  }
+    window.open('http://h5.firekirin.xyz/firekirin/hall/index.html', '_blank');
+  };
   const handlePressInstallMobileApp = () => {
-    router.push('http://firekirin.xyz:8580/index.html');
-  }
+    window.open('http://firekirin.xyz:8580/index.html', '_blank');
+  };
   const handlePressCreateAccount = () => {
-    setCreateAccountDialogOpen(true)
-  }
+    setCreateAccountDialogOpen(true);
+  };
 
   return (
     <SectionOne
@@ -130,5 +133,5 @@ export default function SectionOneContainer(props: Pick<SectionOneProps, 'slotsS
       createAccountDialogOpen={createAccountDialogOpen}
       setCreateAccountDialogOpen={setCreateAccountDialogOpen}
     />
-    );
+  );
 }

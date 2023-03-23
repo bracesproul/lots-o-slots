@@ -54,7 +54,7 @@ export const findStringFromPaymentType = (
     case PaymentProvider.PAYPAL:
       return 'PayPal';
     case PaymentProvider.CASHAPP:
-      return 'CashApp';
+      return 'Cash App';
     case PaymentProvider.BITCOIN:
       return 'Bitcoin';
     case PaymentProvider.ETHEREUM:

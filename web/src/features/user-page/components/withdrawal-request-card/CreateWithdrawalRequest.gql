@@ -1,0 +1,8 @@
+mutation CreateWithdrawalRequest($input: CreateWithdrawalRequestInput!) {
+  createWithdrawalRequest(input: $input) {
+    success
+    withdrawalRequest {
+      ...WithdrawalRequestFragment
+    }
+  }
+}

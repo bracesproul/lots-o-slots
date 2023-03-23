@@ -33,6 +33,12 @@
     @apply bg-gray-300;
   }
 
+  &.size-xsmall {
+    @apply h-[25px]
+    px-[15px]
+    text-[12px];
+  }
+
   &.size-xlarge {
     @apply h-[60px]
     px-[80px]

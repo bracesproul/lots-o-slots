@@ -3,8 +3,8 @@ import { GetDefaultAccountsQuery, PaymentProvider } from '@/generated/graphql';
 import { PlayGameDialogProps, DialogStage, GameType } from './types';
 import { StepOneDialog, StepTwoDialog, SuccessDialog } from './components';
 import { useCreateUserPaymentMutation } from '@/generated/graphql';
-import { findUserId } from '@/utils';
 import { useGetDefaultAccountsQuery } from '@/generated/graphql';
+import { useUser } from '@/hooks';
 
 export type PlayNowDialogProps = {
   onSubmit: (e: FormEvent<HTMLFormElement>) => void;
@@ -21,7 +21,7 @@ export default function PlayNowDialogContainer(
   props: PlayGameDialogProps
 ): ReactElement {
   const p = { ...props };
-
+  const { userId } = useUser();
   const [depositAmount, setDepositAmount] = useState(0);
   const [paymentIdentifier, setPaymentIdentifier] = useState('');
   const [createUserPayment] = useCreateUserPaymentMutation();
@@ -126,7 +126,7 @@ export default function PlayNowDialogContainer(
                       paymentProvider: p.paymentProvider,
                       paymentIdentifier: paymentIdentifier,
                       amount: depositAmount,
-                      userId: findUserId(),
+                      userId,
                       gameType: p.gameType,
                     },
                   },

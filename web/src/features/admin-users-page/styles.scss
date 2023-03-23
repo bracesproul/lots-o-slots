@@ -1,0 +1,29 @@
+@use './components/styles.scss' as componentStyles;
+
+.admin-users-page {
+  @apply flex flex-col gap-[24px];
+  font-family: 'Inter', sans-serif;
+}
+
+
+
+.admin-users-page-content {
+  @apply flex flex-row justify-between;
+
+  .admin-users-page-table-wrapper {
+    @apply flex flex-col items-start justify-start ml-[36px] w-[60%] gap-[36px];
+  }
+
+  .admin-users-page-table-actions-wrapper {
+    @apply flex items-center justify-center;
+  }
+
+  .admin-users-page-form-wrapper {
+    @apply flex items-center justify-end mr-[36px] w-[40%];
+  }
+}
+
+.admin-users-page-search-form {
+  @apply flex flex-row gap-[8px] items-center;
+  @apply ml-[36px];
+}

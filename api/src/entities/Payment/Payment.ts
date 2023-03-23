@@ -1,6 +1,7 @@
 import { Field, ObjectType, registerEnumType } from 'type-graphql';
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { MainEntity, User } from '@/entities';
+import { PaymentType } from '../Transaction/types';
 
 export enum PaymentProvider {
   PAYPAL = 'PAYPAL',
@@ -10,19 +11,13 @@ export enum PaymentProvider {
   ETHEREUM = 'ETHEREUM',
 }
 
-export enum PaymentType {
-  DEPOSIT = 'DEPOSIT',
-  WITHDRAWAL = 'WITHDRAWAL',
-  PAYOUT = 'PAYOUT',
-}
-
 export enum GameType {
   SLOTS = 'SLOTS',
   POKER = 'POKER',
 }
 
 registerEnumType(PaymentProvider, { name: 'PaymentProvider' });
-registerEnumType(PaymentType, { name: 'PaymentType' });
+
 registerEnumType(GameType, { name: 'GameType' });
 
 @Entity({ name: 'payment' })

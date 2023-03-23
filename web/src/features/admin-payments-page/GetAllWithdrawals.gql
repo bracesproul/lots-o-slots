@@ -1,0 +1,6 @@
+query GetWithdrawalRequests {
+  getAllWithdrawalRequests {
+    ...WithdrawalRequestFragment
+    createdAt
+  }
+}

@@ -1,0 +1,13 @@
+@use './components/styles.scss' as componentStyles;
+
+.user-page {
+  @apply h-screen w-full;
+  @apply text-light-gray-500 bg-black;
+  @apply flex flex-col;
+}
+
+.user-page-content{
+  @apply w-full h-full;
+  @apply flex flex-col;
+  @apply desktop:flex-row gap-[24px];
+}

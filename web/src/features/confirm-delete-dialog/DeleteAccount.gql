@@ -1,0 +1,5 @@
+mutation DeleteAccount($id: String!) {
+  deleteAccount(id: $id) {
+    success
+  }
+}

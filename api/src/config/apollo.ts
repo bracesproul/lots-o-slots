@@ -2,11 +2,9 @@ import { ApolloError, ApolloServer } from 'apollo-server-express';
 import { buildSchema } from './';
 import { QueryFailedError } from 'typeorm';
 import { Request, Response } from 'express';
-
-type ContextType = {
-  req: Request;
-  res: Response;
-};
+import { UserV2 } from '@/entities';
+import { getUserFromContext } from './auth';
+import { ContextType } from '@/types';
 
 export async function startApolloServer(): Promise<ApolloServer> {
   const schema = await buildSchema();
@@ -36,9 +34,12 @@ export async function startApolloServer(): Promise<ApolloServer> {
       },
     ],
     async context({ req, res }): Promise<ContextType> {
+      const { user, supabaseRefreshToken } = await getUserFromContext(req, res);
       return {
+        user,
         req,
         res,
+        supabaseRefreshToken,
       };
     },
     formatError: (error) => {

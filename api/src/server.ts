@@ -23,16 +23,11 @@ async function serverSetup(): Promise<express.Application> {
         if (
           process.env.NODE_ENV === 'staging' &&
           requestOrigin &&
-          requestOrigin.endsWith('.vercel.app')
+          (requestOrigin.endsWith('.vercel.app') ||
+            requestOrigin.endsWith('.lotsoslots.co'))
         ) {
           return callback(null, true);
         }
-
-        // console.error(
-        //   `Could not accept origin: ${requestOrigin} with ${process.env.CORS_ORIGIN}`
-        // );
-
-        // callback(new Error('Not allowed.'), false);
         return callback(null, true);
       },
       credentials: true,

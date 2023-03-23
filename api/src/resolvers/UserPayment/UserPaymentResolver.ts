@@ -1,17 +1,27 @@
 import { UserPaymentRepository } from '@/repositories';
-import { UserPayment } from '@/entities';
-import { Arg, Query, Mutation, Resolver } from 'type-graphql';
-import { getCustomRepository } from 'typeorm';
+import { UserPayment, UserV2 } from '@/entities';
+import {
+  Arg,
+  Query,
+  Mutation,
+  Resolver,
+  FieldResolver,
+  Root,
+} from 'type-graphql';
+import { getCustomRepository, getRepository } from 'typeorm';
 import {
   CreateUserPaymentInput,
   MarkUserPaymentAsProcessedInput,
   GetUserPaymentsInput,
   MarkUserPaymentAsProcessedResult,
+  UpdateUserPaymentStatusInput,
+  UpdateUserPaymentStatusPayload,
+  DeleteUserPaymentPayload,
 } from './types';
 import { ApolloError } from 'apollo-server-express';
 import { DiscordLog } from '@/services';
 
-@Resolver()
+@Resolver(() => UserPayment)
 export class UserPaymentResolver {
   @Query(() => [UserPayment], { nullable: false })
   async getUserPayments(
@@ -52,5 +62,50 @@ export class UserPaymentResolver {
       success: true,
       userPayment,
     };
+  }
+
+  @Mutation(() => UpdateUserPaymentStatusPayload, { nullable: false })
+  async updateUserPaymentStatus(
+    @Arg('input', { nullable: false }) input: UpdateUserPaymentStatusInput
+  ): Promise<UpdateUserPaymentStatusPayload> {
+    const userPayment = await getCustomRepository(
+      UserPaymentRepository
+    ).updateStatus(input);
+    if (!userPayment) {
+      throw new ApolloError('User payment not found.');
+    }
+    return {
+      success: true,
+      userPayment,
+    };
+  }
+
+  @Mutation(() => DeleteUserPaymentPayload, { nullable: false })
+  async deleteUserPayment(
+    @Arg('id', { nullable: false }) id: string
+  ): Promise<DeleteUserPaymentPayload> {
+    const payment = await getCustomRepository(UserPaymentRepository).delete(id);
+
+    return {
+      success: true,
+    };
+  }
+
+  @FieldResolver(() => UserV2 || undefined, {
+    nullable: true,
+  })
+  async user(@Root() userPayment: UserPayment): Promise<UserV2 | undefined> {
+    const user = await getRepository(UserV2)
+      .createQueryBuilder('user')
+      .innerJoinAndSelect(
+        UserPayment,
+        'userPayment',
+        'userPayment.userV2Id = user.id'
+      )
+      .where('userPayment.id = :userPaymentId', {
+        userPaymentId: userPayment.id,
+      })
+      .getOne();
+    return user;
   }
 }

@@ -1,0 +1,55 @@
+.withdrawal-request-card-normal-input {
+  @apply w-[250px];
+  @apply tablet:w-[300px] desktop:w-[400px] border-b-[1px] border-gray-500 rounded-none;
+}
+
+.withdrawal-request-card-content {
+  @apply w-full h-full;
+  @apply text-light-gray-500 bg-black;
+  @apply flex flex-col;
+  @apply max-w-screen-desktop tablet:mx-[96px] desktop:mx-auto mx-[24px];
+  @apply text-body-md tablet:text-body-lg;
+  @apply tablet:items-center tablet:justify-center;
+}
+
+.withdrawal-request-card-card {
+  @apply tablet:p-[40px] mx-auto max-w-[1000px] rounded-xl p-[24px];
+  @apply bg-white text-gray-900;
+}
+
+.withdrawal-request-card-instructions {
+  @apply flex flex-col gap-[32px] mb-[18px];
+
+  .withdrawal-request-card-heading {
+    @apply text-h2 tablet:text-h1;
+  }
+}
+
+.withdrawal-request-card-fields {
+  @apply flex flex-col gap-[16px] items-center justify-center;
+}
+
+.withdrawal-request-card-submit-button {
+  @apply w-full;
+}
+
+.withdrawal-request-card-input-label {
+  @apply text-gray-800;
+}
+
+.withdrawal-request-card-error-message {
+  @apply text-red-400 text-[8px];
+  @apply tablet:text-[10px];
+
+  &.is-link {
+   @apply underline underline-offset-1 cursor-pointer; 
+  }
+}
+
+.withdrawal-request-confirmation {
+  @apply flex flex-col text-center m-auto;
+}
+
+.withdrawal-request-error {
+  @apply flex flex-col text-center m-auto text-red-500;
+}

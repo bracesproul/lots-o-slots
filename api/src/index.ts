@@ -1,8 +1,9 @@
 import postgresConnection from '@/config/typeorm';
 import serverSetup from './server';
-import { MessageListener } from '@/services';
-
+import { startJobs } from './worker';
 import { config as setupEnv } from 'dotenv-flow';
+import { EmailType, execute, imap } from './services/imap';
+
 setupEnv({ silent: true });
 
 async function main() {
@@ -12,12 +13,7 @@ async function main() {
     console.info('🤠 Database connected!');
   });
 
-  const messageListener = new MessageListener();
-  // if (process.env.NODE_ENV === 'production') {
-  //   console.log('Getting message history...');
-  //   messageListener.getMissingMessages();
-  // }
-  messageListener.listenForMessages();
+  // startJobs();
 
   const app = await serverSetup();
   app.listen(process.env.PORT, () => {

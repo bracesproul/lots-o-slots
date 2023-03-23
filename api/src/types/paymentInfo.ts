@@ -1,4 +1,4 @@
-import { PaymentType } from '@/entities/Payment/Payment';
+import { PaymentType } from '@/entities/Transaction/types';
 import { EmailObjectType } from './emails';
 
 export type PaymentInfoType = {

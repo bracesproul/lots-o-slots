@@ -1,0 +1,8 @@
+fragment Transaction on Transaction {
+  id
+  amount
+  status
+  provider
+  paymentType
+  senderName
+}

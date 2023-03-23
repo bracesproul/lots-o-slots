@@ -139,25 +139,26 @@ export default function GenerateAccountDialogContainer(
       optionalFields={optionalFields}
       onSubmit={async () => {
         setLoading(true);
-        const { errors, data } = await createUser({
-          variables: {
-            input: {
-              email: username,
-              password,
-              balance: 0,
-              userIdentifier: username,
-              cashtag: optionalFields.cashtag,
-              zelleEmail: optionalFields.zelleEmail,
-              payPalEmail: optionalFields.paypalEmail,
-            },
-          },
-        });
-        if (errors?.length) {
-          setError(true);
-        } else {
-          props.setOpen(false);
-          handleSetUserCookie(data?.createUser.id);
-        }
+        // const { errors, data } = await createUser({
+        //   variables: {
+        //     input: {
+        //       email: username,
+        //       password,
+        //       balance: 0,
+        //       userIdentifier: username,
+        //       cashtag: optionalFields.cashtag,
+        //       zelleEmail: optionalFields.zelleEmail,
+        //       payPalEmail: optionalFields.paypalEmail,
+        //     },
+        //   },
+        // });
+        // if (errors?.length) {
+        //   setError(true);
+        // } else {
+        //   handleSetUserCookie(data?.createUser.id);
+        // }
+        props.setOpen(false);
+
         setLoading(false);
       }}
     />

@@ -21,9 +21,8 @@ export async function seedDatabase() {
   }
 
   const users = await seedFakeUsers();
-  console.log('saved users', users);
   await seedFakePayments(users);
-  await seedFakeAccounts();
+  // await seedFakeAccounts();
   console.info('✅ Database seeded!');
 }
 

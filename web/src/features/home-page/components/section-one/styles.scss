@@ -1,3 +1,5 @@
+@use './components/styles.scss' as section-one-component-styles;
+
 .section-one {
   @apply flex flex-col;
 }

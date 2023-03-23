@@ -105,3 +105,62 @@ export class SwitchDefaultAccountInput {
   })
   type!: PaymentProvider;
 }
+
+@InputType({
+  description: 'Input type for getting an account by its id.',
+})
+export class GetAccountByIdInput {
+  @Field(() => ID)
+  id!: string;
+}
+
+@InputType({
+  description: 'Input type for updating an account.',
+})
+export class UpdateAccountInput {
+  @Field(() => ID)
+  id!: string;
+
+  @Field(() => String, {
+    nullable: true,
+  })
+  name?: string;
+
+  @Field(() => String, {
+    nullable: true,
+  })
+  identifier?: string;
+
+  @Field(() => Number, {
+    nullable: true,
+  })
+  balance?: number;
+
+  @Field(() => PaymentProvider)
+  type!: PaymentProvider;
+}
+
+@InputType({
+  description: 'Input type for creating an account.',
+})
+export class CreateAccountInput {
+  @Field(() => String)
+  name!: string;
+
+  @Field(() => String)
+  identifier!: string;
+
+  @Field(() => Number)
+  balance!: number;
+
+  @Field(() => PaymentProvider)
+  type!: PaymentProvider;
+}
+
+@ObjectType({
+  description: 'Payload type for deleting an account.',
+})
+export class DeleteAccountPayload {
+  @Field(() => Boolean)
+  success!: boolean;
+}

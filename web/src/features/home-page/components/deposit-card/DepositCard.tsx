@@ -1,4 +1,4 @@
-import { Button, ButtonCard, CircleButton, PlayNowDialog } from '@/components';
+import { Button, ButtonCard, CircleButton } from '@/components';
 import { GameType, PaymentProvider } from '@/types';
 import { StylePrefix } from '@/types/style-prefix';
 import { ReactElement, useState } from 'react';
@@ -12,6 +12,9 @@ import {
 } from './components';
 import { Mobile, TabletAndAbove } from '@/utils/responsive';
 import { DialogStage } from '@/features/play-now-dialog-depd/types';
+import { PlayNowDialog } from '@/features';
+import { useUser } from '@/hooks';
+import { useRouter } from 'next/router';
 
 type PaymentOptionsType = {
   icon: JSX.Element;
@@ -80,6 +83,8 @@ const GameCards = (
 
 function DepositCard(props: DepositCardProps): ReactElement {
   const p = { ...props };
+  const { userId } = useUser();
+  const router = useRouter();
 
   return (
     <div className={`${PREFIX}-wrapper`}>
@@ -93,10 +98,22 @@ function DepositCard(props: DepositCardProps): ReactElement {
         </div>
         <div className={`${PREFIX}-submit-wrapper`}>
           <Mobile>
-            <Button onPress={() => p.setStepTwoOpen(true)} variant="primary">Deposit</Button>
+            <Button onPress={() => p.setStepTwoOpen(true)} variant="primary">
+              Deposit
+            </Button>
           </Mobile>
           <TabletAndAbove>
-            <Button onPress={() => p.setStepTwoOpen(true)} size="xlarge" variant="primary">
+            <Button
+              onPress={() => {
+                if (userId) {
+                  p.setStepTwoOpen(true);
+                  return;
+                }
+                router.push('/login');
+              }}
+              size="xlarge"
+              variant="primary"
+            >
               Deposit
             </Button>
           </TabletAndAbove>
