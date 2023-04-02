@@ -18,16 +18,33 @@ export const shouldCache = (): boolean => {
 /*
  * Create database connnection
  */
-export default async function postgresConnection(): Promise<Connection> {
+
+const DEFAULT_INPUT = {
+  name: 'default',
+  checkForExistingConnection: true,
+};
+
+export default async function postgresConnection(input?: {
+  name?: string;
+  checkForExistingConnection?: boolean;
+}): Promise<Connection> {
+  const inputToUse = { ...DEFAULT_INPUT, ...input };
+
+  console.log('🤠 Creating database connection...', inputToUse);
   let existingConnection: Connection | undefined;
 
   try {
-    existingConnection = getConnection();
+    if (inputToUse.checkForExistingConnection) {
+      existingConnection = getConnection();
+    }
   } catch (e) {
-    // no-op
+    console.log('error getting connection', e);
   }
 
-  if (existingConnection) return existingConnection;
+  if (existingConnection) {
+    console.log('🤠 Database connection already exists');
+    return existingConnection;
+  }
 
   const config = {
     database: process.env.POSTGRES_DATABASE,
@@ -48,7 +65,7 @@ export default async function postgresConnection(): Promise<Connection> {
     cli: {
       migrationsDir: join(__dirname, '../migrations'),
     },
-    name: 'default',
+    name: inputToUse.name,
     default: true,
   } as PostgresConnectionOptions;
 
