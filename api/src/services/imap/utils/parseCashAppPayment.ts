@@ -50,32 +50,40 @@ export async function parseCashAppPayment(
 async function getDataFromPaymentsUrl(
   body: string
 ): Promise<ParsedEmailPayload> {
-  const newUrl = body.split('receipt, visit: ')[1];
-
-  const config = {
-    method: 'get',
-    url: newUrl,
-    headers: {
-      'Content-Type': 'text/plain',
-    },
+  const data = {
+    success: false,
+    data: null,
   };
+  try {
+    const newUrl = body.split('receipt, visit: ')[1];
 
-  const { data } = await axios(config);
+    const config = {
+      method: 'get',
+      url: newUrl,
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+    };
 
-  const dataFromStringSplit =
-    data.split('{paymentHistoryData:')[1].split('} };')[0] + '}';
-  const cashappData: CashAppPaymentEmailData = JSON.parse(dataFromStringSplit);
-  const detailRowValues = cashappData.detail_rows.map((row) => row.value);
-  const amount = Number(detailRowValues[0].split('$')[1]);
-  // const name = detailRowValues[4];
-  const transactionId = cashappData.transaction_id;
-  const cashTag = cashappData.header_subtext.split('$')[1];
-  return {
-    success: true,
-    data: {
+    const { data } = await axios(config);
+
+    const dataFromStringSplit =
+      data.split('{paymentHistoryData:')[1].split('} };')[0] + '}';
+    const cashappData: CashAppPaymentEmailData =
+      JSON.parse(dataFromStringSplit);
+    const detailRowValues = cashappData.detail_rows.map((row) => row.value);
+    const amount = Number(detailRowValues[0].split('$')[1]);
+    // const name = detailRowValues[4];
+    const transactionId = cashappData.transaction_id;
+    const cashTag = cashappData.header_subtext.split('$')[1];
+    data.success = true;
+    data.data = {
       amount,
       name: cashTag,
       transactionId,
-    },
-  };
+    };
+  } catch (error) {
+    console.error('error fetching cashapp payment', error);
+  }
+  return data;
 }
