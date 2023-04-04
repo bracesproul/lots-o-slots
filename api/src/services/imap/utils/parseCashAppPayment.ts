@@ -55,6 +55,7 @@ async function getDataFromPaymentsUrl(
     data: null,
   };
   try {
+    console.log('ℹ️GETTING CASHAPP EMAIL FROM PAYMENTS URLℹ️');
     const newUrl = body.split('receipt, visit: ')[1];
 
     const config = {
