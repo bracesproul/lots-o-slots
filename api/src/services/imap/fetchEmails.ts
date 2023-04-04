@@ -143,7 +143,7 @@ function processMessage(msg: any, seqno: any, type: EmailType) {
           payload = bofaPayload;
         }
       } else if (type === EmailType.CASHAPP_DEPOSIT) {
-        console.log('from', from);
+        console.log('to', to);
         const cashAppPayload = await parseCashAppPayment(data.text);
         emailLog = await getCustomRepository(EmailLogV2Repository).create({
           emailId,

@@ -23,7 +23,7 @@ export default class EmailLogV2Repository extends AbstractRepository<EmailLogV2>
       });
     }
 
-    const emails = await query.getMany();
+    const emails = await query.orderBy('emailLog.createdAt', 'DESC').getMany();
 
     return emails;
   }
