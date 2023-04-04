@@ -1,19 +1,20 @@
 import postgresConnection from '@/config/typeorm';
 import serverSetup from './server';
-import { startJobs } from './worker';
 import { config as setupEnv } from 'dotenv-flow';
-import { EmailType, execute, imap } from './services/imap';
-import { fetchAllEmails } from './worker/jobs/fetch-emails-v1';
 import {
   fetchBoFAEmails,
   fetchCashAppEmails,
   fetchPayPalEmails,
 } from './worker/jobs';
+import { format } from 'date-fns';
 
 setupEnv({ silent: true });
 
 function runJobs() {
-  console.log('Starting jobs...');
+  console.log(
+    'Starting email job...',
+    format(new Date(), 'MMM dd, yyy hh:mm:ss a')
+  );
   fetchBoFAEmails();
 
   // Schedule the second function to run after 1 minute (60,000 ms)
@@ -25,6 +26,7 @@ function runJobs() {
       fetchCashAppEmails();
     }, 1 * 60 * 1000);
   }, 1 * 60 * 1000);
+  console.log('Ended email job', format(new Date(), 'MMM dd, yyy hh:mm:ss a'));
 }
 
 async function main() {

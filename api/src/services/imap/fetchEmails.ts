@@ -44,7 +44,6 @@ async function getRecentEmail(type: EmailType) {
 
 export function execute(from: string, type: EmailType) {
   imap.openBox('INBOX', false, function (err: any, mailBox: any) {
-    console.log('mailBox', mailBox.messages.total);
     if (err) {
       console.error('error opening inbox', err);
       return;
@@ -75,7 +74,7 @@ export function execute(from: string, type: EmailType) {
             if (!flags.includes('SEEN')) {
               imap.addFlags(seqno, 'SEEN', function (err: any) {
                 if (err) throw err;
-                console.log(seqno + 'Marked email as read');
+                // console.log(seqno + 'Marked email as read');
               });
             }
           });
@@ -84,7 +83,7 @@ export function execute(from: string, type: EmailType) {
           return Promise.reject(err);
         });
         f.once('end', function () {
-          console.log('Done fetching all unseen messages.');
+          // console.log('Done fetching all unseen messages.');
           imap.end();
         });
       }
@@ -106,7 +105,6 @@ function processMessage(msg: any, seqno: any, type: EmailType) {
 
   parser.on('data', async (data: any) => {
     if (data.type === 'text') {
-      console.log('parsing out email', seqno, 'from', from, 'to', to);
       const emailId = Number(seqno);
       const previousEmailLog = await getCustomRepository(
         EmailLogV2Repository

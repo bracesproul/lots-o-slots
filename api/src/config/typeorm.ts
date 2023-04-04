@@ -38,7 +38,8 @@ export default async function postgresConnection(input?: {
       existingConnection = getConnection();
     }
   } catch (e) {
-    console.log('error getting connection', e);
+    // no-op
+    // console.log('error getting connection', e);
   }
 
   if (existingConnection) {
