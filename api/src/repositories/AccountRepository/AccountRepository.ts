@@ -316,4 +316,10 @@ export default class AccountRepository extends AbstractRepository<Account> {
     accountToMakeDefault.defaultAccount = true;
     return this.repository.save(accountToMakeDefault);
   }
+
+  async findCashappAccountByEmail(email: string): Promise<Account | undefined> {
+    return this.repository.findOne({
+      where: { email, type: PaymentProvider.CASHAPP },
+    });
+  }
 }

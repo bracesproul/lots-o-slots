@@ -12,11 +12,12 @@ import {
   PayPalTransactionRepository,
   BankOfAmericaTransactionRepository,
   CashAppTransactionRepository,
+  AccountRepository,
 } from '@/repositories';
 import { ParsedEmailPayload } from '@/types/parsed-email';
 import { PaymentStatus, PaymentType } from '@/entities/Transaction/types';
 import { PaymentProvider } from '@/entities/Payment/Payment';
-import { EmailLogV2 } from '@/entities';
+import { EmailLogV2, Account } from '@/entities';
 
 export enum EmailType {
   PAYPAL = 'PAYPAL',
@@ -142,6 +143,7 @@ function processMessage(msg: any, seqno: any, type: EmailType) {
           payload = bofaPayload;
         }
       } else if (type === EmailType.CASHAPP_DEPOSIT) {
+        console.log('from', from);
         const cashAppPayload = await parseCashAppPayment(data.text);
         emailLog = await getCustomRepository(EmailLogV2Repository).create({
           emailId,
@@ -151,6 +153,15 @@ function processMessage(msg: any, seqno: any, type: EmailType) {
         });
         if (cashAppPayload) {
           payload = cashAppPayload;
+          const account = await getCustomRepository(
+            AccountRepository
+          ).findCashappAccountByEmail(to);
+          if (account && payload.data?.amount && payload.data?.amount > 0) {
+            await getCustomRepository(AccountRepository).debitAccountBalance({
+              id: account.id,
+              amount: payload.data.amount,
+            });
+          }
         }
       }
 

@@ -84,7 +84,7 @@ async function getDataFromPaymentsUrl(
       transactionId,
     };
   } catch (error) {
-    console.error('error fetching cashapp payment', error);
+    console.error('error fetching cashapp payment from payments url');
   }
   return data;
 }

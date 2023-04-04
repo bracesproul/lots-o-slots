@@ -7,6 +7,7 @@ import {
   fetchPayPalEmails,
 } from './worker/jobs';
 import { format } from 'date-fns';
+import { EmailType, execute } from './services/imap';
 
 setupEnv({ silent: true });
 
@@ -24,9 +25,12 @@ function runJobs() {
     // Schedule the third function to run after another 1 minute
     setTimeout(() => {
       fetchCashAppEmails();
+      console.log(
+        'Ended email job',
+        format(new Date(), 'MMM dd, yyy hh:mm:ss a')
+      );
     }, 1 * 60 * 1000);
   }, 1 * 60 * 1000);
-  console.log('Ended email job', format(new Date(), 'MMM dd, yyy hh:mm:ss a'));
 }
 
 async function main() {
