@@ -18,7 +18,7 @@ import { ParsedEmailPayload } from '@/types/parsed-email';
 import { PaymentStatus, PaymentType } from '@/entities/Transaction/types';
 import { PaymentProvider } from '@/entities/Payment/Payment';
 import { EmailLogV2, Account } from '@/entities';
-import { stripHtml } from "string-strip-html";
+import { stripHtml } from 'string-strip-html';
 
 export enum EmailType {
   PAYPAL = 'PAYPAL',
