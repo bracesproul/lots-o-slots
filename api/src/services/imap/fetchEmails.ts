@@ -124,33 +124,28 @@ function processMessage(msg: any, seqno: any, type: EmailType) {
       data.type === 'text' &&
       data.subtype === 'html'
     ) {
-      if (type === EmailType.CASHAPP_DEPOSIT) {
-        const bodyStippedHtml = stripHtml(data.text).result;
-        const cashAppPayload = await parseCashAppPayment(bodyStippedHtml);
-        emailLog = await getCustomRepository(EmailLogV2Repository).create({
-          emailId,
-          subject,
-          body: bodyStippedHtml,
-          receivedAt: new Date(),
-        });
-        if (cashAppPayload) {
-          payload = cashAppPayload;
-          const account = await getCustomRepository(
-            AccountRepository
-          ).findCashappAccountByEmail(to);
-          if (account && payload.data?.amount && payload.data?.amount > 0) {
-            await getCustomRepository(AccountRepository).debitAccountBalance({
-              id: account.id,
-              amount: payload.data.amount,
-            });
-          }
+      const bodyStippedHtml = stripHtml(data.text).result;
+      const cashAppPayload = await parseCashAppPayment(bodyStippedHtml);
+      emailLog = await getCustomRepository(EmailLogV2Repository).create({
+        emailId,
+        subject,
+        body: bodyStippedHtml,
+        receivedAt: new Date(),
+      });
+      if (cashAppPayload) {
+        payload = cashAppPayload;
+        const account = await getCustomRepository(
+          AccountRepository
+        ).findCashappAccountByEmail(to);
+        if (account && payload.data?.amount && payload.data?.amount > 0) {
+          await getCustomRepository(AccountRepository).debitAccountBalance({
+            id: account.id,
+            amount: payload.data.amount,
+          });
         }
       }
     }
-    if (
-      data.type === 'text' &&
-      (type === EmailType.PAYPAL || type === EmailType.BOFA)
-    ) {
+    if (data.type === 'text' && type !== EmailType.CASHAPP_DEPOSIT) {
       if (type === EmailType.PAYPAL) {
         const payPalPayload = parsePayPalPayment(data.text);
         emailLog = await getCustomRepository(EmailLogV2Repository).create({
