@@ -54,5 +54,5 @@ export function startJobs() {
   // fetchBofaJob.start();
   // fetchPaypalJob.start();
   // fetchCashappJob.start();
-  fetchAllEmailsJob.start();
+  // fetchAllEmailsJob.start();
 }

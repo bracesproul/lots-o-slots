@@ -36,7 +36,6 @@ export async function findSender(
   });
 
   if (hasEmailBeenLogged) {
-    console.log('Email has already been logged');
     return;
   }
 
