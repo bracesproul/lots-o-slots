@@ -18,6 +18,7 @@ import { ParsedEmailPayload } from '@/types/parsed-email';
 import { PaymentStatus, PaymentType } from '@/entities/Transaction/types';
 import { PaymentProvider } from '@/entities/Payment/Payment';
 import { EmailLogV2, Account } from '@/entities';
+import { stripHtml } from "string-strip-html";
 
 export enum EmailType {
   PAYPAL = 'PAYPAL',
@@ -105,21 +106,51 @@ function processMessage(msg: any, seqno: any, type: EmailType) {
   });
 
   parser.on('data', async (data: any) => {
-    if (data.type === 'text') {
-      const emailId = Number(seqno);
-      const previousEmailLog = await getCustomRepository(
-        EmailLogV2Repository
-      ).findByEmailId(emailId);
-      if (previousEmailLog) {
-        return;
+    const emailId = Number(seqno);
+    const previousEmailLog = await getCustomRepository(
+      EmailLogV2Repository
+    ).findByEmailId(emailId);
+    if (previousEmailLog) {
+      return;
+    }
+    let emailLog: EmailLogV2 = {} as EmailLogV2;
+
+    let payload: ParsedEmailPayload = {
+      success: false,
+      data: null,
+    };
+    if (
+      type === EmailType.CASHAPP_DEPOSIT &&
+      data.type === 'text' &&
+      data.subtype === 'html'
+    ) {
+      if (type === EmailType.CASHAPP_DEPOSIT) {
+        const bodyStippedHtml = stripHtml(data.text).result;
+        const cashAppPayload = await parseCashAppPayment(bodyStippedHtml);
+        emailLog = await getCustomRepository(EmailLogV2Repository).create({
+          emailId,
+          subject,
+          body: bodyStippedHtml,
+          receivedAt: new Date(),
+        });
+        if (cashAppPayload) {
+          payload = cashAppPayload;
+          const account = await getCustomRepository(
+            AccountRepository
+          ).findCashappAccountByEmail(to);
+          if (account && payload.data?.amount && payload.data?.amount > 0) {
+            await getCustomRepository(AccountRepository).debitAccountBalance({
+              id: account.id,
+              amount: payload.data.amount,
+            });
+          }
+        }
       }
-      let emailLog: EmailLogV2 = {} as EmailLogV2;
-
-      let payload: ParsedEmailPayload = {
-        success: false,
-        data: null,
-      };
-
+    }
+    if (
+      data.type === 'text' &&
+      (type === EmailType.PAYPAL || type === EmailType.BOFA)
+    ) {
       if (type === EmailType.PAYPAL) {
         const payPalPayload = parsePayPalPayment(data.text);
         emailLog = await getCustomRepository(EmailLogV2Repository).create({
@@ -142,103 +173,81 @@ function processMessage(msg: any, seqno: any, type: EmailType) {
         if (bofaPayload) {
           payload = bofaPayload;
         }
-      } else if (type === EmailType.CASHAPP_DEPOSIT) {
-        console.log('to', to);
-        const cashAppPayload = await parseCashAppPayment(data.text);
-        emailLog = await getCustomRepository(EmailLogV2Repository).create({
-          emailId,
-          subject,
-          body: data.text,
-          receivedAt: new Date(),
-        });
-        if (cashAppPayload) {
-          payload = cashAppPayload;
-          const account = await getCustomRepository(
-            AccountRepository
-          ).findCashappAccountByEmail(to);
-          if (account && payload.data?.amount && payload.data?.amount > 0) {
-            await getCustomRepository(AccountRepository).debitAccountBalance({
-              id: account.id,
-              amount: payload.data.amount,
-            });
-          }
-        }
       }
+    }
+    if (payload.data && payload.success) {
+      const provider = () => {
+        if (type === EmailType.PAYPAL) return PaymentProvider.PAYPAL;
+        if (type === EmailType.BOFA) return PaymentProvider.ZELLE;
+        return PaymentProvider.CASHAPP;
+      };
 
-      if (payload.data && payload.success) {
-        const provider = () => {
-          if (type === EmailType.PAYPAL) return PaymentProvider.PAYPAL;
-          if (type === EmailType.BOFA) return PaymentProvider.ZELLE;
-          return PaymentProvider.CASHAPP;
-        };
+      const paymentType = () => {
+        // if (type === EmailType.CASHAPP_WITHDRAWAL)
+        //   return PaymentType.WITHDRAWAL;
+        return PaymentType.DEPOSIT;
+      };
 
-        const paymentType = () => {
-          // if (type === EmailType.CASHAPP_WITHDRAWAL)
-          //   return PaymentType.WITHDRAWAL;
-          return PaymentType.DEPOSIT;
-        };
-
-        const transaction = await getCustomRepository(
-          TransactionRepository
+      const transaction = await getCustomRepository(
+        TransactionRepository
+      ).create({
+        status: PaymentStatus.PENDING,
+        amount: payload.data.amount,
+        senderName: payload.data.name,
+        emailLog,
+        emailLogId: emailLog.id,
+        provider: provider(),
+        paymentType: paymentType(),
+      });
+      if (
+        // type === EmailType.CASHAPP_WITHDRAWAL ||
+        type === EmailType.CASHAPP_DEPOSIT
+      ) {
+        const cashAppTransaction = await getCustomRepository(
+          CashAppTransactionRepository
         ).create({
-          status: PaymentStatus.PENDING,
+          transaction,
+          transactionId: transaction.id,
           amount: payload.data.amount,
-          senderName: payload.data.name,
-          emailLog,
-          emailLogId: emailLog.id,
-          provider: provider(),
-          paymentType: paymentType(),
+          cashtag: payload.data.name,
+          cashAppId: payload.data.transactionId,
         });
-        if (
-          // type === EmailType.CASHAPP_WITHDRAWAL ||
-          type === EmailType.CASHAPP_DEPOSIT
-        ) {
-          const cashAppTransaction = await getCustomRepository(
-            CashAppTransactionRepository
-          ).create({
-            transaction,
-            transactionId: transaction.id,
-            amount: payload.data.amount,
-            cashtag: payload.data.name,
-            cashAppId: payload.data.transactionId,
-          });
-          await getCustomRepository(TransactionRepository).update({
-            id: transaction.id,
-            cashAppTransaction,
-            cashAppTransactionId: cashAppTransaction.id,
-          });
-        }
-        if (type === EmailType.PAYPAL) {
-          const payPalTransaction = await getCustomRepository(
-            PayPalTransactionRepository
-          ).create({
-            transaction,
-            transactionId: transaction.id,
-            amount: payload.data.amount,
-            senderIdentifier: payload.data.name,
-            payPalId: payload.data.transactionId,
-          });
-          await getCustomRepository(TransactionRepository).update({
-            id: transaction.id,
-            payPalTransaction,
-            payPalTransactionId: payPalTransaction.id,
-          });
-        }
-        if (type === EmailType.BOFA) {
-          const bankOfAmericaTransaction = await getCustomRepository(
-            BankOfAmericaTransactionRepository
-          ).create({
-            transaction,
-            transactionId: transaction.id,
-            amount: payload.data.amount,
-            senderIdentifier: payload.data.name,
-          });
-          await getCustomRepository(TransactionRepository).update({
-            id: transaction.id,
-            bankOfAmericaTransaction,
-            bankOfAmericaTransactionId: bankOfAmericaTransaction.id,
-          });
-        }
+        await getCustomRepository(TransactionRepository).update({
+          id: transaction.id,
+          cashAppTransaction,
+          cashAppTransactionId: cashAppTransaction.id,
+        });
+      }
+      if (type === EmailType.PAYPAL) {
+        const payPalTransaction = await getCustomRepository(
+          PayPalTransactionRepository
+        ).create({
+          transaction,
+          transactionId: transaction.id,
+          amount: payload.data.amount,
+          senderIdentifier: payload.data.name,
+          payPalId: payload.data.transactionId,
+        });
+        await getCustomRepository(TransactionRepository).update({
+          id: transaction.id,
+          payPalTransaction,
+          payPalTransactionId: payPalTransaction.id,
+        });
+      }
+      if (type === EmailType.BOFA) {
+        const bankOfAmericaTransaction = await getCustomRepository(
+          BankOfAmericaTransactionRepository
+        ).create({
+          transaction,
+          transactionId: transaction.id,
+          amount: payload.data.amount,
+          senderIdentifier: payload.data.name,
+        });
+        await getCustomRepository(TransactionRepository).update({
+          id: transaction.id,
+          bankOfAmericaTransaction,
+          bankOfAmericaTransactionId: bankOfAmericaTransaction.id,
+        });
       }
     }
   });
