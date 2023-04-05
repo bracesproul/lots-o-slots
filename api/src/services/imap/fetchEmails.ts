@@ -119,6 +119,7 @@ function processMessage(msg: any, seqno: any, type: EmailType) {
       success: false,
       data: null,
     };
+    console.log('___DATA___', data);
     if (
       type === EmailType.CASHAPP_DEPOSIT &&
       data.type === 'text' &&
