@@ -24,7 +24,9 @@ export async function parseCashAppPayment(
 
   if (!cashtagMatch || !amountMatch || !transactionIdMatch) {
     console.log('failed to parse cashapp payment', {
-      body,
+      cashtagMatch,
+      amountMatch,
+      transactionIdMatch,
     });
     return {
       success: false,
