@@ -54,6 +54,7 @@ export function execute(from: string, type: EmailType) {
   imap.openBox('INBOX', false, function (err: any, mailBox: any) {
     if (err) {
       console.error('error opening inbox', err);
+      imap.end();
       return;
     }
     imap.search(

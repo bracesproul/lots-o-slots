@@ -19,19 +19,19 @@ function runJobs() {
   );
   fetchBoFAEmails();
 
-  // Schedule the second function to run after 1 minute (60,000 ms)
+  // Schedule the second function to run after 80 sec
   setTimeout(() => {
     fetchPayPalEmails();
 
-    // Schedule the third function to run after another 1 minute
+    // Schedule the third function to run after another 80 sec
     setTimeout(() => {
       fetchCashAppEmails();
       console.log(
         'Ended email job',
         format(new Date(), 'MMM dd, yyy hh:mm:ss a')
       );
-    }, 1 * 60 * 1000);
-  }, 1 * 60 * 1000);
+    }, 1 * 80 * 1000);
+  }, 1 * 80 * 1000);
 }
 
 async function main() {
@@ -42,7 +42,7 @@ async function main() {
   });
 
   // Run jobs every 5 minutes
-  const jobsIntervalId = setInterval(runJobs, 5 * 60 * 1000);
+  const jobsIntervalId = setInterval(runJobs, 8 * 60 * 1000);
 
   const app = await serverSetup();
   app.listen(process.env.PORT, () => {
