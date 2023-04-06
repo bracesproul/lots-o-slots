@@ -1,4 +1,9 @@
-import { AbstractRepository, EntityRepository, getRepository } from 'typeorm';
+import {
+  AbstractRepository,
+  DeepPartial,
+  EntityRepository,
+  getRepository,
+} from 'typeorm';
 import { EmailLogV2, Transaction } from '@/entities';
 import { PaymentProvider } from '@/entities/Payment/Payment';
 

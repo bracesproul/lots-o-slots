@@ -12,6 +12,7 @@ import { EmailType, execute } from './services/imap';
 setupEnv({ silent: true });
 
 function runJobs() {
+  if (process.env.NODE_ENV === 'development') return;
   console.log(
     'Starting email job...',
     format(new Date(), 'MMM dd, yyy hh:mm:ss a')
