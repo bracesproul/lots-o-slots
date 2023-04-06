@@ -19,7 +19,8 @@ export async function parseCashAppPayment(
   // const nameRegex = new RegExp(/From\s(.+)/);
   // const nameMatch = body.match(nameRegex);
 
-  const transactionIdRegex = new RegExp(/#([^\s]+)\sTo/);
+  // const transactionIdRegex = new RegExp(/#([^\s]+)/); CO_POLIT BASED
+  const transactionIdRegex = new RegExp(/#(\w+)/); // GPT
   const transactionIdMatch = body.match(transactionIdRegex);
 
   if (!cashtagMatch || !amountMatch || !transactionIdMatch) {
