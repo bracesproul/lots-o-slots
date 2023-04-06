@@ -1,11 +1,5 @@
-import {
-  AbstractRepository,
-  DeepPartial,
-  EntityRepository,
-  getRepository,
-} from 'typeorm';
+import { AbstractRepository, EntityRepository } from 'typeorm';
 import { EmailLogV2, Transaction } from '@/entities';
-import { PaymentProvider } from '@/entities/Payment/Payment';
 
 @EntityRepository(EmailLogV2)
 // eslint-disable-next-line max-len
