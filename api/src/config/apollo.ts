@@ -6,6 +6,9 @@ import { UserV2 } from '@/entities';
 import { getUserFromContext } from './auth';
 import { ContextType } from '@/types';
 
+const isProdEnv = process.env.NODE_ENV === 'production';
+const isDevEnv = ['development', 'test'].includes(process.env.NODE_ENV ?? '');
+
 export async function startApolloServer(): Promise<ApolloServer> {
   const schema = await buildSchema();
 
@@ -16,10 +19,7 @@ export async function startApolloServer(): Promise<ApolloServer> {
       },
     },
     schema,
-    debug: !!(
-      process.env.NODE_ENV &&
-      ['development', 'test'].includes(process.env.NODE_ENV)
-    ),
+    debug: isDevEnv,
     plugins: [
       {
         requestDidStart(requestCtx) {
