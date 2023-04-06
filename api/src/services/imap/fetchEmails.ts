@@ -68,18 +68,21 @@ export function execute(from: string, type: EmailType) {
 
         // const f = imap.fetch(results, fetchOptions);
         const f = imap.fetch(results, fetchOptions);
-        f.on('message', (msg: any, seqno: any) => {
+        f.on('message', async (msg: any, seqno: any) => {
           processMessage(msg, seqno, type);
           // Mark the email as read after parsing it
-          msg.once('attributes', function (attrs: any) {
-            const flags = attrs.flags.map((flag: any) => flag.toUpperCase());
-            if (!flags.includes('SEEN')) {
-              imap.addFlags(seqno, 'SEEN', function (err: any) {
-                if (err) throw err;
-                // console.log(seqno + 'Marked email as read');
-              });
-            }
-          });
+
+          // MOVED TO INSIDE processMessage
+
+          // msg.once('attributes', function (attrs: any) {
+          //   const flags = attrs.flags.map((flag: any) => flag.toUpperCase());
+          //   if (!flags.includes('SEEN')) {
+          //     imap.addFlags(seqno, 'SEEN', function (err: any) {
+          //       if (err) throw err;
+          //       // console.log(seqno + 'Marked email as read');
+          //     });
+          //   }
+          // });
         });
         f.once('error', function (err: any) {
           return Promise.reject(err);
@@ -167,6 +170,15 @@ function processMessage(msg: any, seqno: any, type: EmailType) {
       }
     }
     if (payload.data && payload.success) {
+      msg.once('attributes', function (attrs: any) {
+        const flags = attrs.flags.map((flag: any) => flag.toUpperCase());
+        if (!flags.includes('SEEN')) {
+          imap.addFlags(seqno, 'SEEN', function (err: any) {
+            if (err) throw err;
+          });
+        }
+      });
+
       const provider = () => {
         if (type === EmailType.PAYPAL) return PaymentProvider.PAYPAL;
         if (type === EmailType.BOFA) return PaymentProvider.ZELLE;
