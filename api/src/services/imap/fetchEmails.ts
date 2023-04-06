@@ -59,6 +59,14 @@ export function execute(from: string, type: EmailType) {
     imap.search(
       [['FROM', from], ['UNSEEN']],
       async (err: any, results: any) => {
+        if (err) {
+          console.error(
+            'ERROR @ imap.search(). Killing connection. ERROR: ',
+            err
+          );
+          imap.end();
+        }
+
         if (!results || !results.length) {
           console.log('No unread mails');
           imap.end();

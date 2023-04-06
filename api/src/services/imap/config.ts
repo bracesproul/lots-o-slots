@@ -13,4 +13,5 @@ export const imap = new Imap({
   host: 'imap.gmail.com',
   port: 993,
   tls: true,
+  debug: console.error,
 });
