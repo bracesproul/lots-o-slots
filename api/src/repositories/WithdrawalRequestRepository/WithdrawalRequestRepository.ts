@@ -23,7 +23,7 @@ export default class WithdrawalRequestRepository extends AbstractRepository<With
     return this.repository
       .createQueryBuilder('withdrawalRequest')
       .addSelect(`"withdrawalRequest"."${orderBy}"`, `${orderBy}`)
-      .addOrderBy(`"${orderBy}"`, 'ASC')
+      .addOrderBy(`"${orderBy}"`, 'DESC')
       .getMany();
   }
 

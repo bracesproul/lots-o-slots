@@ -32,6 +32,7 @@ export default class TransactionRepository extends AbstractRepository<Transactio
         ...(provider && { provider }),
         ...(paymentType && { paymentType }),
       })
+      .addOrderBy('"updatedAt"', 'DESC')
       .getMany();
     return query;
   }

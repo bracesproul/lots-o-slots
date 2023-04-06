@@ -45,7 +45,7 @@ export default class UserV2Repository extends AbstractRepository<UserV2> {
 
     return query
       .addSelect('"user"."createdAt"', 'createdAt')
-      .addOrderBy('"createdAt"', 'ASC')
+      .addOrderBy('"updatedAt"', 'DESC')
       .getMany();
   }
 

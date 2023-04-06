@@ -31,7 +31,7 @@ export default class AccountRepository extends AbstractRepository<Account> {
       });
     }
 
-    return query.getMany();
+    return query.addOrderBy('"updatedAt"', 'DESC').getMany();
   }
 
   async createAccount({
