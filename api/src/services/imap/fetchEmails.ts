@@ -142,31 +142,30 @@ function processMessage(msg: any, seqno: any, type: EmailType) {
       }
     }
     if (data.type === 'text' && type !== EmailType.CASHAPP_DEPOSIT) {
+      emailLog = await getCustomRepository(EmailLogV2Repository).create({
+        emailId,
+        subject,
+        body: data.text,
+        receivedAt: new Date(),
+      });
       if (type === EmailType.PAYPAL) {
         const payPalPayload = parsePayPalPayment(data.text);
-        emailLog = await getCustomRepository(EmailLogV2Repository).create({
-          emailId,
-          subject,
-          body: data.text,
-          receivedAt: new Date(),
-        });
         if (payPalPayload) {
           payload = payPalPayload;
         }
       } else if (type === EmailType.BOFA) {
         const bofaPayload = parseZellePayment(data.text);
-        emailLog = await getCustomRepository(EmailLogV2Repository).create({
-          emailId,
-          subject,
-          body: data.text,
-          receivedAt: new Date(),
-        });
+
         if (bofaPayload) {
           payload = bofaPayload;
         }
       }
     }
     if (payload.data && payload.success) {
+      await getCustomRepository(EmailLogV2Repository).markAsProcessed({
+        id: emailLog.id,
+      });
+
       const provider = () => {
         if (type === EmailType.PAYPAL) return PaymentProvider.PAYPAL;
         if (type === EmailType.BOFA) return PaymentProvider.ZELLE;
