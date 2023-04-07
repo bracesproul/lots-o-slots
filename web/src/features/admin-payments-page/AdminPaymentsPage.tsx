@@ -376,7 +376,10 @@ export default function AdminPaymentsPageContainer(): ReactElement {
       game: undefined,
       type: PaymentType.SCRAPED,
       paymentMethod: transaction.provider,
-      userIdentifier: transaction.senderName,
+      userIdentifier:
+        transaction.provider === PaymentProvider.CASHAPP
+          ? `$${transaction.senderName}`
+          : transaction.senderName,
     })) ?? [];
   const pendingPayments: Payment[] =
     pendingTransactionsData?.getAllTransactions.map((transaction) => ({
@@ -387,13 +390,18 @@ export default function AdminPaymentsPageContainer(): ReactElement {
       game: undefined,
       type: PaymentType.SCRAPED,
       paymentMethod: transaction.provider,
-      userIdentifier: transaction.senderName,
+      userIdentifier:
+        transaction.provider === PaymentProvider.CASHAPP
+          ? `$${transaction.senderName}`
+          : transaction.senderName,
     })) ?? [];
   const processedUserPayments: Payment[] =
     processedUserPaymentsData?.getUserPayments.map((payment) => {
       const userIdentifier = () => {
         if (!payment.user) {
-          return payment.paymentIdentifier;
+          return payment.paymentProvider === PaymentProvider.CASHAPP
+            ? `$${payment.paymentIdentifier}`
+            : payment.paymentIdentifier;
         }
         if (payment.user.username) {
           return payment.user.username;
@@ -415,7 +423,9 @@ export default function AdminPaymentsPageContainer(): ReactElement {
     pendingUserPaymentsData?.getUserPayments.map((payment) => {
       const userIdentifier = () => {
         if (!payment.user) {
-          return payment.paymentIdentifier;
+          return payment.paymentProvider === PaymentProvider.CASHAPP
+            ? `$${payment.paymentIdentifier}`
+            : payment.paymentIdentifier;
         }
         if (payment.user.username) {
           return payment.user.username;
