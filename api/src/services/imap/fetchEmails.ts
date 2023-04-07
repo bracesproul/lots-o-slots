@@ -161,7 +161,8 @@ function processMessage(msg: any, seqno: any) {
       if (data.type === 'text') {
         emailLog = await getCustomRepository(EmailLogV2Repository).create({
           emailId,
-          subject: subject ?? '__No subject found__ | from: ' + from + ' | to: ' + to,
+          subject:
+            subject ?? '__No subject found__ | from: ' + from + ' | to: ' + to,
           body: data.text,
           receivedAt: new Date(),
         });
