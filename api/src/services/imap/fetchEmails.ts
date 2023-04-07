@@ -32,11 +32,23 @@ export enum EmailType {
   BOFA = 'BOFA',
   CASHAPP_DEPOSIT = 'CASHAPP_DEPOSIT',
   CASHAPP_WITHDRAWAL = 'CASHAPP_WITHDRAWAL',
+  UNKNOWN = 'UNKNOWN',
 }
 
-const FROM_LIST = [
-  'customerservice@ealerts.bankofamerica.com, service@paypal.com, cash@square.com',
-];
+enum EmailSender {
+  PAYPAL = 'service@paypal.com',
+  BOFA = 'customerservice@ealerts.bankofamerica.com',
+  CASHAPP = 'cash@square.com',
+}
+
+type NQ = (string | NQ)[];
+const FROM_LIST = [EmailSender.BOFA, EmailSender.PAYPAL, EmailSender.CASHAPP];
+
+let FROM_QUERY: NQ = [];
+FROM_LIST.forEach((value, index) => {
+  const core = ['FROM', value];
+  FROM_QUERY = index === 0 ? core : ['OR', core, [...FROM_QUERY]];
+});
 
 async function getRecentEmail(type: EmailType) {
   const provider =
@@ -51,7 +63,20 @@ async function getRecentEmail(type: EmailType) {
   return emailLog?.emailLog.emailId ?? 1;
 }
 
-export function execute(from: string, type: EmailType) {
+function getTypeFromSender(sender: string) {
+  switch (sender) {
+    case EmailSender.PAYPAL:
+      return EmailType.PAYPAL;
+    case EmailSender.CASHAPP:
+      return EmailType.CASHAPP_DEPOSIT;
+    case EmailSender.BOFA:
+      return EmailType.BOFA;
+    default:
+      return EmailType.UNKNOWN;
+  }
+}
+
+export function execute() {
   try {
     imap.openBox('INBOX', false, function (err: any, mailBox: any) {
       if (err) {
@@ -59,54 +84,65 @@ export function execute(from: string, type: EmailType) {
         imap.end();
         return;
       }
-      imap.search(
-        [['FROM', from], ['UNSEEN']],
-        async (err: any, results: any) => {
-          if (err) {
-            console.error(
-              'ERROR @ imap.search(). Killing connection. ERROR: ',
-              err
-            );
-            imap.end();
-          }
 
-          if (!results || !results.length) {
-            console.log('No unread mails');
-            imap.end();
-            return;
-          }
-
-          // Limit the number of emails fetched to 50
-          const fetchOptions = {
-            bodies: '',
-          };
-
-          const recentId = await getRecentEmail(type);
-
-          // const f = imap.fetch(results, fetchOptions);
-          const f = imap.fetch(results, fetchOptions);
-          f.on('message', async (msg: any, seqno: any) => {
-            processMessage(msg, seqno, type);
-            // Mark the email as read after parsing it
-            msg.once('attributes', function (attrs: any) {
-              const flags = attrs.flags.map((flag: any) => flag.toUpperCase());
-              if (!flags.includes('SEEN')) {
-                imap.addFlags(seqno, 'SEEN', function (err: any) {
-                  if (err) throw err;
-                  // console.log(seqno + 'Marked email as read');
-                });
-              }
-            });
-          });
-          f.once('error', function (err: any) {
-            return Promise.reject(err);
-          });
-          f.once('end', function () {
-            // console.log('Done fetching all unseen messages.');
-            imap.end();
+      imap.search([FROM_QUERY, ['UNSEEN']], async (err: any, results: any) => {
+        if (err) {
+          console.error(
+            'ERROR @ imap.search(). Killing connection. ERROR: ',
+            err
+          );
+          imap.closeBox(false, function (err: any) {
+            if (err) {
+              console.error('error closing inbox', err);
+            }
           });
         }
-      );
+
+        if (!results || !results.length) {
+          console.log('No unread mails');
+          imap.closeBox(false, function (err: any) {
+            if (err) {
+              console.error('error closing inbox', err);
+            }
+          });
+          return;
+        }
+
+        // Limit the number of emails fetched to 50
+        const fetchOptions = {
+          bodies: '',
+        };
+
+        // const recentId = await getRecentEmail(type);
+
+        // const f = imap.fetch(results, fetchOptions);
+        const f = imap.fetch(results, fetchOptions);
+        f.on('message', async (msg: any, seqno: any) => {
+          processMessage(msg, seqno);
+          // Mark the email as read after parsing it
+          msg.once('attributes', function (attrs: any) {
+            const flags = attrs.flags.map((flag: any) => flag.toUpperCase());
+            if (!flags.includes('SEEN')) {
+              // imap.addFlags(seqno, 'SEEN', function (err: any) {
+              //   if (err) throw err;
+              //   // console.log(seqno + 'Marked email as read');
+              // });
+            }
+          });
+        });
+        f.once('error', function (err: any) {
+          return Promise.reject(err);
+        });
+        f.once('end', function () {
+          // console.log('Done fetching all unseen messages.');
+          //imap.end();
+          imap.closeBox(false, function (err: any) {
+            if (err) {
+              console.error('error closing inbox', err);
+            }
+          });
+        });
+      });
     });
   } catch (e) {
     console.error('ERROR RUNNING EXECUTE IMAP', e);
@@ -119,17 +155,19 @@ export function execute(from: string, type: EmailType) {
   }
 }
 
-function processMessage(msg: any, seqno: any, type: EmailType) {
+function processMessage(msg: any, seqno: any) {
   try {
     let subject = '';
     let to = '';
     let from = '';
+    let type: EmailType;
 
     const parser = new MailParser();
     parser.on('headers', (headers: any) => {
       subject = headers.get('subject');
       from = headers.get('from').value[0].address;
       to = headers.get('to').value[0].address;
+      type = getTypeFromSender(from);
     });
 
     parser.on('data', async (data: any) => {
