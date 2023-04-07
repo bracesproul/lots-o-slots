@@ -1,4 +1,4 @@
-import { EmailType, execute, imap } from '@/services/imap';
+import { execute, imap } from '@/services/imap';
 import { EventEmitter } from 'events';
 
 class ImapConnection extends EventEmitter {

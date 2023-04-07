@@ -1,58 +1,46 @@
-import { CronJob } from 'cron';
-import {
-  fetchBoFAEmails,
-  fetchPayPalEmails,
-  fetchCashAppEmails,
-  fetchAllEmails,
-} from './jobs';
+import { fetchAllEmails, imapConnection } from './jobs';
+import { format } from 'date-fns';
 
-export function startJobs() {
-  const fetchBofaJob = new CronJob(
-    '* 3 * * * *',
-    function () {
-      console.log('Starting fetchEmailsJob...');
-      fetchBoFAEmails();
-    },
-    null,
-    true,
-    'America/Los_Angeles'
+export function runJobs() {
+  if (process.env.NODE_ENV === 'development') return;
+  console.log(
+    'Starting email job...',
+    format(new Date(), 'MMM dd, yyy hh:mm:ss a')
   );
 
-  const fetchPaypalJob = new CronJob(
-    '* 3 * * * *',
-    function () {
-      console.log('Starting fetchEmailsJob...');
-      fetchPayPalEmails();
-    },
-    null,
-    true,
-    'America/Los_Angeles'
-  );
+  const startedAt = Date.now();
+  new Promise((resolve) => {
+    // keep track of  statuses so we can watch for new mail while the current job is running, as it wont pick it up after the search
+    let nextPollTimeoutId: number;
+    let finishedCurrentJob = false;
+    let gotNewMail = false;
 
-  const fetchCashappJob = new CronJob(
-    '* 3 * * * *',
-    function () {
-      console.log('Starting fetchEmailsJob...');
-      fetchCashAppEmails();
-    },
-    null,
-    true,
-    'America/Los_Angeles'
-  );
+    imapConnection.once('mail', () => {
+      console.log('Got new mail, starting next job ASAP');
+      if (nextPollTimeoutId) clearTimeout(nextPollTimeoutId);
+      if (finishedCurrentJob) resolve(true);
+      else gotNewMail = true;
+    });
 
-  const fetchAllEmailsJob = new CronJob(
-    '* 3 * * * *',
-    function () {
-      console.log('Starting fetchAllEmails...');
-      fetchAllEmails();
-    },
-    null,
-    true,
-    'America/Los_Angeles'
-  );
+    // If the connection closes, we want to poll for anything missed ASAP
+    imapConnection.once('close', () => {
+      console.log('Imap connection closed, starting next job ASAP');
+      if (nextPollTimeoutId) clearTimeout(nextPollTimeoutId);
+      if (finishedCurrentJob) resolve(true);
+      else gotNewMail = true;
+    });
 
-  // fetchBofaJob.start();
-  // fetchPaypalJob.start();
-  // fetchCashappJob.start();
-  // fetchAllEmailsJob.start();
+    fetchAllEmails().then(() => {
+      console.log(`Finished getting emails in ${Date.now() - startedAt}ms`);
+      if (gotNewMail) resolve(true);
+      else {
+        finishedCurrentJob = true;
+        setTimeout(() => {
+          imapConnection.removeAllListeners('mail');
+          imapConnection.removeAllListeners('close');
+          resolve(true);
+        }, 60 * 1000 * 10); // Poll every 10 minutes regardless of if new mail or not
+      }
+    });
+  }).then(runJobs);
 }
