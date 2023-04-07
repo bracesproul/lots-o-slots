@@ -42,26 +42,13 @@ enum EmailSender {
 }
 
 type NQ = (string | NQ)[];
+let FROM_QUERY: NQ = [];
 const FROM_LIST = [EmailSender.BOFA, EmailSender.PAYPAL, EmailSender.CASHAPP];
 
-let FROM_QUERY: NQ = [];
 FROM_LIST.forEach((value, index) => {
   const core = ['FROM', value];
   FROM_QUERY = index === 0 ? core : ['OR', core, [...FROM_QUERY]];
 });
-
-async function getRecentEmail(type: EmailType) {
-  const provider =
-    type === EmailType.PAYPAL
-      ? PaymentProvider.PAYPAL
-      : type === EmailType.BOFA
-      ? PaymentProvider.ZELLE
-      : PaymentProvider.CASHAPP;
-  const emailLog = await getCustomRepository(
-    TransactionRepository
-  ).getRecentUpdate(provider);
-  return emailLog?.emailLog.emailId ?? 1;
-}
 
 function getTypeFromSender(sender: string) {
   switch (sender) {
@@ -77,82 +64,64 @@ function getTypeFromSender(sender: string) {
 }
 
 export function execute() {
-  try {
-    imap.openBox('INBOX', false, function (err: any, mailBox: any) {
-      if (err) {
-        console.error('error opening inbox', err);
-        imap.end();
-        return;
-      }
-
+  return new Promise((resolve) => {
+    try {
       imap.search([FROM_QUERY, ['UNSEEN']], async (err: any, results: any) => {
         if (err) {
           console.error(
             'ERROR @ imap.search(). Killing connection. ERROR: ',
             err
           );
-          imap.closeBox(false, function (err: any) {
-            if (err) {
-              console.error('error closing inbox', err);
-            }
-          });
+          imap.end();
+          resolve(false);
+          return;
         }
 
         if (!results || !results.length) {
           console.log('No unread mails');
-          imap.closeBox(false, function (err: any) {
-            if (err) {
-              console.error('error closing inbox', err);
-            }
-          });
+          resolve(true);
           return;
         }
 
         // Limit the number of emails fetched to 50
         const fetchOptions = {
-          bodies: '',
+          bodies: ['TEXT', 'HEADER.FIELDS (TO FROM SUBJECT)'],
         };
+        const needToMark: any[] = [];
 
-        // const recentId = await getRecentEmail(type);
-
-        // const f = imap.fetch(results, fetchOptions);
         const f = imap.fetch(results, fetchOptions);
         f.on('message', async (msg: any, seqno: any) => {
           processMessage(msg, seqno);
           // Mark the email as read after parsing it
           msg.once('attributes', function (attrs: any) {
             const flags = attrs.flags.map((flag: any) => flag.toUpperCase());
-            if (!flags.includes('SEEN')) {
-              // imap.addFlags(seqno, 'SEEN', function (err: any) {
-              //   if (err) throw err;
-              //   // console.log(seqno + 'Marked email as read');
-              // });
+            if (!flags.includes('\\SEEN')) {
+              needToMark.push(attrs.uid);
             }
           });
         });
         f.once('error', function (err: any) {
-          return Promise.reject(err);
+          resolve(false);
         });
         f.once('end', function () {
-          // console.log('Done fetching all unseen messages.');
-          //imap.end();
-          imap.closeBox(false, function (err: any) {
-            if (err) {
-              console.error('error closing inbox', err);
-            }
+          imap.addFlags(needToMark, '\\Seen', function (err: any) {
+            if (err) console.error(err);
+            else console.log(`Marked ${needToMark.length} as read`);
+            resolve(true);
           });
         });
       });
-    });
-  } catch (e) {
-    console.error('ERROR RUNNING EXECUTE IMAP', e);
-    const discordLog = new DiscordLog();
-    discordLog.baseError({
-      title: 'Error processing message',
-      description: JSON.stringify(e),
-      stack: 'api/src/services/imap/fetchEmails.ts:execute()',
-    });
-  }
+    } catch (e) {
+      console.error('ERROR RUNNING EXECUTE IMAP', e);
+      const discordLog = new DiscordLog();
+      discordLog.baseError({
+        title: 'Error processing message',
+        description: JSON.stringify(e),
+        stack: 'api/src/services/imap/fetchEmails.ts:execute()',
+      });
+      resolve(false);
+    }
+  });
 }
 
 function processMessage(msg: any, seqno: any) {
@@ -247,10 +216,10 @@ function processMessage(msg: any, seqno: any) {
           return PaymentType.DEPOSIT;
         };
 
-        let cashAppTransaction: CashAppTransaction | undefined = undefined;
-        let payPalTransaction: PayPalTransaction | undefined = undefined;
-        let bankOfAmericaTransaction: BankOfAmericaTransaction | undefined =
-          undefined;
+        let cashAppTransaction: CashAppTransaction | undefined;
+        let payPalTransaction: PayPalTransaction | undefined;
+        let bankOfAmericaTransaction: BankOfAmericaTransaction | undefined;
+        let hasTransactionBeenLogged = false;
 
         const transaction = await getCustomRepository(
           TransactionRepository
@@ -268,7 +237,7 @@ function processMessage(msg: any, seqno: any) {
             CashAppTransactionRepository
           ).checkDuplicateByCashAppId(payload.data.transactionId);
           if (previousCashAppTransaction) {
-            return;
+            hasTransactionBeenLogged = true;
           } else {
             cashAppTransaction = await getCustomRepository(
               CashAppTransactionRepository
@@ -300,6 +269,7 @@ function processMessage(msg: any, seqno: any) {
             senderIdentifier: payload.data.name,
           });
         }
+        if (hasTransactionBeenLogged) return;
         await getCustomRepository(TransactionRepository).update({
           id: transaction.id,
           bankOfAmericaTransaction,
