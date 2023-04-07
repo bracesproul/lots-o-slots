@@ -42,6 +42,7 @@ function runJobs() {
         finishedCurrentJob = true;
         setTimeout(() => {
           imapConnection.removeAllListeners('mail');
+          imapConnection.removeAllListeners('close');
           resolve(true);
         }, 60 * 1000 * 10); // Poll every 10 minutes regardless of if new mail or not
       }
