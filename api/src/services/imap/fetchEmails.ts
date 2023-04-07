@@ -134,8 +134,10 @@ function processMessage(msg: any, seqno: any) {
     const parser = new MailParser();
     parser.on('headers', (headers: any) => {
       subject = headers.get('subject');
-      from = headers.get('from').value[0].address;
-      to = headers.get('to').value[0].address;
+      from = headers.get('from')?.['value']?.[0]?.['address'];
+      to = headers.get('to')?.['value']?.[0]?.['address'];
+      // from = headers.get('from').value[0].address;
+      // to = headers.get('to').value[0].address;
       type = getTypeFromSender(from);
     });
 
