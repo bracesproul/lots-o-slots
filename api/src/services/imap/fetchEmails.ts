@@ -136,9 +136,11 @@ function processMessage(msg: any, seqno: any) {
       subject = headers.get('subject');
       from = headers.get('from')?.['value']?.[0]?.['address'];
       to = headers.get('to')?.['value']?.[0]?.['address'];
-      // from = headers.get('from').value[0].address;
-      // to = headers.get('to').value[0].address;
       type = getTypeFromSender(from);
+      if (!subject || !to || !from) {
+        console.error('ERROR: Missing headers');
+        return;
+      }
     });
 
     parser.on('data', async (data: any) => {
