@@ -85,7 +85,7 @@ export function execute() {
 
         // Limit the number of emails fetched to 50
         const fetchOptions = {
-          bodies: ['TEXT', 'HTML', 'HEADER.FIELDS (TO FROM SUBJECT)'],
+          bodies: '',
         };
         const needToMark: any[] = [];
 
@@ -104,11 +104,13 @@ export function execute() {
           resolve(false);
         });
         f.once('end', function () {
-          imap.addFlags(needToMark, '\\Seen', function (err: any) {
-            if (err) console.error(err);
-            else console.log(`Marked ${needToMark.length} as read`);
-            resolve(true);
-          });
+          if (needToMark.length > 0) {
+            imap.addFlags(needToMark, '\\Seen', function (err: any) {
+              if (err) console.error(err);
+              else console.log(`Marked ${needToMark.length} as read`);
+              resolve(true);
+            });
+          } else resolve(true);
         });
       });
     } catch (e) {
