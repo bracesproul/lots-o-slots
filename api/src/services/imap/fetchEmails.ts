@@ -85,7 +85,7 @@ export function execute() {
 
         // Limit the number of emails fetched to 50
         const fetchOptions = {
-          bodies: ['TEXT', 'HEADER.FIELDS (TO FROM SUBJECT)'],
+          bodies: ['TEXT', 'HTML', 'HEADER.FIELDS (TO FROM SUBJECT)'],
         };
         const needToMark: any[] = [];
 
