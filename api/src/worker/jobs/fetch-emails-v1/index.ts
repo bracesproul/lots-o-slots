@@ -1,14 +1,15 @@
 import { EmailType, execute, imap } from '@/services/imap';
 
+function executeFetch() {
+  console.log('📬 Fetching emails...');
+  execute();
+}
+
 export function fetchAllEmails() {
-  imap.once('ready', () => {
-    console.log('📬 Fetching emails...');
-    // execute('cash@square.com', EmailType.CASHAPP_DEPOSIT);
-    execute('customerservice@ealerts.bankofamerica.com', EmailType.BOFA);
-    // execute('service@paypal.com', EmailType.PAYPAL);
-  });
+  imap.once('ready', executeFetch);
   imap.once('error', function (err: any) {
     console.error('Connection error: ' + err.stack);
   });
-  imap.connect();
+  if (imap.state !== 'authenticated') imap.connect();
+  else executeFetch();
 }
