@@ -268,7 +268,7 @@ function processMessage(msg: any, seqno: any) {
             CashAppTransactionRepository
           ).checkDuplicateByCashAppId(payload.data.transactionId);
           if (previousCashAppTransaction) {
-            cashAppTransaction = previousCashAppTransaction;
+            return;
           } else {
             cashAppTransaction = await getCustomRepository(
               CashAppTransactionRepository
