@@ -583,7 +583,7 @@ export default function AdminPaymentsPageContainer(): ReactElement {
         return (
           <div>
             <Text type="body-sm">
-              {format(getValue<Payment['date']>(), 'MM/dd/yyyy hh:mm')}
+              {format(getValue<Payment['date']>(), 'MM/dd/yyyy hh:mm a')}
             </Text>
           </div>
         );
