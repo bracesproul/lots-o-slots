@@ -226,15 +226,22 @@ function processMessage(msg: any, seqno: any, type: EmailType) {
           paymentType: paymentType(),
         });
         if (type === EmailType.CASHAPP_DEPOSIT) {
-          cashAppTransaction = await getCustomRepository(
+          const previousCashAppTransaction = await getCustomRepository(
             CashAppTransactionRepository
-          ).create({
-            transaction,
-            transactionId: transaction.id,
-            amount: payload.data.amount,
-            cashtag: payload.data.name,
-            cashAppId: payload.data.transactionId,
-          });
+          ).checkDuplicateByCashAppId(payload.data.transactionId);
+          if (previousCashAppTransaction) {
+            cashAppTransaction = previousCashAppTransaction;
+          } else {
+            cashAppTransaction = await getCustomRepository(
+              CashAppTransactionRepository
+            ).create({
+              transaction,
+              transactionId: transaction.id,
+              amount: payload.data.amount,
+              cashtag: payload.data.name,
+              cashAppId: payload.data.transactionId,
+            });
+          }
         } else if (type === EmailType.PAYPAL) {
           payPalTransaction = await getCustomRepository(
             PayPalTransactionRepository

@@ -32,4 +32,10 @@ export default class CashAppTransactionRepository extends AbstractRepository<Cas
   async findOneOrFail(id: string): Promise<CashAppTransaction> {
     return this.repository.findOneOrFail({ where: { id } });
   }
+
+  async checkDuplicateByCashAppId(
+    cashAppId: string
+  ): Promise<CashAppTransaction | undefined> {
+    return this.repository.findOne({ where: { cashAppId } });
+  }
 }
