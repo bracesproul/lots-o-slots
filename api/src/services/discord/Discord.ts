@@ -320,4 +320,47 @@ export default class DiscordLog {
     };
     await axios(config);
   }
+
+  async baseError({
+    title,
+    description,
+    stack,
+  }: {
+    title: string;
+    description: string;
+    stack?: string;
+  }) {
+    if (process.env.NODE_ENV !== 'production') return;
+    if (!process.env.DISCORD_WEBHOOK_ERROR_URL) {
+      console.error('Cannot send error to discord without webhook env var');
+    }
+
+    const data = {
+      embeds: [
+        {
+          title,
+          description,
+          fields: stack
+            ? [
+                {
+                  name: 'Stack trace (dev)',
+                  value: stack,
+                },
+              ]
+            : undefined,
+          color: 156843,
+        },
+      ],
+    };
+
+    const config = {
+      method: 'post',
+      url: process.env.DISCORD_WEBHOOK_ERROR_URL,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: JSON.stringify(data),
+    };
+    await axios(config);
+  }
 }

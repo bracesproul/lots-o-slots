@@ -1,47 +1,51 @@
-import { EmailType, execute, imap } from '@/services/imap';
+import { execute, imap } from '@/services/imap';
+import { EventEmitter } from 'events';
 
-export function fetchBoFAEmails() {
-  imap.once('ready', () => {
-    console.log('📬 Fetching bofa emails...');
-    execute('customerservice@ealerts.bankofamerica.com', EmailType.BOFA);
-  });
-  imap.once('error', function (err: any) {
-    console.error('Connection error: ' + err.stack);
-  });
-  imap.connect();
+class ImapConnection extends EventEmitter {
+  box: any;
 }
 
-export function fetchPayPalEmails() {
-  imap.once('ready', () => {
-    console.log('📬 Fetching paypal emails...');
-    execute('service@paypal.com', EmailType.PAYPAL);
+export const imapConnection = new ImapConnection();
+
+function initializeImapConnection() {
+  return new Promise((resolve) => {
+    imap.once('ready', () => {
+      imap.openBox('INBOX', false, function (err: any, mailBox: any) {
+        if (err) {
+          console.error('error opening inbox', err);
+          imap.end();
+        }
+        resolve(true);
+      });
+      imap.subscribeBox('INBOX', function (err: any) {
+        if (err) {
+          console.log('error subscribing to inbox', err);
+          imap.end();
+        }
+      });
+    });
+
+    imap.on('mail', function () {
+      imapConnection.emit('mail');
+    });
+
+    imap.once('error', function (err: any) {
+      console.error('Connection error: ' + err.stack);
+      imap.end();
+    });
+    imap.once('close', function () {
+      imapConnection.emit('close');
+    });
+    imap.connect();
   });
-  imap.once('error', function (err: any) {
-    console.error('Connection error: ' + err.stack);
-  });
-  imap.connect();
 }
 
-export function fetchCashAppEmails() {
-  imap.once('ready', () => {
-    console.log('📬 Fetching cashapp emails...');
-    execute('cash@square.com', EmailType.CASHAPP_DEPOSIT);
-  });
-  imap.once('error', function (err: any) {
-    console.error('Connection error: ' + err.stack);
-  });
-  imap.connect();
+async function executeFetch() {
+  console.log('📬 Fetching emails...');
+  await execute();
 }
 
-export function fetchAllEmails() {
-  imap.once('ready', () => {
-    console.log('📬 Fetching emails...');
-    execute('cash@square.com', EmailType.CASHAPP_DEPOSIT);
-    execute('customerservice@ealerts.bankofamerica.com', EmailType.BOFA);
-    execute('service@paypal.com', EmailType.PAYPAL);
-  });
-  imap.once('error', function (err: any) {
-    console.error('Connection error: ' + err.stack);
-  });
-  imap.connect();
+export async function fetchAllEmails() {
+  if (imap.state !== 'authenticated') await initializeImapConnection();
+  await executeFetch();
 }

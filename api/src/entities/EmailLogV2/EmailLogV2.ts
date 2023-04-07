@@ -41,4 +41,10 @@ export default class EmailLogV2 extends MainEntity {
     nullable: true,
   })
   transaction?: Transaction;
+
+  @Field(() => Boolean, {
+    nullable: false,
+  })
+  @Column({ type: 'boolean', nullable: false, default: false })
+  processed!: boolean;
 }

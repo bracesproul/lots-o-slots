@@ -1,8 +1,9 @@
 {
   "name": "api",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "./dist/src/index.js",
   "license": "MIT",
+  "private": true,
   "scripts": {
     "build": "tsc -p ./tsconfig.build.json && tsc-alias -p tsconfig.json",
     "build:prod": "npx yarn install && tsc -p ./tsconfig.build.json && tsc-alias -p tsconfig.json",
@@ -17,6 +18,7 @@
     "test": "jest",
     "start:api": "NODE_ENV=production node ./dist/index.js",
     "start:api:staging": "NODE_ENV=staging node ./dist/index.js",
+    "start:api:jobs:staging": "NODE_ENV=staging node ./dist/jobs.js",
     "prod": "nohup yarn start",
     "docker:gmail:watch": "docker compose exec -i api \"yarn build:api\"",
     "docker:seed:run": "docker compose exec api yarn seed:run",
@@ -30,7 +32,8 @@
     "docker": "docker compose exec --workdir=/app/lots-o-slots/api api $*",
     "docker:exec": "docker exec -it slots-api sh -c \"cd ./api && sh\"",
     "tsnode": "ts-node --project tsconfig.json --files -r tsconfig-paths/register -r dotenv-flow/config",
-    "lint": "eslint --ext .ts ./"
+    "lint": "eslint --ext .ts ./",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@apollo/server": "^4.2.2",
@@ -74,6 +77,7 @@
     "mailparser": "^3.6.4",
     "mockdate": "^3.0.5",
     "node-imap": "^0.9.6",
+    "patch-package": "^6.5.1",
     "pg": "^8.8.0",
     "prettier": "^2.7.1",
     "randomatic": "^3.1.1",

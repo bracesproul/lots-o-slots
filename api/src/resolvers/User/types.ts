@@ -1,6 +1,4 @@
-import { Field, ID, InputType, ObjectType } from 'type-graphql';
-import createConnectionType from '../shared/createConnectionType';
-import { User } from '@/entities';
+import { Field, InputType } from 'type-graphql';
 
 @InputType({
   description: 'Input type for creating a user.',

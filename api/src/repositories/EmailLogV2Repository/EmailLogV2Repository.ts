@@ -1,15 +1,20 @@
-import { AbstractRepository, EntityRepository, getRepository } from 'typeorm';
+import { AbstractRepository, EntityRepository } from 'typeorm';
 import { EmailLogV2, Transaction } from '@/entities';
-import { PaymentProvider } from '@/entities/Payment/Payment';
 
 @EntityRepository(EmailLogV2)
 // eslint-disable-next-line max-len
 export default class EmailLogV2Repository extends AbstractRepository<EmailLogV2> {
   async getAll({
     hasTransactions,
+    processed,
   }: {
     hasTransactions?: boolean;
+    /**
+     * @default false
+     */
+    processed?: boolean;
   }): Promise<EmailLogV2[]> {
+    const isEmailProcessed = processed === undefined ? false : processed;
     const query = this.repository.createQueryBuilder('emailLog');
 
     if (hasTransactions === false) {
@@ -23,7 +28,11 @@ export default class EmailLogV2Repository extends AbstractRepository<EmailLogV2>
       });
     }
 
-    const emails = await query.getMany();
+    query.andWhere('emailLog.processed = :processed', {
+      processed: isEmailProcessed,
+    });
+
+    const emails = await query.orderBy('emailLog.createdAt', 'DESC').getMany();
 
     return emails;
   }
@@ -63,5 +72,29 @@ export default class EmailLogV2Repository extends AbstractRepository<EmailLogV2>
 
   async findByEmailId(emailId: number): Promise<EmailLogV2 | undefined> {
     return this.repository.findOne({ where: { emailId } });
+  }
+
+  async deleteByEmailId(emailId: number): Promise<void> {
+    await this.repository.delete({ emailId });
+  }
+
+  async markAsProcessed({
+    id,
+    emailId,
+  }: {
+    id?: string;
+    emailId?: number;
+  }): Promise<void> {
+    let email: EmailLogV2 | undefined;
+    if (id) {
+      email = await this.findOne(id);
+    }
+    if (emailId) {
+      email = await this.findByEmailId(emailId);
+    }
+    if (email) {
+      email.processed = true;
+      await this.repository.save(email);
+    }
   }
 }

@@ -1,4 +1,5 @@
 import Imap from 'node-imap';
+import { isNotProdOrStagingEnv } from '@/utils';
 
 const user = process.env.IMAP_EMAIL_V2;
 const password = process.env.IMAP_PASSWORD_V2;
@@ -13,4 +14,5 @@ export const imap = new Imap({
   host: 'imap.gmail.com',
   port: 993,
   tls: true,
+  debug: isNotProdOrStagingEnv ? console.log : undefined,
 });

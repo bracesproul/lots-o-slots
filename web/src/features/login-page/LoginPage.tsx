@@ -111,7 +111,11 @@ function LoginPage2(props: LoginPageProps): ReactElement {
           )}
           {step === AuthStep.PROCESSING && (
             <div className={`${PREFIX}-processing-body`}>
-              <h1>Logging in, please wait.</h1>
+              {p.errorMessage ? (
+                <h1 className="red-span-text">p.errorMessage</h1>
+              ) : (
+                <h1>Logging in, please wait.</h1>
+              )}
             </div>
           )}
         </div>
@@ -130,7 +134,7 @@ export default function LoginPageContainer(): ReactElement {
   const isDisabled = loading || !!error || loginError !== undefined;
 
   const handleSubmit = async () => {
-    const { data } = await login({
+    const { data, errors } = await login({
       variables: {
         input: {
           email: username,
@@ -138,6 +142,9 @@ export default function LoginPageContainer(): ReactElement {
         },
       },
     });
+    if (errors?.length) {
+      setError(LoginError.ERROR);
+    }
     if (data?.login.success) {
       const cookieStorage = new CookieStorage();
       cookieStorage.setItem(

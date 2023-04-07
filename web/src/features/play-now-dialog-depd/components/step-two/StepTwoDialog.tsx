@@ -45,7 +45,7 @@ export default function StepTwoDialog(props: DepositDialogProps): ReactElement {
           {!isCountdownOver ? (
             <>
               <label className={`${DEPOSIT_PREFIX}-form-label`}>
-                Deposit Amount - Minium $20
+                Deposit Amount - Minimum $20
               </label>
               <Input
                 type="number"

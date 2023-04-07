@@ -79,7 +79,6 @@ export default class SupabaseAuth {
     });
 
     if (updateUserError) {
-      console.log('updateUserError', updateUserError);
       return UpdateUserError();
     }
     if (!updatedUser) {
@@ -94,7 +93,6 @@ export default class SupabaseAuth {
   async delete(id: string): Promise<void> {
     const { data, error } = await supabaseAdminClient.auth.admin.deleteUser(id);
     if (error) {
-      console.log('error', error);
       return AuthError('Error deleting user in Supabase.');
     }
   }

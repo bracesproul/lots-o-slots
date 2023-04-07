@@ -9,7 +9,6 @@ import { PaymentType } from '@/entities/Transaction/types';
 import { PaymentStatus } from '@/entities/Transaction/types';
 import { BankOfAmericaTransactionRepository } from '../BankOfAmericaTransactionRepository';
 import { EmailLogV2Repository } from '../EmailLogV2Repository';
-import { v4 as uuid } from 'uuid';
 import { PayPalTransactionRepository } from '../PayPalTransactionRepository';
 import { CashAppTransactionRepository } from '../CashAppTransactionRepository';
 
@@ -32,6 +31,7 @@ export default class TransactionRepository extends AbstractRepository<Transactio
         ...(provider && { provider }),
         ...(paymentType && { paymentType }),
       })
+      .addOrderBy('"updatedAt"', 'DESC')
       .getMany();
     return query;
   }
@@ -63,6 +63,7 @@ export default class TransactionRepository extends AbstractRepository<Transactio
         subject: 'Admin created transaction',
         body: 'Admin created transaction',
         receivedAt: new Date(),
+        processed: true,
       });
     }
 

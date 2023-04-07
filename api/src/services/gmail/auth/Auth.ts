@@ -101,7 +101,6 @@ export default async function authorize() {
   const client = await loadSavedCredentialsIfExist();
 
   if (client) {
-    console.log('creds exist');
     return client;
   }
 
@@ -134,6 +133,4 @@ export function handleAuth() {
     access_type: 'offline',
     scope: ['https://mail.google.com/'],
   });
-
-  console.log('url', url);
 }
