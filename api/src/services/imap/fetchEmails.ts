@@ -226,7 +226,14 @@ function processMessage(msg: any, seqno: any) {
         let cashAppTransaction: CashAppTransaction | undefined;
         let payPalTransaction: PayPalTransaction | undefined;
         let bankOfAmericaTransaction: BankOfAmericaTransaction | undefined;
-        let hasTransactionBeenLogged = false;
+        const hasTransactionBeenLogged = false;
+
+        const previousCashAppTransaction = await getCustomRepository(
+          CashAppTransactionRepository
+        ).checkDuplicateByCashAppId(payload.data.transactionId);
+        if (previousCashAppTransaction) {
+          return;
+        }
 
         const transaction = await getCustomRepository(
           TransactionRepository
@@ -240,22 +247,15 @@ function processMessage(msg: any, seqno: any) {
           paymentType: paymentType(),
         });
         if (type === EmailType.CASHAPP_DEPOSIT) {
-          const previousCashAppTransaction = await getCustomRepository(
+          cashAppTransaction = await getCustomRepository(
             CashAppTransactionRepository
-          ).checkDuplicateByCashAppId(payload.data.transactionId);
-          if (previousCashAppTransaction) {
-            hasTransactionBeenLogged = true;
-          } else {
-            cashAppTransaction = await getCustomRepository(
-              CashAppTransactionRepository
-            ).create({
-              transaction,
-              transactionId: transaction.id,
-              amount: payload.data.amount,
-              cashtag: payload.data.name,
-              cashAppId: payload.data.transactionId,
-            });
-          }
+          ).create({
+            transaction,
+            transactionId: transaction.id,
+            amount: payload.data.amount,
+            cashtag: payload.data.name,
+            cashAppId: payload.data.transactionId,
+          });
         } else if (type === EmailType.PAYPAL) {
           payPalTransaction = await getCustomRepository(
             PayPalTransactionRepository
