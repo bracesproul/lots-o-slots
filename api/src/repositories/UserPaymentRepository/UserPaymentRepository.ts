@@ -40,7 +40,7 @@ export default class UserPaymentRepository extends AbstractRepository<UserPaymen
       paymentIdentifier,
       paymentProvider,
       amount,
-      userId,
+      userV2Id: userId,
       gameType,
     });
 
