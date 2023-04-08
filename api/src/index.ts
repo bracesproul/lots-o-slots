@@ -12,7 +12,10 @@ async function main() {
     console.info('🤠 Database connected!');
   });
 
-  runJobs();
+  if (process.env.NODE_ENV === 'production') {
+    console.info('👷 Running jobs...');
+    runJobs();
+  }
 
   const app = await serverSetup();
   app.listen(process.env.PORT, () => {
