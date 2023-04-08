@@ -309,18 +309,34 @@ const getBadgeVariantForWithdrawalStatus = (
   }
 };
 
+const POLLING_INTERVAL = 30000; // 30 seconds
+
 export default function AdminPaymentsPageContainer(): ReactElement {
-  const { data: processedTransactionsData, loading: processedPaymentsLoading } =
-    useGetProcessedTransactionsQuery();
-  const { data: pendingTransactionsData, loading: pendingPaymentsLoading } =
-    useGetPendingTransactionsQuery();
+  const {
+    data: processedTransactionsData,
+    loading: processedPaymentsLoading,
+    startPolling: startProcessedTxnsPolling,
+  } = useGetProcessedTransactionsQuery();
+  const {
+    data: pendingTransactionsData,
+    loading: pendingPaymentsLoading,
+    startPolling: startPendingTxnsPolling,
+  } = useGetPendingTransactionsQuery();
   const {
     data: processedUserPaymentsData,
     loading: processedUserPaymentsLoading,
+    startPolling: startProcessedUserTxnsPolling,
   } = useGetProcessedUserPaymentsQuery();
-  const { data: pendingUserPaymentsData, loading: pendingUserPaymentsLoading } =
-    useGetPendingUserPaymentsQuery();
-  const { data: withdrawalsData, loading } = useGetWithdrawalRequestsQuery();
+  const {
+    data: pendingUserPaymentsData,
+    loading: pendingUserPaymentsLoading,
+    startPolling: startPendingUserTxnPolling,
+  } = useGetPendingUserPaymentsQuery();
+  const {
+    data: withdrawalsData,
+    loading,
+    startPolling: startWithdrawalRequestsPolling,
+  } = useGetWithdrawalRequestsQuery();
   const [updateWithdrawalRequestStatus] =
     useUpdateWithdrawalRequestStatusMutation();
   const [updateTransactionStatus] = useUpdateTransactionStatusMutation();
@@ -330,6 +346,12 @@ export default function AdminPaymentsPageContainer(): ReactElement {
   const [open, setOpen] = useState(false);
   const [paymentIdToDelete, setPaymentIdToDelete] = useState('');
   const [paymentTypeToDelete, setPaymentTypeToDelete] = useState<PaymentType>();
+
+  startWithdrawalRequestsPolling(POLLING_INTERVAL);
+  startPendingUserTxnPolling(POLLING_INTERVAL);
+  startProcessedUserTxnsPolling(POLLING_INTERVAL);
+  startPendingTxnsPolling(POLLING_INTERVAL);
+  startProcessedTxnsPolling(POLLING_INTERVAL);
 
   const { addSearchQueryParam, getQueryParams } = useSearchQuery();
   const pendingSearchQuery = getQueryParams(SearchQueryParam.PENDING_PAYMENTS);
