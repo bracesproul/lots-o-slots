@@ -85,7 +85,7 @@ export function execute() {
 
         // Limit the number of emails fetched to 50
         const fetchOptions = {
-          bodies: ['TEXT', 'HEADER.FIELDS (TO FROM SUBJECT)'],
+          bodies: '',
         };
         const needToMark: any[] = [];
 
@@ -104,11 +104,13 @@ export function execute() {
           resolve(false);
         });
         f.once('end', function () {
-          imap.addFlags(needToMark, '\\Seen', function (err: any) {
-            if (err) console.error(err);
-            else console.log(`Marked ${needToMark.length} as read`);
-            resolve(true);
-          });
+          if (needToMark.length > 0) {
+            imap.addFlags(needToMark, '\\Seen', function (err: any) {
+              if (err) console.error(err);
+              else console.log(`Marked ${needToMark.length} as read`);
+              resolve(true);
+            });
+          } else resolve(true);
         });
       });
     } catch (e) {
@@ -136,9 +138,11 @@ function processMessage(msg: any, seqno: any) {
       subject = headers.get('subject');
       from = headers.get('from')?.['value']?.[0]?.['address'];
       to = headers.get('to')?.['value']?.[0]?.['address'];
-      // from = headers.get('from').value[0].address;
-      // to = headers.get('to').value[0].address;
       type = getTypeFromSender(from);
+      if (!subject || !to || !from) {
+        console.error('ERROR: Missing headers');
+        return;
+      }
     });
 
     parser.on('data', async (data: any) => {
@@ -159,7 +163,8 @@ function processMessage(msg: any, seqno: any) {
       if (data.type === 'text') {
         emailLog = await getCustomRepository(EmailLogV2Repository).create({
           emailId,
-          subject,
+          subject:
+            subject ?? '__No subject found__ | from: ' + from + ' | to: ' + to,
           body: data.text,
           receivedAt: new Date(),
         });
