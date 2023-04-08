@@ -508,8 +508,17 @@ export default function AdminPaymentsPageContainer(): ReactElement {
     });
   }, [rejectedWithdrawals, rejectedSearchQuery]);
 
-  const allPendingPayments = [...pendingPayments, ...pendingUserPayments];
-  const allProcessedPayments = [...processedPayments, ...processedUserPayments];
+  const allPendingPayments = [...pendingPayments, ...pendingUserPayments].sort(
+    (a, b) => {
+      return b.date.getTime() - a.date.getTime();
+    }
+  );
+  const allProcessedPayments = [
+    ...processedPayments,
+    ...processedUserPayments,
+  ].sort((a, b) => {
+    return b.date.getTime() - a.date.getTime();
+  });
 
   const columns: ColumnDef<Payment>[] = [
     {
