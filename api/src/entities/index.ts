@@ -18,3 +18,4 @@ export { EthereumTransaction } from './EthereumTransaction';
 export { PayPalTransaction } from './PayPalTransaction';
 export { CashAppTransaction } from './CashAppTransaction';
 export { AccountV2 } from './AccountV2';
+export { ChaseTransaction } from './ChaseTransaction';
