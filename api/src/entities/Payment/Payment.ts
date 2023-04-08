@@ -9,6 +9,7 @@ export enum PaymentProvider {
   ZELLE = 'ZELLE',
   BITCOIN = 'BITCOIN',
   ETHEREUM = 'ETHEREUM',
+  CHASE = 'CHASE',
 }
 
 export enum GameType {

@@ -33,6 +33,7 @@ export default class UserPayment extends MainEntity {
 
   @Field(() => String, {
     nullable: true,
+    deprecationReason: 'Use userV2Id instead',
   })
   @Column({ type: 'varchar', nullable: true })
   userId?: string;

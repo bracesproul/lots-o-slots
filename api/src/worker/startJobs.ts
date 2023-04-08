@@ -10,7 +10,8 @@ export function runJobs() {
 
   const startedAt = Date.now();
   new Promise((resolve) => {
-    // keep track of  statuses so we can watch for new mail while the current job is running, as it wont pick it up after the search
+    // keep track of statuses so we can watch for new mail while the current job is running,
+    // as it wont pick it up after the search
     let nextPollTimeoutId: number;
     let finishedCurrentJob = false;
     let gotNewMail = false;

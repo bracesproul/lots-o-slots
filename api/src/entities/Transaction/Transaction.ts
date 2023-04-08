@@ -5,6 +5,7 @@ import {
   BankOfAmericaTransaction,
   BitcoinTransaction,
   CashAppTransaction,
+  ChaseTransaction,
   EmailLogV2,
   EthereumTransaction,
   MainEntity,
@@ -146,4 +147,16 @@ export default class Transaction extends MainEntity {
   })
   @Column({ type: 'uuid', nullable: true })
   accountId?: string;
+
+  @OneToOne(() => ChaseTransaction, {
+    nullable: true,
+  })
+  @JoinColumn({ name: 'chaseTransactionId' })
+  chaseTransaction?: ChaseTransaction;
+
+  @Field(() => String, {
+    nullable: true,
+  })
+  @Column({ type: 'varchar', nullable: true })
+  chaseTransactionId?: string;
 }

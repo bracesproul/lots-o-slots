@@ -4,6 +4,7 @@ import {
   parsePayPalPayment,
   parseZellePayment,
   parseCashAppPayment,
+  parseChasePayment,
 } from './utils';
 import { getCustomRepository } from 'typeorm';
 import {
@@ -13,16 +14,17 @@ import {
   BankOfAmericaTransactionRepository,
   CashAppTransactionRepository,
   AccountRepository,
+  ChaseTransactionRepository,
 } from '@/repositories';
 import { ParsedEmailPayload } from '@/types/parsed-email';
 import { PaymentStatus, PaymentType } from '@/entities/Transaction/types';
 import { PaymentProvider } from '@/entities/Payment/Payment';
 import {
   EmailLogV2,
-  Account,
   PayPalTransaction,
   BankOfAmericaTransaction,
   CashAppTransaction,
+  ChaseTransaction,
 } from '@/entities';
 import { stripHtml } from 'string-strip-html';
 import { DiscordLog } from '../discord';
@@ -32,6 +34,7 @@ export enum EmailType {
   BOFA = 'BOFA',
   CASHAPP_DEPOSIT = 'CASHAPP_DEPOSIT',
   CASHAPP_WITHDRAWAL = 'CASHAPP_WITHDRAWAL',
+  CHASE = 'CHASE',
   UNKNOWN = 'UNKNOWN',
 }
 
@@ -39,11 +42,17 @@ enum EmailSender {
   PAYPAL = 'service@paypal.com',
   BOFA = 'customerservice@ealerts.bankofamerica.com',
   CASHAPP = 'cash@square.com',
+  CHASE = 'no-reply@alertsp.chase.com',
 }
 
 type NQ = (string | NQ)[];
 let FROM_QUERY: NQ = [];
-const FROM_LIST = [EmailSender.BOFA, EmailSender.PAYPAL, EmailSender.CASHAPP];
+const FROM_LIST = [
+  EmailSender.BOFA,
+  EmailSender.PAYPAL,
+  EmailSender.CASHAPP,
+  EmailSender.CHASE,
+];
 
 FROM_LIST.forEach((value, index) => {
   const core = ['FROM', value];
@@ -58,6 +67,8 @@ function getTypeFromSender(sender: string) {
       return EmailType.CASHAPP_DEPOSIT;
     case EmailSender.BOFA:
       return EmailType.BOFA;
+    case EmailSender.CHASE:
+      return EmailType.CHASE;
     default:
       return EmailType.UNKNOWN;
   }
@@ -203,6 +214,12 @@ function processMessage(msg: any, seqno: any) {
               );
             }
           }
+        } else if (type === EmailType.CHASE) {
+          const chasePayload = parseChasePayment(data.html);
+
+          if (chasePayload) {
+            payload = chasePayload;
+          }
         }
       }
 
@@ -214,6 +231,7 @@ function processMessage(msg: any, seqno: any) {
         const provider = () => {
           if (type === EmailType.PAYPAL) return PaymentProvider.PAYPAL;
           if (type === EmailType.BOFA) return PaymentProvider.ZELLE;
+          if (type === EmailType.CHASE) return PaymentProvider.CHASE;
           return PaymentProvider.CASHAPP;
         };
 
@@ -226,6 +244,7 @@ function processMessage(msg: any, seqno: any) {
         let cashAppTransaction: CashAppTransaction | undefined;
         let payPalTransaction: PayPalTransaction | undefined;
         let bankOfAmericaTransaction: BankOfAmericaTransaction | undefined;
+        let chaseTransaction: ChaseTransaction | undefined;
         const hasTransactionBeenLogged = false;
 
         const previousCashAppTransaction = await getCustomRepository(
@@ -246,6 +265,7 @@ function processMessage(msg: any, seqno: any) {
           provider: provider(),
           paymentType: paymentType(),
         });
+
         if (type === EmailType.CASHAPP_DEPOSIT) {
           cashAppTransaction = await getCustomRepository(
             CashAppTransactionRepository
@@ -275,7 +295,17 @@ function processMessage(msg: any, seqno: any) {
             amount: payload.data.amount,
             senderIdentifier: payload.data.name,
           });
+        } else if (type === EmailType.CHASE) {
+          chaseTransaction = await getCustomRepository(
+            ChaseTransactionRepository
+          ).create({
+            transaction,
+            transactionId: transaction.id,
+            amount: payload.data.amount,
+            senderIdentifier: payload.data.name,
+          });
         }
+
         if (hasTransactionBeenLogged) return;
         await getCustomRepository(TransactionRepository).update({
           id: transaction.id,

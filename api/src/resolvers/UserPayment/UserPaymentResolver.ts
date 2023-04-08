@@ -1,4 +1,4 @@
-import { UserPaymentRepository } from '@/repositories';
+import { UserPaymentRepository, UserV2Repository } from '@/repositories';
 import { UserPayment, UserV2 } from '@/entities';
 import {
   Arg,
@@ -7,6 +7,7 @@ import {
   Resolver,
   FieldResolver,
   Root,
+  Ctx,
 } from 'type-graphql';
 import { getCustomRepository, getRepository } from 'typeorm';
 import {
@@ -20,6 +21,7 @@ import {
 } from './types';
 import { ApolloError } from 'apollo-server-express';
 import { DiscordLog } from '@/services';
+import { ContextType } from '@/types';
 
 @Resolver(() => UserPayment)
 export class UserPaymentResolver {
@@ -34,16 +36,26 @@ export class UserPaymentResolver {
 
   @Mutation(() => UserPayment, { nullable: false })
   async createUserPayment(
+    @Ctx() { user }: ContextType,
     @Arg('input', { nullable: false }) input: CreateUserPaymentInput
   ): Promise<UserPayment> {
     const discordLogger = new DiscordLog();
     await discordLogger.logUserPayment(input);
 
+    let fetchedUser: UserV2;
+    if (!user) {
+      fetchedUser = await getCustomRepository(UserV2Repository).getById(
+        input.userId ?? ''
+      );
+    } else {
+      fetchedUser = user;
+    }
+
     return getCustomRepository(UserPaymentRepository).create({
       paymentIdentifier: input.paymentIdentifier,
       paymentProvider: input.paymentProvider,
       amount: input.amount,
-      userId: input.userId,
+      userId: fetchedUser.id,
       gameType: input.gameType,
     });
   }
