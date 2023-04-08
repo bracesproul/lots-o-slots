@@ -14,3 +14,4 @@ export { PayPalTransactionRepository } from './PayPalTransactionRepository';
 export { TransactionRepository } from './TransactionRepository';
 export { BankOfAmericaTransactionRepository } from './BankOfAmericaTransactionRepository';
 export { CashAppTransactionRepository } from './CashAppTransactionRepository';
+export { ChaseTransactionRepository } from './ChaseTransactionRepository';
