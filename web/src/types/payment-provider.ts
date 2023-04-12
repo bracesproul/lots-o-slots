@@ -4,4 +4,5 @@ export enum PaymentProvider {
   ETHEREUM = 'ETHEREUM',
   PAYPAL = 'PAYPAL',
   ZELLE = 'ZELLE',
+  CHASE = 'CHASE',
 }
