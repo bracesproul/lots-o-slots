@@ -11,7 +11,9 @@ export type PaymentIdentifierInputProps = {
   setPaymentIdentifier: (paymentIdentifier: string) => void;
 };
 
-const getPaymentIdentifier = (paymentProvider: PaymentProvider): string => {
+export const getPaymentIdentifier = (
+  paymentProvider: PaymentProvider
+): string => {
   switch (paymentProvider) {
     case PaymentProvider.ZELLE:
       return 'Zelle Email/Phone Number';
