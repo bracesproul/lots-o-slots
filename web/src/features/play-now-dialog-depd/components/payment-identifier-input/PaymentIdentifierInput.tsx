@@ -23,6 +23,10 @@ const getPaymentIdentifier = (paymentProvider: PaymentProvider): string => {
       return 'Bitcoin Address';
     case PaymentProvider.ETHEREUM:
       return 'Ethereum Address';
+    case PaymentProvider.CHASE:
+      return 'Chase QuickPay Email';
+    default:
+      throw new Error('Invalid Payment Provider');
   }
 };
 
