@@ -17,6 +17,30 @@ export type PlayNowDialogProps = {
   setDepositDialogOpen: (open: boolean) => void;
 };
 
+const getPaymentHandle = (
+  data: GetDefaultAccountsQuery,
+  paymentProvider: PaymentProvider
+): string | null => {
+  const handle = data.getAllAccounts.find(
+    (account) => account.type === paymentProvider
+  );
+
+  switch (paymentProvider) {
+    case PaymentProvider.ZELLE:
+      return handle?.email ?? null;
+    case PaymentProvider.CASHAPP:
+      return handle?.cashtag ?? null;
+    case PaymentProvider.PAYPAL:
+      return handle?.email ?? null;
+    case PaymentProvider.BITCOIN:
+      return handle?.bitcoinAddress ?? null;
+    case PaymentProvider.ETHEREUM:
+      return handle?.ethereumAddress ?? null;
+    default:
+      return null;
+  }
+};
+
 export default function PlayNowDialogContainer(
   props: PlayGameDialogProps
 ): ReactElement {
@@ -27,32 +51,9 @@ export default function PlayNowDialogContainer(
   const [createUserPayment] = useCreateUserPaymentMutation();
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [username, setUsername] = useState('');
 
   const { data } = useGetDefaultAccountsQuery();
-
-  const getPaymentHandle = (
-    data: GetDefaultAccountsQuery,
-    paymentProvider: PaymentProvider
-  ): string | null => {
-    const handle = data.getAllAccounts.find(
-      (account) => account.type === paymentProvider
-    );
-
-    switch (paymentProvider) {
-      case PaymentProvider.ZELLE:
-        return handle?.email ?? null;
-      case PaymentProvider.CASHAPP:
-        return handle?.cashtag ?? null;
-      case PaymentProvider.PAYPAL:
-        return handle?.email ?? null;
-      case PaymentProvider.BITCOIN:
-        return handle?.bitcoinAddress ?? null;
-      case PaymentProvider.ETHEREUM:
-        return handle?.ethereumAddress ?? null;
-      default:
-        return null;
-    }
-  };
 
   useEffect(() => {
     if (!p.stepOneOpen && !p.stepTwoOpen) {
@@ -105,6 +106,8 @@ export default function PlayNowDialogContainer(
               isConfirmPaidDisabled={
                 p.paymentProvider && depositAmount >= 20 ? false : true
               }
+              username={username}
+              setUsername={setUsername}
               open={p.stepTwoOpen}
               setOpen={p.setStepTwoOpen}
               depositAmount={depositAmount}

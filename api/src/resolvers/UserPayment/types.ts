@@ -35,6 +35,12 @@ export class CreateUserPaymentInput {
     description: 'The game type.',
   })
   gameType!: GameType;
+
+  @Field(() => String, {
+    nullable: true,
+    description: 'The users Firekin username.',
+  })
+  username?: string;
 }
 
 @InputType({

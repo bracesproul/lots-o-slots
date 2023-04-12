@@ -55,4 +55,7 @@ export type DepositDialogProps = {
   paymentIdentifier: string;
   setPaymentIdentifier: (paymentIdentifier: string) => void;
   includePaymentIdentifier: boolean;
+  /** The users firekin username */
+  username: string;
+  setUsername: (username: string) => void;
 };
