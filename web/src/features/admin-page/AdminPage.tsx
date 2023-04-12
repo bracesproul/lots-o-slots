@@ -13,7 +13,7 @@ const PREFIX = StylePrefix.ADMIN_PAGE_V2;
 
 function AdminPage(props: AdminPageProps): ReactElement {
   return (
-    <div className={`${PREFIX}`}>
+    <div className={PREFIX}>
       <DashboardPageHeader page={PageType.ADMIN} includePageNav />
       <ProfileCard role={UserRole.ADMIN} />
     </div>

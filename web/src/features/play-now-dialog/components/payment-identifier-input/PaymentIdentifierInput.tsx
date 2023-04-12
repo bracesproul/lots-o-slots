@@ -1,4 +1,5 @@
 import { Input } from '@/components';
+import { getPaymentIdentifier } from '@/features/play-now-dialog-depd/components/payment-identifier-input/PaymentIdentifierInput';
 import { PaymentProvider } from '@/types';
 import { StylePrefix } from '@/types/style-prefix';
 import clsx from 'clsx';
@@ -9,21 +10,6 @@ export type PaymentIdentifierInputProps = {
   paymentProvider: PaymentProvider;
   paymentIdentifier: string;
   setPaymentIdentifier: (paymentIdentifier: string) => void;
-};
-
-const getPaymentIdentifier = (paymentProvider: PaymentProvider): string => {
-  switch (paymentProvider) {
-    case PaymentProvider.ZELLE:
-      return 'Zelle Email/Phone Number';
-    case PaymentProvider.PAYPAL:
-      return 'PayPal Email';
-    case PaymentProvider.CASHAPP:
-      return 'CashTag';
-    case PaymentProvider.BITCOIN:
-      return 'Bitcoin Address';
-    case PaymentProvider.ETHEREUM:
-      return 'Ethereum Address';
-  }
 };
 
 const PREFIX = StylePrefix.PAYMENT_IDENTIFIER_INPUT;

@@ -282,6 +282,7 @@ export type Payment = {
   type: PaymentType;
   paymentMethod: PaymentProvider;
   userIdentifier: string;
+  username?: string;
 };
 
 export type Withdrawal = {
@@ -337,12 +338,14 @@ export default function AdminPaymentsPageContainer(): ReactElement {
     loading,
     startPolling: startWithdrawalRequestsPolling,
   } = useGetWithdrawalRequestsQuery();
+
   const [updateWithdrawalRequestStatus] =
     useUpdateWithdrawalRequestStatusMutation();
   const [updateTransactionStatus] = useUpdateTransactionStatusMutation();
   const [updateUserPaymentStatus] = useUpdateUserPaymentStatusMutation();
   const [deleteTransaction] = useDeleteTransactionMutation();
   const [deleteUserPayment] = useDeleteUserPaymentMutation();
+
   const [open, setOpen] = useState(false);
   const [paymentIdToDelete, setPaymentIdToDelete] = useState('');
   const [paymentTypeToDelete, setPaymentTypeToDelete] = useState<PaymentType>();
@@ -439,6 +442,7 @@ export default function AdminPaymentsPageContainer(): ReactElement {
         type: PaymentType.USER_SUBMITTED,
         paymentMethod: payment.paymentProvider,
         userIdentifier: userIdentifier(),
+        username: payment.user?.username ?? undefined,
       };
     }) ?? [];
   const pendingUserPayments: Payment[] =
@@ -463,6 +467,7 @@ export default function AdminPaymentsPageContainer(): ReactElement {
         type: PaymentType.USER_SUBMITTED,
         paymentMethod: payment.paymentProvider,
         userIdentifier: userIdentifier(),
+        username: payment.user?.username ?? undefined,
       };
     }) ?? [];
 
@@ -529,6 +534,19 @@ export default function AdminPaymentsPageContainer(): ReactElement {
           <div>
             <Text type="body-sm" className={'text-brand-500 leading-5'}>
               {getValue<Payment['userIdentifier']>()}
+            </Text>
+          </div>
+        );
+      },
+    },
+    {
+      header: 'Firekin Username',
+      accessorKey: 'username',
+      cell: ({ getValue }) => {
+        return (
+          <div>
+            <Text type="body-sm" className={'leading-5'}>
+              {getValue<Payment['username']>() ?? 'n/a'}
             </Text>
           </div>
         );
