@@ -51,7 +51,12 @@ export default function StepTwoDialog(props: DepositDialogProps): ReactElement {
                 type="number"
                 value={p.depositAmount.toString()}
                 onChange={(e) => p.setDepositAmount(Number(e))}
+                required
               />
+              <label className={`${DEPOSIT_PREFIX}-form-label`}>
+                Firekin Username
+              </label>
+              <Input value={p.username} onChange={p.setUsername} />
               {p.includePaymentIdentifier && (
                 <PaymentIdentifierInput
                   className={'mt-[10px] flex flex-col'}

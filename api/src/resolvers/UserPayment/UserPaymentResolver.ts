@@ -57,6 +57,7 @@ export class UserPaymentResolver {
       amount: input.amount,
       userId: fetchedUser.id,
       gameType: input.gameType,
+      username: input.username,
     });
   }
 

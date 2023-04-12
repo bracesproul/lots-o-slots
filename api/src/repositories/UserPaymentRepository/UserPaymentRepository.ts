@@ -1,6 +1,11 @@
-import { AbstractRepository, EntityRepository } from 'typeorm';
-import { UserPayment } from '@/entities';
+import {
+  AbstractRepository,
+  EntityRepository,
+  getCustomRepository,
+} from 'typeorm';
+import { UserPayment, UserV2 } from '@/entities';
 import { GameType, PaymentProvider } from '@/entities/Payment/Payment';
+import { UserV2Repository } from '../UserV2Repository';
 
 @EntityRepository(UserPayment)
 /* eslint-disable-next-line max-len */
@@ -29,12 +34,14 @@ export default class UserPaymentRepository extends AbstractRepository<UserPaymen
     amount,
     userId,
     gameType,
+    username,
   }: {
     paymentIdentifier: string;
     paymentProvider: PaymentProvider;
     amount: number;
-    userId?: string;
+    userId: string;
     gameType: GameType;
+    username?: string;
   }): Promise<UserPayment> {
     const userPayment = this.repository.create({
       paymentIdentifier,
@@ -43,6 +50,23 @@ export default class UserPaymentRepository extends AbstractRepository<UserPaymen
       userV2Id: userId,
       gameType,
     });
+
+    if (username) {
+      const user = await getCustomRepository(UserV2Repository).getById(userId);
+
+      await getCustomRepository(UserV2Repository).update(
+        {
+          supabaseId: user.supabaseId,
+          data: {
+            role: user.role,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            username: username,
+          },
+        },
+        user
+      );
+    }
 
     return this.repository.save(userPayment);
   }

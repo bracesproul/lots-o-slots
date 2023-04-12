@@ -142,6 +142,8 @@ export type CreateUserPaymentInput = {
   paymentProvider: PaymentProvider;
   /** The ID of a relating user account. */
   userId?: InputMaybe<Scalars['String']>;
+  /** The users Firekin username. */
+  username?: InputMaybe<Scalars['String']>;
 };
 
 /** Input type for creating a new withdrawal request */
@@ -232,6 +234,7 @@ export type EmailLogV2 = MainEntity & Node & {
   deletedAt?: Maybe<Scalars['DateTime']>;
   emailId: Scalars['Float'];
   id: Scalars['ID'];
+  processed: Scalars['Boolean'];
   receivedAt: Scalars['DateTime'];
   snippet?: Maybe<Scalars['String']>;
   subject: Scalars['String'];
@@ -521,6 +524,7 @@ export type Node = {
 export enum PaymentProvider {
   BITCOIN = 'BITCOIN',
   CASHAPP = 'CASHAPP',
+  CHASE = 'CHASE',
   ETHEREUM = 'ETHEREUM',
   PAYPAL = 'PAYPAL',
   ZELLE = 'ZELLE'
@@ -669,6 +673,7 @@ export type Transaction = MainEntity & Node & {
   bankOfAmericaTransactionId?: Maybe<Scalars['String']>;
   bitcoinTransactionId?: Maybe<Scalars['String']>;
   cashAppTransactionId?: Maybe<Scalars['String']>;
+  chaseTransactionId?: Maybe<Scalars['String']>;
   createdAt: Scalars['DateTime'];
   deletedAt?: Maybe<Scalars['DateTime']>;
   emailLogId: Scalars['String'];
@@ -774,6 +779,7 @@ export type UserPayment = MainEntity & Node & {
   processed: Scalars['Boolean'];
   updatedAt?: Maybe<Scalars['DateTime']>;
   user?: Maybe<UserV2>;
+  /** @deprecated Use userV2Id instead */
   userId?: Maybe<Scalars['String']>;
   userV2Id?: Maybe<Scalars['String']>;
 };
